@@ -1,0 +1,332 @@
+{
+  "status": "completed",
+  "protocol": "geometry-v1",
+  "source_revision": "ec7e90193ee60d9b413f05e42058c264306f4ddb",
+  "total_added_transitions": 524288,
+  "runs": [
+    {
+      "method": "baseline",
+      "seed": 42,
+      "added_transitions": 131072,
+      "selected_lifetime_transitions": 0,
+      "validation_improved": false,
+      "initial_validation": {
+        "episodes": 32,
+        "successes": 0,
+        "collisions": 1,
+        "timeouts": 31,
+        "mean_distance_end": 43.96231708013509
+      },
+      "selected_validation": {
+        "episodes": 32,
+        "successes": 0,
+        "collisions": 1,
+        "timeouts": 31,
+        "mean_distance_end": 43.96231708013509
+      },
+      "curriculum_counters": []
+    },
+    {
+      "method": "baseline",
+      "seed": 73,
+      "added_transitions": 131072,
+      "selected_lifetime_transitions": 0,
+      "validation_improved": false,
+      "initial_validation": {
+        "episodes": 32,
+        "successes": 0,
+        "collisions": 0,
+        "timeouts": 32,
+        "mean_distance_end": 44.2234894709623
+      },
+      "selected_validation": {
+        "episodes": 32,
+        "successes": 0,
+        "collisions": 0,
+        "timeouts": 32,
+        "mean_distance_end": 44.2234894709623
+      },
+      "curriculum_counters": []
+    },
+    {
+      "method": "curriculum",
+      "seed": 42,
+      "added_transitions": 131072,
+      "selected_lifetime_transitions": 131072,
+      "validation_improved": true,
+      "initial_validation": {
+        "episodes": 32,
+        "successes": 0,
+        "collisions": 1,
+        "timeouts": 31,
+        "mean_distance_end": 43.9623170806874
+      },
+      "selected_validation": {
+        "episodes": 32,
+        "successes": 0,
+        "collisions": 1,
+        "timeouts": 31,
+        "mean_distance_end": 38.393573200872545
+      },
+      "curriculum_counters": [
+        {
+          "round": 1,
+          "protocol_version": "geometry-v1-three-stage-mixture",
+          "initial_offset": 0,
+          "transitions": 65536,
+          "stage": 1,
+          "mixture": [
+            0.2,
+            0.6,
+            0.2
+          ],
+          "resets_including_initialization": {
+            "open": 85,
+            "passages": 47,
+            "large": 14
+          },
+          "transitions_by_profile": {
+            "open": 51217,
+            "passages": 9895,
+            "large": 4424
+          },
+          "episode_outcomes_by_profile": {
+            "open": {
+              "success": 20,
+              "collision": 39,
+              "timeout": 17
+            },
+            "passages": {
+              "success": 0,
+              "collision": 41,
+              "timeout": 0
+            },
+            "large": {
+              "success": 0,
+              "collision": 13,
+              "timeout": 0
+            }
+          }
+        },
+        {
+          "round": 2,
+          "protocol_version": "geometry-v1-three-stage-mixture",
+          "initial_offset": 65536,
+          "transitions": 131072,
+          "stage": 2,
+          "mixture": [
+            0.1,
+            0.2,
+            0.7
+          ],
+          "resets_including_initialization": {
+            "open": 14,
+            "passages": 26,
+            "large": 27
+          },
+          "transitions_by_profile": {
+            "open": 8168,
+            "passages": 16698,
+            "large": 40670
+          },
+          "episode_outcomes_by_profile": {
+            "open": {
+              "success": 10,
+              "collision": 2,
+              "timeout": 1
+            },
+            "passages": {
+              "success": 0,
+              "collision": 15,
+              "timeout": 4
+            },
+            "large": {
+              "success": 0,
+              "collision": 16,
+              "timeout": 3
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "curriculum",
+      "seed": 73,
+      "added_transitions": 131072,
+      "selected_lifetime_transitions": 0,
+      "validation_improved": false,
+      "initial_validation": {
+        "episodes": 32,
+        "successes": 0,
+        "collisions": 0,
+        "timeouts": 32,
+        "mean_distance_end": 44.2234894695337
+      },
+      "selected_validation": {
+        "episodes": 32,
+        "successes": 0,
+        "collisions": 0,
+        "timeouts": 32,
+        "mean_distance_end": 44.2234894695337
+      },
+      "curriculum_counters": [
+        {
+          "round": 1,
+          "protocol_version": "geometry-v1-three-stage-mixture",
+          "initial_offset": 0,
+          "transitions": 65536,
+          "stage": 1,
+          "mixture": [
+            0.2,
+            0.6,
+            0.2
+          ],
+          "resets_including_initialization": {
+            "open": 83,
+            "passages": 50,
+            "large": 8
+          },
+          "transitions_by_profile": {
+            "open": 47970,
+            "passages": 13620,
+            "large": 3946
+          },
+          "episode_outcomes_by_profile": {
+            "open": {
+              "success": 17,
+              "collision": 48,
+              "timeout": 13
+            },
+            "passages": {
+              "success": 0,
+              "collision": 43,
+              "timeout": 0
+            },
+            "large": {
+              "success": 0,
+              "collision": 4,
+              "timeout": 0
+            }
+          }
+        },
+        {
+          "round": 2,
+          "protocol_version": "geometry-v1-three-stage-mixture",
+          "initial_offset": 65536,
+          "transitions": 131072,
+          "stage": 2,
+          "mixture": [
+            0.1,
+            0.2,
+            0.7
+          ],
+          "resets_including_initialization": {
+            "open": 12,
+            "passages": 31,
+            "large": 48
+          },
+          "transitions_by_profile": {
+            "open": 9553,
+            "passages": 21315,
+            "large": 34668
+          },
+          "episode_outcomes_by_profile": {
+            "open": {
+              "success": 4,
+              "collision": 1,
+              "timeout": 4
+            },
+            "passages": {
+              "success": 0,
+              "collision": 21,
+              "timeout": 6
+            },
+            "large": {
+              "success": 0,
+              "collision": 38,
+              "timeout": 1
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "selected_method": "curriculum",
+  "selected_training_seed": 73,
+  "selected_lifetime_transitions": 0,
+  "final_summary": {
+    "episodes": 64,
+    "successes": 0,
+    "success_rate": 0.0,
+    "success_wilson_95": [
+      0.0,
+      0.05662405979280534
+    ],
+    "collision_rate": 0.015625,
+    "timeout_rate": 0.984375,
+    "mean_success_arrival_seconds": null,
+    "mean_success_path_length": null,
+    "mean_success_path_over_straight_line": null,
+    "mean_success_path_over_feasible_reference": null,
+    "successful_reference_count": 0,
+    "reference_missing_successes": 0,
+    "route_reference": "clearance-aware sampled visibility roadmap; approximate geometric path to goal center, not a global/dynamic optimum"
+  },
+  "untrained_summary": {
+    "episodes": 64,
+    "successes": 0,
+    "success_rate": 0.0,
+    "success_wilson_95": [
+      0.0,
+      0.05662405979280534
+    ],
+    "collision_rate": 0.015625,
+    "timeout_rate": 0.984375,
+    "mean_success_arrival_seconds": null,
+    "mean_success_path_length": null,
+    "mean_success_path_over_straight_line": null,
+    "mean_success_path_over_feasible_reference": null,
+    "successful_reference_count": 0,
+    "reference_missing_successes": 0,
+    "route_reference": "clearance-aware sampled visibility roadmap; approximate geometric path to goal center, not a global/dynamic optimum"
+  },
+  "elapsed_seconds": 12404.71233201027,
+  "configuration_sha256": "5b0503cd6cf469402905eba848e28976c2e70eee6421cd5db8b14ba318b1909f",
+  "suite_sha256": "9c3bf46e65779cbf8e0afa2574243845051125349be4357389ad342e6a448349",
+  "data_fingerprint": "aff3a08b4b506711ea87109a21d5a3face06599183046ec9d9eba560d9d39d85",
+  "selected_checkpoint_sha256": "8fe1d918600fbdccc5c2a56ef54733baac5dd5b3c514b021c54b54a760a031ba",
+  "selected_checkpoint_matches_initialization": true,
+  "method_ranking_metrics": {
+    "baseline": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "mean_distance_end": 44.2234894709623
+    },
+    "curriculum": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "mean_distance_end": 44.2234894695337
+    }
+  },
+  "aliases_preserved": {
+    "dense-flight-policy.json": "0ca02c89a6e17d16cfd949a56d46909cdf8638758a4536953e3e3d8ecef5e2db",
+    "dense-flight-policy.zip": "085963d6e95b2a25647e3e6dd7ad2dc61f8f3c61bbfaaf3ce0db2c067a287d66",
+    "dense-policy.json": "88c3e01eb7926dedfc1679f23b4a92c3783384782ad4203013afa8d38fe4e3c3",
+    "dense-policy.zip": "db0839a921ae8775bbad9dbea62c28ab3752d33dad0e8edcfa72c7dc1318cab6",
+    "navigation-policy.json": "aa47f7ef830c491958a16bd121497c703d689b2a9717c566ad9888de5815460f",
+    "navigation-policy.zip": "2aa3469b6c56fa7f29c56399a7737b29c1870432e005714782d8efe23bf6be01"
+  },
+  "all_round_losses_finite": true,
+  "full_annotated_neurons": 167184,
+  "full_directed_edges": 25583622,
+  "source_snapshot_verified": true,
+  "final_pool_consumed": true,
+  "collection_training_invoked": false,
+  "collection_evaluation_invoked": false,
+  "limitations": [
+    "Only the validation winner and untrained control were final-tested.",
+    "This is not a paired final comparison of both methods.",
+    "Earlier experiments used different final rooms.",
+    "Navigation does not demonstrate a biological advantage."
+  ]
+}

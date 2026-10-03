@@ -1,0 +1,20 @@
+name: fly-rl
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cu128
+      - torch==2.7.1+cu128
+      - numpy
+      - scipy
+      - pyarrow
+      - requests
+      - gymnasium>=0.29,<1.3
+      - stable-baselines3==2.7.0
+      - panda3d==1.10.16
+      - tensorboard
+      - pytest
+      - pillow
+      - matplotlib
