@@ -11,7 +11,7 @@ MODEL_SPEC=f'reservoir-v2-{SENSOR_VERSION}-256-seed42-leak0.5-scale0.9'
 
 class Brain:
     def __init__(self, data='data', batch=1, device='cuda', matrix=None,sensor_version=None):
-        from fly_rl.simulation.sensors import validate_sensor_version,sensor_count,SENSOR_V4,SENSOR_V5
+        from fly_rl.simulation.sensors import validate_sensor_version,sensor_count,SENSOR_V4,SENSOR_V5,SENSOR_V6
         self.sensor_version=validate_sensor_version(sensor_version or SENSOR_VERSION)
         self.sensor_count=sensor_count(self.sensor_version)
         self.model_spec=f'reservoir-v2-{self.sensor_version}-256-seed42-leak0.5-scale0.9'
@@ -49,12 +49,13 @@ class Brain:
         self.clock_weight=torch.as_tensor(clock_rng.choice([-0.25,0.,0.25],self.n,p=[.125,.75,.125]).astype(np.float32),device=self.device) if self.sensor_version==SENSOR_V4 else None
 
         self.fan_index=None
-        if self.sensor_version==SENSOR_V5:
+        if self.sensor_version in (SENSOR_V5,SENSOR_V6):
             fan_rng=np.random.default_rng(123457)
             self.fan_index=torch.as_tensor(fan_rng.integers(SENSORS,self.sensor_count,(self.n,2)),device=self.device)
             self.fan_sign=torch.as_tensor(fan_rng.choice([-1.,1.],(self.n,2)).astype(np.float32),device=self.device)
-            from fly_rl.simulation.sensors import FAN_COUNT
-            self.fan_center=torch.as_tensor((self.fan_index.cpu().numpy()<SENSORS+FAN_COUNT)*.5,dtype=torch.float32,device=self.device)
+            from fly_rl.simulation.sensors import FAN_COUNT,PANORAMA_COUNT
+            visual_count=FAN_COUNT if self.sensor_version==SENSOR_V5 else PANORAMA_COUNT
+            self.fan_center=torch.as_tensor((self.fan_index.cpu().numpy()<SENSORS+visual_count)*.5,dtype=torch.float32,device=self.device)
 
     @torch.no_grad()
     def reset(self, indices=None):

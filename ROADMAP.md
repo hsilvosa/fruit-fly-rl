@@ -58,3 +58,11 @@ See [public results](docs/RESULTS.md), [mathematics](docs/MATHEMATICS.md), [map 
 
 
 The [critic-isolation v3 run](docs/evidence/guided-navigation-v3-results.md) completed with 0/8 autonomous development goals and eight collisions. A [guarded PPO continuation](docs/evidence/guarded-navigation-v4-plan.md) now tests rollback of excessive policy changes under a further 32,768-transition cap. Navigation remains unresolved; final tests and original aliases remain preserved.
+
+
+## Corrección panorámica y resultado de waypoint v6
+
+La tanda waypoint v6 completó 81.920 transiciones nuevas, con pérdidas finitas y recarga compatible, pero su validación autónoma original large siguió en 0/8: ocho colisiones y ningún timeout. El total de entrenamiento sustantivo completado es 868.352 transiciones. Los aliases originales y el checkpoint fuente permanecen intactos. No se utilizó el test reservado y la navegación continúa sin resolverse.
+
+Se conservan los [resultados verificados](docs/evidence/neural-waypoint-v6-results.md) y el [diagnóstico de control y cobertura](docs/evidence/neural-waypoint-v6-diagnostics.md). La siguiente corrección usa visión panorámica medida alrededor del cuerpo y vuelos guiados completos desde los estados originales. Su controlador recibe únicamente actividad neuronal; la ruta oculta solo etiqueta datos durante entrenamiento.
+El [protocolo panorámico v7](docs/evidence/panoramic-neural-v7-plan.md) fija un límite de 98.304 transiciones nuevas, 12.288 actualizaciones supervisadas y una única validación de desarrollo. Empieza un controlador nuevo por el cambio de dimensiones, conserva todos los checkpoints anteriores y no consume el test reservado.

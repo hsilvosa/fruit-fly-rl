@@ -65,6 +65,7 @@ def main():
     replay.add_argument('--speed',type=float,default=1.);replay.add_argument('--offscreen',action='store_true')
     replay.add_argument('--seconds',type=float,default=0);replay.add_argument('--screenshot',default='reports/replay.png')
     replay.set_defaults(seed=10,checkpoint=None,no_record=True,record_dir='runs/demo',record_brain=False)
+    panorama=sub.add_parser('train-panorama');panorama.add_argument('--plan',required=True)
     waypoint=sub.add_parser('train-waypoint');waypoint.add_argument('--plan',required=True)
     spatial=sub.add_parser('train-spatial');spatial.add_argument('--plan',required=True)
     guarded=sub.add_parser('train-guarded');guarded.add_argument('--plan',required=True)
@@ -270,6 +271,9 @@ def main():
         output=Path(args.output);output.parent.mkdir(parents=True,exist_ok=True)
         output.write_text(json.dumps(result,indent=2),encoding='utf8');print(json.dumps(result,indent=2),flush=True)
         if args.command=='inspect' and result['errors']: raise SystemExit(1)
+    elif args.command=='train-panorama':
+        from fly_rl.training.panorama_navigation import run
+        write_report('panorama-training.json',run(args.plan,args.device))
     elif args.command=='train-waypoint':
         from fly_rl.training.waypoint_navigation import run
         write_report('last-waypoint-training.json',run(args.plan,args.device))

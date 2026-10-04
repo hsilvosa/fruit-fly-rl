@@ -143,7 +143,11 @@ def collect_guided(env,model,observations,targets,offset,steps,rng,beta,features
             trace['yaw'][selection]=[w.yaw for w in env.worlds]
             trace['layout_seed'][selection]=[w.seed_value for w in env.worlds]
             trace['teacher_used'][selection]=chosen
+            for key,attribute in [('episode_tick','ticks'),('yaw_rate','yaw_rate'),('previous_actions','last_action')]:
+                if key in trace:trace[key][selection]=[getattr(w,attribute) for w in env.worlds]
         features,reward,dones,infos=env.step(actions)
+        if trace is not None and 'outcome_flags' in trace:
+            trace['outcome_flags'][start:start+env.num_envs]=[[info['success'],info['collision'],info['truncated']] for info in infos]
         if rewards is not None:rewards[start:start+env.num_envs]=reward
         if terminals is not None:terminals[start:start+env.num_envs]=dones
         model.num_timesteps+=env.num_envs

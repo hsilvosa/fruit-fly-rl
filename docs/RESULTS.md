@@ -161,3 +161,11 @@ The 32,768-transition correction completed with 0/8 original-large development s
 ## Spatial neural v5
 
 The full 98,304-transition training cap was consumed. Student-only optimization rounds reached no goals, with 143 then three collisions; teacher fragments reached 19 goals from privileged training starts. All supervised losses were finite. The worker failed a CPU/CUDA precision assertion after saving the final checkpoint. Saved tensors match exactly, and disabling convolution TF32 brings numerical predictions within the existing tolerance. Its separately completed development validation reached 0/8 goals, with six collisions and two timeouts, using frozen sources and unchanged weights. No final test or promotion. Completed substantive ledger: 786,432. [Evidence](evidence/spatial-neural-v5-results.md).
+
+
+## Corrección panorámica y resultado de waypoint v6
+
+La tanda waypoint v6 completó 81.920 transiciones nuevas, con pérdidas finitas y recarga compatible, pero su validación autónoma original large siguió en 0/8: ocho colisiones y ningún timeout. El total de entrenamiento sustantivo completado es 868.352 transiciones. Los aliases originales y el checkpoint fuente permanecen intactos. No se utilizó el test reservado y la navegación continúa sin resolverse.
+
+Se conservan los [resultados verificados](evidence/neural-waypoint-v6-results.md) y el [diagnóstico de control y cobertura](evidence/neural-waypoint-v6-diagnostics.md). La siguiente corrección usa visión panorámica medida alrededor del cuerpo y vuelos guiados completos desde los estados originales. Su controlador recibe únicamente actividad neuronal; la ruta oculta solo etiqueta datos durante entrenamiento.
+El [protocolo panorámico v7](evidence/panoramic-neural-v7-plan.md) fija un límite de 98.304 transiciones nuevas, 12.288 actualizaciones supervisadas y una única validación de desarrollo. Empieza un controlador nuevo por el cambio de dimensiones, conserva todos los checkpoints anteriores y no consume el test reservado.

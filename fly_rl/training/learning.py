@@ -99,8 +99,14 @@ class BrainEnv(VecEnv):
 def make_policy(env,smoke=False,seed=42,share_history=True):
     policy_options={'net_arch':{'pi':[128,128],'vf':[128,128]}}
     if getattr(env.brain,'readout_version',None)=='input-associated-neural-mean-v1':
-        from fly_rl.training.spatial_policy import SpatialBrainHistory
-        policy_options.update(features_extractor_class=SpatialBrainHistory,ortho_init=False,
+        from fly_rl.simulation.sensors import SENSOR_V6
+        if env.brain.sensor_version==SENSOR_V6:
+            from fly_rl.training.panorama_policy import PanoramicBrainHistory
+            extractor=PanoramicBrainHistory
+        else:
+            from fly_rl.training.spatial_policy import SpatialBrainHistory
+            extractor=SpatialBrainHistory
+        policy_options.update(features_extractor_class=extractor,ortho_init=False,
                               share_features_extractor=False)
     elif getattr(env,'history_frames',0):
         from fly_rl.training.temporal_policy import ResidualBrainHistory
