@@ -50,3 +50,6 @@ Collection retains executed actions separately from teacher labels, physical pos
 ## Critic memory isolation after v2
 
 [The post-v2 diagnosis](evidence/critic-history-diagnosis.md) found shared value gradients and increased actor-label errors after PPO on retained optimization states. New guided plans can opt into separate actor and critic history. Before critic fitting, critic memory is copied once from the fitted actor; later value gradients cannot change actor memory. This is a verified gradient-path correction, with no new navigation performance claim and no change to completed checkpoints.
+
+
+The [matched critic-isolation experiment](evidence/guided-navigation-v3-plan.md) was authorized and launched on 2026-10-04 with 65,536 additional environment transitions. It retains the original large maps, full graph and frozen v2 supervision counts. Its autonomous result is pending.
