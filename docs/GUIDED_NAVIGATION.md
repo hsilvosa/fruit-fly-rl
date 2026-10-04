@@ -63,3 +63,8 @@ The 32,768-transition correction completed with 0/8 original-large development s
 ## Spatial neural v5
 
 The full 98,304-transition training cap was consumed. Student-only optimization rounds reached no goals, with 143 then three collisions; teacher fragments reached 19 goals from privileged training starts. All supervised losses were finite. The worker failed a CPU/CUDA precision assertion after saving the final checkpoint. Saved tensors match exactly, and disabling convolution TF32 brings numerical predictions within the existing tolerance. Its separately completed development validation reached 0/8 goals, with six collisions and two timeouts, using frozen sources and unchanged weights. No final test or promotion. Completed substantive ledger: 786,432. [Evidence](evidence/spatial-neural-v5-results.md).
+
+
+## Neural waypoint v6
+
+The next bounded correction uses privileged local-waypoint labels only as supervised targets, while the actor estimates them from neural histories at runtime. Training starts retain natural headings and student episodes survive fitting boundaries, allowing complete long flights. The declared additional cap is 81,920; old optimization rows are reused without adding world steps. The fixed final checkpoint receives one reused development suite, without final-test consumption or alias promotion. [Frozen protocol](evidence/neural-waypoint-v6-plan.md).

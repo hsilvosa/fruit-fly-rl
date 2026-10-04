@@ -4,7 +4,7 @@ Original-large navigation remains unresolved. The [spatial neural experiment](do
 
 A CPU/CUDA precision discrepancy stopped its post-training verification after the final checkpoint was saved. Identical saved tensors and exact same-GPU reload were confirmed; disabling convolution TF32 resolves the numerical comparison. Its one declared development validation was completed separately without training using unchanged weights and frozen runtime sources: 0/8 goals, six collisions and two timeouts. This reused suite is not an independent final test.
 
-The next correction adds a learned local-waypoint estimate from neural history and balances startup, turn and vertical examples. Its transfer and full-graph auxiliary verification passed; integration into a bounded training experiment is in progress. Runtime route access remains absent.
+The [next bounded correction](docs/evidence/neural-waypoint-v6-plan.md) adds learned waypoint supervision, natural training-start headings and continuous student episodes. It allows 81,920 new transitions, retains the full connectome, and balances startup, turn and vertical examples. Its full-graph 128-transition collector verification passed. Runtime route access remains absent; successful navigation is still unproven.
 
 The full-connectome controller, procedural 3D rooms, anatomical inspection, recording, replay and bounded experiment tools are implemented. This roadmap describes proposed work; it does not start another training run.
 
