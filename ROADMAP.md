@@ -1,8 +1,8 @@
 # Roadmap
 
-Original-large navigation remains unresolved. The [guarded PPO experiment](docs/evidence/guarded-navigation-v4-results.md) completed another 32,768 transitions with 0/8 autonomous development goals before and after training, eight collisions and no timeouts. Cumulative substantive use is 688,128. Original launcher aliases and reserved final tests remain preserved.
+Original-large navigation remains unresolved. The [spatial neural experiment](docs/evidence/spatial-neural-v5-results.md) consumed 98,304 additional transitions, bringing substantive use to 786,432. Its two student-only rounds reached no goals, with 143 and three collisions. The original launcher aliases and reserved final tests remain preserved.
 
-The next correction uses input-associated neural activity and a spatial controller. The [static readout diagnosis](docs/evidence/input-group-readout-diagnosis.md) motivates this representation, but does not demonstrate navigation. The [98,304-transition imitation experiment](docs/evidence/spatial-neural-v5-plan.md) tests it on original-large rooms without PPO refinement. Teacher fragments use varied training starts; autonomous development validation uses the original endpoints.
+A CPU/CUDA precision discrepancy stopped its post-training verification after the final checkpoint was saved. Identical saved tensors and exact same-GPU reload were confirmed; disabling convolution TF32 resolves the numerical comparison. Its one declared development validation was completed separately without training using unchanged weights and frozen runtime sources: 0/8 goals, six collisions and two timeouts. This reused suite is not an independent final test.
 
 The full-connectome controller, procedural 3D rooms, anatomical inspection, recording, replay and bounded experiment tools are implemented. This roadmap describes proposed work; it does not start another training run.
 

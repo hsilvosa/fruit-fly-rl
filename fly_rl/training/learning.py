@@ -117,7 +117,9 @@ def save_model(model,path,brain):
     model.save(str(path))
     world=model.get_env().worlds[0] if model.get_env() is not None else None
     path.with_suffix('.json').write_text(json.dumps({'training_reward_shaping':model.get_env().reward_shaping.snapshot() if model.get_env() is not None and hasattr(model.get_env(),'reward_shaping') else None,'training_curriculum':model.get_env().curriculum.snapshot() if model.get_env() is not None and hasattr(model.get_env(),'curriculum') else None,'fingerprint':brain.fingerprint,
-        'readout_version':getattr(brain,'readout_version','random-pool-256-v1'),'dataset':brain.audit.get('dataset','MaleCNS v1.0'),'timesteps':model.num_timesteps,
+        'readout_version':getattr(brain,'readout_version','random-pool-256-v1'),
+        'policy_numeric_precision':getattr(model,'policy_numeric_precision',None),
+        'dataset':brain.audit.get('dataset','MaleCNS v1.0'),'timesteps':model.num_timesteps,
         'kind':'smoke-test' if model.n_steps==128 else 'policy','trained_navigation':False,
         'reward_version':REWARD_VERSION,'discount_gamma':model.gamma,
         'brain_history':{'frames':getattr(model.get_env(),'history_frames',0),'stride':getattr(model.get_env(),'history_stride',8)},
@@ -136,6 +138,12 @@ def load_model(path,brain,env=None,allow_transfer=False):
     path=Path(path)
     metadata=json.loads(path.with_suffix('.json').read_text())
     if metadata['fingerprint']!=brain.fingerprint: raise ValueError('Checkpoint graph or model configuration mismatch')
+    precision=metadata.get('policy_numeric_precision')
+    if precision is not None:
+        if precision!={'cudnn_allow_tf32':False,'matmul_allow_tf32':False}:
+            raise ValueError('Unsupported policy numeric precision contract')
+        torch.backends.cudnn.allow_tf32=False
+        torch.backends.cuda.matmul.allow_tf32=False
     if env is not None and not allow_transfer:
         old=(metadata.get('environment') or {}).get('dynamics','legacy')
         if old!=env.worlds[0].dynamics: raise ValueError('Checkpoint flight dynamics mismatch; explicit transfer is required')

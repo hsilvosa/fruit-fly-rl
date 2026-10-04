@@ -36,3 +36,16 @@ def test_spatial_checkpoint_and_contract(tmp_path):
     assert checkpoint_sensor_version(path)==SENSOR_V5
     legacy=Brain(batch=1,device='cpu',matrix=sparse.eye(500,format='csr'),sensor_version=SENSOR_V5)
     with pytest.raises(ValueError,match='configuration mismatch'):load_model(path,legacy)
+
+def test_numeric_precision_is_saved_and_restored(tmp_path,monkeypatch):
+    brain=InputGroupedBrain(batch=1,device='cpu',matrix=sparse.eye(500,format='csr',dtype=np.float32)*.2,sensor_version=SENSOR_V5)
+    env=BrainEnv(batch=1,device='cpu',brain=brain,sensor_version=SENSOR_V5,history_frames=8,readout_version=GROUP_READOUT)
+    model=make_policy(env,smoke=True)
+    model.policy_numeric_precision={'cudnn_allow_tf32':False,'matmul_allow_tf32':False}
+    path=tmp_path/'precision.zip';save_model(model,path,brain)
+    monkeypatch.setattr(torch.backends.cudnn,'allow_tf32',True)
+    monkeypatch.setattr(torch.backends.cuda.matmul,'allow_tf32',True)
+    loaded=load_model(path,brain,env)
+    assert not torch.backends.cudnn.allow_tf32
+    assert not torch.backends.cuda.matmul.allow_tf32
+    assert loaded.policy_numeric_precision==model.policy_numeric_precision
