@@ -177,7 +177,8 @@ def run_guided(plan_path,device='cuda'):
                      layout_seeds=plan['optimization_layouts'],history_frames=32,history_stride=8)
         configure_route_progress(env,plan['training_seed'])
         source=load_model(plan['source'],env.brain)
-        model=transfer_history_policy(source,env,plan['training_seed']);initial=model.num_timesteps
+        model=transfer_history_policy(source,env,plan['training_seed'],
+                                      share_history=not plan.get('isolate_critic_history',False));initial=model.num_timesteps
         model.gamma=.9995;model.rollout_buffer.gamma=model.gamma
         model.imitation_training={'teacher_version':TEACHER_VERSION,'privileged_training_geometry':True,
                                   'runtime_teacher':False,'guided_transitions':0,'supervised_updates':0,
@@ -239,6 +240,10 @@ def run_guided(plan_path,device='cuda'):
             status['fit_results'].append(dict(stage='dagger-imitation',**result))
             model.imitation_training['supervised_updates']+=result['updates']
         status['stage']='critic-initialization';save()
+        if plan.get('isolate_critic_history',False):
+            from fly_rl.training.temporal_policy import synchronize_critic_history
+            synchronize_critic_history(model.policy)
+            status['critic_history_isolated']=True;save()
         flush_data(count)
         result=fit_critic(model,x,rewards,terminals,count,plan['batch'],plan['critic_updates'],rng,
                           data_boundaries=data_boundaries[:count])

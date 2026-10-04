@@ -92,11 +92,12 @@ class BrainEnv(VecEnv):
         return [getattr(self.worlds[i],name)(*args,**kwargs) for i in self._get_indices(indices)]
     def env_is_wrapped(self,wrapper_class,indices=None): return [False for i in self._get_indices(indices)]
 
-def make_policy(env,smoke=False,seed=42):
+def make_policy(env,smoke=False,seed=42,share_history=True):
     policy_options={'net_arch':{'pi':[128,128],'vf':[128,128]}}
     if getattr(env,'history_frames',0):
         from fly_rl.training.temporal_policy import ResidualBrainHistory
-        policy_options.update(features_extractor_class=ResidualBrainHistory,ortho_init=False)
+        policy_options.update(features_extractor_class=ResidualBrainHistory,ortho_init=False,
+                              share_features_extractor=share_history)
     return PPO('MlpPolicy',env,device='cpu',seed=seed,verbose=0,
         learning_rate=3e-4,n_steps=128 if smoke else 512,batch_size=128,
         n_epochs=1 if smoke else 5,gamma=.995,gae_lambda=.95,clip_range=.2,

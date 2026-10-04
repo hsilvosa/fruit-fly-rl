@@ -50,3 +50,40 @@ def test_warm_upgrade_preserves_actions_values_and_optimizer_states():
     torch.testing.assert_close(extractor(a),extractor(b))
     with torch.no_grad():extractor.residual.weight.fill_(.01)
     assert not torch.allclose(extractor(a),extractor(b))
+
+
+def test_value_optimization_cannot_change_isolated_actor_memory(tmp_path):
+    from stable_baselines3 import PPO
+    from fly_rl.training.temporal_policy import synchronize_critic_history
+    e=env(4);model=make_policy(e,share_history=False)
+    policy=model.policy
+    with torch.no_grad():policy.pi_features_extractor.residual.weight.fill_(.01)
+    synchronize_critic_history(policy)
+    obs=torch.randn(8,5,256)
+    before=model.predict(obs.numpy(),deterministic=True)[0].copy()
+    actor_before={k:v.clone() for k,v in policy.pi_features_extractor.state_dict().items()}
+    critic_before={k:v.clone() for k,v in policy.vf_features_extractor.state_dict().items()}
+    policy.optimizer.zero_grad()
+    loss=(policy.predict_values(obs)-10).square().mean()
+    loss.backward()
+    assert all(p.grad is None for p in policy.pi_features_extractor.parameters())
+    assert any(p.grad is not None and p.grad.abs().max()>0 for p in policy.vf_features_extractor.parameters())
+    policy.optimizer.step()
+    for k,v in policy.pi_features_extractor.state_dict().items():torch.testing.assert_close(v,actor_before[k],rtol=0,atol=0)
+    assert any(not torch.equal(v,critic_before[k]) for k,v in policy.vf_features_extractor.state_dict().items())
+    np.testing.assert_array_equal(before,model.predict(obs.numpy(),deterministic=True)[0])
+    path=tmp_path/'isolated.zip';model.save(path)
+    reloaded=PPO.load(path,device='cpu')
+    assert not reloaded.policy.share_features_extractor
+    np.testing.assert_array_equal(before,reloaded.predict(obs.numpy(),deterministic=True)[0])
+
+
+def test_isolated_history_transfer_preserves_warm_actor_and_critic():
+    from fly_rl.training.temporal_policy import synchronize_critic_history
+    source=make_policy(env(),smoke=True);e=env(4)
+    model=transfer_history_policy(source,e,share_history=False)
+    obs=e.reset();flat=obs[:,-1,:]
+    np.testing.assert_allclose(source.predict(flat,deterministic=True)[0],model.predict(obs,deterministic=True)[0],atol=1e-7)
+    with torch.no_grad():torch.testing.assert_close(source.policy.predict_values(torch.as_tensor(flat)),model.policy.predict_values(torch.as_tensor(obs)))
+    assert model.policy.pi_features_extractor is not model.policy.vf_features_extractor
+    synchronize_critic_history(model.policy)
