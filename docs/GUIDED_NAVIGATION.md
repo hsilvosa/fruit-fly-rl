@@ -12,7 +12,7 @@ The actor loss is mean over samples and actions of w_j (mu_j(brain_history)-a_te
 
 After the first fit, mixed rollouts choose the teacher with probability 0.8 per action and the deterministic student otherwise. All visited states retain teacher labels. The second fit uses the accumulated records. This is a bounded DAgger-style data collection step, following the dataset-aggregation idea of [Ross, Gordon and Bagnell (2011)](https://arxiv.org/abs/1011.0686), rather than an exact implementation of every detail in their algorithm.
 
-The critic is separately initialized against discounted returns from the collected training rewards. Returns stop at recorded terminal boundaries, and the unfinished data suffix uses zero continuation. Its loss is squared prediction error; actor and feature-extractor weights are fixed during this fit. The suffix convention is an approximation for initialization.
+The critic is separately initialized against discounted returns from the collected training rewards. Returns stop at recorded physical terminal boundaries and at separately recorded manual-reset data cuts between corrective rounds. The unfinished data suffix uses zero continuation. Manual-reset cuts never fabricate collision or timeout events. Its loss is squared prediction error; actor and feature-extractor weights are fixed during this fit. The suffix convention is an approximation for initialization.
 
 Finally, the student performs a short PPO refinement. The action standard deviation starts at exp(-2), learning rate is 0.0001, target KL 0.01 and gamma 0.9995. PPO Adam is reset after supervision. The training-only obstacle-aware progress objective remains enabled. Actual transitions, replay updates and guided/student action counts are separate counters.
 
@@ -39,3 +39,9 @@ An existing final checkpoint can be viewed explicitly:
 ```
 
 Until the experiment finishes, that final checkpoint may not exist. Launchers continue to use the original preserved models. Use the final result record to determine whether the new student actually navigated successfully.
+
+## Corrective-round isolation and retained evidence
+
+The prepared v2 protocol restarts worlds at original starts before each student-only collection. Critic targets stop at these explicit data cuts rather than linking rewards from separate flights. This prevents an error in the new protocol; it does not explain the completed v1 failures, whose collection did not use those manual restarts.
+
+Collection retains executed actions separately from teacher labels, physical position and velocity, yaw, layout seed and whether the teacher acted. Rewards, physical terminal flags and manual data boundaries are saved separately. Data is flushed at each completed collection chunk before fitting; status records the number of valid saved rows. These training records support diagnosis of the student's own mistakes without adding privileged fields to policy inputs.

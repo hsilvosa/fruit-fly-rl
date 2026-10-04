@@ -68,7 +68,7 @@ def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progre
             'finite_losses':bool(np.isfinite(losses).all()),'maneuver_examples':int(len(turns))}
 
 
-def collect_guided(env,model,observations,targets,offset,steps,rng,beta,features=None,teachers=None,rewards=None,terminals=None,progress=None,recover=False):
+def collect_guided(env,model,observations,targets,offset,steps,rng,beta,features=None,teachers=None,rewards=None,terminals=None,progress=None,recover=False,trace=None):
     """Continuous full-brain rollouts; beta controls teacher action probability.
 
     All labels come from optimization worlds. Teacher route/state remain in this
@@ -89,6 +89,14 @@ def collect_guided(env,model,observations,targets,offset,steps,rng,beta,features
             predicted=model.predict(features,deterministic=True)[0]
             actions[~chosen]=predicted[~chosen]
         teacher_actions+=int(chosen.sum())
+        if trace is not None:
+            selection=slice(start,start+env.num_envs)
+            trace['executed_actions'][selection]=actions
+            trace['position'][selection]=np.stack([w.position for w in env.worlds])
+            trace['velocity'][selection]=np.stack([w.velocity for w in env.worlds])
+            trace['yaw'][selection]=[w.yaw for w in env.worlds]
+            trace['layout_seed'][selection]=[w.seed_value for w in env.worlds]
+            trace['teacher_used'][selection]=chosen
         features,reward,dones,infos=env.step(actions)
         if rewards is not None:rewards[start:start+env.num_envs]=reward
         if terminals is not None:terminals[start:start+env.num_envs]=dones
@@ -103,11 +111,15 @@ def collect_guided(env,model,observations,targets,offset,steps,rng,beta,features
                              'episode_outcomes':outcomes,'beta':beta}
 
 
-def fit_critic(model,observations,rewards,terminals,count,envs,updates,rng,batch_size=256):
+def fit_critic(model,observations,rewards,terminals,count,envs,updates,rng,batch_size=256,data_boundaries=None):
     """Fit critic to bounded discounted guided returns; actor stays fixed."""
     values=np.zeros(count,dtype=np.float32);running=np.zeros(envs)
+    stops=np.asarray(terminals[:count],dtype=bool).copy()
+    if data_boundaries is not None:
+        if np.asarray(data_boundaries).shape!=(count,):raise ValueError("Critic data boundaries must match recorded transitions")
+        stops|=np.asarray(data_boundaries,dtype=bool)
     for start in range(count-envs,-1,-envs):
-        running=rewards[start:start+envs]+model.gamma*running*(~terminals[start:start+envs])
+        running=rewards[start:start+envs]+model.gamma*running*(~stops[start:start+envs])
         values[start:start+envs]=running
     policy=model.policy;params=list(policy.mlp_extractor.value_net.parameters())+list(policy.value_net.parameters())
     optimizer=torch.optim.Adam(params,lr=1e-3);losses=[]
@@ -124,7 +136,8 @@ def fit_critic(model,observations,rewards,terminals,count,envs,updates,rng,batch
     return {'updates':updates,'first_loss':losses[0],'last_loss':losses[-1],
             'mean_last_100_loss':float(np.mean(losses[-100:])),
             'finite_losses':bool(np.isfinite(losses).all()),'unfinished_suffix_bootstrap':0.,
-            'target_mean':float(values.mean())}
+            'target_mean':float(values.mean()),
+            'data_boundary_rows':int(np.count_nonzero(data_boundaries)) if data_boundaries is not None else 0}
 
 
 def run_guided(plan_path,device='cuda'):
@@ -174,15 +187,31 @@ def run_guided(plan_path,device='cuda'):
         x=np.memmap(data_folder/'brain-features.f32',mode='w+',dtype=np.float32,shape=shape)
         y=np.memmap(data_folder/'teacher-actions.f32',mode='w+',dtype=np.float32,shape=(total_guided,4))
         rewards=np.zeros(total_guided,dtype=np.float32);terminals=np.zeros(total_guided,dtype=bool)
+        data_boundaries=np.zeros(total_guided,dtype=bool)
+        trace_shapes={'executed_actions':(total_guided,4),'position':(total_guided,3),
+                      'velocity':(total_guided,3),'yaw':(total_guided,),
+                      'layout_seed':(total_guided,),'teacher_used':(total_guided,)}
+        trace_types={'layout_seed':np.int64,'teacher_used':np.bool_}
+        trace={key:np.memmap(data_folder/(key+'.bin'),mode='w+',
+                  dtype=trace_types.get(key,np.float32),shape=shape) for key,shape in trace_shapes.items()}
+        (data_folder/'trace-schema.json').write_text(json.dumps({key:{'shape':list(value.shape),'dtype':str(value.dtype)}
+                 for key,value in trace.items()},indent=2))
         status.update(graph_neurons=env.brain.n,graph_edges=env.brain.audit['edges'],dataset_shape=list(shape));save()
         def collected(n):
             status['added_transitions']=model.num_timesteps-initial;save()
+        def flush_data(valid_rows):
+            x.flush();y.flush()
+            np.save(data_folder/'rewards.npy',rewards[:valid_rows])
+            np.save(data_folder/'terminals.npy',terminals[:valid_rows])
+            np.save(data_folder/'data-boundaries.npy',data_boundaries[:valid_rows])
+            for value in trace.values():value.flush()
+            status['guided_data_valid_rows']=valid_rows
         features=None;teachers=None;count=0
         for _ in range(plan['teacher_steps']//8192):
             status['stage']='teacher-rollouts';save()
-            features,teachers,result=collect_guided(env,model,x,y,count,8192,rng,1.,features,teachers,rewards,terminals,collected)
+            features,teachers,result=collect_guided(env,model,x,y,count,8192,rng,1.,features,teachers,rewards,terminals,collected,trace=trace)
             count+=8192;status['guided_results'].append(result);status['added_transitions']=model.num_timesteps-initial
-            model.imitation_training['guided_transitions']=count;x.flush();y.flush()
+            model.imitation_training['guided_transitions']=count;flush_data(count)
             save_model(model,folder/'guided-before-fit.zip',env.brain);save()
         def fitted(n,loss):status.update(stage_updates=n,stage_loss=loss);save()
         status['stage']='actor-imitation';save()
@@ -194,19 +223,25 @@ def run_guided(plan_path,device='cuda'):
         for _ in range(dagger_rounds):
             status['stage']='dagger-rollouts';save()
             if plan.get('dagger_restart_from_original_start',False):
+                if count:
+                    data_boundaries[count-env.num_envs:count]=True
+                    status.setdefault('critic_data_cuts_at_transition_count',[]).append(count)
+                    flush_data(count)
                 features=env.reset();teachers=[RouteTeacher(w,recover=True) for w in env.worlds]
             features,teachers,result=collect_guided(env,model,x,y,count,plan['dagger_steps']//dagger_rounds,
                   rng,plan.get('dagger_beta',.8),features,teachers,rewards,terminals,collected,
-                  recover=plan.get('dagger_restart_from_original_start',False))
+                  recover=plan.get('dagger_restart_from_original_start',False),trace=trace)
             count+=plan['dagger_steps']//dagger_rounds;status['guided_results'].append(result)
             model.imitation_training['guided_transitions']=count
-            status['added_transitions']=model.num_timesteps-initial;x.flush();y.flush();save()
+            status['added_transitions']=model.num_timesteps-initial;flush_data(count);save()
             status['stage']='dagger-imitation';save()
             result=fit_actor(model,x,y,count,plan['dagger_updates']//dagger_rounds,rng,progress=fitted)
             status['fit_results'].append(dict(stage='dagger-imitation',**result))
             model.imitation_training['supervised_updates']+=result['updates']
         status['stage']='critic-initialization';save()
-        result=fit_critic(model,x,rewards,terminals,count,plan['batch'],plan['critic_updates'],rng)
+        flush_data(count)
+        result=fit_critic(model,x,rewards,terminals,count,plan['batch'],plan['critic_updates'],rng,
+                          data_boundaries=data_boundaries[:count])
         status['fit_results'].append(dict(stage='critic-initialization',**result));model.imitation_training['supervised_updates']+=result['updates']
         with torch.no_grad():model.policy.log_std.fill_(-2.)
         # The imitation optimizer is separate. Reset PPO Adam after supervision,

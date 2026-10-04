@@ -72,3 +72,50 @@ def test_unapproved_guided_draft_never_allocates_brain_or_starts_learning(tmp_pa
     from fly_rl.training.guided_learning import run_guided
     path=tmp_path/'draft.json';path.write_text(json.dumps({'status':'draft-budget-required'}))
     with pytest.raises(ValueError,match='explicit budget approval'):run_guided(path,'cpu')
+
+
+def test_critic_returns_do_not_cross_a_manual_reset_between_dagger_rounds():
+    from fly_rl.training.guided_learning import fit_critic
+    brain=Brain(matrix=sparse.eye(16,format='csr'),batch=2,device='cpu')
+    env=BrainEnv(brain=brain,batch=2,device='cpu');model=make_policy(env);model.gamma=.5
+    x=np.zeros((6,256),dtype=np.float32)
+    rewards=np.array([1,1,1,1,10,10],dtype=np.float32)
+    terminated=np.zeros(6,dtype=bool);cuts=np.array([False,False,True,True,False,False])
+    result=fit_critic(model,x,rewards,terminated,6,2,1,np.random.default_rng(42),batch_size=2,data_boundaries=cuts)
+    assert result['target_mean']==pytest.approx(25/6) and result['data_boundary_rows']==2
+    assert not terminated.any()  # Data cuts never fabricate a physical failure.
+
+
+def test_student_only_collection_applies_student_actions_and_resets_teacher_independently():
+    from types import SimpleNamespace
+    from fly_rl.training.guided_learning import collect_guided
+    def world(target):
+        return SimpleNamespace(reference_route=[np.zeros(3),np.array(target,dtype=float)],
+            position=np.zeros(3),velocity=np.zeros(3),yaw=0.,rotation=lambda:np.eye(3),seed_value=42)
+    class Env:
+        num_envs=2
+        def __init__(self):self.worlds=[world([1,0,0]),world([1,0,0])];self.applied=[]
+        def reset(self):return np.zeros((2,256),dtype=np.float32)
+        def step(self,actions):
+            self.applied.append(actions.copy())
+            done=np.array([len(self.applied)==1,False])
+            if done[0]:self.worlds[0]=world([0,1,0])
+            return np.ones((2,256),dtype=np.float32),np.ones(2),done,[
+                {'success':False,'collision':bool(done[0]),'truncated':False},
+                {'success':False,'collision':False,'truncated':False}]
+    env=Env();action=np.array([.25,0.,.2,.1],dtype=np.float32)
+    seen=[]
+    def predict(features,deterministic):
+        seen.append(features.copy());return np.tile(action,(2,1)),None
+    model=SimpleNamespace(num_timesteps=0,predict=predict)
+    observations=np.zeros((4,256),dtype=np.float32);targets=np.zeros((4,4),dtype=np.float32)
+    trace={'executed_actions':np.zeros((4,4)),'position':np.zeros((4,3)),
+           'velocity':np.zeros((4,3)),'yaw':np.zeros(4),'layout_seed':np.zeros(4),
+           'teacher_used':np.zeros(4,dtype=bool)}
+    _,_,result=collect_guided(env,model,observations,targets,0,4,np.random.default_rng(42),0.,trace=trace)
+    for applied in env.applied:np.testing.assert_array_equal(applied,np.tile(action,(2,1)))
+    np.testing.assert_array_equal(trace['executed_actions'],np.tile(action,(4,1)))
+    assert not trace['teacher_used'].any() and result['teacher_actions']==0 and result['student_actions']==4
+    assert result['episode_outcomes']['collision']==1 and model.num_timesteps==4
+    assert targets[2,3]==pytest.approx(1.) and targets[3,3]==pytest.approx(0.)
+    np.testing.assert_array_equal(observations[:2],seen[0]);np.testing.assert_array_equal(observations[2:],seen[1])
