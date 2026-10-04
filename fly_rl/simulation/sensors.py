@@ -28,7 +28,11 @@ FAN_COUNT=len(FAN_AZIMUTH)*len(FAN_ELEVATION)
 FAN_SPEC={'rays':FAN_COUNT,'range':FAN_RANGE,'azimuth_degrees':[-75,75,31],
           'elevation_degrees':[-45,45,19],'center':'observed target bearing; not route or aperture',
           'ordering':'elevation rows, azimuth columns'}
-SENSOR_VERSIONS=(SENSOR_VERSION,SENSOR_V3,SENSOR_V4,SENSOR_V5)
+SENSOR_V6='sensors-v6-v3-plus-1800-body-panorama-rays-range24'
+PANORAMA_COUNT=1800
+PANORAMA_SHAPE=(25,72)
+PANORAMA_SPEC={'rays':PANORAMA_COUNT,'range':FAN_RANGE,'azimuth_degrees':[-180,175,72],'elevation_degrees':[-84,84,25],'center':'body heading; no route or aperture access','ordering':'elevation rows, azimuth columns'}
+SENSOR_VERSIONS=(SENSOR_VERSION,SENSOR_V3,SENSOR_V4,SENSOR_V5,SENSOR_V6)
 
 def validate_sensor_version(value):
     if value not in SENSOR_VERSIONS: raise ValueError('Unknown sensor version')
@@ -40,6 +44,8 @@ def sensor_names(version):
     names=SENSOR_NAMES.copy()+(['remaining_time_fraction'] if version==SENSOR_V4 else [])
     if version==SENSOR_V5:
         names+=[f'fan_distance_{i:03d}' for i in range(FAN_COUNT)]+[f'fan_approach_speed_{i:03d}' for i in range(FAN_COUNT)]
+    if version==SENSOR_V6:
+        names+=[f'panorama_distance_{i:04d}' for i in range(PANORAMA_COUNT)]+[f'panorama_approach_speed_{i:04d}' for i in range(PANORAMA_COUNT)]
     return names
 
 def sensor_count(version):
@@ -58,4 +64,9 @@ def fan_directions(local_target):
 
 def ray_count(version):
     validate_sensor_version(version)
-    return RAY_COUNT+(FAN_COUNT if version==SENSOR_V5 else 0)
+    return RAY_COUNT+(FAN_COUNT if version==SENSOR_V5 else PANORAMA_COUNT if version==SENSOR_V6 else 0)
+
+
+def panorama_directions():
+    az,el=np.meshgrid(np.deg2rad(np.arange(-180,180,5)),np.deg2rad(np.linspace(-84,84,25)))
+    return np.column_stack([(np.cos(el)*np.cos(az)).ravel(),(np.cos(el)*np.sin(az)).ravel(),np.sin(el).ravel()])

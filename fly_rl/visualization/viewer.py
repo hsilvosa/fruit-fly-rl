@@ -8,7 +8,7 @@ from fly_rl.training.learning import BrainEnv,make_policy,load_model,checkpoint_
 from fly_rl.simulation.world import ROOM,DT,REWARD_VERSION
 from fly_rl.visualization.camera import CameraRig
 from fly_rl.recordings.recording import FlightRecorder
-from fly_rl.simulation.sensors import RAY_COUNT,SENSOR_VERSION,SENSOR_V5,ray_count,FAN_RANGE,fan_directions
+from fly_rl.simulation.sensors import RAY_COUNT,SENSOR_VERSION,SENSOR_V5,SENSOR_V6,ray_count,FAN_RANGE,fan_directions,panorama_directions
 
 def run(args):
     from panda3d.core import loadPrcFileData,Geom,GeomNode,GeomVertexData,GeomVertexFormat,GeomVertexWriter,GeomTriangles,LineSegs,AmbientLight,DirectionalLight,TextNode,TransparencyAttrib,ClockObject,Filename
@@ -412,9 +412,9 @@ def run(args):
                     distances=self.env.sensor_state[:len(directions)]*self.env.archive.manifest['ray_range']
                 else: directions,distances=w.rays()
                 version=self.env.archive.manifest['sensor_version'] if self.is_replay else w.sensor_version
-                if version==SENSOR_V5:
+                if version in (SENSOR_V5,SENSOR_V6):
                     if self.is_replay:
-                        fan=fan_directions((w.target-w.position)@w.rotation())@w.rotation().T
+                        fan=(panorama_directions() if version==SENSOR_V6 else fan_directions((w.target-w.position)@w.rotation()))@w.rotation().T
                         lengths=self.env.sensor_state[269:269+len(fan)]*FAN_RANGE
                     else:fan,lengths=w.fan_rays()
                     directions=np.vstack([directions,fan]);distances=np.r_[distances,lengths]

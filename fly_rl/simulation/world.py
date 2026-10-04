@@ -119,6 +119,8 @@ class FlightWorld(gym.Env):
 
     def fan_rays(self):
         from fly_rl.simulation.sensors import fan_directions,FAN_RANGE
+        from fly_rl.simulation.sensors import SENSOR_V6,panorama_directions
+        if self.sensor_version==SENSOR_V6:return self.cast_rays(panorama_directions()@self.rotation().T,FAN_RANGE)
         local=(self.target-self.position)@self.rotation()
         return self.cast_rays(fan_directions(local)@self.rotation().T,FAN_RANGE)
 
@@ -151,14 +153,14 @@ class FlightWorld(gym.Env):
         local=delta@self.rotation()/max(distance,1e-6)
         velocity=self.velocity@self.rotation()/3.
         approach=directions@self.velocity/3.
-        from fly_rl.simulation.sensors import SENSOR_V3,SENSOR_V4,SENSOR_V5,FAN_RANGE
-        v3=self.sensor_version in (SENSOR_V3,SENSOR_V4,SENSOR_V5)
+        from fly_rl.simulation.sensors import SENSOR_V3,SENSOR_V4,SENSOR_V5,SENSOR_V6,FAN_RANGE
+        v3=self.sensor_version in (SENSOR_V3,SENSOR_V4,SENSOR_V5,SENSOR_V6)
         distance_scale=float(np.linalg.norm(self.room-2*RADIUS)) if v3 else 18.
         altitude=self.position[2]/self.room[2] if v3 else self.position[2]/ROOM[2]
         yaw_rate=(self.yaw_rate if self.dynamics=='coordinated' else 2.1*self.last_action[3])/2.6 if v3 else self.last_action[3]
         values=np.concatenate([rays/RAY_RANGE,approach,local,[distance/distance_scale],velocity,self.last_action,
             [altitude,yaw_rate]])
-        if self.sensor_version==SENSOR_V5:
+        if self.sensor_version in (SENSOR_V5,SENSOR_V6):
             fan,distances=self.fan_rays()
             values=np.concatenate([values,distances/FAN_RANGE,fan@self.velocity/3.])
         if self.sensor_version==SENSOR_V4:

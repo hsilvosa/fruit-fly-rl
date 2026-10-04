@@ -71,3 +71,8 @@ Waypoint auxiliary implementation: 16 focused tests passed, including legacy sam
 
 
 V6 runner scope/reset tests, waypoint transfer and sampler tests: six passed. Expanded continuity tests: three passed, including a student episode and neuron history surviving a supervised fit. Full-connectome collector verification: 128 transitions across two continuous 64-transition chunks, three supervised updates, finite auxiliary labels and CPU/CUDA reload error1.70e-6. The source checkpoint was unchanged. These verification transitions are separate from substantive training and do not establish successful navigation.
+
+
+## Panoramic interface verification
+
+The v6 sensory interface preserves original room geometry, physical dynamics and the first 269 sensor channels. Neutral extra input preserves the original fixed sparse recurrence. Focused checks cover panoramic ray geometry, body-heading rotation, target-independent scan, circular convolution and controller dimensions, legacy fan/readout compatibility, independent episode resets and before/after-action trace phases. The full graph collector ran 128 verification transitions and three supervised updates with finite losses and compatible reload. A forty-step offscreen original-large demo invoked no training and its screenshot was inspected. These checks do not establish navigation performance. The preceding waypoint run completed its separate development measurement at zero of eight goals.
