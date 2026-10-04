@@ -23,7 +23,7 @@ def test_profiles_are_deterministic_bounded_and_geometrically_feasible(profile):
         metrics = difficulty_metrics(w)
         assert metrics['certified_body_clearance_linf_lower_bound'] >= p.route_clearance-1e-5
         assert metrics['episode_seconds'] >= 2*metrics['certified_route_length']/1.5+15.-1e-8
-        if p.wall_count:
+        if p.name in ['passages', 'large', 'maze']:
             assert metrics['direct_path_blocked'] and metrics['certified_route_turns_over_15deg'] >= 2*p.wall_count
         # The certificate and descriptors are not additional controller observations.
         before = w.observe()

@@ -8,7 +8,7 @@ from fly_rl.training.suites import load_suite
 from fly_rl.training.test_access import require_unconsumed
 
 
-def select_experiment(experiments, output):
+def select_experiment(experiments, output, distance_precision=None):
     records = []
     for folder in map(Path, experiments):
         state = json.loads((folder/'experiment.json').read_text())
@@ -28,7 +28,9 @@ def select_experiment(experiments, output):
         raise ValueError('Experiments must share the same frozen suite, dynamics, and evaluation configuration')
     def rank(record):
         metrics = record[1]['validation']
-        return metrics['success_rate'], -metrics['collision_rate'], -metrics['mean_distance_end']
+        distance=metrics['mean_distance_end']
+        if distance_precision is not None:distance=round(distance,distance_precision)
+        return metrics['success_rate'], -metrics['collision_rate'], -distance
     best = max(records, key=rank)
     folder = Path(output); folder.mkdir(parents=True, exist_ok=False)
     checkpoint = folder/'selected-policy.zip'

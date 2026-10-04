@@ -56,6 +56,12 @@ class MapProfile:
 
 
 PROFILES = {
+    'gate-near': MapProfile('gate-near', (12, 12, 10), 4, 1, 4.5, 4., minimum_separation=5.),
+    'gate-long': MapProfile('gate-long', (24, 12, 10), 4, 1, 4.5, 4., minimum_separation=14.),
+    'gate-two': MapProfile('gate-two', (24, 12, 10), 8, 2, 4.5, 4., minimum_separation=14.),
+    'passages-wide': MapProfile('passages-wide', (32, 32, 12), 12, 3, 8., 4.8),
+    'large-wide': MapProfile('large-wide', (48, 48, 16), 20, 5, 8., 6., .22, 24.),
+    'large-narrow': MapProfile('large-narrow', (48, 48, 16), 20, 5, 3.2, 3.2, .22, 24.),
     'open': MapProfile('open', (32, 32, 12), 24),
     'passages': MapProfile('passages', (32, 32, 12), 64, 3, 4., 4.),
     'large': MapProfile('large', (48, 48, 16), 112, 5, 3.2, 3.2, .22, 24.),

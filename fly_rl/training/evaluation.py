@@ -4,9 +4,9 @@ from fly_rl.training.learning import BrainEnv,load_model,make_policy
 
 def evaluate(data,device,checkpoint,episodes=16,mode='obstacles',seed=10000,goal_probe=False,dynamics='legacy',allow_transfer=False,route_metrics=False,sensor_version=None,map_profile=None):
     if not 1<=episodes<=64: raise ValueError('Evaluation supports 1 to 64 episodes')
-    from fly_rl.training.learning import checkpoint_sensor_version
+    from fly_rl.training.learning import checkpoint_sensor_version,checkpoint_history
     sensor_version=sensor_version or checkpoint_sensor_version(checkpoint)
-    env=BrainEnv(data,episodes,device,seed=seed,mode=mode,dynamics=dynamics,sensor_version=sensor_version,map_profile=map_profile)
+    env=BrainEnv(data,episodes,device,seed=seed,mode=mode,dynamics=dynamics,sensor_version=sensor_version,map_profile=map_profile,**checkpoint_history(checkpoint))
     try:
         model=load_model(checkpoint,env.brain,env,allow_transfer) if checkpoint else make_policy(env)
         env.seed(seed);features=env.reset()

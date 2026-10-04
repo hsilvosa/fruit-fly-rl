@@ -4,11 +4,11 @@ import math
 import time
 import json
 import numpy as np
-from fly_rl.training.learning import BrainEnv,make_policy,load_model,checkpoint_sensor_version
+from fly_rl.training.learning import BrainEnv,make_policy,load_model,checkpoint_sensor_version,checkpoint_history
 from fly_rl.simulation.world import ROOM,DT,REWARD_VERSION
 from fly_rl.visualization.camera import CameraRig
 from fly_rl.recordings.recording import FlightRecorder
-from fly_rl.simulation.sensors import RAY_COUNT,SENSOR_VERSION
+from fly_rl.simulation.sensors import RAY_COUNT,SENSOR_VERSION,SENSOR_V5,ray_count,FAN_RANGE,fan_directions
 
 def run(args):
     from panda3d.core import loadPrcFileData,Geom,GeomNode,GeomVertexData,GeomVertexFormat,GeomVertexWriter,GeomTriangles,LineSegs,AmbientLight,DirectionalLight,TextNode,TransparencyAttrib,ClockObject,Filename
@@ -66,8 +66,8 @@ def run(args):
             else:
                 from fly_rl.simulation.sensors import SENSOR_V3
                 profile=getattr(args,'map_profile',None)
-                sensors=checkpoint_sensor_version(args.checkpoint) if args.checkpoint else (SENSOR_V3 if profile else SENSOR_VERSION)
-                self.env=BrainEnv(args.data,1,args.device,args.seed,mode=getattr(args,'room_mode','obstacles'),dynamics=getattr(args,'dynamics','legacy'),sensor_version=sensors,map_profile=profile)
+                sensors=getattr(args,'sensor_version',None) or (checkpoint_sensor_version(args.checkpoint) if args.checkpoint else (SENSOR_V3 if profile else SENSOR_VERSION))
+                self.env=BrainEnv(args.data,1,args.device,args.seed,mode=getattr(args,'room_mode','obstacles'),dynamics=getattr(args,'dynamics','legacy'),sensor_version=sensors,map_profile=profile,**checkpoint_history(args.checkpoint))
                 self.policy=load_model(args.checkpoint,self.env.brain,self.env,getattr(args,'transfer',False)) if args.checkpoint else make_policy(self.env)
             self.untrained_policy=self.env.archive.manifest.get('metadata',{}).get('untrained') if self.is_replay else self.policy.num_timesteps == 0
             # PPO initialization sets environment seeds; the viewer's room seed wins.
@@ -362,7 +362,7 @@ def run(args):
                             if self.flight_record and trace: self.flight_record.event('selected-neuron',self.steps+1,trace)
                     if self.flight_record and args.record_brain and (self.steps+1)%20==0:
                         self.flight_record.brain_snapshot(self.steps+1,self.env.brain.state[:,0].cpu().numpy())
-                    before=self.env.worlds[0].snapshot();sensors=self.env.worlds[0].observe();features=self.features[0].copy()
+                    before=self.env.worlds[0].snapshot();sensors=self.env.worlds[0].observe();features=self.env.latest_features[0].copy() if not self.is_replay else self.features[0].copy()
                     self.features,rewards,dones,infos=self.env.step(action)
                     self.steps+=1;self.accumulator-=DT
                     if self.is_replay and self.room_id!=self.env.current_room_id:
@@ -410,13 +410,20 @@ def run(args):
                     directions=np.asarray(self.env.archive.manifest['local_ray_directions'])@w.rotation().T
                     distances=self.env.sensor_state[:len(directions)]*self.env.archive.manifest['ray_range']
                 else: directions,distances=w.rays()
+                version=self.env.archive.manifest['sensor_version'] if self.is_replay else w.sensor_version
+                if version==SENSOR_V5:
+                    if self.is_replay:
+                        fan=fan_directions((w.target-w.position)@w.rotation())@w.rotation().T
+                        lengths=self.env.sensor_state[269:269+len(fan)]*FAN_RANGE
+                    else:fan,lengths=w.fan_rays()
+                    directions=np.vstack([directions,fan]);distances=np.r_[distances,lengths]
                 lines.setThickness(1);lines.setColor(.2,.43,.48,.25)
                 for d,length in zip(directions,distances):
                     lines.setColor(*((1.,.35,.15,.7) if length<1. else (.2,.43,.48,.25)))
                     lines.moveTo(*(w.position+d*.4));lines.drawTo(*(w.position+d*max(length,.4)))
             self.dynamic.attachNewNode(lines.create())
             activity=float(self.env.brain.state.abs().mean().item())
-            self.hud.setText(f"MaleCNS v1.0\n{self.env.brain.n:,} neurons | {self.env.brain.audit['edges']:,} directed edges\nDevice: {args.device.upper()} | room {self.seed}\nMap: {w.map_profile.name if w.map_profile else 'dense-v3' if w.mode=='dense' else w.mode} | {len(w.obstacles)} boxes\nSensors: {RAY_COUNT} rays + approach speeds\nSimulation: {self.effective_speed:g}x / hold SHIFT: 10x boost\nCamera: {self.rig.mode.upper()} | recording: {'ON' if self.flight_record else 'OFF'}\n\nSpeed: {np.linalg.norm(w.velocity):.2f} units/s\nTarget: {w.distance:.2f} units\nMean brain activity: {activity:.3f}\nSteps: {self.steps} | collisions: {self.collisions}\nTargets reached: {self.successes}\n"+('PAUSED' if self.paused else 'RUNNING'))
+            self.hud.setText(f"MaleCNS v1.0\n{self.env.brain.n:,} neurons | {self.env.brain.audit['edges']:,} directed edges\nDevice: {args.device.upper()} | room {self.seed}\nMap: {w.map_profile.name if w.map_profile else 'dense-v3' if w.mode=='dense' else w.mode} | {len(w.obstacles)} boxes\nSensors: {ray_count(getattr(w,'sensor_version',SENSOR_VERSION))} rays + approach speeds\nSimulation: {self.effective_speed:g}x / hold SHIFT: 10x boost\nCamera: {self.rig.mode.upper()} | recording: {'ON' if self.flight_record else 'OFF'}\n\nSpeed: {np.linalg.norm(w.velocity):.2f} units/s\nTarget: {w.distance:.2f} units\nMean brain activity: {activity:.3f}\nSteps: {self.steps} | collisions: {self.collisions}\nTargets reached: {self.successes}\n"+('PAUSED' if self.paused else 'RUNNING'))
             if self.is_replay:
                 overlay=(' / comparison: magenta' if other else ' / no matching comparison room') if getattr(args,'compare',None) else ''
                 self.hud.setText(f"SAVED FLIGHT / no brain or policy execution\nFrame: {self.env.cursor}/{self.env.total} | room {self.room_id}\nCamera: {self.rig.mode.upper()} | speed {self.effective_speed:g}x{overlay}\n\nSpeed: {np.linalg.norm(w.velocity):.2f} units/s\nTarget: {w.distance:.2f} units\nSaved feature magnitude: {activity:.3f}\nAction: {np.array2string(w.last_action,precision=2)}\nNearest sensed obstacle: {float(np.min(self.env.sensor_state[:128]))*8.:.2f}\n"+('END OF RECORDING' if self.env.finished else ('PAUSED' if self.paused else 'PLAYING')))
@@ -441,7 +448,7 @@ def run(args):
                 'successes':self.successes,'screenshot':str(args.screenshot),'untrained':self.untrained_policy,
                 'simulation_speed':args.speed,'shift_speed_multiplier':10,'training_invoked':False,'finite_activity':bool(np.isfinite(self.features).all()),
                 'mean_activity':float(self.env.brain.state.abs().mean().item()),'controls_checked':self.controls_checked,
-                'sensor_count':RAY_COUNT,'sensor_values':len(self.env.worlds[0].observe()),
+                'sensor_count':ray_count(self.env.worlds[0].sensor_version),'sensor_values':len(self.env.worlds[0].observe()),
                 'recording':str(self.flight_record.path) if self.flight_record else None}
             result.update(dynamics=self.env.worlds[0].dynamics,brain_view=self.brain_visible)
             w=self.env.worlds[0]

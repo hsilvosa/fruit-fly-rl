@@ -35,6 +35,9 @@ def main():
     output.mkdir(parents=True, exist_ok=False)
     aliases = {str(p.resolve()): sha256(p) for p in Path('runs').glob('*policy.*') if p.suffix in ['.zip', '.json']}
     suite = load_suite(args.suite)
+    from fly_rl.training.mastery_curriculum import VERSION as MASTERY_VERSION,practice_partition
+    mastery=suite['training_profiles'][0]['name']=='gate-near'
+    training,practice=practice_partition(suite) if mastery else (suite['splits']['train']['seeds'],None)
     require_unconsumed(suite)
     report = {'created_utc': datetime.now(timezone.utc).isoformat(), 'status': 'running',
               'software': software_info(), 'source_hashes': code_hashes(),
@@ -91,9 +94,10 @@ def main():
     if args.device == 'cuda':torch.cuda.empty_cache()
     if args.optimizer_smoke:
         report['optimizer_smoke'] = train(args.data, args.device, 128, 1, output/'smoke/policy.zip', smoke=True,
-            mode='dense', layout_seeds=suite['splits']['train']['seeds'], dynamics='coordinated',
-            training_seed=42, sensor_version=SENSOR_V3, curriculum=VERSION, curriculum_total=128,
-            map_profile=suite['map_profile'], curriculum_profiles=suite['training_profiles'])
+            mode='dense', layout_seeds=training, dynamics='coordinated',
+            training_seed=42, sensor_version=SENSOR_V3, curriculum=MASTERY_VERSION if mastery else VERSION, curriculum_total=128,
+            map_profile=suite['map_profile'], curriculum_profiles=suite['training_profiles'],
+            **({'practice_seeds':practice} if mastery else {}))
         if report['optimizer_smoke']['added_transitions'] != 128 or report['optimizer_smoke']['updates'] != 1:
             raise RuntimeError('Smoke exceeded its declared allowance')
     report['aliases_after'] = {p: sha256(p) if Path(p).exists() else None for p in aliases}

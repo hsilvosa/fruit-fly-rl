@@ -13,9 +13,13 @@ from fly_rl.training.experiment_selection import select_experiment
 from fly_rl.simulation.sensors import SENSOR_V3
 
 
-def validate_profiles(suite):
+def validate_profiles(suite, mastery=False):
     profiles = suite.get('training_profiles', [])
-    GeometrySchedule(1, profiles)
+    if mastery:
+        from fly_rl.training.mastery_curriculum import validate_mastery_profiles,practice_partition
+        validate_mastery_profiles(profiles)
+        practice_partition(suite)
+    else:GeometrySchedule(1, profiles)
     if suite.get('map_profile') != profiles[-1]:
         raise ValueError('Last frozen training profile must be the fixed evaluation target')
     for a, b in zip(profiles, profiles[1:]):
@@ -24,20 +28,26 @@ def validate_profiles(suite):
     return profiles
 
 
-def prepare_geometry_comparison(suite, output, steps_per_seed=None, batch=8, rounds=2, seeds=(42, 73), data='data'):
+def prepare_geometry_comparison(suite, output, steps_per_seed=None, batch=8, rounds=2, seeds=(42, 73), data='data', mastery=False):
     audited = load_suite(suite)
-    profiles = validate_profiles(audited)
+    profiles = validate_profiles(audited,mastery)
     plan = prepare_fresh_comparison(suite, output, steps_per_seed, batch, rounds, seeds, data)
     plan.update(kind='fresh-v3-geometry-comparison', curriculum=PROTOCOL, sensor_version=SENSOR_V3,
                 training_profiles=profiles, evaluation_profile=audited['map_profile'],
                 baseline='target profile at every reset',
                 selection='validation success, fewer collisions, lower ending distance; baseline wins exact arm tie',
                 initialization='same fresh v3 checkpoint per seed in both arms; empty optimizer state')
+    if mastery:
+        from fly_rl.training.mastery_curriculum import PROTOCOL as MASTERY_PROTOCOL,practice_partition
+        training,practice=practice_partition(audited)
+        plan.update(kind='fresh-v3-mastery-comparison',curriculum=MASTERY_PROTOCOL,
+                    optimization_layout_seeds=training,practice_layout_seeds=practice,
+                    selection='trained candidates only; positive validation success required for final assessment; distance rounded to 6 decimals; stable baseline tie')
     Path(output).write_text(json.dumps(plan, indent=2), encoding='utf-8')
     return plan
 
 
-def freeze_geometry_winner(groups, output, budgets):
+def freeze_geometry_winner(groups, output, budgets, mastery=False):
     records = []
     for arm, folder in sorted(groups):
         folder = Path(folder)
@@ -54,7 +64,7 @@ def freeze_geometry_winner(groups, output, budgets):
                 raise ValueError('Frozen integrity mismatch')
         suite = load_suite(frozen['suite'])
         require_unconsumed(suite)
-        validate_profiles(suite)
+        validate_profiles(suite,mastery)
         config = frozen['evaluation_configuration']
         if config.get('sensor_version') != SENSOR_V3 or config.get('map_profile') != suite['map_profile']:
             raise ValueError('Matched v3 fixed-target evaluation required')
@@ -65,14 +75,23 @@ def freeze_geometry_winner(groups, output, budgets):
         raise ValueError('Matched evaluation configuration required')
     def rank(record):
         v = record[2]['validation']
-        return v['success_rate'], -v['collision_rate'], -v['mean_distance_end']
+        distance=round(v['mean_distance_end'],6) if mastery else v['mean_distance_end']
+        return v['success_rate'], -v['collision_rate'], -distance
+    all_records=records
+    if mastery:
+        eligible=[r for r in records if r[2]['validation']['success_rate']>0
+                  and json.loads(Path(r[2]['checkpoint']).with_suffix('.json').read_text())['timesteps']>0]
+        if not eligible:
+            return {'status':'no_successful_candidate','selected_arm':None,'final_test_evaluated':False,
+                    'reason':'No trained candidate reached a target in validation; final pool remains unused'}
+        records=eligible
     arm, state, frozen = max(records, key=rank)
     output = Path(output)
     output.mkdir(parents=True, exist_ok=False)
     for source, name in [(frozen['checkpoint'], 'selected-policy.zip'),
                          (Path(frozen['checkpoint']).with_suffix('.json'), 'selected-policy.json'), (frozen['suite'], 'suite.json')]:
         shutil.copy2(source, output/name)
-    comparisons = [{'arm': r[0], 'validation': r[2]['validation'], 'seed_experiments': r[1]['seed_experiments']} for r in records]
+    comparisons = [{'arm': r[0], 'validation': r[2]['validation'], 'seed_experiments': r[1]['seed_experiments']} for r in all_records]
     frozen = dict(frozen, checkpoint=str((output/'selected-policy.zip').resolve()),
                   suite=str((output/'suite.json').resolve()), selected_arm=arm, geometry_comparison=comparisons)
     (output/'selection.json').write_text(json.dumps(frozen, indent=2), encoding='utf-8')
@@ -89,15 +108,22 @@ def run_geometry_comparison(configuration, output, device='cuda'):
     total = validate_budget(plan['steps_per_seed'], plan['batch'], plan['rounds'], plan['seeds'])
     if total is None or plan['status'] != 'configured':
         raise ValueError('Agree an explicit training budget before running this draft')
-    if (plan['kind'] != 'fresh-v3-geometry-comparison' or plan['version'] != 1 or plan['curriculum'] != PROTOCOL
+    from fly_rl.training.mastery_curriculum import VERSION as MASTERY_VERSION,PROTOCOL as MASTERY_PROTOCOL,practice_partition
+    mastery=plan['kind']=='fresh-v3-mastery-comparison'
+    expected_protocol=MASTERY_PROTOCOL if mastery else PROTOCOL
+    if (plan['kind'] not in ['fresh-v3-geometry-comparison','fresh-v3-mastery-comparison'] or plan['version'] != 1 or plan['curriculum'] != expected_protocol
             or plan['sensor_version'] != SENSOR_V3 or plan['dynamics'] != 'coordinated' or plan['route_metrics'] is not True
             or total != plan['total_training_transitions']):
         raise ValueError('Unsupported or inconsistent geometry protocol')
     if code_hashes() != plan['source_hashes'] or sha256(plan['suite']) != plan['suite_sha256']:
         raise ValueError('Frozen source or suite changed; prepare a new configuration')
     suite = load_suite(plan['suite'])
-    if validate_profiles(suite) != plan['training_profiles'] or suite['map_profile'] != plan['evaluation_profile']:
+    if validate_profiles(suite,mastery) != plan['training_profiles'] or suite['map_profile'] != plan['evaluation_profile']:
         raise ValueError('Frozen curriculum profile mismatch')
+    if mastery:
+        training,practice=practice_partition(suite)
+        if plan['optimization_layout_seeds']!=training or plan['practice_layout_seeds']!=practice:
+            raise ValueError('Frozen training-practice partition mismatch')
     require_unconsumed(suite)
     audit = json.loads((Path(plan['data'])/'processed/audit.json').read_text(encoding='utf-8'))
     if audit['fingerprint'] != plan['data_fingerprint']:
@@ -130,7 +156,7 @@ def run_geometry_comparison(configuration, output, device='cuda'):
             state['initializations'].append(proof)
             save()
         groups = []
-        for arm, intervention in [('baseline', None), ('curriculum', VERSION)]:
+        for arm, intervention in [('baseline', None), ('curriculum', MASTERY_VERSION if mastery else VERSION)]:
             members = []
             for seed in plan['seeds']:
                 state['stage'] = f'{arm}-seed-{seed}'
@@ -138,7 +164,7 @@ def run_geometry_comparison(configuration, output, device='cuda'):
                 folder = base/f'{arm}-seed-{seed}'
                 result = train_dense(plan['data'], device, plan['suite'], folder, base/f'initial-{seed}/v3.zip',
                                      plan['steps_per_seed'], plan['batch'], 'coordinated', plan['rounds'], seed,
-                                     False, True, curriculum=intervention)
+                                     False, True, curriculum=intervention,**({'mastery':True} if mastery else {}))
                 if result['training']['added_transitions'] != plan['steps_per_seed']:
                     raise ValueError('Declared training budget mismatch')
                 counters = [r['training'].get('curriculum') for r in result['results']]
@@ -147,11 +173,15 @@ def run_geometry_comparison(configuration, output, device='cuda'):
                 members.append(folder)
                 save()
             group = base/f'{arm}-selected'
-            select_experiment(members, group)
+            select_experiment(members, group,**({'distance_precision':6} if mastery else {}))
             groups.append((arm, group))
         state['stage'] = 'validation-only-selection'
         save()
-        winner = freeze_geometry_winner(groups, base/'selected', {s: plan['steps_per_seed'] for s in plan['seeds']})
+        winner = freeze_geometry_winner(groups, base/'selected', {s: plan['steps_per_seed'] for s in plan['seeds']},mastery=mastery)
+        if winner['status']=='no_successful_candidate':
+            state.update(status='completed',stage='no-successful-candidate',selection_outcome=winner,
+                         selected_arm=None,test_evaluated=False)
+            return state
         state['selected_arm'], state['stage'] = winner['selected_arm'], 'frozen-final-test'
         save()
         final = final_test(plan['data'], device, base/'selected')

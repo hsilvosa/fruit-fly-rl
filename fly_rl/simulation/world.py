@@ -52,7 +52,8 @@ class FlightWorld(gym.Env):
         self.sampler=np.random.default_rng(seed)
         self.rng=np.random.default_rng(seed)
         self.action_space=spaces.Box(-1,1,(4,),dtype=np.float32)
-        self.observation_space=spaces.Box(-1,1,(SENSORS,),dtype=np.float32)
+        from fly_rl.simulation.sensors import sensor_count
+        self.observation_space=spaces.Box(-1,1,(sensor_count(self.sensor_version),),dtype=np.float32)
         self.seed_value=seed
         self.reset(seed=seed)
 
@@ -114,12 +115,19 @@ class FlightWorld(gym.Env):
         return np.array([[c,-s,0],[s,c,0],[0,0,1.]])
 
     def rays(self):
-        directions=DIRECTIONS@self.rotation().T
+        return self.cast_rays(DIRECTIONS@self.rotation().T,RAY_RANGE)
+
+    def fan_rays(self):
+        from fly_rl.simulation.sensors import fan_directions,FAN_RANGE
+        local=(self.target-self.position)@self.rotation()
+        return self.cast_rays(fan_directions(local)@self.rotation().T,FAN_RANGE)
+
+    def cast_rays(self,directions,maximum_range):
         distances=[]
         for d in directions:
             exits=[((self.room[k] if d[k]>0 else 0)-self.position[k])/d[k] for k in range(3) if abs(d[k])>1e-9]
             distance=min(v for v in exits if v>=0)
-            distances.append(min(distance,RAY_RANGE))
+            distances.append(min(distance,maximum_range))
         distances=np.array(distances)
         if self.obstacles:
             boxes=np.asarray(self.obstacles)
@@ -143,13 +151,19 @@ class FlightWorld(gym.Env):
         local=delta@self.rotation()/max(distance,1e-6)
         velocity=self.velocity@self.rotation()/3.
         approach=directions@self.velocity/3.
-        from fly_rl.simulation.sensors import SENSOR_V3
-        v3=self.sensor_version==SENSOR_V3
+        from fly_rl.simulation.sensors import SENSOR_V3,SENSOR_V4,SENSOR_V5,FAN_RANGE
+        v3=self.sensor_version in (SENSOR_V3,SENSOR_V4,SENSOR_V5)
         distance_scale=float(np.linalg.norm(self.room-2*RADIUS)) if v3 else 18.
         altitude=self.position[2]/self.room[2] if v3 else self.position[2]/ROOM[2]
         yaw_rate=(self.yaw_rate if self.dynamics=='coordinated' else 2.1*self.last_action[3])/2.6 if v3 else self.last_action[3]
-        return np.concatenate([rays/RAY_RANGE,approach,local,[distance/distance_scale],velocity,self.last_action,
-            [altitude,yaw_rate]]).astype(np.float32).clip(-1,1)
+        values=np.concatenate([rays/RAY_RANGE,approach,local,[distance/distance_scale],velocity,self.last_action,
+            [altitude,yaw_rate]])
+        if self.sensor_version==SENSOR_V5:
+            fan,distances=self.fan_rays()
+            values=np.concatenate([values,distances/FAN_RANGE,fan@self.velocity/3.])
+        if self.sensor_version==SENSOR_V4:
+            values=np.append(values,max(0.,1.-self.ticks/self.episode_limit))
+        return values.astype(np.float32).clip(-1,1)
 
     def snapshot(self):
         return {'position':self.position.copy(),'velocity':self.velocity.copy(),'yaw':float(self.yaw),

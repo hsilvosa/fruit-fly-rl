@@ -1,10 +1,16 @@
 # Roadmap
 
+Original-large navigation remains unresolved. The [guided initialization](docs/evidence/guided-navigation-v1-results.md) achieved 0/8 autonomous validation goals, all failures by collision. Its teacher successes are separate training outcomes. The existing cumulative 524,288-transition budget is exhausted; all original aliases and reserved final tests remain preserved.
+
+A [perception diagnosis and sensors-v5 correction](docs/evidence/visible-fan-v5.md) found early teacher actions that require information absent from the short-range observations. The new dense visible scan resolves the tested aperture ambiguities and reaches the full-connectome brain features. Code, CUDA activity, demo recording and replay are verified; navigation benefit is not yet measured. A further 65,536-transition correction is prepared as a draft requiring budget approval, with sustained student-only corrective collection rather than the previous teacher-dominated mixture.
+
 The full-connectome controller, procedural 3D rooms, anatomical inspection, recording, replay and bounded experiment tools are implemented. This roadmap describes proposed work; it does not start another training run.
 
-The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0–5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
+The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0Ã¢â‚¬â€œ5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
 
 ## Improve navigation in structured rooms
+
+The [zero-success diagnosis](docs/GEOMETRY_DIAGNOSIS.md) puts single-opening navigation and training-practice mastery ahead of further map expansion. The earlier controller still reproduced its outcomes in four retained original validation rooms. The latest curriculum advanced without any successful passage training episode, and its overall selection retained initialization. Establish a usable passage controller and a declared failure outcome for zero-success selection before another large comparison.
 
 Use retained validation failures to distinguish collision, altitude, passage and stopping errors. Test one intervention at a time under a declared budget with repeated initialization seeds. Progressive profiles allow a comparison between direct training on difficult rooms and a mixture of easier and harder rooms. A curriculum is a hypothesis whose benefit must be measured.
 
@@ -18,7 +24,7 @@ Retain easier examples during training to limit loss of earlier skills. Assess g
 
 ## Proposed navigation interventions
 
-Start with retained validation trajectories to identify passage collisions, idle flight and failed detours. The next geometry proposal inserts intermediate tasks: an open room, one wall with a wide opening and nearby goal, then longer routes, multiple turns and changes in altitude before the existing large rooms. Change one difficulty dimension at a time. Advance using a separate training-practice pool and retain easier examples; validation and final pools must not drive the schedule. This design is proposed, not implemented or measured.
+The corrected [practice-mastery v2](docs/GEOMETRY_CURRICULUM.md#corrected-practice-mastery-protocol) implements a nearby single-opening task, then a longer room with the same opening and box count. It advances only after two withheld training-practice batches pass, retains easier tasks and records failure when no trained target candidate succeeds. Physical passage checks and the 128-transition full-graph optimizer smoke pass; navigation was subsequently measured in the bounded comparison. The completed passage experiment selected baseline seed 42 with 61/64 final goals, no collisions and three timeouts on one wide opening. The curriculum was weaker in validation and seed 73 never left the first stage. Next, diagnose retained validation and practice failures before introducing a second wall or narrower opening under a newly declared budget and final pool. [Verified results](docs/evidence/passage-mastery-v2-results.md) keep this simpler task separate from the failed large-room comparison.
 
 Review reward and temporal credit together. Current Euclidean progress can discourage the initial part of a necessary detour. With a 0.05-second decision interval and discount 0.995, distant rewards are strongly attenuated. A bounded comparison could test a longer horizon or [potential-based shaping](https://people.eecs.berkeley.edu/~russell/papers/icml99-shaping.pdf), including correct terminal handling. Any use of hidden geometry in a training reward must be disclosed and excluded from policy inputs. Such a change needs a versioned objective and cannot be inferred to improve navigation from its formula alone.
 
