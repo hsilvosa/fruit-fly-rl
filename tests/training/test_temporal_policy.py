@@ -87,3 +87,19 @@ def test_isolated_history_transfer_preserves_warm_actor_and_critic():
     with torch.no_grad():torch.testing.assert_close(source.policy.predict_values(torch.as_tensor(flat)),model.policy.predict_values(torch.as_tensor(obs)))
     assert model.policy.pi_features_extractor is not model.policy.vf_features_extractor
     synchronize_critic_history(model.policy)
+
+
+def test_matched_history_isolation_preserves_actor_initialization_and_imitation():
+    from fly_rl.training.guided_learning import fit_actor
+    source=make_policy(env(),smoke=True)
+    shared=transfer_history_policy(source,env(4),seed=42,share_history=True)
+    isolated=transfer_history_policy(source,env(4),seed=42,share_history=False)
+    for name,value in shared.policy.pi_features_extractor.state_dict().items():
+        torch.testing.assert_close(value,isolated.policy.pi_features_extractor.state_dict()[name],rtol=0,atol=0)
+    rng=np.random.default_rng(2026)
+    observations=rng.normal(size=(64,5,256)).astype(np.float32)
+    targets=rng.uniform(-.5,.5,size=(64,4)).astype(np.float32)
+    fit_actor(shared,observations,targets,64,8,np.random.default_rng(43),batch_size=16)
+    fit_actor(isolated,observations,targets,64,8,np.random.default_rng(43),batch_size=16)
+    np.testing.assert_array_equal(shared.predict(observations,deterministic=True)[0],
+                                  isolated.predict(observations,deterministic=True)[0])
