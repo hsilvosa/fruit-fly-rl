@@ -1,8 +1,8 @@
 # Roadmap
 
-Original-large navigation remains unresolved. The latest [critic-isolation experiment](docs/evidence/guided-navigation-v3-results.md) completed with 0/8 autonomous development goals, eight collisions and no timeouts. Cumulative substantive use is 655,360; original launcher aliases and reserved final tests remain preserved.
+Original-large navigation remains unresolved. The [guarded PPO experiment](docs/evidence/guarded-navigation-v4-results.md) completed another 32,768 transitions with 0/8 autonomous development goals before and after training, eight collisions and no timeouts. Cumulative substantive use is 688,128. Original launcher aliases and reserved final tests remain preserved.
 
-The [guarded PPO correction](docs/evidence/guarded-navigation-v4-plan.md) uses a further 32,768-transition cap, starting from the declared checkpoint before PPO. It rolls back excessive policy updates and measures autonomous development navigation before and after training. The full-graph 128-transition verification and checkpoint reload passed; navigation benefit remains unmeasured.
+The next correction uses input-associated neural activity and a spatial controller. The [static readout diagnosis](docs/evidence/input-group-readout-diagnosis.md) motivates this representation, but does not demonstrate navigation. The [98,304-transition imitation experiment](docs/evidence/spatial-neural-v5-plan.md) tests it on original-large rooms without PPO refinement. Teacher fragments use varied training starts; autonomous development validation uses the original endpoints.
 
 The full-connectome controller, procedural 3D rooms, anatomical inspection, recording, replay and bounded experiment tools are implemented. This roadmap describes proposed work; it does not start another training run.
 

@@ -11,21 +11,25 @@ from fly_rl.connectome.brain import Brain,FEATURES
 from fly_rl.simulation.world import FlightWorld,REWARD_VERSION
 
 class BrainEnv(VecEnv):
-    def __init__(self,data='data',batch=1,device='cuda',seed=0,brain=None,mode='obstacles',layout_seeds=None,dynamics='legacy',sensor_version=None,map_profile=None,timeout_as_terminal=False,history_frames=0,history_stride=8):
+    def __init__(self,data='data',batch=1,device='cuda',seed=0,brain=None,mode='obstacles',layout_seeds=None,dynamics='legacy',sensor_version=None,map_profile=None,timeout_as_terminal=False,history_frames=0,history_stride=8,readout_version="random-pool-256-v1"):
         self.timeout_as_terminal=bool(timeout_as_terminal)
         if type(history_frames) is not int or not 0<=history_frames<=128 or type(history_stride) is not int or not 1<=history_stride<=64:
             raise ValueError('Invalid brain history dimensions')
         self.history_frames=history_frames;self.history_stride=history_stride
-        self.feature_history=np.zeros((batch,history_frames,FEATURES),dtype=np.float32)
-        self.latest_features=np.zeros((batch,FEATURES),dtype=np.float32)
         self.history_ticks=np.zeros(batch,dtype=int)
         from fly_rl.simulation.map_profiles import resolve_profile
         self.map_profile=resolve_profile(map_profile)
         self.worlds=[FlightWorld(seed+i,mode,layout_seeds,dynamics,sensor_version,self.map_profile) for i in range(batch)]
-        self.brain=brain or Brain(data,batch,device,sensor_version=sensor_version)
+        from fly_rl.connectome.readout import InputGroupedBrain,GROUP_READOUT,LEGACY_READOUT
+        if readout_version not in (GROUP_READOUT,LEGACY_READOUT):raise ValueError('Unknown brain readout')
+        brain_type=InputGroupedBrain if readout_version==GROUP_READOUT else Brain
+        self.brain=brain or brain_type(data,batch,device,sensor_version=sensor_version)
+        self.feature_count=getattr(self.brain,'feature_count',FEATURES)
+        self.feature_history=np.zeros((batch,history_frames,self.feature_count),dtype=np.float32)
+        self.latest_features=np.zeros((batch,self.feature_count),dtype=np.float32)
         if any(w.sensor_version!=self.brain.sensor_version for w in self.worlds): raise ValueError('World/brain sensor contract mismatch')
         self.returns=np.zeros(batch);self.lengths=np.zeros(batch,dtype=int)
-        shape=(history_frames+1,FEATURES) if history_frames else (FEATURES,)
+        shape=(history_frames+1,self.feature_count) if history_frames else (self.feature_count,)
         super().__init__(batch,spaces.Box(-np.inf,np.inf,shape,dtype=np.float32),self.worlds[0].action_space)
 
     def reset(self):
@@ -94,7 +98,11 @@ class BrainEnv(VecEnv):
 
 def make_policy(env,smoke=False,seed=42,share_history=True):
     policy_options={'net_arch':{'pi':[128,128],'vf':[128,128]}}
-    if getattr(env,'history_frames',0):
+    if getattr(env.brain,'readout_version',None)=='input-associated-neural-mean-v1':
+        from fly_rl.training.spatial_policy import SpatialBrainHistory
+        policy_options.update(features_extractor_class=SpatialBrainHistory,ortho_init=False,
+                              share_features_extractor=False)
+    elif getattr(env,'history_frames',0):
         from fly_rl.training.temporal_policy import ResidualBrainHistory
         policy_options.update(features_extractor_class=ResidualBrainHistory,ortho_init=False,
                               share_features_extractor=share_history)
@@ -109,7 +117,7 @@ def save_model(model,path,brain):
     model.save(str(path))
     world=model.get_env().worlds[0] if model.get_env() is not None else None
     path.with_suffix('.json').write_text(json.dumps({'training_reward_shaping':model.get_env().reward_shaping.snapshot() if model.get_env() is not None and hasattr(model.get_env(),'reward_shaping') else None,'training_curriculum':model.get_env().curriculum.snapshot() if model.get_env() is not None and hasattr(model.get_env(),'curriculum') else None,'fingerprint':brain.fingerprint,
-        'dataset':brain.audit.get('dataset','MaleCNS v1.0'),'timesteps':model.num_timesteps,
+        'readout_version':getattr(brain,'readout_version','random-pool-256-v1'),'dataset':brain.audit.get('dataset','MaleCNS v1.0'),'timesteps':model.num_timesteps,
         'kind':'smoke-test' if model.n_steps==128 else 'policy','trained_navigation':False,
         'reward_version':REWARD_VERSION,'discount_gamma':model.gamma,
         'brain_history':{'frames':getattr(model.get_env(),'history_frames',0),'stride':getattr(model.get_env(),'history_stride',8)},
@@ -288,7 +296,11 @@ def checkpoint_sensor_version(path):
     if not path: return SENSOR_VERSION
     metadata=json.loads(Path(path).with_suffix('.json').read_text())
     value=validate_sensor_version(metadata.get('sensor_version',SENSOR_VERSION))
-    if f':reservoir-v2-{value}-256-seed42-leak0.5-scale0.9' not in metadata.get('fingerprint',''):
+    expected=f':reservoir-v2-{value}-256-seed42-leak0.5-scale0.9'
+    readout=metadata.get('readout_version','random-pool-256-v1')
+    if readout=='input-associated-neural-mean-v1':expected+=':'+readout
+    elif readout!='random-pool-256-v1':raise ValueError('Unknown checkpoint readout')
+    if not metadata.get('fingerprint','').endswith(expected):
         raise ValueError('Checkpoint sensor metadata/fingerprint mismatch')
     return value
 

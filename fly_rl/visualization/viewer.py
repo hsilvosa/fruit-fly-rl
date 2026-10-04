@@ -67,7 +67,7 @@ def run(args):
                 from fly_rl.simulation.sensors import SENSOR_V3
                 profile=getattr(args,'map_profile',None)
                 sensors=getattr(args,'sensor_version',None) or (checkpoint_sensor_version(args.checkpoint) if args.checkpoint else (SENSOR_V3 if profile else SENSOR_VERSION))
-                self.env=BrainEnv(args.data,1,args.device,args.seed,mode=getattr(args,'room_mode','obstacles'),dynamics=getattr(args,'dynamics','legacy'),sensor_version=sensors,map_profile=profile,**checkpoint_history(args.checkpoint))
+                self.env=BrainEnv(args.data,1,args.device,args.seed,mode=getattr(args,'room_mode','obstacles'),dynamics=getattr(args,'dynamics','legacy'),sensor_version=sensors,map_profile=profile,readout_version=json.loads(Path(args.checkpoint).with_suffix('.json').read_text()).get('readout_version','random-pool-256-v1') if args.checkpoint else 'random-pool-256-v1',**checkpoint_history(args.checkpoint))
                 self.policy=load_model(args.checkpoint,self.env.brain,self.env,getattr(args,'transfer',False)) if args.checkpoint else make_policy(self.env)
             self.untrained_policy=self.env.archive.manifest.get('metadata',{}).get('untrained') if self.is_replay else self.policy.num_timesteps == 0
             # PPO initialization sets environment seeds; the viewer's room seed wins.
@@ -138,6 +138,7 @@ def run(args):
                 from fly_rl.connectome.brain import MODEL_SPEC
                 self.flight_record=FlightRecorder(args.record_dir,{
                     'dataset':self.env.brain.audit,'brain_fingerprint':self.env.brain.fingerprint,
+                    'brain_feature_count':self.env.feature_count,'readout_version':getattr(self.env.brain,'readout_version','random-pool-256-v1'),
                     'sensor_version':self.env.brain.sensor_version,'dt':DT,'seed':args.seed,'policy_seed':42,
                     'untrained':self.untrained_policy,'checkpoint_source':args.checkpoint,
                     'record_brain':args.record_brain,'training_updates':self.policy._n_updates,

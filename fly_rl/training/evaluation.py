@@ -6,7 +6,10 @@ def evaluate(data,device,checkpoint,episodes=16,mode='obstacles',seed=10000,goal
     if not 1<=episodes<=64: raise ValueError('Evaluation supports 1 to 64 episodes')
     from fly_rl.training.learning import checkpoint_sensor_version,checkpoint_history
     sensor_version=sensor_version or checkpoint_sensor_version(checkpoint)
-    env=BrainEnv(data,episodes,device,seed=seed,mode=mode,dynamics=dynamics,sensor_version=sensor_version,map_profile=map_profile,**checkpoint_history(checkpoint))
+    import json
+    from pathlib import Path
+    readout=json.loads(Path(checkpoint).with_suffix('.json').read_text()).get('readout_version','random-pool-256-v1') if checkpoint else 'random-pool-256-v1'
+    env=BrainEnv(data,episodes,device,seed=seed,mode=mode,dynamics=dynamics,sensor_version=sensor_version,map_profile=map_profile,readout_version=readout,**checkpoint_history(checkpoint))
     try:
         model=load_model(checkpoint,env.brain,env,allow_transfer) if checkpoint else make_policy(env)
         env.seed(seed);features=env.reset()

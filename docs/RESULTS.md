@@ -149,3 +149,8 @@ Cumulative substantive added transitions are 319,488 of the earlier 524,288 budg
 
 
 [Verified critic-isolation v3 results](evidence/guided-navigation-v3-results.md) bring cumulative substantive use to 655,360. The subsequent guarded-PPO protocol has a 32,768-transition cap and no navigation result yet.
+
+
+## Guarded PPO v4
+
+The 32,768-transition correction completed with 0/8 original-large development successes both before and after training, eight collisions and no timeouts. The full-rollout KL guard retained seven updates within its limits; this did not solve navigation. Cumulative substantive transitions: 688,128. No reserved test or alias promotion. See [verified results](evidence/guarded-navigation-v4-results.md).
