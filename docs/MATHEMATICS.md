@@ -259,3 +259,10 @@ Neuron i receives an extra drive 0.25 times the sum of two signed fan values, wi
 ## PPO update rollback gate
 
 The [guarded PPO protocol](evidence/guarded-navigation-v4-plan.md) checks the actual resulting policy instead of relying only on a pre-step sampled stopping estimate. For independent Gaussian action coordinates, KL(old || new) is the sum over coordinates of log(new_std / old_std) + (old_std squared + (old_mean - new_mean) squared) / (2 new_std squared) - 1/2. Evaluate that quantity on every collected rollout observation. Retain an update only when the observed mean is at most 0.01 and observed maximum is at most 0.05. Rejected candidates restore policy and optimizer state and re-use the same rollout with half the learning rate, up to eight attempts. These constraints apply to the observed rollout distribution, not all possible future states. Successful navigation must still be measured separately.
+
+
+## Input-associated neural readout
+
+For channel c, let A_c contain the neuron assignments whose seeded input index is c, with signs s_ic. The new output is g_c(t) = sum_(i in A_c) s_ic h_i(t) / max(1, |A_c|). Both original and fan assignments contribute. A neuron can belong to several channel groups. This formula reads the recurrent neuron state h, not the raw sensor x. The existing recurrent matrix and updates are unchanged. The groups describe artificial projections and do not identify biological cell populations.
+
+The v5 spatial actor encodes the two 19 by 31 neural fan planes with convolutions, encodes the remaining 269 neural groups with a linear layer, and uses a GRU across nine sampled frames. It minimizes the existing weighted imitation loss on optimization-world teacher labels; no PPO update is used in the substantive spatial experiment. The 128-transition smoke checks that the learning interface remains usable. See [frozen scope](evidence/spatial-neural-v5-plan.md).

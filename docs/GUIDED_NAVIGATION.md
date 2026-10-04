@@ -53,3 +53,8 @@ Collection retains executed actions separately from teacher labels, physical pos
 
 
 The [matched critic-isolation experiment](evidence/guided-navigation-v3-plan.md) was authorized and launched on 2026-10-04 with 65,536 additional environment transitions. It retains the original large maps, full graph and frozen v2 supervision counts. It completed with 0/8 autonomous goals and eight collisions; see [verified v3 results](evidence/guided-navigation-v3-results.md). The [guarded PPO continuation](evidence/guarded-navigation-v4-plan.md) is the next bounded correction.
+
+
+## Guarded PPO v4
+
+The 32,768-transition correction completed with 0/8 original-large development successes both before and after training, eight collisions and no timeouts. The full-rollout KL guard retained seven updates within its limits; this did not solve navigation. Cumulative substantive transitions: 688,128. No reserved test or alias promotion. See [verified results](evidence/guarded-navigation-v4-results.md).

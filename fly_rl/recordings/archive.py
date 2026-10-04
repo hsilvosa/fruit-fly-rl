@@ -49,7 +49,7 @@ class Archive:
         for key in ['sensors','next_sensors']:
             if arrays[key].shape!=(rows,sensor_count): raise ValueError('Sensor schema mismatch')
         for key in ['brain_features','next_brain_features']:
-            if arrays[key].shape!=(rows,256): raise ValueError('Feature schema mismatch')
+            if arrays[key].shape!=(rows,self.manifest.get('metadata',{}).get('brain_feature_count',256)): raise ValueError('Feature schema mismatch')
         if arrays['step'].shape!=(rows,) or not np.issubdtype(arrays['step'].dtype,np.integer):
             raise ValueError('Steps must be integer scalars')
         return arrays

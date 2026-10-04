@@ -17,7 +17,7 @@ class ReplayEnv:
         self.worlds=[FlightWorld(0,sensor_version=self.archive.manifest.get("sensor_version"))];self.cursor=0;self.finished=False;self.cache_index=None;self.cache=None
         audit=self.archive.manifest.get('metadata',{}).get('dataset',{})
         self.brain=SimpleNamespace(n=audit.get('annotated_neurons',0),audit={'edges':audit.get('edges',0)},
-            state=torch.zeros((256,1)))
+            state=torch.zeros((self.archive.manifest.get('metadata',{}).get('brain_feature_count',256),1)))
         self.current_room_id=None;self.steps=0
         self.episode_starts=[]
         previous_room=None;offset=0
