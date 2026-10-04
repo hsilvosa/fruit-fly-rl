@@ -65,6 +65,7 @@ def main():
     replay.add_argument('--speed',type=float,default=1.);replay.add_argument('--offscreen',action='store_true')
     replay.add_argument('--seconds',type=float,default=0);replay.add_argument('--screenshot',default='reports/replay.png')
     replay.set_defaults(seed=10,checkpoint=None,no_record=True,record_dir='runs/demo',record_brain=False)
+    guarded=sub.add_parser('train-guarded');guarded.add_argument('--plan',required=True)
     guided=sub.add_parser('train-guided');guided.add_argument('--plan',required=True,help='Explicit frozen, bounded training-only teacher protocol')
     train=sub.add_parser('train');train.add_argument('--steps',type=int,required=True);train.add_argument('--batch',type=int,default=1)
     train.add_argument('--output',default='runs/policy.zip');train.add_argument('--resume')
@@ -267,6 +268,9 @@ def main():
         output=Path(args.output);output.parent.mkdir(parents=True,exist_ok=True)
         output.write_text(json.dumps(result,indent=2),encoding='utf8');print(json.dumps(result,indent=2),flush=True)
         if args.command=='inspect' and result['errors']: raise SystemExit(1)
+    elif args.command=='train-guarded':
+        from fly_rl.training.guarded_navigation import run_guarded_navigation
+        write_report('last-guarded-training.json',run_guarded_navigation(args.plan,args.device))
     elif args.command=='train-guided':
         from fly_rl.training.guided_learning import run_guided
         write_report('last-guided-training.json',run_guided(args.plan,args.device))

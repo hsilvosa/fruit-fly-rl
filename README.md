@@ -1,8 +1,8 @@
 # Fly RL
 
-Original-large navigation remains unresolved. The [guided initialization](docs/evidence/guided-navigation-v1-results.md) achieved 0/8 autonomous validation goals, all failures by collision. Its teacher successes are separate training outcomes. The existing cumulative 524,288-transition budget is exhausted; all original aliases and reserved final tests remain preserved.
+Original-large navigation remains unresolved. The latest [critic-isolation experiment](docs/evidence/guided-navigation-v3-results.md) completed with 0/8 autonomous development goals, eight collisions and no timeouts. Cumulative substantive use is 655,360; original launcher aliases and reserved final tests remain preserved.
 
-A [perception diagnosis and sensors-v5 correction](docs/evidence/visible-fan-v5.md) found early teacher actions that require information absent from the short-range observations. The new dense visible scan resolves the tested aperture ambiguities and reaches the full-connectome brain features. Code, CUDA activity, demo recording and replay are verified; navigation benefit is not yet measured. The authorized 65,536-transition sensors-v5 correction completed on 2026-10-04. Autonomous validation on the original large maps reached 0/8 goals, four collisions and four timeouts; navigation remains unresolved. Cumulative substantive use is 589,824. The source, all original aliases and reserved final tests remain preserved. [Verified v2 results](docs/evidence/guided-navigation-v2-results.md) separate teacher outcomes from autonomous flights.
+The [guarded PPO correction](docs/evidence/guarded-navigation-v4-plan.md) uses a further 32,768-transition cap, starting from the declared checkpoint before PPO. It rolls back excessive policy updates and measures autonomous development navigation before and after training. The full-graph 128-transition verification and checkpoint reload passed; navigation benefit remains unmeasured.
 
 A virtual fruit fly navigates procedural 3D rooms using features from the full annotated MaleCNS v1.0 connectome. A fixed sparse recurrent model converts simulated sensor readings into activity; a PPO actor and critic learn flight commands. Panda3D displays the room and an optional separate anatomical activity window.
 
@@ -101,3 +101,6 @@ reports/             Generated figures and QA output; ignored
 Each demo retains a unique archive under `runs/demo/`; its latest preview and summary may be overwritten. Full-neuron snapshots require `--record-brain`: pooled features cannot reconstruct them. Saved-state flight replay does not execute a live brain. Back up local artifacts separately.
 
 [Documentation index](docs/README.md), [command reference](docs/COMMANDS.md), [operations](docs/OPERATIONS.md), [contribution workflow](CONTRIBUTING.md) and [roadmap](ROADMAP.md) cover use and further work. Training requires an explicit command and budget.
+
+
+The [critic-isolation v3 run](docs/evidence/guided-navigation-v3-results.md) completed with 0/8 autonomous development goals and eight collisions. A [guarded PPO continuation](docs/evidence/guarded-navigation-v4-plan.md) now tests rollback of excessive policy changes under a further 32,768-transition cap. Navigation remains unresolved; final tests and original aliases remain preserved.

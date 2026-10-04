@@ -11,6 +11,7 @@ Navigation performance is separate from implementation correctness and anatomica
 | Obstacle-aware reward pilot | 32,768 | 0/8 | 1 | 7 |
 | Guided initialization and PPO | 40,960 | 0/8 | 8 | 0 |
 | Visible fan and student-only correction | 65,536 | 0/8 | 4 | 4 |
+| Separate critic history | 65,536 | 0/8 | 8 | 0 |
 
 These reused development layouts do not constitute an independent final test. The guided teacher's eight optimization goals are not student navigation results. The initial 524,288 cap was exhausted; the subsequently authorized 65,536-transition v2 run brings cumulative substantive use to 589,824. No new model was promoted, the original six aliases retained their hashes, and no reserved final pool was consumed. [Guided results](evidence/guided-navigation-v1-results.md), [reward-only results](evidence/route-progress-correction-v1-results.md), and [memory results](evidence/brain-memory-comparison-v1-results.md) report the failures without claiming a successful fix.
 
@@ -145,3 +146,6 @@ A subsequent full-graph counterfactual changed only the clock from zero to one i
 The complete frozen source manifest matched after training. All six original alias files and the original source ZIP and metadata retained their initial hashes. No alias was promoted. Detailed before/after episodes, source hashes, losses and exposure counters are in private artifacts and runs/training/timeout-correction-pilot-v1/status.json. The original independent final test remains unused. No training process remains running.
 
 Cumulative substantive added transitions are 319,488 of the earlier 524,288 budget, leaving 204,800. Separate smoke verification remains excluded. The last checkpoint is runs/training/timeout-correction-pilot-v1/round-4/policy.zip; it is not a successful navigation model.
+
+
+[Verified critic-isolation v3 results](evidence/guided-navigation-v3-results.md) bring cumulative substantive use to 655,360. The subsequent guarded-PPO protocol has a 32,768-transition cap and no navigation result yet.
