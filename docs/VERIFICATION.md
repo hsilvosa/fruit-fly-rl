@@ -53,3 +53,12 @@ The full suite passed 180 tests after introducing the opt-in route reward and gu
 ## Visible fan and compatibility verification
 
 After the sensors-v5 correction and migration repair, the complete suite passed 203 tests in 137.24 seconds. The full-graph CUDA check found nonzero feature differences in four aperture counterfactuals; 20.063 seconds of batch-four constant-input brain execution measured 279.12 transitions/second and 0.318 GiB peak allocated VRAM. This is not environment training throughput. The new untrained demo completed 40 steps on the original large map, its archive passed integrity inspection, and replay completed 20 saved steps with no brain or policy execution. The scene was visually inspected. No v5 navigation performance has yet been measured.
+
+
+## Spatial neural readout verification, 2026-10-04
+
+Focused temporal, sensor migration and spatial readout tests: nine passed. Focused recording, replay and spatial readout tests: seven passed; the two spatial tests are included in both counts. Tests check preserved recurrent states, independently calculated signed grouping, independent resets, rejection of incompatible readouts, history shape and checkpoint reload.
+
+A separate full-graph CUDA smoke used all 167,184 neurons and 25,583,622 edges for 128 physical transitions and one PPO update. All 1,447 neural groups had input assignments; losses were finite, reload action error was 8.20e-8, and peak allocated VRAM was 479,203,328 bytes. Sixteen supervised zero-target updates verified gradients only, with no navigation claim. This verification is separate from substantive training.
+
+Two brief offscreen demos each advanced 40 steps without training. The direct Panda screenshot writer produced empty files; a private diagnostic instead encoded the framebuffer to a stream and wrote its bytes through Python. reports/spatial-neural-inspected.png was inspected: the original 48 by 48 by 16 room, 112 boxes, target, sensor rays and HUD rendered. The screenshot defect remains to be corrected in production after the active source freeze ends.
