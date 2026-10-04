@@ -68,3 +68,6 @@ The production preview writer now encodes the framebuffer to a stream and atomic
 
 
 Waypoint auxiliary implementation: 16 focused tests passed, including legacy sampler compatibility, three-way maneuver/start coverage, initial motor-output preservation, masked missing labels, finite auxiliary gradients and checkpoint reload. A separate full-connectome verification used all 167,184 neurons and 25,583,622 edges, three supervised updates on repeated existing start observations, and zero physical transitions. It preserved the neural state and source checkpoint and reloaded actions exactly. This verifies the interface, not learned navigation.
+
+
+V6 runner scope/reset tests, waypoint transfer and sampler tests: six passed. Expanded continuity tests: three passed, including a student episode and neuron history surviving a supervised fit. Full-connectome collector verification: 128 transitions across two continuous 64-transition chunks, three supervised updates, finite auxiliary labels and CPU/CUDA reload error1.70e-6. The source checkpoint was unchanged. These verification transitions are separate from substantive training and do not establish successful navigation.
