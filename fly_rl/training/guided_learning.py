@@ -57,10 +57,12 @@ def imitation_indices(count,batch_size,rng,turns,vertical=None,starts=None):
     return indices
 
 
-def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progress=None,sampling_strategy='turn-balanced-v1',waypoint_targets=None,waypoint_loss_weight=2.):
+def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progress=None,sampling_strategy='turn-balanced-v1',waypoint_targets=None,waypoint_loss_weight=2.,attention_loss_weight=0.):
     """Fit only the feature extractor and actor; never feed teacher state to it."""
     if count<=0 or updates<=0:raise ValueError('Positive bounded imitation data and updates required')
     policy=model.policy
+    if attention_loss_weight and (not 0<attention_loss_weight<=5 or waypoint_targets is None or not hasattr(policy.pi_features_extractor,'forward_with_attention')):
+        raise ValueError('Directional attention needs explicit waypoint labels and a supported head')
     if waypoint_targets is not None and (not hasattr(policy.pi_features_extractor,'forward_with_waypoint') or not 0<waypoint_loss_weight<=10):
         raise ValueError('Waypoint supervision requires the declared neural predictor and bounded loss weight')
     params=list(policy.features_extractor.parameters())+list(policy.mlp_extractor.policy_net.parameters())+list(policy.action_net.parameters())
@@ -78,14 +80,16 @@ def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progre
         starts=np.concatenate(chunks)
     elif sampling_strategy!='turn-balanced-v1':raise ValueError('Unknown imitation sampler')
     weights=torch.tensor([1.,1.,2.,2.],device=model.device)
-    losses=[];waypoint_losses=[]
+    losses=[];waypoint_losses=[];attention_losses=[]
     policy.set_training_mode(True)
     for _ in range(updates):
         indices=imitation_indices(count,batch_size,rng,turns,vertical,starts)
         obs=torch.as_tensor(np.array(observations[indices]),device=model.device)
         actions=torch.as_tensor(np.array(targets[indices]),device=model.device)
         if waypoint_targets is not None:
-            encoded,estimated_waypoint=policy.pi_features_extractor.forward_with_waypoint(obs)
+            if attention_loss_weight:
+                encoded,estimated_waypoint,attention_logits=policy.pi_features_extractor.forward_with_attention(obs)
+            else:encoded,estimated_waypoint=policy.pi_features_extractor.forward_with_waypoint(obs)
             predicted=policy.action_net(policy.mlp_extractor.forward_actor(encoded))
         else:predicted=actor_mean(policy,obs)
         loss=((predicted-actions).square()*weights).mean()
@@ -95,6 +99,11 @@ def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progre
             auxiliary=(estimated_waypoint[valid]-desired[valid]).square().mean() if valid.any() else estimated_waypoint.sum()*0
             loss=loss+waypoint_loss_weight*auxiliary
             waypoint_losses.append(float(auxiliary.detach()))
+            if attention_loss_weight:
+                classes=(desired[valid,:3]@policy.pi_features_extractor.ray_directions.T).argmax(dim=1)
+                attention_loss=torch.nn.functional.cross_entropy(attention_logits[valid],classes)
+                loss=loss+attention_loss_weight*attention_loss
+                attention_losses.append(float(attention_loss.detach()))
         if not torch.isfinite(loss):raise RuntimeError('Nonfinite imitation loss')
         optimizer.zero_grad();loss.backward();torch.nn.utils.clip_grad_norm_(params,1.);optimizer.step()
         losses.append(float(loss.detach()))
@@ -106,6 +115,8 @@ def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progre
             'sampling_strategy':sampling_strategy,
             'waypoint_loss_weight':waypoint_loss_weight if waypoint_targets is not None else None,
             'mean_last_100_waypoint_loss':float(np.mean(waypoint_losses[-100:])) if waypoint_losses else None,
+            'attention_loss_weight':attention_loss_weight,
+            'mean_last_100_attention_loss':float(np.mean(attention_losses[-100:])) if attention_losses else None,
             'vertical_examples':int(len(vertical)) if vertical is not None else None,
             'startup_examples':int(len(starts)) if starts is not None else None}
 

@@ -11,7 +11,9 @@ from fly_rl.connectome.brain import Brain,FEATURES
 from fly_rl.simulation.world import FlightWorld,REWARD_VERSION
 
 class BrainEnv(VecEnv):
-    def __init__(self,data='data',batch=1,device='cuda',seed=0,brain=None,mode='obstacles',layout_seeds=None,dynamics='legacy',sensor_version=None,map_profile=None,timeout_as_terminal=False,history_frames=0,history_stride=8,readout_version="random-pool-256-v1"):
+    def __init__(self,data='data',batch=1,device='cuda',seed=0,brain=None,mode='obstacles',layout_seeds=None,dynamics='legacy',sensor_version=None,map_profile=None,timeout_as_terminal=False,history_frames=0,history_stride=8,readout_version="random-pool-256-v1",sensor_backend="numpy"):
+        if sensor_backend not in ("numpy","torch-cuda"):raise ValueError("Unknown sensor backend")
+        self.sensor_backend=sensor_backend
         self.timeout_as_terminal=bool(timeout_as_terminal)
         if type(history_frames) is not int or not 0<=history_frames<=128 or type(history_stride) is not int or not 1<=history_stride<=64:
             raise ValueError('Invalid brain history dimensions')
@@ -24,6 +26,7 @@ class BrainEnv(VecEnv):
         if readout_version not in (GROUP_READOUT,LEGACY_READOUT):raise ValueError('Unknown brain readout')
         brain_type=InputGroupedBrain if readout_version==GROUP_READOUT else Brain
         self.brain=brain or brain_type(data,batch,device,sensor_version=sensor_version)
+        if sensor_backend=="torch-cuda" and self.brain.device.type!="cuda":raise ValueError("CUDA sensor backend requires a CUDA brain")
         self.feature_count=getattr(self.brain,'feature_count',FEATURES)
         self.feature_history=np.zeros((batch,history_frames,self.feature_count),dtype=np.float32)
         self.latest_features=np.zeros((batch,self.feature_count),dtype=np.float32)
@@ -41,6 +44,7 @@ class BrainEnv(VecEnv):
         self._reset_seeds();self._reset_options()
         self.returns.fill(0);self.lengths.fill(0)
         self.feature_history.fill(0);self.history_ticks.fill(0)
+        self.latest_sensors=np.asarray(sensors).copy()
         return self._pack_features(self.brain.step(np.asarray(sensors)))
 
     def _pack_features(self,features):
@@ -58,13 +62,16 @@ class BrainEnv(VecEnv):
                 self.feature_history[i,-1]=self.latest_features[i]
         sensors=[]; rewards=[];dones=[]; infos=[]
         for i,(w,a) in enumerate(zip(self.worlds,self.actions)):
-            obs,r,terminated,truncated,info=w.step(a)
+            obs,r,terminated,truncated,info=w.step(a) if self.sensor_backend=="numpy" else w.step(a,observe=False)
             sensors.append(obs);rewards.append(r);dones.append(terminated or truncated)
             info['TimeLimit.truncated']=bool(truncated and not terminated and not self.timeout_as_terminal)
             info['timeout_failure_terminal']=bool(truncated and self.timeout_as_terminal)
             self.returns[i]+=r;self.lengths[i]+=1
             if terminated or truncated: info['episode']={'r':self.returns[i],'l':self.lengths[i]}
             infos.append(info)
+        if self.sensor_backend=="torch-cuda":
+            from fly_rl.simulation.gpu_sensors import observe_batch
+            sensors=observe_batch(self.worlds,self.brain.device)
         features=self.brain.step(np.asarray(sensors))
         for i,info in enumerate(infos):
             info['next_sensors']=sensors[i].copy()
@@ -85,6 +92,8 @@ class BrainEnv(VecEnv):
             continuing=np.flatnonzero(~np.asarray(dones))
             self.brain.state[:,continuing]=saved[:,continuing]
             features[ended]=reset_features[ended]
+            sensors=resets
+        self.latest_sensors=np.asarray(sensors).copy()
         return self._pack_features(features),np.asarray(rewards,dtype=np.float32),np.asarray(dones,dtype=bool),infos
 
     def close(self): pass

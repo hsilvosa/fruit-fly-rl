@@ -67,7 +67,7 @@ def run(args):
                 from fly_rl.simulation.sensors import SENSOR_V3
                 profile=getattr(args,'map_profile',None)
                 sensors=getattr(args,'sensor_version',None) or (checkpoint_sensor_version(args.checkpoint) if args.checkpoint else (SENSOR_V3 if profile else SENSOR_VERSION))
-                self.env=BrainEnv(args.data,1,args.device,args.seed,mode=getattr(args,'room_mode','obstacles'),dynamics=getattr(args,'dynamics','legacy'),sensor_version=sensors,map_profile=profile,readout_version=json.loads(Path(args.checkpoint).with_suffix('.json').read_text()).get('readout_version','random-pool-256-v1') if args.checkpoint else 'random-pool-256-v1',**checkpoint_history(args.checkpoint))
+                self.env=BrainEnv(args.data,1,args.device,args.seed,mode=getattr(args,'room_mode','obstacles'),dynamics=getattr(args,'dynamics','legacy'),sensor_version=sensors,map_profile=profile,readout_version=json.loads(Path(args.checkpoint).with_suffix('.json').read_text()).get('readout_version','random-pool-256-v1') if args.checkpoint else 'random-pool-256-v1',sensor_backend='torch-cuda' if sensors==SENSOR_V6 and args.device=='cuda' else 'numpy',**checkpoint_history(args.checkpoint))
                 self.policy=load_model(args.checkpoint,self.env.brain,self.env,getattr(args,'transfer',False)) if args.checkpoint else make_policy(self.env)
             self.untrained_policy=self.env.archive.manifest.get('metadata',{}).get('untrained') if self.is_replay else self.policy.num_timesteps == 0
             # PPO initialization sets environment seeds; the viewer's room seed wins.
@@ -363,7 +363,7 @@ def run(args):
                             if self.flight_record and trace: self.flight_record.event('selected-neuron',self.steps+1,trace)
                     if self.flight_record and args.record_brain and (self.steps+1)%20==0:
                         self.flight_record.brain_snapshot(self.steps+1,self.env.brain.state[:,0].cpu().numpy())
-                    before=self.env.worlds[0].snapshot();sensors=self.env.worlds[0].observe();features=self.env.latest_features[0].copy() if not self.is_replay else self.features[0].copy()
+                    before=self.env.worlds[0].snapshot();sensors=self.env.latest_sensors[0].copy() if not self.is_replay else self.env.worlds[0].observe();features=self.env.latest_features[0].copy() if not self.is_replay else self.features[0].copy()
                     self.features,rewards,dones,infos=self.env.step(action)
                     self.steps+=1;self.accumulator-=DT
                     if self.is_replay and self.room_id!=self.env.current_room_id:
@@ -410,12 +410,18 @@ def run(args):
                 if self.is_replay:
                     directions=np.asarray(self.env.archive.manifest['local_ray_directions'])@w.rotation().T
                     distances=self.env.sensor_state[:len(directions)]*self.env.archive.manifest['ray_range']
+                elif hasattr(self.env,'latest_sensors'):
+                    from fly_rl.simulation.sensors import DIRECTIONS,RAY_RANGE
+                    directions=DIRECTIONS@w.rotation().T;distances=self.env.latest_sensors[0,:128]*RAY_RANGE
                 else: directions,distances=w.rays()
                 version=self.env.archive.manifest['sensor_version'] if self.is_replay else w.sensor_version
                 if version in (SENSOR_V5,SENSOR_V6):
                     if self.is_replay:
                         fan=(panorama_directions() if version==SENSOR_V6 else fan_directions((w.target-w.position)@w.rotation()))@w.rotation().T
                         lengths=self.env.sensor_state[269:269+len(fan)]*FAN_RANGE
+                    elif hasattr(self.env,'latest_sensors'):
+                        fan=(panorama_directions() if version==SENSOR_V6 else fan_directions((w.target-w.position)@w.rotation()))@w.rotation().T
+                        lengths=self.env.latest_sensors[0,269:269+len(fan)]*FAN_RANGE
                     else:fan,lengths=w.fan_rays()
                     directions=np.vstack([directions,fan]);distances=np.r_[distances,lengths]
                 lines.setThickness(1);lines.setColor(.2,.43,.48,.25)

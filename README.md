@@ -105,7 +105,7 @@ Each demo retains a unique archive under `runs/demo/`; its latest preview and su
 [Documentation index](docs/README.md), [command reference](docs/COMMANDS.md), [operations](docs/OPERATIONS.md), [contribution workflow](CONTRIBUTING.md) and [roadmap](ROADMAP.md) cover use and further work. Training requires an explicit command and budget.
 
 
-The [critic-isolation v3 run](docs/evidence/guided-navigation-v3-results.md) completed with 0/8 autonomous development goals and eight collisions. A [guarded PPO continuation](docs/evidence/guarded-navigation-v4-plan.md) now tests rollback of excessive policy changes under a further 32,768-transition cap. Navigation remains unresolved; final tests and original aliases remain preserved.
+The earlier [critic-isolation v3 run](docs/evidence/guided-navigation-v3-results.md) and subsequent guarded corrections did not resolve original large-room navigation. Their checkpoints and evidence remain available; those experiments are no longer running.
 
 
 ## Corrección panorámica y resultado de waypoint v6
@@ -114,3 +114,9 @@ La tanda waypoint v6 completó 81.920 transiciones nuevas, con pérdidas finitas
 
 Se conservan los [resultados verificados](docs/evidence/neural-waypoint-v6-results.md) y el [diagnóstico de control y cobertura](docs/evidence/neural-waypoint-v6-diagnostics.md). La siguiente corrección usa visión panorámica medida alrededor del cuerpo y vuelos guiados completos desde los estados originales. Su controlador recibe únicamente actividad neuronal; la ruta oculta solo etiqueta datos durante entrenamiento.
 El [protocolo panorámico v7](docs/evidence/panoramic-neural-v7-plan.md) fija un límite de 98.304 transiciones nuevas, 12.288 actualizaciones supervisadas y una única validación de desarrollo. Empieza un controlador nuevo por el cambio de dimensiones, conserva todos los checkpoints anteriores y no consume el test reservado.
+
+El usuario ha fijado una [ventana adicional de dos horas](docs/evidence/two-hour-navigation-plan.md), con parada el 4 de octubre a las 22:40:52 de Madrid. La corrección de cobertura amplía los vuelos guiados y los arranques en mapas originales, y utiliza sensores CUDA previamente contrastados con NumPy. Sus resultados autónomos todavía están pendientes; el límite de tiempo no implica que la navegación esté resuelta.
+
+## Cierre de las correcciones panorámicas
+
+Las tandas v8, v9, v10 y v12 terminaron y añadieron 505.856 transiciones. La última evaluación autónoma en desarrollo reutilizado alcanzó 0/8 objetivos, con una colisión y siete timeouts. El total sustantivo completado es 1.472.512 transiciones. La navegación en los mapas grandes originales sigue pendiente; no se usó el test reservado ni se promovieron los aliases originales. Se conserva el [informe de la ventana de dos horas](docs/evidence/two-hour-navigation-results.md), sus checkpoints y el lanzador experimental `launch-panorama.ps1`. El trabajo se pausa al cumplirse el plazo solicitado, el 4 de octubre a las 22:40:52 de Madrid.

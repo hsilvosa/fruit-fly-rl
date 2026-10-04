@@ -6,6 +6,13 @@ from gymnasium.spaces import Box
 from fly_rl.training.panorama_policy import PanoramicBrainHistory,CircularConv
 from fly_rl.training.panorama_navigation import validate_plan
 
+def test_artifact_hash_matches_windows_separator_spellings(tmp_path):
+    from fly_rl.training.panorama_navigation import artifact_digest
+    checkpoint=tmp_path/'policy.zip'
+    assert artifact_digest({str(checkpoint).replace('\\','/'):'expected'},checkpoint)=='expected'
+    assert artifact_digest({str(checkpoint):'expected'},str(checkpoint).replace('\\','/'))=='expected'
+    assert artifact_digest({str(checkpoint):'expected'},tmp_path/'other.zip') is None
+
 def test_horizontal_wrap_and_neural_policy_backward():
     torch.set_num_threads(2)
     conv=CircularConv(2,8);x=torch.randn(2,2,25,72)

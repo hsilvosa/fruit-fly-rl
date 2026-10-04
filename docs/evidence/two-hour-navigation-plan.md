@@ -1,0 +1,11 @@
+# Navigation work within the two-hour limit
+
+The user authorized two additional hours of corrections and training on 4 October 2026, ending at 20:40:52 UTC (22:40:52 in Madrid). Work must pause at that deadline even if navigation remains unsuccessful. A process watchdog checks both PID and process creation time. New coverage work also has a cooperative checkpoint deadline at 20:39 UTC.
+
+The current panoramic v7 run remains bounded at 98,304 transitions. Its first autonomous student fragment recorded zero arrivals and 68 collisions in 16,384 transitions. Sixteen teacher arrivals came from privileged training guidance and are not autonomous results. Auditing stored observations reproduced executed student actions within numerical tolerance. Startup prediction errors were much larger on optimization maps absent from the teacher flights than on teacher maps; this supports increasing coverage rather than assuming a checkpoint loading error.
+
+The additional coverage correction has a maximum of 301,056 physical transitions: 262,144 teacher transitions in long flights starting on 64 original large maps, 6,144 teacher transitions covering the remaining 48 original starts, and 32,768 autonomous student transitions. It resumes the completed v7 student-round-0 checkpoint without choosing it through validation. A fixed stride subsamples optimization observations for storage; every physical transition still advances the full connectome. Earlier optimization examples are replayed without counting them as new physical transitions.
+
+The correction uses the verified isolated CUDA sensor backend. It computes the same 1,928 rays and 3,869 sensor values, while retaining all 167,184 annotated neurons and 25,583,622 connections. Original large rooms, obstacles, openings and time limits remain unchanged. This backend is a performance change, not evidence of improved navigation or biological advantage.
+
+Optimization seeds are 370000–370111. The eight development maps 430000–430007 have been reused and cannot establish independent generalization. No reserved final test is authorized through this run, and no original demo alias is promoted. Results will be recorded separately for teacher and student. Saved checkpoints are retained when work pauses.

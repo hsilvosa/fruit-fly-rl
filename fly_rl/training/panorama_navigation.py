@@ -18,6 +18,12 @@ def sha(path):
         for block in iter(lambda:stream.read(8*1024*1024),b''):digest.update(block)
     return digest.hexdigest()
 
+def artifact_digest(artifacts,path):
+    """Match artifact identity independently of Windows path spelling."""
+    identity=os.path.normcase(str(Path(path).resolve()))
+    return next((digest for key,digest in artifacts.items()
+                 if os.path.normcase(str(Path(key).resolve()))==identity),None)
+
 def validate_plan(plan):
     if (plan.get('status')!='approved' or plan.get('kind')!='panoramic-neural-navigation-v1'
         or plan['steps']!=98304 or plan['teacher_steps']!=65536 or plan['student_steps']!=32768
@@ -42,6 +48,8 @@ def reset_training_world(world,layout_seed):
 
 def run(plan_path,device='cuda'):
     plan=json.loads(Path(plan_path).read_text(encoding='utf-8-sig'));validate_plan(plan)
+    if artifact_digest(plan['source_artifacts'],plan['source']) is None:
+        raise ValueError('Source checkpoint is absent from protected artifacts')
     for path,digest in {**plan['source_hashes'],**plan['source_artifacts'],**plan['aliases_before']}.items():
         if sha(path)!=digest:raise ValueError('Frozen file changed: '+path)
     folder=Path(plan['output']);folder.mkdir(parents=True,exist_ok=True);status_path=folder/'status.json'
@@ -150,7 +158,7 @@ def run(plan_path,device='cuda'):
         if env is not None:env.close()
         status['aliases_verified']={p:sha(p)==h for p,h in plan['aliases_before'].items()}
         status['source_artifacts_verified']={p:sha(p)==h for p,h in plan['source_artifacts'].items()}
-        status['source_checkpoint_unchanged']=sha(plan['source'])==plan['source_artifacts'][plan['source']]
+        status['source_checkpoint_unchanged']=sha(plan['source'])==artifact_digest(plan['source_artifacts'],plan['source'])
         status['runtime_sources_verified']={p:sha(p)==h for p,h in plan['source_hashes'].items()}
         status['finished_utc']=datetime.now(timezone.utc).isoformat();save()
     return status
