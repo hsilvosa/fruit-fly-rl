@@ -8,7 +8,7 @@ import sys
 import subprocess
 from importlib.metadata import version,PackageNotFoundError
 import numpy as np
-from fly_rl.simulation.sensors import SENSOR_NAMES,SENSOR_VERSION,DIRECTIONS,RAY_RANGE
+from fly_rl.simulation.sensors import SENSOR_NAMES,SENSOR_VERSION,DIRECTIONS,RAY_RANGE,sensor_names,SENSOR_V5,FAN_SPEC
 
 def serializable(value):
     if isinstance(value,np.ndarray): return value.tolist()
@@ -38,12 +38,13 @@ class FlightRecorder:
         self.chunk_size=chunk_size;self.buffer=[];self.closed=False
         self.manifest={'schema_version':2,'started_utc':datetime.now(timezone.utc).isoformat(),
             'status':'running','transition_count':0,'event_count':0,'chunks':[],
-            'sensor_version':metadata.get('sensor_version',SENSOR_VERSION),'sensor_names':SENSOR_NAMES,
+            'sensor_version':metadata.get('sensor_version',SENSOR_VERSION),'sensor_names':sensor_names(metadata.get('sensor_version',SENSOR_VERSION)),
             'local_ray_directions':DIRECTIONS.tolist(),'ray_range':RAY_RANGE,
+            'long_range_fan':dict(FAN_SPEC) if metadata.get('sensor_version')==SENSOR_V5 else None,
             'metadata':metadata,'brain_snapshots':[],'software':software_info(),
             'configuration':{'chunk_size':chunk_size,'dt':metadata.get('dt',.05),
                 'sensor_version':metadata.get('sensor_version',SENSOR_VERSION),'ray_range':RAY_RANGE,
-                'sensor_values':len(SENSOR_NAMES),'reservoir':metadata.get('reservoir_spec')}}
+                'sensor_values':len(sensor_names(metadata.get('sensor_version',SENSOR_VERSION))),'reservoir':metadata.get('reservoir_spec')}}
         self.events=(self.path/'events.jsonl').open('a',encoding='utf8')
         self._save_manifest()
 

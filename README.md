@@ -1,5 +1,9 @@
 # Fly RL
 
+Original-large navigation remains unresolved. The [guided initialization](docs/evidence/guided-navigation-v1-results.md) achieved 0/8 autonomous validation goals, all failures by collision. Its teacher successes are separate training outcomes. The existing cumulative 524,288-transition budget is exhausted; all original aliases and reserved final tests remain preserved.
+
+A [perception diagnosis and sensors-v5 correction](docs/evidence/visible-fan-v5.md) found early teacher actions that require information absent from the short-range observations. The new dense visible scan resolves the tested aperture ambiguities and reaches the full-connectome brain features. Code, CUDA activity, demo recording and replay are verified; navigation benefit is not yet measured. A further 65,536-transition correction is prepared as a draft requiring budget approval, with sustained student-only corrective collection rather than the previous teacher-dominated mixture.
+
 A virtual fruit fly navigates procedural 3D rooms using features from the full annotated MaleCNS v1.0 connectome. A fixed sparse recurrent model converts simulated sensor readings into activity; a PPO actor and critic learn flight commands. Panda3D displays the room and an optional separate anatomical activity window.
 
 This is an engineered navigation experiment. Synthetic distance rays and target direction are available to the controller. The recurrent equations, sensor projection and flight dynamics are project choices, rather than a biological simulation of vision, spiking neurons or wing aerodynamics. Navigation success alone does not establish a benefit from fruit-fly wiring.
@@ -8,7 +12,7 @@ This is an engineered navigation experiment. Synthetic distance rays and target 
 
 The MaleCNS reconstruction, annotations and soma coordinates were produced by the FlyEM team at HHMI Janelia Research Campus, the University of Cambridge Department of Zoology, the MRC Laboratory of Molecular Biology, Google Research, and the contributors credited in the original publication. See the [official project](https://male-cns.janelia.org/).
 
-Cite Berg, S., Beckett, I. R., Costa, M., et al. (2026), *Sexual dimorphism in the complete Drosophila male central nervous system connectome*, Cell, 189(18), 5504–5526.e15. [DOI](https://doi.org/10.1016/j.cell.2026.08.015).
+Cite Berg, S., Beckett, I. R., Costa, M., et al. (2026), *Sexual dimorphism in the complete Drosophila male central nervous system connectome*, Cell, 189(18), 5504Ã¢â‚¬â€œ5526.e15. [DOI](https://doi.org/10.1016/j.cell.2026.08.015).
 
 The source data is released under CC BY 4.0, as linked by the [official download page](https://male-cns.janelia.org/download/). Fly RL filters and transforms those tables; the original researchers did not produce this controller or its training results. [Credits and references](docs/REFERENCES.md) describes attribution, modifications and reusable citations.
 
@@ -18,10 +22,12 @@ The audited graph contains 167,184 neurons, 25,583,622 directed edges and 124,17
 
 | Profile | Room dimensions | Collision boxes | Structure |
 | --- | --- | --- | --- |
-| `open` | 32 × 32 × 12 | 24 | Scattered obstacles |
-| `passages` | 32 × 32 × 12 | 64 | Three partitions with openings |
-| `large` | 48 × 48 × 16 | 112 | Five partitions and narrower passages |
-| `maze` | 64 × 64 × 20 | 192 | Eight partitions and four dead-end branches |
+| `gate-near` | 12 Ãƒâ€” 12 Ãƒâ€” 10 | 4 | One wide opening and nearby goal |
+| `gate-long` | 24 Ãƒâ€” 12 Ãƒâ€” 10 | 4 | The same opening with longer travel |
+| `open` | 32 Ãƒâ€” 32 Ãƒâ€” 12 | 24 | Scattered obstacles |
+| `passages` | 32 Ãƒâ€” 32 Ãƒâ€” 12 | 64 | Three partitions with openings |
+| `large` | 48 Ãƒâ€” 48 Ãƒâ€” 16 | 112 | Five partitions and narrower passages |
+| `maze` | 64 Ãƒâ€” 64 Ãƒâ€” 20 | 192 | Eight partitions and four dead-end branches |
 
 The original dense generator remains available. Each new profiled layout has a hidden clearance certificate and a route-dependent time allowance. The controller receives neither the certificate nor the complete obstacle map. [Progressive maps](docs/GEOMETRY_CURRICULUM.md) explains generation, difficulty measurements and the curriculum.
 
@@ -64,9 +70,13 @@ Achievable speed depends on compute and rendering load. Physics keeps its fixed 
 
 ## Results and verification
 
-The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0–5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
+The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0Ã¢â‚¬â€œ5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
 
 Results are selected using validation only. One frozen winner is assessed on each reserved final pool, which is then consumed. Different experiments use different final rooms and do not establish a paired performance improvement. [Results](docs/RESULTS.md) records aggregate outcomes and uncertainty; [verification](docs/VERIFICATION.md) distinguishes correctness checks from learning performance.
+
+The [geometry failure diagnosis](docs/GEOMETRY_DIAGNOSIS.md) confirms that the earlier controller reproduced its outcomes in four retained original validation rooms. The new progression advanced without passage mastery, and the overall selection retained untrained initialization after all trained target candidates failed. Single-opening navigation is the next prerequisite before expanding map complexity further.
+
+The corrected practice-mastery v2 tools start with `gate-near`, withhold 16 training layouts for progression checks, preserve easier examples and leave the final pool unused if no trained candidate succeeds in validation. They passed physical passage checks and a full-graph 128-transition optimizer smoke. The completed 524,288-transition comparison selected baseline seed 42, reaching 61/64 final single-opening goals (95.3%), with zero collisions and three timeouts; Wilson 95% interval 87.1-98.4%. This result applies to the simpler single-opening distribution. The curriculum did not beat baseline in validation. [Completion evidence](docs/evidence/passage-mastery-v2-results.md) includes all seeds, practice rounds and preserved alias hashes. See the [corrected protocol and preparation commands](docs/GEOMETRY_CURRICULUM.md#corrected-practice-mastery-protocol).
 
 [Mathematical model and optimization](docs/MATHEMATICS.md) explains the recurrent update, sensory projection, pooling, flight, reward, PPO, GAE and Adam equations. PPO updates the actor and critic, while connectome weights remain fixed.
 

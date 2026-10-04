@@ -1,5 +1,15 @@
 # Verification
 
+## Practice-mastery correction checks
+
+The correction verification on 2026-10-03 passed the full suite of 138 tests in 58.59 seconds. A subsequent selection change that retains both method records passed three targeted regression tests, including one additional test. These cover practice separation, refusal of validation-derived gates, mastery persistence across rounds, retained easier tasks, initialization exclusion and skipping final access after zero validation success. The normal sparse-CSR beta warning remains.
+
+An oracle following the hidden certificate reached the goal through the actual coordinated dynamics on eight seeds for each new single-opening profile, 16 cases total. It is a physical test helper, not a learned controller or a policy input.
+
+The full MaleCNS graph passed a CUDA optimizer smoke of exactly 128 transitions and one PPO update, with finite losses, changed parameters and checkpoint reload. Sixteen further practice-inference episodes added no optimizer updates and left checkpoint bytes unchanged. Both practice batches had zero goals, so the gate stayed at stage zero as required. This does not demonstrate learned passage navigation.
+
+All six original launcher aliases retained their recorded hashes. Local evidence is kept under ignored `reports/mastery-corrections/`. A new suite and budget-required draft were prepared locally, excluding all seven historical suites; no substantive training or reserved final assessment was launched. Documentation links were checked after the updates.
+
 Correctness, navigation performance and publication privacy are separate checks. [Results](RESULTS.md) records learning outcomes; this guide describes what the implementation checks cover. Complete local logs and original evidence are retained privately.
 
 ## Simulation and connectome
@@ -35,3 +45,11 @@ The publication guard rejects private or generated tracked files, detailed evide
 The source-only ZIP is audited against committed Git blobs with newline conversion disabled during export. It contains no `.git` history. Detailed records remain locally backed up and ignored. The local `master` development history retains older private records. The separate `publication` branch starts from the reviewed tree without development ancestors; the release checks verify its root and current files.
 
 Automated checks do not establish biological fidelity, global route optimality, arbitrary-distribution generalization or the absence of every possible sensitive string. Test counts establish covered correctness properties, rather than a learning-performance claim.
+
+## Navigation correction verification, 2026-10-04
+
+The full suite passed 180 tests after introducing the opt-in route reward and guided training tools. Tests cover required detour credit, zero progress around closed loops, unchanged physics and sensor tensors, collision handling, teacher traversal of four original-large optimization maps, actor-only imitation fitting, guided transition counts, and critic return boundaries. These checks validate implementation and teacher behavior; they do not establish successful student navigation. The student remains subject to teacher-free validation in the bounded experiment.
+
+## Visible fan and compatibility verification
+
+After the sensors-v5 correction and migration repair, the complete suite passed 203 tests in 137.24 seconds. The full-graph CUDA check found nonzero feature differences in four aperture counterfactuals; 20.063 seconds of batch-four constant-input brain execution measured 279.12 transitions/second and 0.318 GiB peak allocated VRAM. This is not environment training throughput. The new untrained demo completed 40 steps on the original large map, its archive passed integrity inspection, and replay completed 20 saved steps with no brain or policy execution. The scene was visually inspected. No v5 navigation performance has yet been measured.

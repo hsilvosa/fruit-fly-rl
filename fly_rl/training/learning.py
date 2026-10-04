@@ -11,14 +11,22 @@ from fly_rl.connectome.brain import Brain,FEATURES
 from fly_rl.simulation.world import FlightWorld,REWARD_VERSION
 
 class BrainEnv(VecEnv):
-    def __init__(self,data='data',batch=1,device='cuda',seed=0,brain=None,mode='obstacles',layout_seeds=None,dynamics='legacy',sensor_version=None,map_profile=None):
+    def __init__(self,data='data',batch=1,device='cuda',seed=0,brain=None,mode='obstacles',layout_seeds=None,dynamics='legacy',sensor_version=None,map_profile=None,timeout_as_terminal=False,history_frames=0,history_stride=8):
+        self.timeout_as_terminal=bool(timeout_as_terminal)
+        if type(history_frames) is not int or not 0<=history_frames<=128 or type(history_stride) is not int or not 1<=history_stride<=64:
+            raise ValueError('Invalid brain history dimensions')
+        self.history_frames=history_frames;self.history_stride=history_stride
+        self.feature_history=np.zeros((batch,history_frames,FEATURES),dtype=np.float32)
+        self.latest_features=np.zeros((batch,FEATURES),dtype=np.float32)
+        self.history_ticks=np.zeros(batch,dtype=int)
         from fly_rl.simulation.map_profiles import resolve_profile
         self.map_profile=resolve_profile(map_profile)
         self.worlds=[FlightWorld(seed+i,mode,layout_seeds,dynamics,sensor_version,self.map_profile) for i in range(batch)]
         self.brain=brain or Brain(data,batch,device,sensor_version=sensor_version)
         if any(w.sensor_version!=self.brain.sensor_version for w in self.worlds): raise ValueError('World/brain sensor contract mismatch')
         self.returns=np.zeros(batch);self.lengths=np.zeros(batch,dtype=int)
-        super().__init__(batch,spaces.Box(-np.inf,np.inf,(FEATURES,),dtype=np.float32),self.worlds[0].action_space)
+        shape=(history_frames+1,FEATURES) if history_frames else (FEATURES,)
+        super().__init__(batch,spaces.Box(-np.inf,np.inf,shape,dtype=np.float32),self.worlds[0].action_space)
 
     def reset(self):
         self.brain.reset()
@@ -28,16 +36,28 @@ class BrainEnv(VecEnv):
             self.reset_infos[i]=info
         self._reset_seeds();self._reset_options()
         self.returns.fill(0);self.lengths.fill(0)
-        return self.brain.step(np.asarray(sensors))
+        self.feature_history.fill(0);self.history_ticks.fill(0)
+        return self._pack_features(self.brain.step(np.asarray(sensors)))
+
+    def _pack_features(self,features):
+        self.latest_features=features.copy()
+        if not self.history_frames:return features
+        return np.concatenate([self.feature_history,features[:,None,:]],axis=1)
 
     def step_async(self,actions): self.actions=actions
 
     def step_wait(self):
+        if self.history_frames:
+            self.history_ticks+=1
+            for i in np.flatnonzero(self.history_ticks%self.history_stride==0):
+                self.feature_history[i,:-1]=self.feature_history[i,1:].copy()
+                self.feature_history[i,-1]=self.latest_features[i]
         sensors=[]; rewards=[];dones=[]; infos=[]
         for i,(w,a) in enumerate(zip(self.worlds,self.actions)):
             obs,r,terminated,truncated,info=w.step(a)
             sensors.append(obs);rewards.append(r);dones.append(terminated or truncated)
-            info['TimeLimit.truncated']=bool(truncated and not terminated)
+            info['TimeLimit.truncated']=bool(truncated and not terminated and not self.timeout_as_terminal)
+            info['timeout_failure_terminal']=bool(truncated and self.timeout_as_terminal)
             self.returns[i]+=r;self.lengths[i]+=1
             if terminated or truncated: info['episode']={'r':self.returns[i],'l':self.lengths[i]}
             infos.append(info)
@@ -47,7 +67,9 @@ class BrainEnv(VecEnv):
             info['next_brain_features']=features[i].copy()
         ended=np.flatnonzero(dones)
         if len(ended):
-            for i in ended: infos[i]['terminal_observation']=features[i].copy()
+            for i in ended:
+                infos[i]['terminal_observation']=np.concatenate([self.feature_history[i],features[i][None,:]],axis=0) if self.history_frames else features[i].copy()
+                self.feature_history[i].fill(0);self.history_ticks[i]=0
             self.brain.reset(ended)
             # Recompute fresh observations without advancing nonterminal brain states.
             saved=self.brain.state.clone()
@@ -59,7 +81,7 @@ class BrainEnv(VecEnv):
             continuing=np.flatnonzero(~np.asarray(dones))
             self.brain.state[:,continuing]=saved[:,continuing]
             features[ended]=reset_features[ended]
-        return features,np.asarray(rewards,dtype=np.float32),np.asarray(dones,dtype=bool),infos
+        return self._pack_features(features),np.asarray(rewards,dtype=np.float32),np.asarray(dones,dtype=bool),infos
 
     def close(self): pass
     def get_attr(self,name,indices=None):
@@ -71,10 +93,14 @@ class BrainEnv(VecEnv):
     def env_is_wrapped(self,wrapper_class,indices=None): return [False for i in self._get_indices(indices)]
 
 def make_policy(env,smoke=False,seed=42):
+    policy_options={'net_arch':{'pi':[128,128],'vf':[128,128]}}
+    if getattr(env,'history_frames',0):
+        from fly_rl.training.temporal_policy import ResidualBrainHistory
+        policy_options.update(features_extractor_class=ResidualBrainHistory,ortho_init=False)
     return PPO('MlpPolicy',env,device='cpu',seed=seed,verbose=0,
         learning_rate=3e-4,n_steps=128 if smoke else 512,batch_size=128,
         n_epochs=1 if smoke else 5,gamma=.995,gae_lambda=.95,clip_range=.2,
-        policy_kwargs={'net_arch':{'pi':[128,128],'vf':[128,128]}},
+        policy_kwargs=policy_options,
         tensorboard_log=None if smoke else 'runs/tensorboard')
 
 def save_model(model,path,brain):
@@ -84,7 +110,11 @@ def save_model(model,path,brain):
     path.with_suffix('.json').write_text(json.dumps({'training_reward_shaping':model.get_env().reward_shaping.snapshot() if model.get_env() is not None and hasattr(model.get_env(),'reward_shaping') else None,'training_curriculum':model.get_env().curriculum.snapshot() if model.get_env() is not None and hasattr(model.get_env(),'curriculum') else None,'fingerprint':brain.fingerprint,
         'dataset':brain.audit.get('dataset','MaleCNS v1.0'),'timesteps':model.num_timesteps,
         'kind':'smoke-test' if model.n_steps==128 else 'policy','trained_navigation':False,
-        'reward_version':REWARD_VERSION,'training_seed':model.seed,'sensor_version':brain.sensor_version,
+        'reward_version':REWARD_VERSION,'discount_gamma':model.gamma,
+        'brain_history':{'frames':getattr(model.get_env(),'history_frames',0),'stride':getattr(model.get_env(),'history_stride',8)},
+        'history_transfer':getattr(model,'history_transfer',None),
+        'imitation_training':getattr(model,'imitation_training',None),
+        'training_timeout_as_terminal':getattr(model.get_env(),'timeout_as_terminal',False),'training_seed':model.seed,'sensor_version':brain.sensor_version,
         'environment':{'mode':world.mode,'dynamics':world.dynamics,'size':world.room.tolist(),'episode_limit':world.episode_limit,
                        'training_layout_seeds':world.layout_seeds,
                        'map_profile':model.get_env().map_profile.to_dict() if model.get_env().map_profile else None,
@@ -124,40 +154,105 @@ class TimedCheckpoint(BaseCallback):
         path=self.directory/'progress.json';path.parent.mkdir(parents=True,exist_ok=True)
         tmp=path.with_suffix('.tmp');tmp.write_text(json.dumps(status,indent=2));tmp.replace(path)
 
-def train(data,device,steps,batch,output,resume=None,smoke=False,mode='obstacles',layout_seeds=None,dynamics='legacy',allow_transfer=False,training_seed=42,sensor_version=None,curriculum=None,curriculum_offset=0,curriculum_total=None,reward_shaping=None,map_profile=None,curriculum_profiles=None):
+class TrainingSession:
+    """Keep live episodes and PPO state between chunks; not a disk resume format."""
+    def __init__(self):
+        self.env=None
+        self.model=None
+        self.contract=None
+        self.last_checkpoint=None
+        self.random_state=None
+
+    def capture_random_state(self):
+        import random
+        self.random_state=(random.getstate(),np.random.get_state(),torch.get_rng_state(),
+                           torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None)
+
+    def restore_random_state(self):
+        import random
+        if self.random_state is None:return
+        a,b,c,d=self.random_state
+        random.setstate(a);np.random.set_state(b);torch.set_rng_state(c)
+        if d is not None:torch.cuda.set_rng_state_all(d)
+
+    def close(self):
+        if self.env is not None:self.env.close()
+
+
+def train(data,device,steps,batch,output,resume=None,smoke=False,mode='obstacles',layout_seeds=None,dynamics='legacy',allow_transfer=False,training_seed=42,sensor_version=None,curriculum=None,curriculum_offset=0,curriculum_total=None,reward_shaping=None,map_profile=None,curriculum_profiles=None,practice_seeds=None,curriculum_state=None,session=None,gamma=.995,timeout_as_terminal=False,target_envs=0,history_frames=0,history_stride=8,transfer_history=False):
     if not 0<=training_seed<2**32: raise ValueError('Invalid training seed')
+    if resume and not transfer_history and not history_frames and Path(resume).with_suffix('.json').exists():
+        saved_history=checkpoint_history(resume);history_frames=saved_history['history_frames'];history_stride=saved_history['history_stride']
     if steps<=0: raise ValueError('Specify a positive number of training steps')
     if smoke and (steps!=128 or batch!=1): raise ValueError('Smoke test is exactly 128 transitions and one PPO update')
-    env=BrainEnv(data,batch,device,mode=mode,layout_seeds=layout_seeds,dynamics=dynamics,seed=training_seed,sensor_version=sensor_version or checkpoint_sensor_version(resume),map_profile=map_profile)
-    if curriculum is not None:
+    if target_envs and curriculum!='geometry-v2-practice-mastery':raise ValueError('Dedicated target exposure requires mastery curriculum')
+    if not np.isfinite(gamma) or not .9 <= gamma < 1.:raise ValueError('Discount gamma must be finite and in [0.9, 1)')
+    contract=json.dumps({'data':str(Path(data).resolve()),'device':device,'batch':batch,'mode':mode,
+        'layouts':layout_seeds,'dynamics':dynamics,'seed':training_seed,'sensor':sensor_version or checkpoint_sensor_version(resume),
+        'curriculum':curriculum,'total':curriculum_total,'profiles':curriculum_profiles,'practice':practice_seeds,
+        'profile':map_profile,'reward':reward_shaping,'gamma':gamma,'timeout_as_terminal':timeout_as_terminal,'target_envs':target_envs,'history_frames':history_frames,'history_stride':history_stride},sort_keys=True,default=str)
+    continuing=session is not None and session.env is not None
+    if continuing:
+        if session.contract!=contract or str(Path(resume).resolve())!=session.last_checkpoint:
+            raise ValueError('Continuous training requires the same configuration and latest checkpoint')
+        env=session.env
+        if hasattr(env,'curriculum') and (env.curriculum.transitions!=curriculum_offset or env.curriculum.snapshot()!=curriculum_state):
+            raise ValueError('Continuous curriculum state mismatch')
+        session.restore_random_state()
+    else:
+        env=BrainEnv(data,batch,device,mode=mode,layout_seeds=layout_seeds,dynamics=dynamics,seed=training_seed,sensor_version=sensor_version or checkpoint_sensor_version(resume),map_profile=map_profile,timeout_as_terminal=timeout_as_terminal,history_frames=history_frames,history_stride=history_stride)
+    if curriculum is not None and not continuing:
         from fly_rl.training.approach_curriculum import VERSION,configure_curriculum
         from fly_rl.training.geometry_curriculum import VERSION as GEOMETRY_VERSION,configure_geometry_curriculum
+        from fly_rl.training.mastery_curriculum import VERSION as MASTERY_VERSION,configure_mastery
         if curriculum==VERSION:configure_curriculum(env,curriculum_total,curriculum_offset,training_seed)
         elif curriculum==GEOMETRY_VERSION:
             if curriculum_offset+steps>curriculum_total:raise ValueError('Training exceeds geometry schedule budget')
             configure_geometry_curriculum(env,curriculum_total,curriculum_offset,training_seed,curriculum_profiles)
+        elif curriculum==MASTERY_VERSION:
+            if curriculum_offset+steps>curriculum_total:raise ValueError('Training exceeds mastery budget')
+            configure_mastery(env,curriculum_total,curriculum_offset,training_seed,curriculum_profiles,practice_seeds,curriculum_state,target_envs)
         else:raise ValueError('Unknown training curriculum')
-    if reward_shaping is not None:
+    if reward_shaping is not None and not continuing:
         from fly_rl.training.risk_shaping import VERSION,configure_risk_shaping
-        if reward_shaping!=VERSION:raise ValueError('Unknown training reward shaping')
-        configure_risk_shaping(env,training_seed)
-    model=load_model(resume,env.brain,env,allow_transfer) if resume else make_policy(env,smoke,training_seed)
-    model.set_random_seed(training_seed)
-    if resume: model.gamma=.995
+        from fly_rl.training.route_progress import VERSION as ROUTE_VERSION,configure_route_progress
+        if reward_shaping==VERSION:configure_risk_shaping(env,training_seed)
+        elif reward_shaping==ROUTE_VERSION:configure_route_progress(env,training_seed)
+        else:raise ValueError('Unknown training reward shaping')
+    if transfer_history and not continuing:
+        if not resume:raise ValueError('History transfer requires an explicit source checkpoint')
+        from fly_rl.training.temporal_policy import transfer_history_policy
+        source=load_model(resume,env.brain,None,allow_transfer)
+        model=transfer_history_policy(source,env,training_seed)
+    else:
+        model=session.model if continuing else load_model(resume,env.brain,env,allow_transfer) if resume else make_policy(env,smoke,training_seed)
+    if not continuing:model.set_random_seed(training_seed)
+    if session is not None:
+        session.env,session.model,session.contract=env,model,contract
+    model.gamma=float(gamma)
+    if hasattr(model,'rollout_buffer'):model.rollout_buffer.gamma=float(gamma)
     model.tensorboard_log=None if smoke else str(Path(output).parent/'tensorboard')
     before=[p.detach().clone() for p in model.policy.parameters()]
     initial_timesteps=model.num_timesteps
+    initial_ticks=[w.ticks for w in env.worlds]
     try:
-        model.learn(total_timesteps=steps,reset_num_timesteps=not bool(resume),
+        model.learn(total_timesteps=steps,reset_num_timesteps=not bool(resume) and not continuing,
                     callback=None if smoke else TimedCheckpoint(Path(output).parent,env.brain))
     finally:
         save_model(model,output,env.brain)
-        env.close()
+        if session is None:env.close()
+        else:
+            session.last_checkpoint=str(Path(output).resolve())
+            session.capture_random_state()
     result={'transitions':model.num_timesteps,'updates':model._n_updates,
         'added_transitions':model.num_timesteps-initial_timesteps,'requested_transitions':steps,
-        'room_mode':mode,'training_seed':training_seed,
+        'room_mode':mode,'training_seed':training_seed,'discount_gamma':float(gamma),
+        'timeout_as_terminal':bool(timeout_as_terminal),
         'parameters_changed':any(not torch.equal(a,b) for a,b in zip(before,model.policy.parameters())),
         'losses':{k:float(v) for k,v in model.logger.name_to_value.items() if k.startswith('train/') and np.isscalar(v)}}
+    if session is not None:
+        result['episode_continuity']={'continued_live_session':continuing,'ticks_before':initial_ticks,
+                                     'ticks_after':[w.ticks for w in env.worlds]}
     if hasattr(env,'reward_shaping'):result['reward_shaping']=env.reward_shaping.snapshot()
     if hasattr(env,'curriculum'):result['curriculum']=env.curriculum.snapshot()
     if not result['losses'] or not all(np.isfinite(v) for v in result['losses'].values()):
@@ -181,3 +276,13 @@ def checkpoint_sensor_version(path):
     if f':reservoir-v2-{value}-256-seed42-leak0.5-scale0.9' not in metadata.get('fingerprint',''):
         raise ValueError('Checkpoint sensor metadata/fingerprint mismatch')
     return value
+
+
+def checkpoint_history(path):
+    if not path:return {'history_frames':0,'history_stride':8}
+    metadata=json.loads(Path(path).with_suffix('.json').read_text())
+    spec=metadata.get('brain_history') or {'frames':0,'stride':8}
+    frames,stride=spec['frames'],spec['stride']
+    if type(frames) is not int or not 0<=frames<=128 or type(stride) is not int or not 1<=stride<=64:
+        raise ValueError('Invalid checkpoint brain history contract')
+    return {'history_frames':frames,'history_stride':stride}

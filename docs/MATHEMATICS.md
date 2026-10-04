@@ -216,6 +216,41 @@ The tested `observed-ray-risk-v1` wrapper subtracts 0.05 times a pre-action risk
 
 ## Progressive geometry and curriculum formulas
 
-[The geometry protocol](GEOMETRY_CURRICULUM.md#difficulty-measurements-and-formulas) defines certified route length, detour, occupancy, conservative body clearance and route-dependent episode limits. Its training-only curriculum stage is min(2, floor(3n/N)), with n including the transition offset across rounds and N the declared per-seed budget. Profile choice happens only at episode reset. Validation does not change the schedule, and the reward/PPO formulas remain the same. The certificate is not policy input or an optimal flight trajectory.
+[The geometry protocol](GEOMETRY_CURRICULUM.md#difficulty-measurements-and-formulas) defines certified route length, detour, occupancy, conservative body clearance and route-dependent episode limits. The historical v1 stage was min(2, floor(3n/N)), with n including the transition offset across rounds and N the declared per-seed budget.
+
+The corrected v2 stage starts at s = 0. After round r, let g_(r,1) and g_(r,2) be goal counts in the two distinct eight-layout training-practice batches at stage s. The next stage is:
+
+$$
+s_{r+1}=\begin{cases}\min(s_r+1,K-1),&g_{r,1}\geq7\ \mathrm{and}\ g_{r,2}\geq7,\\s_r,&\mathrm{otherwise}.\end{cases}
+$$
+
+Here K is the number of frozen profiles. At stage zero the reset distribution places all mass on the first profile. At s > 0, probability 0.8 selects the current profile and probability 0.2/s selects each earlier profile; harder profiles have probability zero. Practice layouts are withheld from optimizer rollouts in both arms. They adapt the training schedule, so their success is not independent test evidence. Checks add inference decisions, not optimizer transitions.
+
+Profile choice happens only at episode reset. Validation and test do not change progression. V2 selection excludes initialization, requires positive target validation success before a final assessment, and rounds ending distance to six decimals when ranking tied success/collision counts. The reward/PPO formulas remain unchanged. The certificate is not policy input or an optimal flight trajectory.
 
 Completed learning measurements are summarized in [Results](RESULTS.md). These equations specify the implementation; they do not establish successful navigation or biological fidelity.
+
+
+## Versioned navigation deadline
+
+The opt-in sensors-v4 contract adds q_t = max(0, 1 - t/T), where t is elapsed decisions and T is the declared episode deadline. Its seeded clock projection adds c_i q_t to neuron i's existing sensory drive. Weights c_i belong to {-0.25, 0, 0.25}; the original sensory assignments and pooling stay fixed. The policy still consumes only pooled recurrent activity. This is a synthetic sensory projection, not an anatomical claim.
+
+For per-decision discount gamma and decision duration dt, the effective discount horizon is dt/(1-gamma). At dt=0.05, gamma=0.995 corresponds to 10 seconds and gamma=0.9995 to 100 seconds. An arrival reward R after n decisions contributes gamma^n R. The longer horizon is a candidate setting, not a proven performance improvement.
+
+An exhausted attempt can be configured as a task failure through --timeout-as-terminal. In that case PPO does not add gamma V(s_terminal) to the final reward. Ordinary external truncations should continue to bootstrap. The physical timeout remains recorded independently of that learning flag. See [Gymnasium time-limit semantics](https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/) and [the verified timeout diagnosis](evidence/large-timeout-diagnosis.md).
+
+
+## Training-only obstacle-aware progress correction
+
+The opt-in `certified-route-progress-v1` objective is described in [the bounded correction protocol](evidence/route-progress-correction-v1-plan.md). For each episode, sample its fixed certified polyline at intervals of at most one unit. Let S(v) be suffix length from sampled vertex v to the final goal. Define D(p) as the minimum of ||p-v|| + S(v) over vertices connected to position p by a segment free of obstacles inflated by body radius plus 0.02. This is an approximate feasible route length, not an optimal geodesic. Its fixed field has no waypoint index or irreversible progress counter.
+
+For valid visible connections, reward is r = 2(D(p_t)-D(p_(t+1))) - 0.02 + B, where B is +20 for arrival, -5 for collision or failed deadline, and zero otherwise. This replaces the former Euclidean-progress term rather than adding both. If no sample is visible, retain the last valid field value, grant zero progress and record a fallback. Collisions always grant zero route progress, without resetting D to zero. Closed visible-state loops telescope to zero undiscounted progress; time cost remains negative.
+
+Geometry and route samples are privileged training supervision used only to compute rewards in optimizer layouts. Sensors, graph activity and policy input dimensions are unchanged. Ordinary demo and evaluation do not compute this field. This intentionally changes the training objective: unlike gamma Phi(next)-Phi(previous), this expression is not discount-correct potential shaping and makes no policy-invariance claim. See [Ng, Harada and Russell (1999)](https://people.eecs.berkeley.edu/~russell/papers/icml99-shaping.pdf). Correctness of these equations does not prove successful navigation.
+
+
+## Long-range visible scan and its brain projection
+
+Sensors-v5 retains all sensors-v3 values. The new 589-beam grid scans target-relative azimuth theta+alpha and elevation phi+beta, with alpha spanning -75 to 75 degrees in 31 columns and beta spanning -45 to 45 degrees in 19 rows. Elevation is clipped just inside the poles. Each unit direction is (cos(elevation) cos(azimuth), cos(elevation) sin(azimuth), sin(elevation)). The world rotation transforms these local directions before standard ray-box intersection. Distances are divided by 24 and approach speeds by three. The scan is centered on the already supplied synthetic target bearing, without using a hidden aperture or route.
+
+Neuron i receives an extra drive 0.25 times the sum of two signed fan values, with distance channels centered at 0.5 and approach channels at zero. Seed 123457 fixes extra input indices and signs. Its recurrent update, matrix and output pooling retain the existing equations. No raw fan channel is appended to policy inputs; policy features remain 256 values, optionally with their recorded history. Versioned fingerprints require explicit transfer. [Measured observation aliases and full-brain verification](evidence/visible-fan-v5.md) distinguish sensor correctness from successful learned navigation.

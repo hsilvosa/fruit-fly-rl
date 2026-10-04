@@ -50,6 +50,8 @@ def main():
     demo.add_argument('--room-mode',choices=['obstacles','dense'],default='obstacles')
     demo.add_argument('--map-profile',help='dense-v3, open, passages, large, maze, or a profile JSON file')
     demo.add_argument('--dynamics',choices=['legacy','coordinated'],default='legacy')
+    from fly_rl.simulation.sensors import SENSOR_VERSIONS
+    demo.add_argument('--sensor-version',choices=SENSOR_VERSIONS,help='Explicit sensory interface for untrained viewing or matching checkpoint')
     demo.add_argument('--brain-view',action='store_true');demo.add_argument('--transfer',action='store_true')
     demo.add_argument('--trace-neuron',type=int,help='Real located body ID to inspect and plot')
     demo.add_argument('--brain-region',default='ALL',help='Official somaNeuromere label')
@@ -63,6 +65,7 @@ def main():
     replay.add_argument('--speed',type=float,default=1.);replay.add_argument('--offscreen',action='store_true')
     replay.add_argument('--seconds',type=float,default=0);replay.add_argument('--screenshot',default='reports/replay.png')
     replay.set_defaults(seed=10,checkpoint=None,no_record=True,record_dir='runs/demo',record_brain=False)
+    guided=sub.add_parser('train-guided');guided.add_argument('--plan',required=True,help='Explicit frozen, bounded training-only teacher protocol')
     train=sub.add_parser('train');train.add_argument('--steps',type=int,required=True);train.add_argument('--batch',type=int,default=1)
     train.add_argument('--output',default='runs/policy.zip');train.add_argument('--resume')
     train.add_argument('--mode',choices=['near','empty','obstacles','dense'],default='obstacles')
@@ -70,6 +73,14 @@ def main():
     train.add_argument('--map-profile',help='Named profile or a profile JSON file; implies dense mode')
     train.add_argument('--dynamics',choices=['legacy','coordinated'],default='legacy')
     train.add_argument('--transfer',action='store_true')
+    from fly_rl.simulation.sensors import SENSOR_VERSIONS
+    train.add_argument('--history-frames',type=int,default=0)
+    train.add_argument('--history-stride',type=int,default=8)
+    train.add_argument('--transfer-history',action='store_true',help='Explicitly upgrade the movement policy with a zero-output temporal residual')
+    train.add_argument('--sensor-version',choices=SENSOR_VERSIONS,help='Explicit versioned sensory contract; checkpoint resumes must match')
+    train.add_argument('--gamma',type=float,default=.995,help='PPO discount per 50 ms decision; long routes may require a longer horizon')
+    train.add_argument('--reward-shaping',choices=['observed-ray-risk-v1','certified-route-progress-v1'])
+    train.add_argument('--timeout-as-terminal',action='store_true',help='Treat exhausted navigation attempts as failures without value bootstrap')
     smoke=sub.add_parser('smoke-test');smoke.add_argument('--dynamics',choices=['legacy','coordinated'],default='legacy')
     evaluation=sub.add_parser('evaluate');evaluation.add_argument('--checkpoint')
     evaluation.add_argument('--episodes',type=int,default=16)
@@ -108,6 +119,11 @@ def main():
     dense.add_argument('--training-seed',type=int,default=42)
     dense.add_argument('--no-promote',action='store_true')
     dense.add_argument('--route-metrics',action='store_true')
+    dense.add_argument('--mastery',action='store_true')
+    dense.add_argument('--continuous-episodes',action='store_true')
+    dense.add_argument('--target-envs',type=int,default=0)
+    dense.add_argument('--gamma',type=float,default=.995)
+    dense.add_argument('--timeout-as-terminal',action='store_true')
     risk=sub.add_parser('prepare-risk-comparison');risk.add_argument('--suite',required=True);risk.add_argument('--output',required=True);risk.add_argument('--steps-per-seed',type=int);risk.add_argument('--batch',type=int,default=8);risk.add_argument('--rounds',type=int,default=2);risk.add_argument('--seeds',type=int,nargs='+',default=[42,73])
     runrisk=sub.add_parser('run-risk-comparison');runrisk.add_argument('configuration');runrisk.add_argument('--output',required=True)
     approach=sub.add_parser('prepare-approach-comparison');approach.add_argument('--suite',required=True);approach.add_argument('--output',required=True);approach.add_argument('--steps-per-seed',type=int);approach.add_argument('--batch',type=int,default=8);approach.add_argument('--rounds',type=int,default=2);approach.add_argument('--seeds',type=int,nargs='+',default=[42,73])
@@ -125,6 +141,7 @@ def main():
     iteration.add_argument('--rounds',type=int,default=3);iteration.add_argument('--batch',type=int,default=16)
     iteration.add_argument('--dynamics',choices=['legacy','coordinated'],default='legacy')
     migrate=sub.add_parser('migrate-sensors');migrate.add_argument('source');migrate.add_argument('--output',required=True)
+    migrate.add_argument('--target',choices=list(SENSOR_VERSIONS[1:]),default=SENSOR_VERSIONS[1])
     compare=sub.add_parser('compare-sensors');compare.add_argument('--suite',required=True);compare.add_argument('--baseline',required=True);compare.add_argument('--output',required=True)
     failures=sub.add_parser('plot-validation-failures');failures.add_argument('experiments',nargs='+');failures.add_argument('--output',required=True)
     fresh=sub.add_parser('prepare-fresh-comparison');fresh.add_argument('--suite',required=True);fresh.add_argument('--output',required=True);fresh.add_argument('--steps-per-seed',type=int);fresh.add_argument('--batch',type=int,default=8);fresh.add_argument('--rounds',type=int,default=2);fresh.add_argument('--seeds',nargs='+',type=int,default=[42,73])
@@ -140,7 +157,7 @@ def main():
         print(json.dumps({'output':args.output,'figure':result['figure'],'layouts':len(result['rows']),'training_invoked':False,'policy_evaluated':False},indent=2))
     elif args.command=='prepare-geometry-comparison':
         from fly_rl.training.geometry_comparison import prepare_geometry_comparison
-        result=prepare_geometry_comparison(args.suite,args.output,args.steps_per_seed,args.batch,args.rounds,args.seeds,args.data)
+        result=prepare_geometry_comparison(args.suite,args.output,args.steps_per_seed,args.batch,args.rounds,args.seeds,args.data,mastery=True)
         print(json.dumps({k:v for k,v in result.items() if k!='source_hashes'},indent=2))
     elif args.command=='run-geometry-comparison':
         from fly_rl.training.geometry_comparison import run_geometry_comparison
@@ -161,7 +178,7 @@ def main():
         print(json.dumps(run_comparison(args.data,args.device,args.suite,args.baseline,args.output),indent=2),flush=True)
     elif args.command=='migrate-sensors':
         from fly_rl.training.sensor_migration import migrate_sensors
-        print(json.dumps(migrate_sensors(args.source,args.output),indent=2))
+        print(json.dumps(migrate_sensors(args.source,args.output,args.target),indent=2))
     elif args.command=='prepare-data':
         from fly_rl.connectome.data import prepare
         write_report('data-audit.json',prepare(args.data))
@@ -197,7 +214,7 @@ def main():
         print(json.dumps(prepare_suite(args.output,args.train_start,args.validation_start,args.test_start,args.train_count,args.validation_count,args.test_count,args.exclude_suite,args.map_profile,args.training_profiles),indent=2),flush=True)
     elif args.command=='train-dense':
         from fly_rl.training.dense_training import train_dense
-        write_report('dense-training.json',train_dense(args.data,args.device,args.suite,args.output,args.baseline,args.steps,args.batch,args.dynamics,args.rounds,args.training_seed,not args.no_promote,args.route_metrics))
+        write_report('dense-training.json',train_dense(args.data,args.device,args.suite,args.output,args.baseline,args.steps,args.batch,args.dynamics,args.rounds,args.training_seed,not args.no_promote,args.route_metrics,curriculum='geometry-v2-practice-mastery' if args.mastery else None,mastery=args.mastery,continuous_episodes=args.continuous_episodes,gamma=args.gamma,timeout_as_terminal=args.timeout_as_terminal,target_envs=args.target_envs))
     elif args.command=='prepare-risk-comparison':
         from fly_rl.training.risk_comparison import prepare_risk_comparison
         result=prepare_risk_comparison(args.suite,args.output,args.steps_per_seed,args.batch,args.rounds,args.seeds,args.data)
@@ -250,6 +267,9 @@ def main():
         output=Path(args.output);output.parent.mkdir(parents=True,exist_ok=True)
         output.write_text(json.dumps(result,indent=2),encoding='utf8');print(json.dumps(result,indent=2),flush=True)
         if args.command=='inspect' and result['errors']: raise SystemExit(1)
+    elif args.command=='train-guided':
+        from fly_rl.training.guided_learning import run_guided
+        write_report('last-guided-training.json',run_guided(args.plan,args.device))
     elif args.command in ['demo','replay']:
         if not np.isfinite(args.speed) or args.speed<=0:
             parser.error('Simulation speed must be finite and positive')
@@ -269,7 +289,7 @@ def main():
                 args.map_profile=suite.get('map_profile')
             from fly_rl.simulation.sensors import SENSOR_V3
             result=train(args.data,args.device,args.steps,args.batch,args.output,args.resume,mode=args.mode,layout_seeds=seeds,
-                dynamics=args.dynamics,allow_transfer=args.transfer,map_profile=args.map_profile,sensor_version=SENSOR_V3 if args.map_profile and not args.resume else None)
+                dynamics=args.dynamics,allow_transfer=args.transfer,map_profile=args.map_profile,sensor_version=args.sensor_version or (SENSOR_V3 if args.map_profile and not args.resume else None),gamma=args.gamma,timeout_as_terminal=args.timeout_as_terminal,history_frames=args.history_frames,history_stride=args.history_stride,transfer_history=args.transfer_history,reward_shaping=args.reward_shaping)
             result['suite']=args.suite
             write_report('last-training.json',result)
 

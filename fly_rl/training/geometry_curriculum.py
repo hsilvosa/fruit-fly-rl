@@ -68,10 +68,10 @@ class GeometryWorld(FlightWorld):
 
 
 def configure_geometry_curriculum(env, total, offset, seed, profiles):
-    from fly_rl.simulation.sensors import SENSOR_V3
+    from fly_rl.simulation.sensors import SENSOR_V3,SENSOR_V4
     if hasattr(env, 'curriculum') or hasattr(env, 'reward_shaping'):
         raise ValueError('Do not combine interventions in the geometry comparison')
-    if any(w.mode != 'dense' or w.dynamics != 'coordinated' or w.sensor_version != SENSOR_V3 or not w.layout_seeds for w in env.worlds):
+    if any(w.mode != 'dense' or w.dynamics != 'coordinated' or w.sensor_version not in (SENSOR_V3,SENSOR_V4) or not w.layout_seeds for w in env.worlds):
         raise ValueError('Geometry curriculum requires v3 coordinated dense training layouts')
     schedule = GeometrySchedule(total, profiles, offset)
     if env.map_profile is None or env.map_profile != schedule.profiles[-1]:
