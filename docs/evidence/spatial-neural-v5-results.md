@@ -1,0 +1,15 @@
+# Spatial neural v5 training results
+
+The training worker consumed its full 98,304-transition cap and then failed a CPU/CUDA reload tolerance assertion. The final checkpoint was already saved. The original failed status is preserved; it must not be relabelled as a completed experiment. Completed substantive training use is now 786,432 transitions.
+
+Teacher fragments completed 65,536 transitions with 19 goals, no collisions and no timeouts. These fragments used privileged route starts and headings, so their goals are not original-start autonomous successes. The first student-only round completed 16,384 transitions with no goals, 143 collisions and no timeouts. The second student-only round completed another 16,384 transitions with no goals, three collisions and no timeouts. Ongoing episodes at the round boundaries were cut for data collection, so those counts cannot demonstrate successful full-length navigation.
+
+All three supervised phases had finite losses. Their final-100 mean weighted imitation losses were 0.006884, 0.038098 and 0.066168 on successively expanded optimization datasets. Changing data and maneuver sampling prevent treating these numbers as a single navigation-performance curve. Total supervised updates: 4,608; substantive PPO updates: zero.
+
+The checkpoint tensors are bitwise equal across CPU and CUDA reloads. In 128 retained optimization inputs, default CUDA convolution at batch eight differs from CPU by at most 0.0002945 action units. Disabling cuDNN TF32 reduces this to 0.00000650, within the original tolerance; same-GPU reload difference is zero. The original failure was a numeric-backend discrepancy, not evidence of missing checkpoint weights. Future spatial training disables TF32 and records that contract rather than loosening the check.
+
+The one declared eight-room development validation was not reached by the failed worker. It is being completed separately with the unchanged final checkpoint and a snapshot whose runtime source hashes match the frozen training plan. No optimizer runs, no additional training transitions and no reserved final test are involved. The separate verification completed: 0/8 goals, six collisions and two timeouts on the reused development suite. The checkpoint and all original aliases retained their hashes. The original training status remains failed; post-run verification is recorded separately in runs/training/spatial-neural-v5/post-run-verification.json.
+
+The source freeze and all six original launcher aliases were independently verified unchanged before subsequent runtime fixes. Detailed status, hashes, precision measurements and the optimization-only start diagnostic remain in private. The initial imitation checkpoint has high yaw error on original random-heading starts; static counterfactuals motivate training-start coverage corrections but do not prove a causal navigation improvement.
+
+Original-large navigation remains unresolved. No checkpoint was promoted and no biological benefit is claimed.

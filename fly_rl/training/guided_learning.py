@@ -41,19 +41,45 @@ def actor_mean(policy, observations):
     return policy.action_net(latent)
 
 
-def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progress=None):
+def imitation_indices(count,batch_size,rng,turns,vertical=None,starts=None):
+    """Preserve legacy turn sampling or balance three maneuver strata.
+
+    Empty strata retain uniform draws. Groups may overlap; this is a training
+    sampler, not a claim about independent examples or physical outcomes.
+    """
+    indices=rng.integers(count,size=batch_size)
+    if vertical is None:
+        if len(turns):indices[:batch_size//2]=rng.choice(turns,batch_size//2)
+    else:
+        size=batch_size//4
+        for number,group in enumerate((turns,vertical,starts)):
+            if len(group):indices[number*size:(number+1)*size]=rng.choice(group,size)
+    return indices
+
+
+def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progress=None,sampling_strategy='turn-balanced-v1'):
     """Fit only the feature extractor and actor; never feed teacher state to it."""
     if count<=0 or updates<=0:raise ValueError('Positive bounded imitation data and updates required')
     policy=model.policy
     params=list(policy.features_extractor.parameters())+list(policy.mlp_extractor.policy_net.parameters())+list(policy.action_net.parameters())
     optimizer=torch.optim.Adam(params,lr=3e-4)
     turns=np.flatnonzero(np.abs(targets[:count,3])>.25)
+    vertical=None;starts=None
+    if sampling_strategy=='maneuver-start-balanced-v2':
+        if observations.ndim!=3:raise ValueError('Startup sampling requires neural histories')
+        vertical=np.flatnonzero(np.abs(targets[:count,2])>.25)
+        chunks=[]
+        for offset in range(0,count,2048):
+            # Latest historical slot is empty until the first stride elapses.
+            empty=~np.any(observations[offset:min(offset+2048,count),-2,:]!=0,axis=1)
+            chunks.append(np.flatnonzero(empty)+offset)
+        starts=np.concatenate(chunks)
+    elif sampling_strategy!='turn-balanced-v1':raise ValueError('Unknown imitation sampler')
     weights=torch.tensor([1.,1.,2.,2.],device=model.device)
     losses=[]
     policy.set_training_mode(True)
     for _ in range(updates):
-        indices=rng.integers(count,size=batch_size)
-        if len(turns):indices[:batch_size//2]=rng.choice(turns,batch_size//2)
+        indices=imitation_indices(count,batch_size,rng,turns,vertical,starts)
         obs=torch.as_tensor(np.array(observations[indices]),device=model.device)
         actions=torch.as_tensor(np.array(targets[indices]),device=model.device)
         predicted=actor_mean(policy,obs)
@@ -65,7 +91,10 @@ def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progre
     policy.set_training_mode(False)
     return {'updates':updates,'examples':count,'first_loss':losses[0],
             'last_loss':losses[-1],'mean_last_100_loss':float(np.mean(losses[-100:])),
-            'finite_losses':bool(np.isfinite(losses).all()),'maneuver_examples':int(len(turns))}
+            'finite_losses':bool(np.isfinite(losses).all()),'maneuver_examples':int(len(turns)),
+            'sampling_strategy':sampling_strategy,
+            'vertical_examples':int(len(vertical)) if vertical is not None else None,
+            'startup_examples':int(len(starts)) if starts is not None else None}
 
 
 def collect_guided(env,model,observations,targets,offset,steps,rng,beta,features=None,teachers=None,rewards=None,terminals=None,progress=None,recover=False,trace=None):

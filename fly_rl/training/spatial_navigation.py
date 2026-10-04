@@ -35,7 +35,12 @@ def run(plan_path,device='cuda'):
     def save():
         temp=path.with_suffix('.tmp');temp.write_text(json.dumps(status,indent=2));temp.replace(path)
     save();env=None;model=None
-    torch.set_num_threads(4);rng=np.random.default_rng(plan['training_seed'])
+    torch.set_num_threads(4)
+    # Batch-eight convolutions can select TF32 kernels. Keep the declared
+    # CPU/CUDA reload tolerance meaningful rather than relaxing its assertion.
+    torch.backends.cudnn.allow_tf32=False
+    torch.backends.cuda.matmul.allow_tf32=False
+    rng=np.random.default_rng(plan['training_seed'])
     try:
         env=BrainEnv(plan.get('data','data'),8,device,seed=plan['training_seed'],mode='dense',
             dynamics='coordinated',sensor_version=SENSOR_V5,map_profile='large',layout_seeds=plan['optimization_layouts'],
@@ -43,6 +48,7 @@ def run(plan_path,device='cuda'):
         model=PPO('MlpPolicy',env,device=device,seed=plan['training_seed'],n_steps=512,batch_size=128,n_epochs=5,
             policy_kwargs={'features_extractor_class':SpatialBrainHistory,'ortho_init':False,
                 'share_features_extractor':False,'net_arch':{'pi':[128,128],'vf':[128,128]}},verbose=0)
+        model.policy_numeric_precision={'cudnn_allow_tf32':False,'matmul_allow_tf32':False}
         model.imitation_training={'runtime_teacher':False,'privileged_training_geometry':True,
             'teacher_version':'certified-3d-coordinated-teacher-v1','ppo_added_transitions':0,
             'guided_transitions':0,'supervised_updates':0,'teacher_start_strategy':'original large route fragment starts; student original starts'}

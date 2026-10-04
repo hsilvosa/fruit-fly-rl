@@ -439,7 +439,14 @@ def run(args):
             if self.win is None or not self.win.isValid(): return False
             self.graphicsEngine.renderFrame();self.graphicsEngine.renderFrame()
             path=Path(args.screenshot);path.parent.mkdir(parents=True,exist_ok=True)
-            saved=bool(self.win.saveScreenshot(Filename.fromOsSpecific(str(path.resolve()))))
+            # Native Panda file writes can fail while stream encoding succeeds.
+            # Python writes also preserve the previous preview on failure.
+            from panda3d.core import PNMImage,StringStream
+            picture=PNMImage();stream=StringStream()
+            saved=bool(self.win.getScreenshot(picture) and picture.write(stream,path.name))
+            if saved:
+                temporary=path.with_name(path.stem+'.tmp'+path.suffix)
+                temporary.write_bytes(stream.getData());temporary.replace(path)
             if self.brain_map and not self.brain_map.closed:
                 self.brain_map.capture(path.with_name(path.stem+'-brain'+path.suffix))
             return saved
