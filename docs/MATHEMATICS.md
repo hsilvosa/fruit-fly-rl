@@ -276,7 +276,7 @@ If e is the existing 128-feature encoder output and q_hat is the learned four-co
 
 The maneuver/start sampler assigns a quarter of a batch to strong turns, a quarter to strong vertical labels, a quarter to empty recent neural-history slots, and leaves the final quarter uniformly sampled. Empty groups retain uniform draws. Groups can overlap and draws can repeat. This is an optimization choice whose navigation benefit remains unverified. Legacy turn-balanced sampling remains unchanged by default.
 
-Focused tests and a three-update full-connectome auxiliary smoke passed, with zero physical transitions, initially identical motor outputs, unchanged brain state and source checkpoint, and exact reload. No navigation result is claimed for this smoke. The next bounded experiment still needs integration and execution.
+Focused tests and a three-update full-connectome auxiliary smoke passed, with zero physical transitions, initially identical motor outputs, unchanged brain state and source checkpoint, and exact reload. The subsequent waypoint v6 experiment completed, but its autonomous development result was 0/8. Verification of the objective and successful optimization do not establish navigation.
 
 
 ## Body-centered panoramic neural control
@@ -286,3 +286,23 @@ Sensors-v6 retains the 269 v3 measurements and replaces the target-centered fan 
 The input-associated output has 3,869 neural groups. Multiplying these groups by a fixed factor of ten changes the numerical scale used by the learned encoder; it neither appends raw sensors nor changes the graph. The visual encoder uses circular horizontal padding because the first and last azimuth columns are adjacent. Vertical padding repeats edge values. Two convolution layers encode the two 25 by 72 neural planes. Proprioceptive features and visual features feed a 192-feature GRU across the same nine-frame history. A four-component waypoint head adds a learned residual to this latent representation.
 
 The objective remains weighted action mean squared error plus twice waypoint mean squared error on training-world labels. This version starts a fresh controller because the sensory and feature dimensions changed; it does not claim output-preserving transfer. The bounded panoramic run uses supervised optimization without PPO updates. Runtime inference consumes only recurrent neural activity; privileged geometry is restricted to the training collector. These equations and interface checks do not prove autonomous navigation.
+
+## Directional visual attention
+
+The directional head keeps a score for each of the 1,800 body-centered ray directions d_i. Shared circular convolutions produce visual scores b_i from the neural panorama. The normalized existing goal-bearing neural groups provide g. Logits are z_i = b_i + 3 d_i dot g, and weights are p_i = exp(z_i) / sum_j exp(z_j). The predicted direction is normalize(sum_i p_i d_i). The distance component still comes from the history encoder. Goal groups and panorama groups are readings of recurrent neuron activity, not raw sensor values or a supplied aperture location.
+
+Training chooses the directional class c with the largest dot product between d_c and the optimization teacher's target direction. The total objective is weighted action MSE plus twice waypoint MSE plus eta times cross entropy, where cross entropy is -log(p_c). Eta is one in the first directional correction and 0.25 in the look-ahead correction. This extra target is privileged training supervision. It is never appended to runtime observations.
+
+An angular rotation check verifies the coordinate behavior of the attention head. It does not establish that rotating the world rotates the biological graph's activity exactly. The graph uses artificial seeded projections, and successful navigation must be measured separately. Matching learned tensors can be transferred between the visual encoders; that partial transfer does not preserve their initial outputs.
+
+## Look-ahead teacher correction
+
+The earlier teacher waited until the fly came within 0.06 units of a hidden route vertex before advancing. The new training-only teacher projects position onto its current certified path segment and aims along the polyline by a look-ahead length ell = 0.5 + 0.5 min(distance to the next vertex / 2, 1). It advances the segment after passing its projection or approaching its endpoint within 0.35 units. The target can continue beyond the corner, so reaching an exact six-centimeter neighborhood is no longer required to obtain a forward target.
+
+For heading error e and target distance D, desired speed is min(1.2, 1.5 D) times max(0, cos(e)) to the fourth power. Horizontal and altitude acceleration use the existing proportional velocity and drag compensation. This is a piecewise path follower, not a mathematical guarantee of collision-free flight. Oracle geometry checks and teacher arrivals are separate from autonomous student performance. Old exact-vertex examples are not replayed into the new look-ahead fit because their control targets use a different convention.
+
+## Sparse and distance-only visual variants
+
+The sparse visual variant retains only the nine largest ray logits before applying softmax. Its direction estimate and pooled visual features use those selected weights. Empty history frames retain a uniform score distribution and an explicitly zero direction, so tied empty scores do not invent a heading. This changes inference even when every learned tensor is identical to the source checkpoint; it is not output-preserving transfer.
+
+The distance-only variant zeros the 1,800 approach-speed neural groups in the visual panorama. Distance groups and the original 269 neural groups remain available. The complete graph and all sensory projections still run; neurons and synapses are not removed. This tests an explicit visual velocity shortcut while retaining motor-state features. It does not remove every possible velocity influence from recurrent neural activity, and improvement cannot be assumed from the implementation alone.

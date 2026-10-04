@@ -175,7 +175,7 @@ class FlightWorld(gym.Env):
                 'map_profile':self.map_profile.to_dict() if self.map_profile else None,
                 'episode_limit':self.episode_limit}
 
-    def step(self,action):
+    def step(self,action,observe=True):
         action=np.clip(np.asarray(action,dtype=float),-1,1)
         if action.shape!=(4,) or not np.isfinite(action).all(): raise ValueError('Invalid action')
         old=self.position.copy(); old_distance=self.distance
@@ -201,5 +201,5 @@ class FlightWorld(gym.Env):
         reward=2.*(old_distance-self.distance)-.02
         if terminated: reward+=20. if reached else -5.
         if truncated: reward-=5.
-        return self.observe(),reward,terminated,truncated,{'collision':collision,'success':reached,'distance':self.distance,
+        return (self.observe() if observe else None),reward,terminated,truncated,{'collision':collision,'success':reached,'distance':self.distance,
             'terminated':bool(terminated),'truncated':bool(truncated),'transition_state':self.snapshot()}

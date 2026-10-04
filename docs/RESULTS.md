@@ -4,6 +4,10 @@ Navigation performance is separate from implementation correctness and anatomica
 
 ## Latest original-large corrections
 
+The [panoramic v7 report](evidence/panoramic-neural-v7-results.md) records 98,304 additional transitions, a saved compatible checkpoint and a final-report path lookup failure. Its separately recorded recovery development score was 0/8, with eight collisions. The [broader coverage correction](evidence/panorama-coverage-v8-results.md) completed another 301,056 transitions and also recorded 0/8 in reused development, with eight collisions. Neither run consumed a reserved final test or promoted an alias. Completed substantive use through coverage v8 is 1,267,712 transitions. Directional attention and look-ahead guidance are further corrections whose results must be recorded separately.
+
+The [directional and look-ahead records](evidence/directional-and-lookahead-results.md) add 32,768 and 163,840 transitions respectively. Their reused development scores remain 0/8. The final look-ahead checkpoint timed out in all eight rooms; the teacher-only and sparse-pooling diagnostic candidates collided in all eight. Completed substantive use through look-ahead v10 is 1,464,320. Navigation remains unresolved, and the independent final pool remains unconsumed.
+
 | Intervention | Added transitions | Development goals | Collisions | Timeouts |
 | --- | ---: | ---: | ---: | ---: |
 | Current-feature matched control | 65,536 | 0/8 | 2 | 6 |
@@ -169,3 +173,7 @@ La tanda waypoint v6 completó 81.920 transiciones nuevas, con pérdidas finitas
 
 Se conservan los [resultados verificados](evidence/neural-waypoint-v6-results.md) y el [diagnóstico de control y cobertura](evidence/neural-waypoint-v6-diagnostics.md). La siguiente corrección usa visión panorámica medida alrededor del cuerpo y vuelos guiados completos desde los estados originales. Su controlador recibe únicamente actividad neuronal; la ruta oculta solo etiqueta datos durante entrenamiento.
 El [protocolo panorámico v7](evidence/panoramic-neural-v7-plan.md) fija un límite de 98.304 transiciones nuevas, 12.288 actualizaciones supervisadas y una única validación de desarrollo. Empieza un controlador nuevo por el cambio de dimensiones, conserva todos los checkpoints anteriores y no consume el test reservado.
+
+## Cierre de las correcciones panorámicas
+
+Las tandas v8, v9, v10 y v12 terminaron y añadieron 505.856 transiciones. La última evaluación autónoma en desarrollo reutilizado alcanzó 0/8 objetivos, con una colisión y siete timeouts. El total sustantivo completado es 1.472.512 transiciones. La navegación en los mapas grandes originales sigue pendiente; no se usó el test reservado ni se promovieron los aliases originales. Se conserva el [informe de la ventana de dos horas](evidence/two-hour-navigation-results.md), sus checkpoints y el lanzador experimental `launch-panorama.ps1`. El trabajo se pausa al cumplirse el plazo solicitado, el 4 de octubre a las 22:40:52 de Madrid.
