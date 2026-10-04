@@ -1,0 +1,11 @@
+# Matched critic-history isolation: pending budget approval
+
+The original-large navigation objective remains unmet. This prepared experiment changes actor/critic history sharing to test the [identified gradient coupling](critic-history-diagnosis.md) under the same environment-transition budget as completed v2.
+
+It requires explicit approval for 65,536 additional environment transitions, bringing cumulative substantive use from 589,824 to 655,360. The plan remains draft-budget-required and refuses to execute before approval. No training has started.
+
+The run uses the same byte-preserving sensors-v5 warm source, seed 42, full MaleCNS graph, 112 optimization layouts, original large geometry, 32,768 teacher transitions, two 8,192-transition student-only correction rounds and 16,384 PPO transitions. Supervised update limits remain 3,072 initial actor updates, two corrective actor fits of 768 updates and 768 critic updates. Separate critic memory is copied once from fitted actor before critic initialization. The actor cannot receive value-loss gradients through its history extractor.
+
+The teacher exposure is deliberately matched to v2 to isolate this change; the limited observed 15 teacher layouts in v2 is not being corrected simultaneously. This one-seed experiment is a development diagnostic, not a repeated-seed performance comparison. The same eight reused development validation layouts are measured once after the final budget. No teacher or route geometry enters evaluation policy inputs. No reserved final test or automatic alias promotion occurs.
+
+Freeze implementation, warm-source, configuration and original alias hashes before launch. Preserve exact process identity, all numerical training data and before/after alias hashes. Report supervised fits separately from physical outcomes and state failure explicitly if the autonomous student still reaches no goals. Do not infer independent generalization or biological advantages from a better development score.

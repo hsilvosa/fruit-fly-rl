@@ -8,6 +8,8 @@ The full-connectome controller, procedural 3D rooms, anatomical inspection, reco
 
 The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0Ã¢â‚¬â€œ5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
 
+The [post-v2 controller diagnosis](docs/evidence/critic-history-diagnosis.md) records teacher-to-student distribution errors, actor degradation after PPO and a verified option to isolate critic memory gradients. Next, measure that correction on original-large navigation under a separately authorized budget; no isolated-memory navigation result exists yet.
+
 ## Improve navigation in structured rooms
 
 The [zero-success diagnosis](docs/GEOMETRY_DIAGNOSIS.md) puts single-opening navigation and training-practice mastery ahead of further map expansion. The earlier controller still reproduced its outcomes in four retained original validation rooms. The latest curriculum advanced without any successful passage training episode, and its overall selection retained initialization. Establish a usable passage controller and a declared failure outcome for zero-success selection before another large comparison.

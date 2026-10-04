@@ -45,3 +45,8 @@ Until the experiment finishes, that final checkpoint may not exist. Launchers co
 The prepared v2 protocol restarts worlds at original starts before each student-only collection. Critic targets stop at these explicit data cuts rather than linking rewards from separate flights. This prevents an error in the new protocol; it does not explain the completed v1 failures, whose collection did not use those manual restarts.
 
 Collection retains executed actions separately from teacher labels, physical position and velocity, yaw, layout seed and whether the teacher acted. Rewards, physical terminal flags and manual data boundaries are saved separately. Data is flushed at each completed collection chunk before fitting; status records the number of valid saved rows. These training records support diagnosis of the student's own mistakes without adding privileged fields to policy inputs.
+
+
+## Critic memory isolation after v2
+
+[The post-v2 diagnosis](evidence/critic-history-diagnosis.md) found shared value gradients and increased actor-label errors after PPO on retained optimization states. New guided plans can opt into separate actor and critic history. Before critic fitting, critic memory is copied once from the fitted actor; later value gradients cannot change actor memory. This is a verified gradient-path correction, with no new navigation performance claim and no change to completed checkpoints.
