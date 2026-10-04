@@ -125,6 +125,7 @@ def save_model(model,path,brain):
         'brain_history':{'frames':getattr(model.get_env(),'history_frames',0),'stride':getattr(model.get_env(),'history_stride',8)},
         'history_transfer':getattr(model,'history_transfer',None),
         'imitation_training':getattr(model,'imitation_training',None),
+        'waypoint_training':getattr(model,'waypoint_training',None),
         'ppo_kl_guard':{'version':'full-rollout-gaussian-kl-v1','mean_limit':model.kl_guard_mean_limit,
                         'max_limit':model.kl_guard_max_limit,'max_attempts':model.kl_guard_max_attempts}
                        if hasattr(model,'kl_guard_mean_limit') else None,
