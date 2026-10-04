@@ -57,10 +57,12 @@ def imitation_indices(count,batch_size,rng,turns,vertical=None,starts=None):
     return indices
 
 
-def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progress=None,sampling_strategy='turn-balanced-v1'):
+def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progress=None,sampling_strategy='turn-balanced-v1',waypoint_targets=None,waypoint_loss_weight=2.):
     """Fit only the feature extractor and actor; never feed teacher state to it."""
     if count<=0 or updates<=0:raise ValueError('Positive bounded imitation data and updates required')
     policy=model.policy
+    if waypoint_targets is not None and (not hasattr(policy.pi_features_extractor,'forward_with_waypoint') or not 0<waypoint_loss_weight<=10):
+        raise ValueError('Waypoint supervision requires the declared neural predictor and bounded loss weight')
     params=list(policy.features_extractor.parameters())+list(policy.mlp_extractor.policy_net.parameters())+list(policy.action_net.parameters())
     optimizer=torch.optim.Adam(params,lr=3e-4)
     turns=np.flatnonzero(np.abs(targets[:count,3])>.25)
@@ -76,14 +78,23 @@ def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progre
         starts=np.concatenate(chunks)
     elif sampling_strategy!='turn-balanced-v1':raise ValueError('Unknown imitation sampler')
     weights=torch.tensor([1.,1.,2.,2.],device=model.device)
-    losses=[]
+    losses=[];waypoint_losses=[]
     policy.set_training_mode(True)
     for _ in range(updates):
         indices=imitation_indices(count,batch_size,rng,turns,vertical,starts)
         obs=torch.as_tensor(np.array(observations[indices]),device=model.device)
         actions=torch.as_tensor(np.array(targets[indices]),device=model.device)
-        predicted=actor_mean(policy,obs)
+        if waypoint_targets is not None:
+            encoded,estimated_waypoint=policy.pi_features_extractor.forward_with_waypoint(obs)
+            predicted=policy.action_net(policy.mlp_extractor.forward_actor(encoded))
+        else:predicted=actor_mean(policy,obs)
         loss=((predicted-actions).square()*weights).mean()
+        if waypoint_targets is not None:
+            desired=torch.as_tensor(np.array(waypoint_targets[indices]),device=model.device)
+            valid=torch.isfinite(desired).all(dim=1)
+            auxiliary=(estimated_waypoint[valid]-desired[valid]).square().mean() if valid.any() else estimated_waypoint.sum()*0
+            loss=loss+waypoint_loss_weight*auxiliary
+            waypoint_losses.append(float(auxiliary.detach()))
         if not torch.isfinite(loss):raise RuntimeError('Nonfinite imitation loss')
         optimizer.zero_grad();loss.backward();torch.nn.utils.clip_grad_norm_(params,1.);optimizer.step()
         losses.append(float(loss.detach()))
@@ -93,11 +104,13 @@ def fit_actor(model,observations,targets,count,updates,rng,batch_size=256,progre
             'last_loss':losses[-1],'mean_last_100_loss':float(np.mean(losses[-100:])),
             'finite_losses':bool(np.isfinite(losses).all()),'maneuver_examples':int(len(turns)),
             'sampling_strategy':sampling_strategy,
+            'waypoint_loss_weight':waypoint_loss_weight if waypoint_targets is not None else None,
+            'mean_last_100_waypoint_loss':float(np.mean(waypoint_losses[-100:])) if waypoint_losses else None,
             'vertical_examples':int(len(vertical)) if vertical is not None else None,
             'startup_examples':int(len(starts)) if starts is not None else None}
 
 
-def collect_guided(env,model,observations,targets,offset,steps,rng,beta,features=None,teachers=None,rewards=None,terminals=None,progress=None,recover=False,trace=None):
+def collect_guided(env,model,observations,targets,offset,steps,rng,beta,features=None,teachers=None,rewards=None,terminals=None,progress=None,recover=False,trace=None,waypoint_targets=None):
     """Continuous full-brain rollouts; beta controls teacher action probability.
 
     All labels come from optimization worlds. Teacher route/state remain in this
@@ -112,6 +125,10 @@ def collect_guided(env,model,observations,targets,offset,steps,rng,beta,features
         start=offset+tick*env.num_envs
         observations[start:start+env.num_envs]=features
         targets[start:start+env.num_envs]=labels
+        if waypoint_targets is not None:
+            for i,(teacher,w) in enumerate(zip(teachers,env.worlds)):
+                delta=teacher.route[teacher.index]-w.position;distance=np.linalg.norm(delta)
+                waypoint_targets[start+i]=np.r_[delta@w.rotation()/max(distance,1e-9),min(distance/24.,1.)]
         chosen=rng.random(env.num_envs)<beta
         actions=labels.copy()
         if not chosen.all():

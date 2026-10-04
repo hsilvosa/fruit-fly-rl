@@ -4,6 +4,8 @@ Original-large navigation remains unresolved. The [spatial neural experiment](do
 
 A CPU/CUDA precision discrepancy stopped its post-training verification after the final checkpoint was saved. Identical saved tensors and exact same-GPU reload were confirmed; disabling convolution TF32 resolves the numerical comparison. Its one declared development validation was completed separately without training using unchanged weights and frozen runtime sources: 0/8 goals, six collisions and two timeouts. This reused suite is not an independent final test.
 
+The next correction adds a learned local-waypoint estimate from neural history and balances startup, turn and vertical examples. Its transfer and full-graph auxiliary verification passed; integration into a bounded training experiment is in progress. Runtime route access remains absent.
+
 A virtual fruit fly navigates procedural 3D rooms using features from the full annotated MaleCNS v1.0 connectome. A fixed sparse recurrent model converts simulated sensor readings into activity; a PPO actor and critic learn flight commands. Panda3D displays the room and an optional separate anatomical activity window.
 
 This is an engineered navigation experiment. Synthetic distance rays and target direction are available to the controller. The recurrent equations, sensor projection and flight dynamics are project choices, rather than a biological simulation of vision, spiking neurons or wing aerodynamics. Navigation success alone does not establish a benefit from fruit-fly wiring.

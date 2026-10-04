@@ -65,3 +65,6 @@ Two brief offscreen demos each advanced 40 steps without training. The direct Pa
 
 
 The production preview writer now encodes the framebuffer to a stream and atomically writes it through Python. A 20-step offscreen full-graph demo produced reports/spatial-capture-fixed.png, which was inspected successfully without a preview warning or training. Spatial readout and precision-contract tests: three passed. Shutdown tests: three passed. The v5 CUDA batch-eight precision diagnosis reproduced the assertion discrepancy and verified its TF32 correction on unchanged weights.
+
+
+Waypoint auxiliary implementation: 16 focused tests passed, including legacy sampler compatibility, three-way maneuver/start coverage, initial motor-output preservation, masked missing labels, finite auxiliary gradients and checkpoint reload. A separate full-connectome verification used all 167,184 neurons and 25,583,622 edges, three supervised updates on repeated existing start observations, and zero physical transitions. It preserved the neural state and source checkpoint and reloaded actions exactly. This verifies the interface, not learned navigation.

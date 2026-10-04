@@ -266,3 +266,14 @@ The [guarded PPO protocol](evidence/guarded-navigation-v4-plan.md) checks the ac
 For channel c, let A_c contain the neuron assignments whose seeded input index is c, with signs s_ic. The new output is g_c(t) = sum_(i in A_c) s_ic h_i(t) / max(1, |A_c|). Both original and fan assignments contribute. A neuron can belong to several channel groups. This formula reads the recurrent neuron state h, not the raw sensor x. The existing recurrent matrix and updates are unchanged. The groups describe artificial projections and do not identify biological cell populations.
 
 The v5 spatial actor encodes the two 19 by 31 neural fan planes with convolutions, encodes the remaining 269 neural groups with a linear layer, and uses a GRU across nine sampled frames. It minimizes the existing weighted imitation loss on optimization-world teacher labels; no PPO update is used in the substantive spatial experiment. The 128-transition smoke checks that the learning interface remains usable. See [frozen scope](evidence/spatial-neural-v5-plan.md).
+
+
+## Learned waypoint auxiliary, implementation verified
+
+The new head predicts a four-component local waypoint description from the neural history encoder. Training labels are u = (delta R / max(norm(delta), epsilon), min(norm(delta)/24, 1)), where delta points from the training world position to the teacher's current route vertex and R converts world vectors to body coordinates. These privileged labels are targets, not policy inputs. The runtime predictor only receives neural histories.
+
+If e is the existing 128-feature encoder output and q_hat is the learned four-component estimate, the motor features are e + A q_hat + b. A and b start at zero, so explicit transfer preserves the existing actor output before fitting. The supervised objective is the existing weighted action MSE plus lambda times waypoint MSE, with lambda = 2 in verification. Rows without retained waypoint labels are masked out of the auxiliary loss and can still contribute action supervision. The fourth prediction is an estimate; the head does not mathematically enforce a positive distance.
+
+The maneuver/start sampler assigns a quarter of a batch to strong turns, a quarter to strong vertical labels, a quarter to empty recent neural-history slots, and leaves the final quarter uniformly sampled. Empty groups retain uniform draws. Groups can overlap and draws can repeat. This is an optimization choice whose navigation benefit remains unverified. Legacy turn-balanced sampling remains unchanged by default.
+
+Focused tests and a three-update full-connectome auxiliary smoke passed, with zero physical transitions, initially identical motor outputs, unchanged brain state and source checkpoint, and exact reload. No navigation result is claimed for this smoke. The next bounded experiment still needs integration and execution.
