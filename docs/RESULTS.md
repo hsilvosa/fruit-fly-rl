@@ -10,10 +10,11 @@ Navigation performance is separate from implementation correctness and anatomica
 | Temporal-feature matched arm | 65,536 | 0/8 | 1 | 7 |
 | Obstacle-aware reward pilot | 32,768 | 0/8 | 1 | 7 |
 | Guided initialization and PPO | 40,960 | 0/8 | 8 | 0 |
+| Visible fan and student-only correction | 65,536 | 0/8 | 4 | 4 |
 
-These reused development layouts do not constitute an independent final test. The guided teacher's eight optimization goals are not student navigation results. Cumulative substantive use reached the existing 524,288 cap. No new model was promoted, the original six aliases retained their hashes, and no reserved final pool was consumed. [Guided results](evidence/guided-navigation-v1-results.md), [reward-only results](evidence/route-progress-correction-v1-results.md), and [memory results](evidence/brain-memory-comparison-v1-results.md) report the failures without claiming a successful fix.
+These reused development layouts do not constitute an independent final test. The guided teacher's eight optimization goals are not student navigation results. The initial 524,288 cap was exhausted; the subsequently authorized 65,536-transition v2 run brings cumulative substantive use to 589,824. No new model was promoted, the original six aliases retained their hashes, and no reserved final pool was consumed. [Guided results](evidence/guided-navigation-v1-results.md), [reward-only results](evidence/route-progress-correction-v1-results.md), and [memory results](evidence/brain-memory-comparison-v1-results.md) report the failures without claiming a successful fix.
 
-The [sensors-v5 correction](evidence/visible-fan-v5.md) resolves a measured early-observation ambiguity and is verified through actual full-connectome activity. It has no trained navigation result yet; further training is pending a new bounded budget.
+The [sensors-v5 correction](evidence/visible-fan-v5.md) resolves a measured early-observation ambiguity and is verified through actual full-connectome activity. Its authorized training completed with 0/8 autonomous validation goals, four collisions and four timeouts. The observation correction did not establish successful navigation. [Verified v2 results](evidence/guided-navigation-v2-results.md) retain supervised and autonomous counts separately.
 
 ## Geometry comparison
 

@@ -1,6 +1,6 @@
 # Guided training and autonomous inference
 
-The [frozen guided-navigation v1 protocol](evidence/guided-navigation-v1-plan.md) uses the remaining 40,960 transitions of the existing budget. It completed with 0/8 autonomous validation goals, all failures by collision; see [verified results](evidence/guided-navigation-v1-results.md). The [sensors-v5 correction and v2 draft](evidence/visible-fan-v5.md) are the next development step. The user approved 65,536 additional transitions on 2026-10-04 and the v2 experiment is running; no new autonomous-navigation result is available yet. Navigation remains unresolved.
+The [frozen guided-navigation v1 protocol](evidence/guided-navigation-v1-plan.md) uses the remaining 40,960 transitions of the existing budget. It completed with 0/8 autonomous validation goals, all failures by collision; see [verified results](evidence/guided-navigation-v1-results.md). The [sensors-v5 correction and v2 draft](evidence/visible-fan-v5.md) are the next development step. The approved 65,536-transition v2 experiment completed with 0/8 autonomous goals, four collisions and four timeouts; see [verified v2 results](evidence/guided-navigation-v2-results.md). Navigation remains unresolved.
 
 ## What learns
 
