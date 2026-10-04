@@ -1,14 +1,14 @@
 # Roadmap
 
-Original-large navigation remains unresolved. The [guided initialization](docs/evidence/guided-navigation-v1-results.md) achieved 0/8 autonomous validation goals, all failures by collision. Its teacher successes are separate training outcomes. The existing cumulative 524,288-transition budget is exhausted; all original aliases and reserved final tests remain preserved.
+Original-large navigation remains unresolved. The latest [critic-isolation experiment](docs/evidence/guided-navigation-v3-results.md) completed with 0/8 autonomous development goals, eight collisions and no timeouts. Cumulative substantive use is 655,360; original launcher aliases and reserved final tests remain preserved.
 
-A [perception diagnosis and sensors-v5 correction](docs/evidence/visible-fan-v5.md) found early teacher actions that require information absent from the short-range observations. The new dense visible scan resolves the tested aperture ambiguities and reaches the full-connectome brain features. Code, CUDA activity, demo recording and replay are verified; navigation benefit is not yet measured. The authorized 65,536-transition sensors-v5 correction completed on 2026-10-04. Autonomous validation on the original large maps reached 0/8 goals, four collisions and four timeouts; navigation remains unresolved. Cumulative substantive use is 589,824. The source, all original aliases and reserved final tests remain preserved. [Verified v2 results](docs/evidence/guided-navigation-v2-results.md) separate teacher outcomes from autonomous flights.
+The [guarded PPO correction](docs/evidence/guarded-navigation-v4-plan.md) uses a further 32,768-transition cap, starting from the declared checkpoint before PPO. It rolls back excessive policy updates and measures autonomous development navigation before and after training. The full-graph 128-transition verification and checkpoint reload passed; navigation benefit remains unmeasured.
 
 The full-connectome controller, procedural 3D rooms, anatomical inspection, recording, replay and bounded experiment tools are implemented. This roadmap describes proposed work; it does not start another training run.
 
 The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0Ã¢â‚¬â€œ5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
 
-The [post-v2 controller diagnosis](docs/evidence/critic-history-diagnosis.md) records teacher-to-student distribution errors, actor degradation after PPO and a verified option to isolate critic memory gradients. The user-authorized matched 65,536-transition experiment is running on original-large navigation; no isolated-memory navigation result exists yet. [Frozen comparison](docs/evidence/guided-navigation-v3-plan.md) records the scope.
+The [post-v2 controller diagnosis](docs/evidence/critic-history-diagnosis.md) records teacher-to-student distribution errors, actor degradation after PPO and a verified option to isolate critic memory gradients. The matched 65,536-transition experiment completed with 0/8 goals and eight collisions on original-large development validation. [Frozen comparison](docs/evidence/guided-navigation-v3-plan.md) records the scope.
 
 ## Improve navigation in structured rooms
 
@@ -53,3 +53,6 @@ Keep journals, launch records, full evidence and machine-specific paths private.
 Compare the real graph with randomized wiring, disconnected recurrence and a conventional controller under comparable sensors, budgets, initialization seeds and selection rules. Navigation results alone cannot establish a biological advantage. Visual perception, internal synaptic plasticity and more realistic aerodynamics require separate designs and evidence.
 
 See [public results](docs/RESULTS.md), [mathematics](docs/MATHEMATICS.md), [map protocol](docs/GEOMETRY_CURRICULUM.md) and [verification](docs/VERIFICATION.md).
+
+
+The [critic-isolation v3 run](docs/evidence/guided-navigation-v3-results.md) completed with 0/8 autonomous development goals and eight collisions. A [guarded PPO continuation](docs/evidence/guarded-navigation-v4-plan.md) now tests rollback of excessive policy changes under a further 32,768-transition cap. Navigation remains unresolved; final tests and original aliases remain preserved.

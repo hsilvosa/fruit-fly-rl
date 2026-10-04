@@ -14,3 +14,8 @@ Freeze implementation, warm-source, configuration and original alias hashes befo
 ## Matched initialization verification
 
 A new paired test verifies that shared and isolated versions begin with exactly identical actor history parameters and produce exactly identical deterministic actions after matching imitation minibatches. All five temporal-policy tests passed. A prelaunch audit confirms that the only experiment changes are the isolation option, output location, new budget accounting, authorization state and updated implementation hashes. Maps, observations, warm source, collection counts and optimizer-fit limits are unchanged. This establishes the comparison setup, not navigation performance. This review preceded the user-authorized launch. The full-graph run is active; navigation remains unverified.
+
+
+## Observed teacher collection matching
+
+The completed 32,768-transition teacher collection matches v2 exactly in layout seeds, positions, velocities and teacher actions. Full-connectome history features differ by at most 2.14576721e-06; they are not bitwise identical. This check uses existing records, adds no environment transitions and does not measure student navigation. The live process has advanced into actor fitting.

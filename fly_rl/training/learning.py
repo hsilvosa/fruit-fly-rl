@@ -115,6 +115,9 @@ def save_model(model,path,brain):
         'brain_history':{'frames':getattr(model.get_env(),'history_frames',0),'stride':getattr(model.get_env(),'history_stride',8)},
         'history_transfer':getattr(model,'history_transfer',None),
         'imitation_training':getattr(model,'imitation_training',None),
+        'ppo_kl_guard':{'version':'full-rollout-gaussian-kl-v1','mean_limit':model.kl_guard_mean_limit,
+                        'max_limit':model.kl_guard_max_limit,'max_attempts':model.kl_guard_max_attempts}
+                       if hasattr(model,'kl_guard_mean_limit') else None,
         'training_timeout_as_terminal':getattr(model.get_env(),'timeout_as_terminal',False),'training_seed':model.seed,'sensor_version':brain.sensor_version,
         'environment':{'mode':world.mode,'dynamics':world.dynamics,'size':world.room.tolist(),'episode_limit':world.episode_limit,
                        'training_layout_seeds':world.layout_seeds,
@@ -131,7 +134,18 @@ def load_model(path,brain,env=None,allow_transfer=False):
         profile=env.map_profile.to_dict() if env.map_profile else None
         if (metadata.get('environment') or {}).get('map_profile')!=profile:
             raise ValueError('Checkpoint map profile mismatch; explicit transfer is required')
-    return PPO.load(str(path),env=env,device='cpu')
+    algorithm=PPO
+    if metadata.get('ppo_kl_guard'):
+        from fly_rl.training.guarded_ppo import GuardedPPO
+        if metadata['ppo_kl_guard']['version']!='full-rollout-gaussian-kl-v1':
+            raise ValueError('Unsupported PPO guard contract')
+        algorithm=GuardedPPO
+    model=algorithm.load(str(path),env=env,device='cpu')
+    if metadata.get('ppo_kl_guard'):
+        for field in ('mean_limit','max_limit','max_attempts'):
+            if getattr(model,'kl_guard_'+field,None)!=metadata['ppo_kl_guard'][field]:
+                raise ValueError('Checkpoint PPO guard metadata mismatch')
+    return model
 
 class TimedCheckpoint(BaseCallback):
     def __init__(self,directory,brain):
