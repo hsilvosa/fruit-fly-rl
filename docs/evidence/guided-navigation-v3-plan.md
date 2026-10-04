@@ -9,3 +9,8 @@ The run uses the same byte-preserving sensors-v5 warm source, seed 42, full Male
 The teacher exposure is deliberately matched to v2 to isolate this change; the limited observed 15 teacher layouts in v2 is not being corrected simultaneously. This one-seed experiment is a development diagnostic, not a repeated-seed performance comparison. The same eight reused development validation layouts are measured once after the final budget. No teacher or route geometry enters evaluation policy inputs. No reserved final test or automatic alias promotion occurs.
 
 Freeze implementation, warm-source, configuration and original alias hashes before launch. Preserve exact process identity, all numerical training data and before/after alias hashes. Report supervised fits separately from physical outcomes and state failure explicitly if the autonomous student still reaches no goals. Do not infer independent generalization or biological advantages from a better development score.
+
+
+## Matched initialization verification
+
+A new paired test verifies that shared and isolated versions begin with exactly identical actor history parameters and produce exactly identical deterministic actions after matching imitation minibatches. All five temporal-policy tests passed. A prelaunch audit confirms that the only experiment changes are the isolation option, output location, new budget accounting, authorization state and updated implementation hashes. Maps, observations, warm source, collection counts and optimizer-fit limits are unchanged. This establishes the comparison setup, not navigation performance. The run remains unapproved and has not started.
