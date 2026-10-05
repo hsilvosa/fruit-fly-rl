@@ -25,7 +25,13 @@ def audit(root):
     text_extensions = {'.md', '.json', '.toml', '.yaml', '.yml', '.txt', '.bib', '.ps1', '.cmd', '.py'}
     for name in sorted(tracked):
         path = root / name
-        if name in private_names or name.startswith(('private/', 'runs/', 'data/', 'reports/', '.conda/')):
+        generated_prefixes = ('private/', 'runs/', 'data/', 'reports/', '.conda/', '.venv/', 'venv/',
+                              'build/', 'dist/', '__pycache__/', '.pytest_cache/')
+        secret_file = (path.name == '.env' or path.name.startswith('.env.')) and path.name != '.env.example'
+        local_binary = path.suffix.lower() in {'.pt', '.pth', '.ckpt', '.onnx', '.pkl', '.pem', '.key', '.log', '.pyc', '.pyo', '.whl'}
+        cached = any(part in {'__pycache__', '.pytest_cache', '.mypy_cache', '.ruff_cache'}
+                     or part.endswith('.egg-info') for part in Path(name).parts)
+        if name in private_names or name.startswith(generated_prefixes) or cached or secret_file or local_binary:
             errors.append({'file': name, 'reason': 'private or generated artifact is tracked'})
         if name.startswith('docs/evidence/') and path.suffix == '.json' and name not in public_evidence:
             errors.append({'file': name, 'reason': 'detailed evidence is not approved for public tree'})
@@ -42,6 +48,8 @@ def audit(root):
             errors.append({'file': name, 'reason': 'possible credential or private key; inspect locally'})
         if path.suffix.lower() != '.md':
             continue
+        if any(marker in content for marker in ('\ufffd', 'Ã', 'Â', 'â€')):
+            errors.append({'file': name, 'reason': 'text encoding artifact; inspect and repair documentation'})
         if re.search(r'\bFINAL_[A-Z_]+_PENDING\b', content):
             errors.append({'file': name, 'reason': 'unfinished verification or result placeholder'})
         for target in re.findall(r'\[[^\]]*\]\(([^)]+)\)', content):

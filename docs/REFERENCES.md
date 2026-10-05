@@ -34,7 +34,7 @@ This repository makes the following transformations to that source material:
 
 The raw release remains the source; these prepared representations and visualizations are project-derived changes. File attribution and checksums are retained in the data audit. Exact selection and modeling assumptions are documented in [Data and model](DATA_AND_MODEL.md).
 
-CC BY 4.0 attribution includes creator credit, a source/license link, and notice of modifications. The license statement here concerns the source dataset; it does not assign a new license to this repository's original code or override dependency licenses. This is an independent application, with no implied endorsement by the MaleCNS authors or institutions. Navigation policies, simulated environments, and learning measurements in Fly RL are this project's work and should not be attributed to the source-data researchers.
+CC BY 4.0 attribution includes creator credit, a source/license link, and notice of modifications. The license statement here concerns the source dataset; original project code and documentation are separately licensed under [MIT](../LICENSE), which does not override the dataset or dependency licenses. This is an independent application, with no implied endorsement by the MaleCNS authors or institutions. Navigation policies, simulated environments, and learning measurements in Fly RL are this project's work and should not be attributed to the source-data researchers.
 
 Sources and bibliographic details checked on October 1, 2026. The attribution change did not update the dataset, modify checkpoints, or run training/evaluation.
 

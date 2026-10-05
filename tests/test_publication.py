@@ -42,7 +42,9 @@ def test_public_links_cannot_depend_on_ignored_local_files(publication):
     assert any(error['reason'] == 'link unavailable in tracked publication tree' for error in errors)
 
 
-@pytest.mark.parametrize('name', ['private/notes.md', 'docs/JOURNAL.md', 'runs/checkpoint.json'])
+@pytest.mark.parametrize('name', ['private/notes.md', 'docs/JOURNAL.md', 'runs/checkpoint.json',
+                                '.env', '.env.local', 'debug.log', 'weights.pt', 'credential.pem',
+                                '.venv/config.txt', 'dist/local.txt', 'module/__pycache__/cached.pyc'])
 def test_tracking_private_records_fails_publication(publication, name):
     module, root, git = publication
     path = root/name
@@ -71,6 +73,31 @@ def test_machine_evidence_stays_private_even_without_personal_paths(publication)
     path.write_text('{"pid": 1234, "status": "running"}', encoding='utf-8')
     git('add', 'docs/evidence/experiment-launch.json')
     assert any(error['reason'] == 'detailed evidence is not approved for public tree'
+               for error in module.audit(root)['errors'])
+
+
+def test_documentation_images_must_be_in_the_public_tree(publication):
+    module, root, git = publication
+    image = root/'docs/map.png'
+    image.write_bytes(b'figure fixture')
+    (root/'README.md').write_text('![Map](docs/map.png)\n', encoding='utf-8')
+    assert module.audit(root)['status'] == 'failed'
+    git('add', 'docs/map.png')
+    assert module.audit(root)['status'] == 'passed'
+
+
+def test_public_example_environment_is_allowed(publication):
+    module, root, git = publication
+    (root/'.env.example').write_text('EXAMPLE_SETTING=demo\n', encoding='utf-8')
+    git('add', '.env.example')
+    assert module.audit(root)['status'] == 'passed'
+
+
+@pytest.mark.parametrize('content', ['95% interval 0.0â€“5.7%', 'An invalid character: \ufffd'])
+def test_damaged_document_encoding_fails_publication(publication, content):
+    module, root, git = publication
+    (root/'docs/guide.md').write_text(content, encoding='utf-8')
+    assert any(error['reason'] == 'text encoding artifact; inspect and repair documentation'
                for error in module.audit(root)['errors'])
 
 

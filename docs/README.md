@@ -18,6 +18,9 @@ Start with the root [README](../README.md) for installation, demos and controls.
 | Near-goal reset curriculum | [Approach curriculum](APPROACH_CURRICULUM.md) |
 | Observed-ray risk objective | [Collision risk](COLLISION_RISK.md) |
 | Aggregate outcomes and uncertainty | [Results](RESULTS.md) |
+| Complete large-room diagnosis, attempts, and operational solution | [Navigation resolution](NAVIGATION_RESOLUTION.md) |
+| Twelve procedural map configurations and figure provenance | [Map gallery](images/README.md) |
+| Source release checks, licensing, and history separation | [Public release](PUBLICATION.md) |
 | Verified causes, limitations and correction order after zero success | [Geometry failure diagnosis](GEOMETRY_DIAGNOSIS.md) |
 | Correctness checks and remaining QA limits | [Verification](VERIFICATION.md) |
 | Recordings, recovery, backups and publication | [Operations](OPERATIONS.md) |
