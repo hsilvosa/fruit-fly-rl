@@ -40,3 +40,6 @@ Dos arranques breves de 40 pasos verificaron controles y cierre. Se inspeccionar
 
 
 El vuelo completo desde el visor alcanzó el objetivo del mapa de optimización 370000 en 2.857 pasos, sin colisión. Después reinició automáticamente el episodio y la memoria del controlador. Cerró tras 3.200 pasos de verificación física; el archivo completo pasó auditoría sin errores ni advertencias. Esta repetición del mapa conocido no se cuenta como otro objetivo de desarrollo independiente. La suite completa pasó 265 tests, y el lanzador Windows respondió correctamente a `--help`.
+
+
+El [informe de resolución](../NAVIGATION_RESOLUTION.md) desarrolla el problema, los intentos fallidos, las correcciones retenidas y los límites de esta solución.

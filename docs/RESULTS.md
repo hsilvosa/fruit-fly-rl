@@ -2,6 +2,8 @@
 
 El planificador de mapa observado v55 ya recorre habitaciones `large`: 8/8 llegadas en optimización reutilizada y 13/16 en desarrollo prospectivo, sin colisiones y con tres timeouts en desarrollo. Es planificación explícita desde actividad del conectoma completo, no una política de movimiento aprendida. El estudiante v34 conserva su resultado de 3/8; el aprendizaje fiable sigue pendiente. Los [resultados y límites](evidence/observed-map-v55-results.md) separan ambas cosas. Los aliases y el test reservado permanecen intactos.
 
+La [historia de resolución](NAVIGATION_RESOLUTION.md) explica el problema inicial, los intentos de aprendizaje y percepción que no bastaron, los bloqueos corregidos y la solución final. La mejora operativa combina memoria de mapa observado, avance correcto de referencias y frenado en la dirección tridimensional solicitada; no convierte el 13/16 del planificador en un resultado de PPO.
+
 
 Navigation performance is separate from implementation correctness and anatomical fidelity. The full fixed MaleCNS v1.0 graph was retained in these experiments; its synapses were not optimized. Outcomes do not establish a biological advantage.
 
