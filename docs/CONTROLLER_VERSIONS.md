@@ -45,6 +45,8 @@ Earlier learned-policy experiment labels such as `v34`, sensor contracts such as
 
 ## Future numbering
 
+See [Versioning and revision order](VERSIONING.md) for the complete sequence, patch/minor/major branches, and the workflow for assigning the next revision.
+
 Use a new major number for a substantially different controller architecture, a new minor number for a mechanism or input-contract change, and a patch number for a compatible correction. Develop candidates as `planner-1.3-exp.1`, `planner-1.3-exp.2`, and so on. Assign a numbered milestone only after documenting its measured behavior and limitations; that does not automatically promote it to the demo default. Keep old aliases permanent and never reuse a number for different measured code.
 
 Project package/release versions remain separate. Experiment directories should describe the hypothesis and date, such as `dual-readout-large-20261005-seed01`, and record their exact Git commit and source hashes. A controller name alone does not reproduce a run.

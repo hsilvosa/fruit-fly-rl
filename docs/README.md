@@ -13,6 +13,7 @@ Start with the root [README](../README.md) for installation, demos and controls.
 | Progressive map generation and geometry curriculum | [Progressive maps](GEOMETRY_CURRICULUM.md) |
 | Independent suites, selection and route measurements | [Generalization and routes](GENERALIZATION_AND_ROUTES.md) |
 | Controller revision numbers, descriptions, and historical aliases | [Controller versions](CONTROLLER_VERSIONS.md) |
+| Revision order, experimental candidates, and choosing the next number | [Versioning](VERSIONING.md) |
 | Sensor contracts and explicit transfer | [Sensors v3](SENSORS_V3.md) |
 | Bounded diagnostic trajectories | [Validation traces](VALIDATION_TRACES.md) |
 | Fresh initialization comparison | [Fresh comparison](VALIDATION_AND_FRESH_COMPARISON.md) |
