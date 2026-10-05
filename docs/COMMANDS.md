@@ -136,3 +136,14 @@ Use `train --sensor-version sensors-v4-128-distance-128-approach-14-state-deadli
 
 
 The explicit train command accepts `--history-frames 32 --history-stride 8`. Upgrading a current-feature checkpoint also requires `--transfer-history` and an explicit `--resume` source. This creates a learned temporal readout of connectome features with an initially zero residual; the original movement weights and their optimizer states are preserved. Evaluation and demo infer the history contract from checkpoint metadata. See [memory diagnosis](evidence/brain-memory-diagnosis.md).
+
+
+## Offline planner execution diagnostics
+
+Saved planner traces can be inspected without a brain, controller execution, training, or evaluation:
+
+```powershell
+.\.conda\python.exe -s scripts/report_planner_execution.py runs/diagnostics/planner-v65-development/v65/trace.json --seed 13000013 --output reports/planner-v65-timeout-execution.json
+```
+
+The local trace is not shipped in a fresh clone. Supply an existing diagnostic trace and a new output path. The report preserves its SHA-256 and counts sampled route availability, search-cap hits, momentum braking, and reference-direction reversals greater than 90 degrees. It records missing fields separately from observed zero counts and rejects nonfinite vectors or nonincreasing room steps. These indicators do not establish causality or behavior between samples. [Interpretation](evidence/planner-dual-v65-results.md#offline-inspection-of-the-remaining-timeouts).

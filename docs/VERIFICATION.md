@@ -86,3 +86,6 @@ Distance-stable and dual-readout full-connectome optimizer checks each used exac
 Separate v64 and v65 rendered checks each recorded 200 steps, finite activity, zero collisions, working reset/new-room/camera handlers, and a separate anatomical window. Their archives passed source and transition integrity checks. Neither completed an episode, so the screenshots are implementation checks rather than performance evidence. V65 archives retain the declared 5,669-feature width and separate readout dependency.
 
 Final October 5 regression after the dual-output sensitivity check and English plot-label updates: **359 tests passed**, with the expected PyTorch sparse-CSR beta warning. Earlier 358-test evidence remains the preceding snapshot rather than being retroactively relabeled.
+
+
+A subsequent offline planner-execution reporter passed eight focused tests: sampled reversal/search-cap counts, second-half boundaries, missing-field coverage, nonfinite geometry, nonincreasing steps, invalid diagnostics, and absent room selection. It was then run on two already-saved timeout traces, adding zero physical transitions and zero optimizer updates. The preceding full suite remains the 359-test snapshot; no larger full-suite count is claimed.
