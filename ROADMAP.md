@@ -100,3 +100,10 @@ Keep public documentation synchronized with verified results. Maintain the [map 
 Declare the hypothesis, unchanged baseline, task/sensor/readout contracts, added-transition budget, repeated initialization seeds, selection rule, and final-access rule before launch. Freeze sources and original alias hashes. Short implementation smokes are separate from substantive training and are not evidence of navigation quality.
 
 Preserve unsuccessful results and do not extend a budget silently. Validation chooses a checkpoint; an independent final result measures it and must not choose a replacement. If no trained candidate succeeds, report failure and leave the final pool untouched. Dataset attribution and the distinction between modeled activity and biological evidence apply throughout.
+
+
+## Immediate follow-up from the October 5 cutoff
+
+Use the saved v65 timeout diagnostics before another training run. Both retained failures continued moving with low estimated pose drift, and their final planned routes contained mostly unknown or ambiguous points. A found grid route is not a fully observed, dynamically executable corridor. Log route identity, observed-free segment length, frontier commitment, progress, and turn cost. Test whether local route-reference changes cause repeated corridor traversals; do not assume that simple route persistence works, since v62 already failed its retained pilot.
+
+Any correction should live in a new version, leaving v55 and the measured v60/v65 sources intact. Check known failures first, then freeze new paired development layouts. Keep a final independent pool inaccessible during tuning, preserve original aliases, and stop at the declared budget. The eight focused offline-reporter tests and saved plots add diagnostic tooling, not new navigation results.
