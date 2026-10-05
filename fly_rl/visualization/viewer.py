@@ -60,6 +60,7 @@ def run(args):
             sun=DirectionalLight('sun');sun.setColor((.65,.75,.9,1));node=self.render.attachNewNode(sun);node.setHpr(-35,-55,0);self.render.setLight(node)
             self.is_replay=bool(getattr(args,'archive',None))
             self.comparison_cache={}
+            self.is_planner=not self.is_replay and getattr(args,'controller','policy')=='observed-map'
             if self.is_replay:
                 from fly_rl.recordings.replay import ReplayEnv,RecordedPolicy
                 self.env=ReplayEnv(args.archive);self.policy=RecordedPolicy(self.env)
@@ -67,9 +68,15 @@ def run(args):
                 from fly_rl.simulation.sensors import SENSOR_V3
                 profile=getattr(args,'map_profile',None)
                 sensors=getattr(args,'sensor_version',None) or (checkpoint_sensor_version(args.checkpoint) if args.checkpoint else (SENSOR_V3 if profile else SENSOR_VERSION))
-                self.env=BrainEnv(args.data,1,args.device,args.seed,mode=getattr(args,'room_mode','obstacles'),dynamics=getattr(args,'dynamics','legacy'),sensor_version=sensors,map_profile=profile,readout_version=json.loads(Path(args.checkpoint).with_suffix('.json').read_text()).get('readout_version','random-pool-256-v1') if args.checkpoint else 'random-pool-256-v1',sensor_backend='torch-cuda' if sensors==SENSOR_V6 and args.device=='cuda' else 'numpy',**checkpoint_history(args.checkpoint))
-                self.policy=load_model(args.checkpoint,self.env.brain,self.env,getattr(args,'transfer',False)) if args.checkpoint else make_policy(self.env)
-            self.untrained_policy=self.env.archive.manifest.get('metadata',{}).get('untrained') if self.is_replay else self.policy.num_timesteps == 0
+                if self.is_planner:
+                    from fly_rl.connectome.innovation import MOTION_STABLE_READOUT
+                    from fly_rl.navigation.observed_map import ObservedMapPolicy
+                    self.env=BrainEnv(args.data,1,args.device,args.seed,mode='dense',dynamics='coordinated',sensor_version=SENSOR_V6,map_profile='large',readout_version=MOTION_STABLE_READOUT,sensor_backend='torch-cuda' if args.device=='cuda' else 'numpy',history_frames=8,history_stride=8)
+                    self.policy=ObservedMapPolicy()
+                else:
+                    self.env=BrainEnv(args.data,1,args.device,args.seed,mode=getattr(args,'room_mode','obstacles'),dynamics=getattr(args,'dynamics','legacy'),sensor_version=sensors,map_profile=profile,readout_version=json.loads(Path(args.checkpoint).with_suffix('.json').read_text()).get('readout_version','random-pool-256-v1') if args.checkpoint else 'random-pool-256-v1',sensor_backend='torch-cuda' if sensors==SENSOR_V6 and args.device=='cuda' else 'numpy',**checkpoint_history(args.checkpoint))
+                    self.policy=load_model(args.checkpoint,self.env.brain,self.env,getattr(args,'transfer',False)) if args.checkpoint else make_policy(self.env)
+            self.untrained_policy=self.env.archive.manifest.get('metadata',{}).get('untrained') if self.is_replay else (False if self.is_planner else self.policy.num_timesteps == 0)
             # PPO initialization sets environment seeds; the viewer's room seed wins.
             self.env.seed(args.seed)
             self.features=self.env.reset()
@@ -108,7 +115,7 @@ def run(args):
             self.accept('m',self.cycle_brain)
             self.accept('b',self.toggle_brain)
             self.controls=OnscreenText(text='LMB drag orbit / RMB look / MMB pan / wheel zoom\nC camera modes / WASD + Q/E free move / SHIFT: simulation 10x / F focus fly\nSPACE pause / R reset / N new room / V sensors / ESC exit',pos=(-1.53,-.82),scale=.027,fg=(.62,.72,.82,1),align=TextNode.ALeft)
-            label=('REPLAY / SAVED STATES / '+self.env.inspection['status'].upper()) if self.is_replay else ('UNTRAINED POLICY / NO TRAINING RUNNING' if self.untrained_policy else 'CHECKPOINT POLICY / NO TRAINING RUNNING')
+            label=('REPLAY / SAVED STATES / '+self.env.inspection['status'].upper()) if self.is_replay else ('OBSERVED MAP PLANNER / NO LEARNED MOVEMENT WEIGHTS' if self.is_planner else 'UNTRAINED POLICY / NO TRAINING RUNNING' if self.untrained_policy else 'CHECKPOINT POLICY / NO TRAINING RUNNING')
             self.label=OnscreenText(text=label,pos=(1.52,.89),scale=.029,fg=(1,.72,.32,1),align=TextNode.ARight)
             if self.is_replay:
                 self.controls.setText('Mouse + C: camera / WASD + Q/E: free move / F: focus\nSPACE pause / R rewind / N next episode / PageUp-Down seek / V sensors / ESC exit')
@@ -141,8 +148,8 @@ def run(args):
                     'brain_feature_count':self.env.feature_count,'readout_version':getattr(self.env.brain,'readout_version','random-pool-256-v1'),
                     'sensor_version':self.env.brain.sensor_version,'dt':DT,'seed':args.seed,'policy_seed':42,
                     'untrained':self.untrained_policy,'checkpoint_source':args.checkpoint,
-                    'record_brain':args.record_brain,'training_updates':self.policy._n_updates,
-                    'policy_timesteps':self.policy.num_timesteps,'reservoir_spec':self.env.brain.model_spec,
+                    'record_brain':args.record_brain,'controller':self.policy.specification if self.is_planner else {'kind':'learned_policy'},'training_updates':getattr(self.policy,'_n_updates',0),
+                    'policy_timesteps':getattr(self.policy,'num_timesteps',0),'reservoir_spec':self.env.brain.model_spec,
                     'reward_version':REWARD_VERSION,
                     'anatomical_map':self.brain_map.anatomy['source'] if self.brain_map else None,
                     'neural_inspection':{'region_filter':self.brain_map.region_filter if self.brain_map else None,
@@ -157,7 +164,12 @@ def run(args):
                         'world_version':'rooms-v4-profiled-passages' if self.env.map_profile else 'rooms-v3-dense-random-goals',
                         'map_profile':self.env.map_profile.to_dict() if self.env.map_profile else None}})
                 from fly_rl.training.learning import save_model
-                save_model(self.policy,self.flight_record.path/'policy.zip',self.env.brain)
+                if self.is_planner:
+                    from fly_rl.navigation import observed_map
+                    source=Path(observed_map.__file__)
+                    (self.flight_record.path/'controller.py').write_bytes(source.read_bytes())
+                    (self.flight_record.path/'controller.json').write_text(json.dumps(self.policy.specification,indent=2),encoding='utf-8')
+                else: save_model(self.policy,self.flight_record.path/'policy.zip',self.env.brain)
                 self.record_room('initial')
                 print('Recording flight to',self.flight_record.path,flush=True)
             self.write_summary('running')
@@ -313,6 +325,7 @@ def run(args):
                 if self.brain_map: self.brain_map.visible(False)
 
         def reset_room(self):
+            if self.is_planner: self.policy.reset()
             if self.neural: self.neural.reset()
             self.env.seed(self.seed);self.features=self.env.reset();self.trail=[];self.draw_room()
             if self.is_replay: self.room_id=self.env.current_room_id;self.paused=False
@@ -356,7 +369,7 @@ def run(args):
                     # Stochastic actions make an untrained policy visibly explore.
                     action,_=self.policy.predict(self.features,deterministic=bool(args.checkpoint))
                     if self.neural and (self.brain_visible or args.record_brain) and self.steps%5==0:
-                        observation=self.neural.sample(self.policy,self.features,action[0],self.steps+1)
+                        observation=self.neural.sample_activity(action[0],self.steps+1) if self.is_planner else self.neural.sample(self.policy,self.features,action[0],self.steps+1)
                         if self.flight_record: self.flight_record.event('brain-observation',self.steps+1,observation)
                         if self.brain_map and not self.brain_map.closed:
                             trace=self.brain_map.observe(self.neural)
@@ -376,6 +389,7 @@ def run(args):
                             'room_id':self.room_id,'collision':infos[0]['collision'],'success':infos[0]['success'],
                             'truncated':infos[0]['truncated'],'episode':infos[0]['episode']})
                         if not self.is_replay:
+                            if self.is_planner: self.policy.reset()
                             if self.neural: self.neural.reset()
                             self.room_id+=1;self.record_room('automatic-reset')
                             self.trail=[];self.draw_room()
@@ -464,7 +478,7 @@ def run(args):
                 'mean_activity':float(self.env.brain.state.abs().mean().item()),'controls_checked':self.controls_checked,
                 'sensor_count':ray_count(self.env.worlds[0].sensor_version),'sensor_values':len(self.env.worlds[0].observe()),
                 'recording':str(self.flight_record.path) if self.flight_record else None}
-            result.update(dynamics=self.env.worlds[0].dynamics,brain_view=self.brain_visible)
+            result.update(dynamics=self.env.worlds[0].dynamics,brain_view=self.brain_visible,controller=self.policy.specification if self.is_planner else {'kind':'recorded_flight' if self.is_replay else 'learned_policy'})
             w=self.env.worlds[0]
             result.update(map_profile=w.map_profile.to_dict() if w.map_profile else None,room_size=w.room.tolist(),episode_limit=w.episode_limit)
             if self.brain_map:

@@ -152,9 +152,16 @@ class BrainMap:
             self.last_mouse=point
 
     def capture(self,path):
-        from panda3d.core import Filename
+        from panda3d.core import PNMImage,StringStream
         if self.closed or not self.win.isValid(): return False
-        return bool(self.win.saveScreenshot(Filename.fromOsSpecific(str(path.resolve()))))
+        picture=PNMImage();stream=StringStream()
+        if not self.win.getScreenshot(picture) or not picture.write(stream,path.name): return False
+        payload=stream.getData()
+        if not payload: return False
+        path.parent.mkdir(parents=True,exist_ok=True)
+        temporary=path.with_name(path.stem+'.tmp'+path.suffix)
+        temporary.write_bytes(payload);temporary.replace(path)
+        return True
     def contains(self,point):
         x,y=(np.asarray(point)+1)*.5;l,r,b,t=self.bounds
         return l<=x<=r and b<=y<=t
@@ -212,6 +219,8 @@ class BrainMap:
         self.last_step=None
     def text(self):
         source=self.anatomy['source'];names={'activity':'Signed modeled activity','change':'Change since previous sample','sensitivity':'Local action sensitivity (relative scale)'}
+        if self.neural is not None and self.neural.last is not None and self.neural.last.get('sensitivity_available') is False:
+            names['sensitivity']='Sensitivity unavailable for explicit planner'
         phase='' if self.neural is None or self.neural.last is None else f"Decision {self.neural.last['decision_step']} / before action"
         return (f"MaleCNS / real soma positions\n{source['located_neurons']:,}/{self.anatomy['total_neurons']:,} located\n"
             f"{source['unlocated_neurons']:,} without coordinates\n{names[self.mode]} / {phase}\nG neuromere: {self.region_filter} / H class: {self.class_filter}\nVisible: {int(self.mask.sum()):,} somas / A: clear filters")

@@ -34,6 +34,23 @@ class NeuralInspector:
         self.previous=state
         return self.last
 
+    def sample_activity(self,action,step):
+        """Record actual activity without inventing gradients for a planner."""
+        state=self.brain.state[:,0].detach().cpu().numpy().copy()
+        change=np.zeros_like(state) if self.previous is None else state-self.previous
+        self.snapshot=state;self.delta=change;self.sensitivity=np.zeros_like(state)
+        def values(array):
+            indices=np.argsort(-np.abs(array))[:6]
+            return [{'neuron_id':int(self.ids[i]),'value':float(array[i])} for i in indices]
+        axis=int(np.argmax(np.abs(action)))
+        self.last={'decision_step':step,'phase':'before_action','activity':values(state),
+            'activity_change':values(change),'dominant_control':['forward','bank/lateral','vertical','yaw'][axis],
+            'local_sensitivity':[],'sensitivity_basis':'unavailable_for_explicit_planner',
+            'sensitivity_available':False,'action':np.asarray(action).tolist(),
+            'mean_abs_activity':float(np.abs(state).mean()),'causal_claim':False}
+        self.previous=state
+        return self.last
+
     @torch.no_grad()
     def current_sensitivity(self, gradient):
         """Pull a current-feature gradient back through its actual readout."""

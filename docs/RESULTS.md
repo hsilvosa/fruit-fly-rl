@@ -1,6 +1,7 @@
 # Results
 
-La navegación fiable en `large` sigue pendiente. El mejor estudiante de esta tanda, v34, llegó a 3 de 8 objetivos en mapas de optimización reutilizados, con una colisión y cuatro timeouts. Se añadieron 131.072 transiciones físicas de entrenamiento; los ajustes sobre datos ya guardados y las comprobaciones se contabilizan por separado. Los candidatos posteriores no mejoraron ese resultado. El [protocolo y los resultados](evidence/portal-feedback-protocol.md) documentan cada variante, incluido el mapa observado que sigue en diagnóstico. El test reservado y los aliases originales se conservan.
+El planificador de mapa observado v55 ya recorre habitaciones `large`: 8/8 llegadas en optimización reutilizada y 13/16 en desarrollo prospectivo, sin colisiones y con tres timeouts en desarrollo. Es planificación explícita desde actividad del conectoma completo, no una política de movimiento aprendida. El estudiante v34 conserva su resultado de 3/8; el aprendizaje fiable sigue pendiente. Los [resultados y límites](evidence/observed-map-v55-results.md) separan ambas cosas. Los aliases y el test reservado permanecen intactos.
+
 
 Navigation performance is separate from implementation correctness and anatomical fidelity. The full fixed MaleCNS v1.0 graph was retained in these experiments; its synapses were not optimized. Outcomes do not establish a biological advantage.
 

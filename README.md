@@ -1,12 +1,14 @@
 # Fly RL
 
-La navegación fiable en `large` sigue pendiente. El mejor estudiante de esta tanda, v34, llegó a 3 de 8 objetivos en mapas de optimización reutilizados, con una colisión y cuatro timeouts. Se añadieron 131.072 transiciones físicas de entrenamiento; los ajustes sobre datos ya guardados y las comprobaciones se contabilizan por separado. Los candidatos posteriores no mejoraron ese resultado. El [protocolo y los resultados](docs/evidence/portal-feedback-protocol.md) documentan cada variante, incluido el mapa observado que sigue en diagnóstico. El test reservado y los aliases originales se conservan.
+El planificador de mapa observado v55 ya recorre habitaciones `large`: 8/8 llegadas en optimización reutilizada y 13/16 en desarrollo prospectivo, sin colisiones y con tres timeouts en desarrollo. Es planificación explícita desde actividad del conectoma completo, no una política de movimiento aprendida. El estudiante v34 conserva su resultado de 3/8; el aprendizaje fiable sigue pendiente. Los [resultados y límites](docs/evidence/observed-map-v55-results.md) separan ambas cosas. Los aliases y el test reservado permanecen intactos.
 
-Original-large navigation remains unresolved. The [spatial neural experiment](docs/evidence/spatial-neural-v5-results.md) consumed 98,304 additional transitions, bringing substantive use to 786,432. Its two student-only rounds reached no goals, with 143 and three collisions. The original launcher aliases and reserved final tests remain preserved.
+Para verlo en Windows:
 
-A CPU/CUDA precision discrepancy stopped its post-training verification after the final checkpoint was saved. Identical saved tensors and exact same-GPU reload were confirmed; disabling convolution TF32 resolves the numerical comparison. Its one declared development validation was completed separately without training using unchanged weights and frozen runtime sources: 0/8 goals, six collisions and two timeouts. This reused suite is not an independent final test.
+```powershell
+.\launch-observed-map.cmd
+```
 
-The [next bounded correction](docs/evidence/neural-waypoint-v6-plan.md) adds learned waypoint supervision, natural training-start headings and continuous student episodes. It allows 81,920 new transitions, retains the full connectome, and balances startup, turn and vertical examples. Its full-graph 128-transition collector verification passed. Runtime route access remains absent; successful navigation is still unproven.
+También acepta `--speed 4` o `--seed 370001`. Shift acelera la simulación 10 veces; R reinicia, N crea otra sala y C cambia la cámara y F enfoca la mosca. La ventana cerebral se abre por separado.
 
 A virtual fruit fly navigates procedural 3D rooms using features from the full annotated MaleCNS v1.0 connectome. A fixed sparse recurrent model converts simulated sensor readings into activity; a PPO actor and critic learn flight commands. Panda3D displays the room and an optional separate anatomical activity window.
 

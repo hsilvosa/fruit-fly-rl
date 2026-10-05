@@ -80,3 +80,8 @@ El [protocolo panorámico v7](evidence/panoramic-neural-v7-plan.md) fija un lím
 ## Percepción de aberturas y lectura neuronal
 
 El [protocolo retomado](evidence/portal-feedback-protocol.md) separa lectura de actividad, estimación de centros visibles y control físico. Añadió 65.536 transiciones guiadas de entrenamiento y comprobaciones autónomas separadas; todavía no produjo llegadas en los mapas grandes. La variante de mínimos cuadrados conserva la recurrencia proyectada. El lector que la cancela solo se usa como diagnóstico de información, sin afirmar ventajas biológicas.
+
+
+## Navegación por mapa observado
+
+El [planificador v55](evidence/observed-map-v55-results.md) constituye una alternativa explícita al estudiante guiado. Recibe canales reconstruidos del conectoma, construye su propio mapa y busca rutas; no consulta la geometría verdadera. Llegó a 13/16 en desarrollo prospectivo, sin colisiones y con tres timeouts. No tiene pesos aprendidos de movimiento. Estos vuelos no se suman a las llegadas del estudiante ni al entrenamiento PPO. La próxima supervisión desde el planificador deberá contar las transiciones nuevas y separar su rendimiento del estudiante; no se ha iniciado esa tanda.

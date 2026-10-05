@@ -40,7 +40,7 @@ def main():
     sub=parser.add_subparsers(dest='command',required=True)
     sub.add_parser('prepare-data')
     bench=sub.add_parser('benchmark');bench.add_argument('--seconds',type=float,default=20)
-    demo=sub.add_parser('demo');demo.add_argument('--checkpoint');demo.add_argument('--seed',type=int,default=10)
+    demo=sub.add_parser('demo');demo.add_argument('--controller',choices=['policy','observed-map'],default='policy');demo.add_argument('--checkpoint');demo.add_argument('--seed',type=int,default=10)
     demo.add_argument('--offscreen',action='store_true');demo.add_argument('--seconds',type=float,default=0)
     demo.add_argument('--screenshot',default='reports/demo.png')
     demo.add_argument('--speed',type=float,default=1.,help='Live simulation time multiplier; Shift boosts it 10x')
@@ -152,6 +152,12 @@ def main():
     runfresh=sub.add_parser('run-fresh-comparison');runfresh.add_argument('configuration');runfresh.add_argument('--output',required=True)
     args=parser.parse_args()
     torch.set_num_threads(4)
+    if args.command=='demo' and args.controller=='observed-map':
+        from fly_rl.simulation.sensors import SENSOR_V6
+        if args.checkpoint: parser.error('Observed-map planning does not load a policy checkpoint')
+        if args.map_profile and args.map_profile!='large': parser.error('Observed-map planning currently supports the original large profile only')
+        if args.sensor_version and args.sensor_version!=SENSOR_V6: parser.error('Observed-map planning requires the panoramic v6 sensory contract')
+        args.map_profile='large';args.room_mode='dense';args.dynamics='coordinated';args.sensor_version=SENSOR_V6
     if getattr(args,'map_profile',None):
         if args.command=='demo':args.room_mode='dense'
         elif args.command in ['train','evaluate']:args.mode='dense'

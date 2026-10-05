@@ -48,3 +48,20 @@ def test_contrast_preserves_declared_recurrent_contribution():
     brain.reset([0])
     assert torch.count_nonzero(brain.state[:, 0]) == 0
     torch.testing.assert_close(brain.state[:, 1], saved[:, 1])
+
+
+def test_motion_stable_readout_decodes_pose_and_retains_visual_recurrence():
+    from fly_rl.connectome.innovation import MotionStableActivityBrain, MOTION_STABLE_READOUT
+    torch.set_num_threads(2)
+    brain=MotionStableActivityBrain(matrix=sparse.eye(30000,format='csr',dtype=np.float32)*.2,
+                                   device='cpu',batch=2,sensor_version=SENSOR_V6)
+    sensors=np.full((2,3869),.3,dtype=np.float32)
+    brain.step(sensors);previous=brain.state.clone();features=brain.step(sensors)
+    clean=brain.project_activity(previous,brain.state,True)
+    retained=brain.project_activity(previous,brain.state,False)
+    np.testing.assert_allclose(features[:,:269],clean[:,:269],atol=3e-6)
+    np.testing.assert_allclose(features[:,269:],(clean+.05*(retained-clean))[:,269:],atol=3e-6)
+    assert np.max(np.abs(features[:,269:]-clean[:,269:]))>1e-4
+    assert brain.fingerprint.endswith(MOTION_STABLE_READOUT)
+    state=brain.state.clone();brain.reset([0]);assert torch.count_nonzero(brain.state[:,0])==0
+    torch.testing.assert_close(brain.state[:,1],state[:,1])
