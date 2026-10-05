@@ -50,3 +50,8 @@ No new training, checkpoint modification or final evaluation was performed in th
 The [practice-mastery v2 implementation](GEOMETRY_CURRICULUM.md#corrected-practice-mastery-protocol) adds `gate-near` and `gate-long`, withholds 16 training layouts for two practice gates, preserves gate state across rounds and retains easier profiles. It excludes initialization from candidate selection and leaves the final pool unused when no trained target candidate succeeds. Existing checkpoints and recorded v1 outcomes are preserved.
 
 All 16 physical oracle examples passed, and a separate full-connectome CUDA smoke completed exactly 128 transitions and one PPO update with finite losses and reload. Its practice inference failed both gates and correctly stayed at stage zero. This is a correctness check, not evidence of improved navigation. Reward and temporal-horizon interventions remain untested proposals.
+
+
+## Resolución operativa posterior
+
+El [informe del 5 de octubre](NAVIGATION_RESOLUTION.md) conserva esta distinción entre tareas y documenta las correcciones posteriores. El planificador v55 llegó a 8/8 en optimización y 13/16 en desarrollo prospectivo, sin colisiones. El mejor estudiante aprendido de la última tanda quedó en 3/8. La navegación por planificación ya tiene una demostración funcional; el aprendizaje fiable y el objetivo de test independiente siguen pendientes.

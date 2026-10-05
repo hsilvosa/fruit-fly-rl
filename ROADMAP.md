@@ -2,6 +2,8 @@
 
 El planificador de mapa observado v55 ya recorre habitaciones `large`: 8/8 llegadas en optimización reutilizada y 13/16 en desarrollo prospectivo, sin colisiones y con tres timeouts en desarrollo. Es planificación explícita desde actividad del conectoma completo, no una política de movimiento aprendida. El estudiante v34 conserva su resultado de 3/8; el aprendizaje fiable sigue pendiente. Los [resultados y límites](docs/evidence/observed-map-v55-results.md) separan ambas cosas. Los aliases y el test reservado permanecen intactos.
 
+La [historia de resolución](docs/NAVIGATION_RESOLUTION.md) explica el problema inicial, los intentos de aprendizaje y percepción que no bastaron, los bloqueos corregidos y la solución final. La mejora operativa combina memoria de mapa observado, avance correcto de referencias y frenado en la dirección tridimensional solicitada; no convierte el 13/16 del planificador en un resultado de PPO.
+
 Los próximos pasos son reducir los tres timeouts del planificador y comprobar la versión corregida en otra muestra prospectiva; después, usar recorridos observados como supervisión de un estudiante, separando llegadas del planificador y del modelo aprendido. Cualquier versión ajustada con fallos de desarrollo requiere nuevos mapas para medir generalización. No ampliar a `maze` antes de comprobar contratos de tamaño y navegación. El objetivo de 80% en un test independiente con incertidumbre sigue abierto; 13/16 tiene un límite inferior de confianza cercano a 57%.
 
 The full-connectome controller, procedural 3D rooms, anatomical inspection, recording, replay and bounded experiment tools are implemented. This roadmap describes proposed work; it does not start another training run.
