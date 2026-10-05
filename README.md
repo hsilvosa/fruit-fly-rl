@@ -1,16 +1,16 @@
 # Fly RL
 
-El planificador de mapa observado v55 ya recorre habitaciones `large`: 8/8 llegadas en optimización reutilizada y 13/16 en desarrollo prospectivo, sin colisiones y con tres timeouts en desarrollo. Es planificación explícita desde actividad del conectoma completo, no una política de movimiento aprendida. El estudiante v34 conserva su resultado de 3/8; el aprendizaje fiable sigue pendiente. Los [resultados y límites](docs/evidence/observed-map-v55-results.md) separan ambas cosas. Los aliases y el test reservado permanecen intactos.
+The observed-map planner v55 now navigates `large` rooms: 8/8 arrivals on reused optimization maps and 13/16 in prospective development, without collisions and with three development timeouts. This is explicit planning from full-connectome activity, not a learned movement policy. Student v34 retains its 3/8 result; reliable learning remains unresolved. The [results and limits](docs/evidence/observed-map-v55-results.md) distinguish the two. Original aliases and the reserved test remain intact.
 
-La [historia de resolución](docs/NAVIGATION_RESOLUTION.md) explica el problema inicial, los intentos de aprendizaje y percepción que no bastaron, los bloqueos corregidos y la solución final. La mejora operativa combina memoria de mapa observado, avance correcto de referencias y frenado en la dirección tridimensional solicitada; no convierte el 13/16 del planificador en un resultado de PPO.
+The [resolution history](docs/NAVIGATION_RESOLUTION.md) explains the original problem, learning and perception attempts that were insufficient, corrected blockages, and the final solution. The operational improvement combines observed-map memory, correct reference advancement, and braking in the requested three-dimensional direction; it does not turn the planner's 13/16 into a PPO result.
 
-Para verlo en Windows:
+To watch it on Windows:
 
 ```powershell
 .\launch-observed-map.cmd
 ```
 
-También acepta `--speed 4` o `--seed 370001`. Shift acelera la simulación 10 veces; R reinicia, N crea otra sala y C cambia la cámara y F enfoca la mosca. La ventana cerebral se abre por separado.
+It also accepts `--speed 4` or `--seed 370001`. Shift accelerates simulation tenfold; R resets, N creates another room, C changes the camera, and F focuses on the fly. The brain window opens separately.
 
 A virtual fruit fly navigates procedural 3D rooms using features from the full annotated MaleCNS v1.0 connectome. A fixed sparse recurrent model converts simulated sensor readings into activity; a PPO actor and critic learn flight commands. Panda3D displays the room and an optional separate anatomical activity window.
 
@@ -114,15 +114,15 @@ Each demo retains a unique archive under `runs/demo/`; its latest preview and su
 The earlier [critic-isolation v3 run](docs/evidence/guided-navigation-v3-results.md) and subsequent guarded corrections did not resolve original large-room navigation. Their checkpoints and evidence remain available; those experiments are no longer running.
 
 
-## Corrección panorámica y resultado de waypoint v6
+## Panoramic correction and waypoint v6 result
 
-La tanda waypoint v6 completó 81.920 transiciones nuevas, con pérdidas finitas y recarga compatible, pero su validación autónoma original large siguió en 0/8: ocho colisiones y ningún timeout. El total de entrenamiento sustantivo completado es 868.352 transiciones. Los aliases originales y el checkpoint fuente permanecen intactos. No se utilizó el test reservado y la navegación continúa sin resolverse.
+The waypoint v6 batch completed 81,920 new transitions, with finite losses and compatible reload, but autonomous validation on original `large` rooms remained at 0/8: eight collisions and no timeouts. Completed substantive training totals 868,352 transitions. Original aliases and the source checkpoint remain intact. The reserved test was not used, and navigation remained unresolved at this stage.
 
-Se conservan los [resultados verificados](docs/evidence/neural-waypoint-v6-results.md) y el [diagnóstico de control y cobertura](docs/evidence/neural-waypoint-v6-diagnostics.md). La siguiente corrección usa visión panorámica medida alrededor del cuerpo y vuelos guiados completos desde los estados originales. Su controlador recibe únicamente actividad neuronal; la ruta oculta solo etiqueta datos durante entrenamiento.
-El [protocolo panorámico v7](docs/evidence/panoramic-neural-v7-plan.md) fija un límite de 98.304 transiciones nuevas, 12.288 actualizaciones supervisadas y una única validación de desarrollo. Empieza un controlador nuevo por el cambio de dimensiones, conserva todos los checkpoints anteriores y no consume el test reservado.
+The [verified results](docs/evidence/neural-waypoint-v6-results.md) and [control and coverage diagnosis](docs/evidence/neural-waypoint-v6-diagnostics.md) are retained. The next correction uses panoramic vision measured around the body and complete guided flights from original states. Its controller receives only neural activity; the hidden route labels data only during training.
+The [panoramic v7 protocol](docs/evidence/panoramic-neural-v7-plan.md) sets a limit of 98,304 new transitions, 12,288 supervised updates, and a single development validation. It starts a new controller because dimensions change, preserves all previous checkpoints, and does not consume the reserved test.
 
-El usuario ha fijado una [ventana adicional de dos horas](docs/evidence/two-hour-navigation-plan.md), con parada el 4 de octubre a las 22:40:52 de Madrid. La corrección de cobertura amplía los vuelos guiados y los arranques en mapas originales, y utiliza sensores CUDA previamente contrastados con NumPy. Sus resultados autónomos todavía están pendientes; el límite de tiempo no implica que la navegación esté resuelta.
+The user set an [additional two-hour window](docs/evidence/two-hour-navigation-plan.md), stopping on October 4 at 22:40:52 Madrid time. The coverage correction extends guided flights and starts on original maps, using CUDA sensors previously checked against NumPy. Autonomous results were still pending at this stage; the time limit did not imply that navigation was resolved.
 
-## Cierre de las correcciones panorámicas
+## Completion of the panoramic corrections
 
-Las tandas v8, v9, v10 y v12 terminaron y añadieron 505.856 transiciones. La última evaluación autónoma en desarrollo reutilizado alcanzó 0/8 objetivos, con una colisión y siete timeouts. El total sustantivo completado es 1.472.512 transiciones. La navegación en los mapas grandes originales sigue pendiente; no se usó el test reservado ni se promovieron los aliases originales. Se conserva el [informe de la ventana de dos horas](docs/evidence/two-hour-navigation-results.md), sus checkpoints y el lanzador experimental `launch-panorama.ps1`. El trabajo se pausa al cumplirse el plazo solicitado, el 4 de octubre a las 22:40:52 de Madrid.
+Batches v8, v9, v10, and v12 finished and added 505,856 transitions. The latest autonomous assessment on reused development maps reached 0/8 goals, with one collision and seven timeouts. Completed substantive training totals 1,472,512 transitions. Navigation in the original large maps remained unresolved; the reserved test was not used and original aliases were not promoted. The [two-hour window report](docs/evidence/two-hour-navigation-results.md), its checkpoints, and experimental launcher `launch-panorama.ps1` are retained. Work paused at the requested deadline, October 4 at 22:40:52 Madrid time.

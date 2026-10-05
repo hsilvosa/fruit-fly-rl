@@ -328,21 +328,21 @@ Columns of A are normalized by their Euclidean norm before forming the Gram matr
 In a short 128-transition optimization diagnostic, the recurrence-canceling bound reconstructed panorama distances with approximately 0.000045 metre RMSE. The recurrence-retaining candidate had 0.824 metre RMSE. An affine fit of the preceding grouped readout, fitted and measured on those same observations, had 1.724 metre RMSE. This is a small, favorable diagnostic sample and does not establish navigation performance, independent generalization, a unique failure cause or biological advantage. Its two 128-transition checks and the separate 128-transition PPO smoke are verification, not substantive training.
 
 
-La lectura de contraste de v32 mantiene una fracción explícita de recurrencia:
+The v32 contrast readout retains an explicit recurrent fraction:
 
 \[
 y_{\mathrm{contrast}} = A^+\left[z - 0.95Wh_{t-1}\right]
 \approx x_t + 0.05A^+Wh_{t-1}.
 \]
 
-La matriz neuronal, la proyección y la actualización de todos los estados se conservan. Es una decisión de ingeniería para reducir interferencia en coordenadas sensoriales; no reproduce un mecanismo demostrado en la mosca. El contrato tiene una huella propia y requiere transferencia explícita respecto del lector anterior. La fracción recurrente se comprueba por álgebra y las acciones por recarga de checkpoint.
+The neural matrix, projection, and updates of all states are preserved. This is an engineering choice to reduce interference in sensory coordinates; it does not reproduce an established mechanism in the fly. The contract has its own fingerprint and requires explicit transfer from the previous reader. Algebra checks the recurrent fraction, and checkpoint reload checks actions.
 
-El contexto de percepción usa una reducción del panorama completo a una cuadrícula de 5 por 12 y una red que predice escala y sesgo para los canales locales. Esos parámetros condicionan las puntuaciones de aberturas antes de seleccionar un máximo local. Su objetivo supervisado conserva entropía cruzada angular, error de dirección y error de distancia; no modifica el conectoma ni constituye por sí mismo entrenamiento PPO.
+Perception context reduces the full panorama to a 5-by-12 grid and uses a network predicting scale and bias for local channels. These parameters condition opening scores before selecting a local maximum. Its supervised objective retains angular cross-entropy, direction error, and distance error; it does not modify the connectome or itself constitute PPO training.
 
 
-Para separar aproximación y cruce se aprende una normal horizontal de pared \(n\) a partir de la imagen neuronal. Las etiquetas de orientación provienen únicamente de las poses de entrenamiento. Con centro estimado \(c\), se descompone \(c=n(n^Tc)+c_\perp\). Durante la aproximación, la referencia es \(c-1.3n\); tras alinearse, es \(c+1.2n\). Cerca del objetivo se usa su dirección y distancia neuronales existentes. La cabeza de orientación se ajusta con pérdida \(1-\hat n^Tn^*\), conservando los pesos de percepción anteriores.
+To separate approach from crossing, a horizontal wall normal \(n\) is learned from the neural image. Orientation labels come only from training poses. With estimated center \(c\), decompose \(c=n(n^Tc)+c_\perp\). During approach, the reference is \(c-1.3n\); after alignment, it is \(c+1.2n\). Near the goal, its existing neural direction and distance are used. The orientation head is fitted with loss \(1-\hat n^Tn^*\), preserving earlier perception weights.
 
-V35 limita la componente longitudinal de aproximación mediante la mediana de distancias cortas proyectadas sobre la normal aprendida. Se usan rayos a menos de 7,7 metros, casi horizontales y alineados con la normal en un cono cuyo coseno mínimo es 0,9. Si no hay una medida utilizable se conserva la estimación aprendida. Es una heurística de control con incertidumbre, no una garantía de seguridad ni una modificación de pesos.
+V35 limits the longitudinal approach component using the median short distances projected onto the learned normal. Rays are below 7.7 meters, nearly horizontal, and aligned with the normal in a cone with minimum cosine 0.9. If no usable measurement exists, the learned estimate is retained. This is a control heuristic with uncertainty, not a safety guarantee or weight modification.
 
 
 ## Temporal image alignment and inspection basis

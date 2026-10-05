@@ -8,16 +8,16 @@ The configurable generator supplies progressive room profiles, geometry measurem
 
 ## Map profiles
 
-The original `dense-v3` generator remains available with its original random stream, 32 Ã— 32 Ã— 12 room, 48 boxes, and 1200-decision limit. Existing suite fingerprints and launcher aliases are preserved. New profiles use `rooms-v4-profiled-passages`:
+The original `dense-v3` generator remains available with its original random stream, 32 x 32 x 12 room, 48 boxes, and 1200-decision limit. Existing suite fingerprints and launcher aliases are preserved. New profiles use `rooms-v4-profiled-passages`:
 
-| Profile | Room dimensions | Total collision boxes | Partitions | Opening width Ã— height |
+| Profile | Room dimensions | Total collision boxes | Partitions | Opening width x height |
 | --- | --- | --- | --- | --- |
-| `gate-near` | 12 Ã— 12 Ã— 10 | 4 | 1 | 4.5 Ã— 4 |
-| `gate-long` | 24 Ã— 12 Ã— 10 | 4 | 1 | 4.5 Ã— 4 |
-| `open` | 32 Ã— 32 Ã— 12 | 24 | 0 | No fixed openings |
-| `passages` | 32 Ã— 32 Ã— 12 | 64 | 3 | 4 Ã— 4 |
-| `large` | 48 Ã— 48 Ã— 16 | 112 | 5 | 3.2 Ã— 3.2 |
-| `maze` | 64 Ã— 64 Ã— 20 | 192 | 8, plus 4 dead-end wings | 2.4 Ã— 2.8 |
+| `gate-near` | 12 x 12 x 10 | 4 | 1 | 4.5 x 4 |
+| `gate-long` | 24 x 12 x 10 | 4 | 1 | 4.5 x 4 |
+| `open` | 32 x 32 x 12 | 24 | 0 | No fixed openings |
+| `passages` | 32 x 32 x 12 | 64 | 3 | 4 x 4 |
+| `large` | 48 x 48 x 16 | 112 | 5 | 3.2 x 3.2 |
+| `maze` | 64 x 64 x 20 | 192 | 8, plus 4 dead-end wings | 2.4 x 2.8 |
 
 Each partition consists of four boxes around one opening; partition pieces count toward the total. Openings alternate across the room and in altitude. Endpoints may be reversed and initial heading is randomized. Remaining boxes do not overlap existing boxes or block a reserved route. The `maze` profile adds four side wings whose sole doorway creates a branch and a dead end. Neighboring partitions and the outside room wall close the other sides. Hidden clearance certificates connect the main passage to each wing and keep random boxes from blocking its entrance. This is a chamber-and-wing topology, rather than an arbitrary grid maze or a moving-obstacle task.
 
@@ -38,7 +38,7 @@ $$
 
 Turns count angles greater than 15 degrees between consecutive segments. Vertical travel is the sum of absolute altitude changes. A high certificate detour is not a proof that every feasible route requires that detour; route quality during evaluation still uses the separate approximate visibility-roadmap planner.
 
-Occupancy samples the centers of a 32 Ã— 32 Ã— 16 grid and counts their union membership in boxes. Thin walls can be under- or oversampled. The separate summed box-volume fraction is exact for the new, nonoverlapping profiles. For legacy or externally altered overlapping boxes, that sum can double-count volume; the grid remains a union estimate. A larger obstacle count does not necessarily imply greater occupancy or difficulty.
+Occupancy samples the centers of a 32 x 32 x 16 grid and counts their union membership in boxes. Thin walls can be under- or oversampled. The separate summed box-volume fraction is exact for the new, nonoverlapping profiles. For legacy or externally altered overlapping boxes, that sum can double-count volume; the grid remains a union estimate. A larger obstacle count does not necessarily imply greater occupancy or difficulty.
 
 Clearance is a conservative lower bound obtained by 20 binary-search iterations on box inflation along the certificate, constrained by room boundaries, then subtracting body radius. It uses the infinity norm, not exact Euclidean distance to arbitrary surfaces. See [the generator and measurements](../fly_rl/simulation/map_profiles.py).
 

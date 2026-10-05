@@ -1,230 +1,229 @@
-# Resolución de la navegación en mapas grandes
+# Resolving navigation in large maps
 
-Fecha: 5 de octubre de 2026. Versión operativa: `observed-neuronal-map-v55`, integrada en el commit `972ceb4`.
+Date: October 5, 2026. Operational version: `observed-neuronal-map-v55`, integrated in commit `972ceb4`.
 
-Este documento reconstruye el problema, las hipótesis comprobadas, los intentos fallidos y la solución disponible. El resultado funcional es un planificador explícito que consume actividad del conectoma completo. La política aprendida sigue sin reproducir ese rendimiento. El [informe de v55](evidence/observed-map-v55-results.md) contiene las cifras, el protocolo prospectivo y los hashes de conservación; el [protocolo de intentos](evidence/portal-feedback-protocol.md) conserva la evolución experimental.
+This document reconstructs the problem, the hypotheses tested, the failed attempts, and the available solution. The working result is an explicit planner that consumes activity from the full connectome. The learned policy still does not reproduce that performance. The [v55 report](evidence/observed-map-v55-results.md) contains the figures, prospective protocol, and preservation hashes; the [attempt protocol](evidence/portal-feedback-protocol.md) records the experimental development.
 
-Las secciones 1 a 6 explican el problema y su resolución. Las secciones 7 a 20 detallan antecedentes, experimentos, datos, contratos, fórmulas, resultados por habitación, recursos y reproducción. Las cifras corresponden al estado verificado del 5 de octubre de 2026; las hipótesis y las contribuciones no aisladas se identifican expresamente.
+Sections 1 through 6 explain the problem and its resolution. Sections 7 through 20 detail the background, experiments, data, contracts, formulas, results for each room, resources, and reproduction. The figures describe the verified state on October 5, 2026; hypotheses and contributions that were not isolated are identified explicitly.
 
-## Índice
+## Contents
 
-- [1. Qué problema había](#1-qué-problema-había)
-- [2. Cómo se investigó](#2-cómo-se-investigó)
-- [3. Intentos de solución y resultados](#3-intentos-de-solución-y-resultados)
-- [4. Solución operativa final](#4-solución-operativa-final)
-- [5. Verificación del resultado](#5-verificación-del-resultado)
-- [6. Cómo usarlo y qué queda pendiente](#6-cómo-usarlo-y-qué-queda-pendiente)
-- [7. Antecedentes y evolución del problema](#7-antecedentes-y-evolución-del-problema)
-- [8. Registro de todos los pilotos retomados](#8-registro-de-todos-los-pilotos-retomados)
-- [9. Datos, conectoma y transformaciones exactas](#9-datos-conectoma-y-transformaciones-exactas)
-- [10. Contrato sensorial, memoria y separación de entradas](#10-contrato-sensorial-memoria-y-separación-de-entradas)
-- [11. Odometría y conocimiento del objetivo](#11-odometría-y-conocimiento-del-objetivo)
-- [12. Construcción exacta del mapa](#12-construcción-exacta-del-mapa)
-- [13. Búsqueda y seguimiento de ruta](#13-búsqueda-y-seguimiento-de-ruta)
-- [14. Frenado tridimensional, vuelo y recompensa](#14-frenado-tridimensional-vuelo-y-recompensa)
-- [15. Resultados por habitación y diagnóstico de los timeouts](#15-resultados-por-habitación-y-diagnóstico-de-los-timeouts)
-- [16. Recursos, tiempos y uso de GPU](#16-recursos-tiempos-y-uso-de-gpu)
-- [17. Qué comprobaron los tests y verificaciones](#17-qué-comprobaron-los-tests-y-verificaciones)
-- [18. Registros, reproducción y conservación](#18-registros-reproducción-y-conservación)
-- [19. Separación de datos y límites científicos](#19-separación-de-datos-y-límites-científicos)
-- [20. Criterios cumplidos y trabajo pendiente](#20-criterios-cumplidos-y-trabajo-pendiente)
+- [1. The problem](#1-the-problem)
+- [2. Investigation](#2-investigation)
+- [3. Attempted solutions and results](#3-attempted-solutions-and-results)
+- [4. The final operational solution](#4-the-final-operational-solution)
+- [5. Verification](#5-verification)
+- [6. Running it and remaining work](#6-running-it-and-remaining-work)
+- [7. Background and development of the problem](#7-background-and-development-of-the-problem)
+- [8. Record of all resumed pilots](#8-record-of-all-resumed-pilots)
+- [9. Data, connectome, and exact transformations](#9-data-connectome-and-exact-transformations)
+- [10. Sensor contract, memory, and input separation](#10-sensor-contract-memory-and-input-separation)
+- [11. Odometry and knowledge of the goal](#11-odometry-and-knowledge-of-the-goal)
+- [12. Exact map construction](#12-exact-map-construction)
+- [13. Route search and following](#13-route-search-and-following)
+- [14. Three-dimensional braking, flight, and reward](#14-three-dimensional-braking-flight-and-reward)
+- [15. Results for each room and timeout diagnosis](#15-results-for-each-room-and-timeout-diagnosis)
+- [16. Resources, timing, and GPU use](#16-resources-timing-and-gpu-use)
+- [17. What the tests and checks established](#17-what-the-tests-and-checks-established)
+- [18. Recording, reproduction, and preservation](#18-recording-reproduction-and-preservation)
+- [19. Data separation and scientific limits](#19-data-separation-and-scientific-limits)
+- [20. Completed criteria and remaining work](#20-completed-criteria-and-remaining-work)
 
+## 1. The problem
 
-## 1. Qué problema había
+The fly needed to navigate a three-dimensional room, pass through gaps between obstacles, and reach the goal. In the `large` profile, the room measures 48 x 48 x 16 units and contains 112 collision boxes, including five partitions with alternating openings. Coordinated flight dynamics remain in use, with decisions every 0.05 seconds. Reaching the goal requires being within 0.45 units without a collision; running out of time is a failure.
 
-La mosca debía recorrer una habitación tridimensional, atravesar sus pasos entre obstáculos y llegar al objetivo. En el perfil `large`, la habitación mide 48 x 48 x 16 unidades y contiene 112 cajas de colisión, incluidas cinco particiones con aberturas alternadas. Se mantiene la dinámica de vuelo coordinado, con decisiones cada 0,05 segundos. Una llegada exige estar a menos de 0,45 unidades del objetivo sin colisión; agotar el tiempo es un fallo.
+Controllers could collide, approach a wall without crossing its opening, or become almost motionless. Finite losses, compatible checkpoints, and implementation tests did not establish that they could complete the route.
 
-Los controladores podían colisionar, aproximarse a una pared sin atravesar su abertura o quedarse casi inmóviles. Las pérdidas finitas, los checkpoints compatibles y los tests de implementación no demostraban que pudieran completar el recorrido.
+The earlier 75% represented 48/64 arrivals in a different task: a 32 x 32 x 12 room with 48 obstacles and none of the mandatory partitions in `large`. The new comparison started from fresh initialization rather than continuing that successful policy. Checking the earlier checkpoint in four original rooms reproduced 3/4 arrivals, whereas transfer to four large rooms yielded 0/4. The records therefore do not establish a loss of the earlier behavior on the same task. They do establish that navigation in the new problem failed. See the [initial diagnosis](GEOMETRY_DIAGNOSIS.md).
 
-El 75% anterior correspondía a 48/64 llegadas en otra tarea: una habitación de 32 x 32 x 12, con 48 obstáculos y sin las particiones obligatorias de `large`. La comparación nueva partía de inicialización fresca y no continuaba aquella política exitosa. Una comprobación del checkpoint anterior en cuatro habitaciones originales reprodujo 3/4 llegadas, mientras que su transferencia a cuatro habitaciones grandes dio 0/4. Por tanto, los registros no demuestran una pérdida del comportamiento anterior en la misma tarea. Sí demuestran que la navegación del nuevo problema fallaba. Véase el [diagnóstico inicial](GEOMETRY_DIAGNOSIS.md).
+## 2. Investigation
 
-## 2. Cómo se investigó
+Neural readout, reference estimation, route search, and physical control were separated. This made it possible to check whether a good prediction became useful motion and whether an available route ended in an actual arrival.
 
-Se separaron la lectura neuronal, la estimación de referencias, la búsqueda de rutas y el control físico. Así se podía comprobar si una buena predicción llegaba a convertirse en un movimiento útil y si una ruta disponible terminaba en una llegada real.
+Earlier checkpoints were preserved. Each batch recorded its sources, budget, physical transitions, updates, and results for each episode. Teacher flights, student flights, and geometric checks were counted separately. Layouts repeatedly used to tune variants are optimization maps, not an independent test.
 
-Se conservaron los checkpoints anteriores. Cada tanda registró sus fuentes, presupuesto, transiciones físicas, actualizaciones y resultados por episodio. Los vuelos del profesor, los del estudiante y las comprobaciones geométricas se contabilizaron por separado. Los layouts usados repetidamente para ajustar variantes son mapas de optimización, no una prueba independiente.
+The first two map variants, v41 and v42, performed a second generator reset. Although they retained seed labels, their layouts differed from the earlier canonical layouts. The explicit reset was corrected in v43, and initial geometry was saved to audit that identity. The affected batches are not compared by seed.
 
-Las dos primeras variantes de mapa, v41 y v42, hicieron un segundo reset del generador. Aunque conservaban etiquetas de semilla, no eran los mismos layouts canónicos que los anteriores. Se corrigió el reset explícito en v43 y se guardó la geometría inicial para auditar esa identidad. No se comparan por semilla las tandas afectadas.
+## 3. Attempted solutions and results
 
-## 3. Intentos de solución y resultados
+### Learning, coverage, and perception
 
-### Aprendizaje, cobertura y percepción
+Early changes tested curriculum, rewards, guided supervision, temporal memory, critic isolation, and controls on PPO updates. Vision was also expanded to a panorama around the body, and complete guided flights were collected. Several guides reached the goal, but their students continued to fail in `large`. The teacher's privileged references serve only as training supervision; teacher arrivals are not autonomous model results.
 
-Los primeros cambios probaron currículo, recompensas, supervisión guiada, memoria temporal, aislamiento del crítico y controles de las actualizaciones PPO. También se amplió la visión a un panorama alrededor del cuerpo y se recogieron vuelos guiados completos. Varias guías llegaron al objetivo, pero sus estudiantes siguieron fallando en `large`. Las referencias privilegiadas del profesor solo sirven como supervisión de entrenamiento; sus llegadas no son resultados autónomos del modelo.
+The v13–v19 portal-perception batch tested new heading distributions, projection readout, local attention, context, and braking. Its seven candidates finished at 0/8 on optimization maps. Greater coverage or fewer collisions was insufficient to cross the walls.
 
-La tanda de percepción de portales v13 a v19 probó nuevas distribuciones de rumbo, lectura de proyección, atención local, contexto y frenado. Sus siete candidatos terminaron en 0/8 sobre optimización. Aumentar la cobertura o reducir colisiones no bastaba para atravesar las paredes.
+V32 added global context. Its angular fit on training data looked good, but flight remained at 0/8. V34 learned a wall normal and separated approach from crossing: first align the fly in front of the opening, then aim beyond it. It reached 3/8, with one collision and four timeouts. This is the best learned student in this batch.
 
-V32 añadió contexto global. Su ajuste angular en datos de entrenamiento parecía bueno, pero el vuelo siguió en 0/8. V34 aprendió una normal de pared y separó la aproximación del cruce: primero alinear la mosca delante de la abertura y después apuntar más allá. Llegó a 3/8, con una colisión y cuatro timeouts. Es el mejor estudiante aprendido de esta tanda.
+Later attempts isolated distance, collected student states with teacher recovery, changed lateral protection, and aligned panoramas during turns. They did not improve on v34. In particular, a different readout or temporal alignment cannot be presented as a sufficient cause of the final success.
 
-Los siguientes intentos aislaron distancia, recogieron estados del estudiante con recuperación del profesor, cambiaron la protección lateral y alinearon panoramas al girar. No mejoraron v34. En particular, el cambio de lectura o la alineación temporal no pueden presentarse como causas suficientes del éxito final.
+Geometry-derived center references were also found not to guarantee visibility. A center could be hidden in the image used to label it. The retained audit uses the nearest panoramic ray and is an angular approximation, not an exact visibility test. This limitation helps interpret perception failures; it does not establish their complete cause by itself.
 
-Se detectó además que las referencias de centros derivadas de geometría no garantizaban visibilidad. Un centro podía estar oculto en la imagen usada para etiquetarlo. La auditoría conservada usa el rayo panorámico más próximo y es una aproximación angular, no una prueba exacta de visibilidad. Esta limitación ayuda a interpretar los fallos de percepción; no demuestra por sí sola su causa completa.
+### Neural readout and the observed map
 
-### Lectura neuronal y mapa observado
+A motion reconstruction with a small bias could accumulate drift when integrating position and turning. A reader with its own contract and fingerprint was introduced: it cancels the projected recurrent contribution in the 269 base channels and retains 5% in the 3,600 panoramic channels. It reconstructs those channels from previous and current neural states and the fixed projection; it does not add raw sensors to the controller.
 
-Una reconstrucción de movimiento con pequeño sesgo podía acumular deriva al integrar posición y giro. Se introdujo un lector con contrato y huella propios: cancela la contribución recurrente proyectada en los 269 canales base y conserva el 5% en los 3.600 canales panorámicos. Reconstruye esos canales desde estados neuronales anteriores y actuales y la proyección fija; no añade sensores crudos al controlador.
+The full graph continues to advance, with 167,184 neurons and 25,583,622 directed connections. This transformation is an engineering choice, not an established biological mechanism. A short diagnostic measured turning error of approximately 0.00000472 rad/s. The formula and its check are in [mathematics](MATHEMATICS.md).
 
-El grafo completo sigue avanzando, con 167.184 neuronas y 25.583.622 conexiones dirigidas. La transformación es una decisión de ingeniería, no un mecanismo biológico demostrado. Un diagnóstico corto midió error de giro de aproximadamente 0,00000472 rad/s. La fórmula y su comprobación están en [matemáticas](MATHEMATICS.md).
+Explicit planning from an observed map separated a poor learned reference from a mechanical route failure. V43 and v44 reached 5/8 without collisions. V44 used the stable reader and achieved the same arrival count as v43; stabilizing the readout did not resolve every blockage.
 
-La planificación explícita desde un mapa observado permitió separar una mala referencia aprendida de un fallo mecánico de ruta. V43 y v44 llegaron a 5/8, sin colisiones. V44 usaba el lector estable y obtuvo el mismo número de llegadas que v43; estabilizar la lectura no resolvió todos los bloqueos.
+### Specific blockages and corrections
 
-### Bloqueos concretos y correcciones
-
-| Problema comprobado | Corrección | Qué se aprendió |
+| Verified problem | Correction | What it showed |
 | --- | --- | --- |
-| El margen de seguridad del mapa dejaba una única celda accesible junto al inicio | Permitir salir por celdas del margen local con coste alto, manteniendo impasables las superficies observadas | Un margen conservador puede encerrar una posición físicamente libre |
-| Suavizar la ruta a través de un margen permitía cortar una esquina | Reducir anticipación y velocidad en zonas estrechas y comprobar el segmento | Relajar todo el margen produjo una colisión y no era una solución suficiente |
-| Una referencia predicha quedaba fuera de la cuadrícula | Validar sus límites antes de convertirla en índices | V49 falló por un error de índice; corregirlo evitó ese fallo, pero v50 solo llegó a 1/8 |
-| Un grupo de cajas podía parecer una pared completa al ajuste geométrico | Exigir cobertura de superficie antes de aceptar la pared | La geometría sintética mejoró, pero v51 a v53 siguieron en 0/8 |
-| La búsqueda aceptaba acabar hasta 0,96 unidades antes de su referencia | Buscar la celda final exacta y añadir el objetivo continuo | Una búsqueda marcada como completada no garantizaba que la mosca cruzara la referencia |
-| El seguimiento podía conservar una celda ya alcanzada | Avanzar a la siguiente referencia cuando la actual estaba suficientemente cerca | Evita pedir velocidad cero pese a tener ruta pendiente |
-| El freno comprobaba el frente aunque el siguiente movimiento fuera vertical | Medir despeje alrededor de la dirección tridimensional solicitada | Una pared frontal dejaba de bloquear una subida o bajada libre |
-| El giro horizontal reducía también el movimiento vertical | Aplicar la reducción por rumbo solo a la velocidad horizontal | La mosca puede ajustar altura mientras gira |
+| The map's safety margin left a single accessible cell near the start | Allow escape through local margin cells at high cost, while keeping observed surfaces impassable | A conservative margin can enclose a physically free position |
+| Smoothing a route through a margin allowed a corner to be cut | Reduce lookahead and speed in narrow areas and check the segment | Relaxing the entire margin caused a collision and was insufficient |
+| A predicted reference fell outside the grid | Validate its bounds before converting it to indices | V49 failed with an index error; fixing it prevented that failure, but v50 reached only 1/8 |
+| A group of boxes could resemble a complete wall to geometric fitting | Require surface coverage before accepting a wall | Synthetic geometry improved, but v51–v53 remained at 0/8 |
+| Search accepted an endpoint up to 0.96 units before its reference | Search for the exact final cell and append the continuous goal | A search marked complete did not guarantee that the fly crossed the reference |
+| Route following could retain an already reached cell | Advance to the next reference when the current one is sufficiently close | Avoids requesting zero speed while a route remains |
+| Braking checked the front even when the next movement was vertical | Measure clearance around the requested three-dimensional direction | A frontal wall no longer blocked a clear ascent or descent |
+| Horizontal turning also reduced vertical movement | Apply heading reduction only to horizontal speed | The fly can adjust altitude while turning |
 
-No todas estas correcciones forman parte del algoritmo final. El ajuste de paredes, las aberturas almacenadas y las propuestas aprendidas se probaron, pero v55 conserva solamente el mapa observado y el objetivo neuronal. Esa simplificación evitó depender de referencias de abertura que podían ser incorrectas.
+Not every correction belongs to the final algorithm. Wall fitting, stored openings, and learned proposals were tested, but v55 retains only the observed map and neural goal. This simplification avoided dependence on potentially incorrect opening references.
 
-| Variante representativa | Llegadas en optimización | Colisiones | Timeouts |
+| Representative variant | Optimization arrivals | Collisions | Timeouts |
 | --- | ---: | ---: | ---: |
-| v13 a v19, siete candidatos de percepción | 0/8 cada uno | Ver protocolo | Ver protocolo |
-| v31, geometría local con recurrencia reducida | 4/8 | 0 | 4 |
-| v34, mejor estudiante aprendido | 3/8 | 1 | 4 |
-| v43 y v44, mapa observado | 5/8 cada uno | 0 | 3 |
-| v48, protección más conservadora | 1/8 | 0 | 7 |
-| v51 a v53, pared y abertura observadas | 0/8 cada uno | 0 | 8 |
-| v54, mapa global sin propuesta aprendida | 3/8 | 0 | 5 |
-| v55, seguimiento y control tridimensional corregidos | 8/8 | 0 | 0 |
+| v13–v19, seven perception candidates | 0/8 each | See protocol | See protocol |
+| v31, local geometry with reduced recurrence | 4/8 | 0 | 4 |
+| v34, best learned student | 3/8 | 1 | 4 |
+| v43 and v44, observed map | 5/8 each | 0 | 3 |
+| v48, more conservative protection | 1/8 | 0 | 7 |
+| v51–v53, observed wall and opening | 0/8 each | 0 | 8 |
+| v54, global map without a learned proposal | 3/8 | 0 | 5 |
+| v55, corrected route following and three-dimensional control | 8/8 | 0 | 0 |
 
-Estos valores muestran la evolución de la optimización. No constituyen una comparación final independiente ni prueban qué contribución aislada explica cada llegada. El cambio de v54 a v55 combinó correcciones de seguimiento y control; no se realizó una ablación independiente de cada una.
+These figures show the development of optimization. They are not an independent final comparison and do not establish which isolated contribution explains each arrival. The change from v54 to v55 combined route-following and control corrections; no independent ablation of each was performed.
 
-## 4. Solución operativa final
+## 4. The final operational solution
 
-V55 reconstruye distancias, objetivo, velocidad y giro desde actividad neuronal. Con ellos estima su posición relativa y construye una cuadrícula de ocupación de 0,6 unidades. Una búsqueda ponderada elige una ruta por espacio observado o todavía desconocido. El seguimiento selecciona una referencia cercana y los controles de aceleración, altura y giro ejecutan el desplazamiento. Las observaciones siguientes actualizan el mapa y corrigen la trayectoria.
+V55 reconstructs distances, the goal, velocity, and turning from neural activity. These allow it to estimate relative position and build an occupancy grid with 0.6-unit cells. A weighted search selects a route through observed or still unknown space. Route following selects a nearby reference, and acceleration, altitude, and turning controls execute the movement. Subsequent observations update the map and correct the trajectory.
 
-La búsqueda tiene un límite de 12.000 expansiones. Si no alcanza la celda final, elige una frontera abierta para continuar explorando. Su coste ponderado y su límite no garantizan la ruta más corta. Los rayos y la cuadrícula tampoco garantizan seguridad absoluta.
+Search is limited to 12,000 expansions. If it does not reach the final cell, it selects an open frontier to continue exploring. Its weighted cost and limit do not guarantee the shortest route. Rays and the grid likewise do not guarantee absolute safety.
 
-El controlador no recibe el objeto del mundo, poses verdaderas, cajas, semillas ni rutas certificadas. Sí conoce el tamaño de habitación del contrato y recibe un objetivo sintético como observación. Guardar geometría verdadera para auditar un vuelo no significa entregarla al controlador. Por ello no sería correcto describirlo como una mosca biológica que descubre por sí sola qué objetivo debe buscar.
+The controller does not receive the world object, true poses, boxes, seeds, or certified routes. It does know the contracted room size and receives a synthetic goal as an observation. Saving true geometry to audit a flight does not mean supplying it to the controller. It would therefore be incorrect to describe this as a biological fly that independently discovers which goal to seek.
 
-El planificador funciona sin pesos aprendidos de movimiento. Las fases anteriores sí tuvieron entrenamiento: la tanda retomada añadió 131.072 transiciones físicas, llevando el uso sustantivo acumulado a 1.603.584. Las comprobaciones de v55 añadieron cero transiciones de entrenamiento y cero actualizaciones. Los ajustes sobre registros existentes, las verificaciones PPO temporales y los vuelos de comprobación se conservan separados.
+The planner works without learned movement weights. Earlier phases did involve training: the resumed batch added 131,072 physical transitions, bringing cumulative substantive use to 1,603,584. V55 checks added zero training transitions and zero updates. Fits on existing records, temporary PPO verification, and verification flights remain separate.
 
-## 5. Verificación del resultado
+## 5. Verification
 
-Se congeló v55 después de completar ocho mapas de optimización y antes de abrir 16 habitaciones nuevas de desarrollo. No se ajustó entre esos vuelos.
+V55 was frozen after completing eight optimization maps and before opening 16 new development rooms. It was not adjusted between these flights.
 
-| Comprobación | Transiciones físicas | Llegadas | Colisiones | Timeouts |
+| Check | Physical transitions | Arrivals | Collisions | Timeouts |
 | --- | ---: | ---: | ---: | ---: |
-| Ocho mapas de optimización reutilizados | 25.168 | 8/8 | 0 | 0 |
-| Dieciséis habitaciones nuevas de desarrollo | 56.544 | 13/16 | 0 | 3 |
+| Eight reused optimization maps | 25,168 | 8/8 | 0 | 0 |
+| Sixteen new development rooms | 56,544 | 13/16 | 0 | 3 |
 
-El resultado prospectivo es 81,25%, con intervalo de Wilson del 95% de 57,0% a 93,4%. Las tres habitaciones que agotaron el tiempo son 8500011, 8500012 y 8500013. La muestra es pequeña y pertenece al mismo generador; no demuestra robustez en cualquier mapa. No se consumió el test reservado. Si se utilizan ahora esos tres fallos para ajustar una versión nueva, sus resultados posteriores ya no serían una comprobación prospectiva de esa nueva versión.
+The prospective result is 81.25%, with a 95% Wilson interval of 57.0% to 93.4%. The three rooms that timed out are 8500011, 8500012, and 8500013. The sample is small and belongs to the same generator; it does not establish robustness in arbitrary maps. The reserved test was not consumed. If these three failures are now used to tune a new version, subsequent results on them would no longer be a prospective check of that new version.
 
-La versión pública reprodujo las acciones y el mapa del prototipo en 60 pasos sintéticos. Es una prueba de equivalencia de implementación, sin transiciones físicas. La suite completa pasó 265 tests. Desde el visor, la mosca completó el mapa conocido 370000 en 2.857 decisiones: 142,85 segundos simulados, sin colisión. La sesión cerró tras 3.200 decisiones y verificó el reinicio automático con memoria nueva. Esa repetición no se suma a los objetivos prospectivos.
+The public version reproduced the prototype's actions and map over 60 synthetic steps. This is an implementation-equivalence check without physical transitions. The complete suite passed 265 tests. In the viewer, the fly completed known map 370000 in 2,857 decisions: 142.85 simulated seconds without a collision. The session closed after 3,200 decisions and verified automatic reset with fresh memory. That repetition is not added to the prospective arrivals.
 
-Las capturas de la habitación y del cerebro se inspeccionaron. Se corrigieron el gradiente con historial en la inspección neuronal y el guardado que podía producir una captura cerebral vacía. El mapa anatómico muestra actividad modelada real; para el planificador, la sensibilidad por gradiente se indica como no disponible. Los archivos de vuelo cerraron y pasaron su auditoría sin errores ni advertencias.
+Room and brain screenshots were inspected. Neural inspection with history required a gradient correction, and screenshot saving was corrected to avoid an empty brain capture. The anatomical map displays actual modeled activity; gradient sensitivity is marked unavailable for the planner. Flight archives closed and passed their audit without errors or warnings.
 
-Los hashes de checkpoints y aliases protegidos coinciden antes y después. No se sobrescribieron los modelos originales ni se atribuyeron las llegadas del planificador al estudiante.
+Protected checkpoint and alias hashes match before and after. Original models were not overwritten, and planner arrivals were not attributed to the student.
 
-## 6. Cómo usarlo y qué queda pendiente
+## 6. Running it and remaining work
 
-Desde la carpeta del proyecto:
+From the project folder:
 
 ```powershell
 .\launch-observed-map.cmd
 ```
 
-El lanzador abre la habitación y una ventana cerebral separada. Shift acelera el tiempo simulado diez veces; R reinicia, N cambia de habitación, C cambia la cámara y F enfoca la mosca. Las sesiones archivan estados, acciones, metadatos y código del controlador. El demo no inicia entrenamiento.
+The launcher opens the room and a separate brain window. Shift accelerates simulated time tenfold; R resets, N changes rooms, C changes the camera, and F focuses on the fly. Sessions archive states, actions, metadata, and controller code. The demo does not start training.
 
-La solución disponible resuelve muchos recorridos grandes mediante planificación explícita. Quedan tres timeouts en la muestra prospectiva, el aprendizaje autónomo del estudiante y una evaluación independiente más amplia. Antes de aumentar dificultad a `maze`, hay que comprobar el nuevo tamaño, los contratos sensoriales y la navegación. El objetivo de una política aprendida fiable sigue abierto; no debe marcarse como completado por el resultado del planificador.
+The available solution completes many large routes through explicit planning. Three timeouts remain in the prospective sample, along with autonomous student learning and broader independent evaluation. Before increasing difficulty to `maze`, the new size, sensor contracts, and navigation must be checked. A reliable learned policy remains an open objective; planner performance must not mark it complete.
 
-Los siguientes pasos son diagnosticar los desvíos que agotan el tiempo, medir una versión corregida en nuevos mapas y, después, estudiar si el estudiante puede aprender de recorridos del planificador. Esa etapa debe declarar presupuesto y separar de nuevo el rendimiento de profesor y estudiante.
+Next steps are to diagnose detours that exhaust the time limit, measure a corrected version on new maps, and then investigate whether the student can learn from planner trajectories. That stage must declare its budget and again separate teacher and student performance.
 
 
-## 7. Antecedentes y evolución del problema
+## 7. Background and development of the problem
 
-### 7.1. Cambio de tarea, selección y recompensa
+### 7.1. Changes to the task, selection, and reward
 
-Las particiones de `large` obligan a alejarse temporalmente del objetivo, encontrar una abertura, ajustar altura y descubrir el siguiente paso. Reducir distancia euclídea puede llevar contra una pared. El diagnóstico inicial midió rutas certificadas medias de aproximadamente 116 unidades en ocho layouts grandes retenidos frente a 30 en el generador anterior usando las mismas semillas. Esas rutas son referencias geométricas factibles, no vuelos óptimos o dinámicamente comprobados. El límite de episodio rondaba 170 segundos simulados en aquella muestra.
+The `large` partitions require temporarily moving away from the goal, finding an opening, adjusting altitude, and discovering the next passage. Reducing Euclidean distance can lead into a wall. The initial diagnosis measured mean certified routes of approximately 116 units in eight retained large layouts versus 30 in the earlier generator with the same seeds. These routes are feasible geometric references, not optimal or dynamically verified flights. The episode limit was around 170 simulated seconds in that sample.
 
-El currículo anterior registró 51 episodios exitosos en `open`, ninguno en `passages` o `large`, y avanzó por consumo de pasos. La selección podía conservar inicialización al tener cero éxito todos los candidatos. Una etiqueta de método ganador no demostraba entonces que una política entrenada hubiera aprendido. Se corrigió esa interpretación y se conservaron los resultados originales de fracaso.
+The earlier curriculum recorded 51 successful episodes in `open`, none in `passages` or `large`, and advanced through step consumption. Selection could retain initialization when every candidate had zero success. A winning-method label therefore did not establish that a trained policy had learned. That interpretation was corrected, and the original failure results were retained.
 
-Con gamma 0,995 y decisiones de 0,05 segundos, una recompensa a 60 segundos se multiplica por aproximadamente 0,00244; a 100 segundos, por 0,0000443. El crítico puede propagar valor por bootstrap; ese cálculo no demuestra imposibilidad de aprendizaje. Justificaba investigar horizonte y exploración, pero no establecía una causa única.
+With gamma 0.995 and decisions every 0.05 seconds, a reward 60 seconds away is multiplied by approximately 0.00244; at 100 seconds, by 0.0000443. The critic can propagate value through bootstrapping; this calculation does not establish that learning is impossible. It justified investigating horizon and exploration, but did not identify a single cause.
 
-### 7.2. Correcciones anteriores a los portales
+### 7.2. Corrections before the portal experiments
 
-| Intento | Entrenamiento físico nuevo | Resultado autónomo de desarrollo | Evidencia |
+| Attempt | New physical training | Autonomous development result | Evidence |
 | --- | ---: | --- | --- |
-| Inicialización guiada v1 | 40.960 | 0/8, ocho colisiones | [Informe](evidence/guided-navigation-v1-results.md): ocho metas del profesor no se transfirieron al estudiante |
-| Guiado v2 | 65.536 | 0/8, cuatro colisiones y cuatro timeouts | [Informe](evidence/guided-navigation-v2-results.md): estados del estudiante distintos de los del profesor y KL por encima del objetivo |
-| Aislamiento del crítico v3 | 65.536 | 0/8, ocho colisiones | [Informe](evidence/guided-navigation-v3-results.md): memorias separadas no evitaron cambios excesivos |
-| Protección de PPO v4 | 32.768 | 0/8 antes y después, ocho colisiones | [Informe](evidence/guarded-navigation-v4-results.md): siete actualizaciones aceptadas, nueve intentos rechazados |
-| Lectura espacial v5 | 98.304 | 0/8, seis colisiones y dos timeouts | [Informe](evidence/spatial-neural-v5-results.md): fallo de comparación CPU/CUDA después de guardar checkpoint |
-| Referencias neuronales v6 | 81.920 | 0/8, ocho colisiones | [Informe](evidence/neural-waypoint-v6-results.md): 16.384 pasos guiados y 65.536 autónomos |
-| Panorama corporal v7 | 98.304 | Recuperación separada 0/8, ocho colisiones | [Informe](evidence/panoramic-neural-v7-results.md): 16 metas del profesor; fallo posterior de informe |
-| Cobertura v8 | 301.056 | 0/8, ocho colisiones | [Informe](evidence/panorama-coverage-v8-results.md): 64 metas del profesor, ninguna del estudiante |
-| Atención direccional v9 | 32.768 | 0/8, ocho colisiones | [Informe](evidence/directional-and-lookahead-results.md): progreso terminado en choque no fue éxito |
-| Anticipación v10 | 163.840 | Final 0/8, cero colisiones y ocho timeouts | [Informe](evidence/directional-and-lookahead-results.md): 35 metas guiadas; controles teacher-only y pooling disperso también fallaron |
+| Guided initialization v1 | 40,960 | 0/8, eight collisions | [Report](evidence/guided-navigation-v1-results.md): eight teacher goals did not transfer to the student |
+| Guided v2 | 65,536 | 0/8, four collisions and four timeouts | [Report](evidence/guided-navigation-v2-results.md): student states differed from teacher states, and KL exceeded the target |
+| Critic isolation v3 | 65,536 | 0/8, eight collisions | [Report](evidence/guided-navigation-v3-results.md): separate memories did not prevent excessive changes |
+| PPO protection v4 | 32,768 | 0/8 before and after, eight collisions | [Report](evidence/guarded-navigation-v4-results.md): seven accepted updates, nine rejected attempts |
+| Spatial readout v5 | 98,304 | 0/8, six collisions and two timeouts | [Report](evidence/spatial-neural-v5-results.md): CPU/CUDA comparison failed after checkpoint saving |
+| Neural references v6 | 81,920 | 0/8, eight collisions | [Report](evidence/neural-waypoint-v6-results.md): 16,384 guided steps and 65,536 autonomous steps |
+| Body panorama v7 | 98,304 | Separate recovery: 0/8, eight collisions | [Report](evidence/panoramic-neural-v7-results.md): 16 teacher goals; later reporting failure |
+| Coverage v8 | 301,056 | 0/8, eight collisions | [Report](evidence/panorama-coverage-v8-results.md): 64 teacher goals, none from the student |
+| Directional attention v9 | 32,768 | 0/8, eight collisions | [Report](evidence/directional-and-lookahead-results.md): progress ending in a crash was not success |
+| Lookahead v10 | 163,840 | Final: 0/8, zero collisions and eight timeouts | [Report](evidence/directional-and-lookahead-results.md): 35 guided goals; teacher-only and sparse-pooling controls also failed |
 
-Las fases, contratos y datasets difieren: la tabla no es una comparación causal ni una curva única. Las pérdidas sobre datasets distintos no forman una curva de rendimiento de navegación.
+Phases, contracts, and datasets differ: this table is neither a causal comparison nor a single curve. Losses on different datasets do not form a navigation-performance curve.
 
-V12 excluyó planos de velocidades de aproximación en la percepción para comprobar un posible atajo visual. Añadió 8.192 transiciones y dio 0/8, con una colisión y siete timeouts. El atajo seguía siendo hipótesis. El 4 de octubre cerró con 1.472.512 transiciones sustantivas acumuladas y navegación grande pendiente.
+V12 excluded approach-velocity planes from perception to test a possible visual shortcut. It added 8,192 transitions and yielded 0/8, with one collision and seven timeouts. The shortcut remained a hypothesis. October 4 closed with 1,472,512 cumulative substantive transitions and large-map navigation still unresolved.
 
-### 7.3. Pérdidas, KL y errores de verificación
+### 7.3. Losses, KL, and verification errors
 
-Pérdida finita significa ausencia de NaN o infinito en esa operación. Imitación baja mide ajuste en muestras concretas. Recarga compatible verifica pesos y contrato. Ninguna sustituye un episodio completo desde el inicio original.
+A finite loss means that operation produced neither NaN nor infinity. Low imitation loss measures fit on specific samples. Compatible reload checks weights and the contract. None replaces a complete episode from the original start.
 
-En v3 la KL aproximada final fue 0,342514 con objetivo 0,01; una entrada anterior llegó a 3,486418. El early stop de PPO no deshace necesariamente una actualización ya aplicada. V4 añadió aceptación y rollback según KL del rollout, pero fallaba antes de PPO; contener cambios no reparó su comportamiento inicial.
+In v3, final approximate KL was 0.342514 against a 0.01 target; an earlier entry reached 3.486418. PPO early stopping does not necessarily undo an update already applied. V4 added acceptance and rollback based on rollout KL, but was already failing before PPO; containing changes did not repair its initial behavior.
 
-En v5 los tensores CPU/CUDA coincidían, pero las convoluciones CUDA con TF32 daban diferencias de acción superiores a la tolerancia. Desactivarlo redujo la discrepancia. Se conservó el estado original de fallo y se registró aparte la verificación posterior: reparar una comparación numérica no convirtió su 0/8 en éxito.
+In v5, CPU/CUDA tensors matched, but CUDA convolutions with TF32 produced action differences above tolerance. Disabling it reduced the discrepancy. The original failure status was retained, and subsequent verification was recorded separately: repairing a numerical comparison did not turn its 0/8 into success.
 
-## 8. Registro de todos los pilotos retomados
+## 8. Record of all resumed pilots
 
-### 8.1. Contadores y estados originales
+### 8.1. Counters and original statuses
 
-La tabla deriva de registros ya existentes; no se ejecutó entrenamiento o evaluación para documentarla. Ajustar registros anteriores no añade transiciones físicas. La comprobación cuenta todo el lote, incluidos elementos que habían terminado y continuaban con acción cero.
+The table derives from existing records; no training or evaluation was run to document it. Fitting earlier records adds no physical transitions. Verification counts the full batch, including members that had finished and continued with zero actions.
 
-V32 conserva el fallo de informe después de entrenar; la verificación posterior añadió cero entrenamiento. V33 falló antes de trabajar. V49 termina por excepción sin ocho episodios completos. V45 a v47 comprobaron un único mapa. V41 y v42 usan layouts del segundo reset y no son comparables por semilla con los canónicos.
+V32 retains its reporting failure after training; subsequent verification added zero training. V33 failed before work began. V49 ended in an exception without eight complete episodes. V45–v47 checked a single map. V41 and v42 use second-reset layouts and cannot be compared by seed with the canonical layouts.
 
-| Experimento | Estado | Entrenamiento nuevo | Ajustes supervisados | Comprobación física | Llegadas / terminados | Colisiones | Timeouts |
+| Experiment | Status | New training | Supervised updates | Physical verification | Arrivals / finished | Collisions | Timeouts |
 | --- | --- | ---: | ---: | ---: | --- | ---: | ---: |
-| `portal-feedback-v13` | Completado | 0 | 1,024 | 3,504 | 0/8 | 8 | 0 |
-| `portal-feedback-v14` | Completado | 0 | 4,096 | 6,224 | 0/8 | 8 | 0 |
-| `whitened-portal-v15` | Completado | 32,768 | 4,096 | 28,304 | 0/8 | 5 | 3 |
-| `local-peak-portal-v16` | Completado | 0 | 0 | 28,480 | 0/8 | 7 | 1 |
-| `centered-portal-v17` | Completado | 32,768 | 4,096 | 3,952 | 0/8 | 8 | 0 |
-| `guarded-portal-v18` | Completado | 0 | 0 | 26,680 | 0/8 | 8 | 0 |
-| `free-space-portal-v19` | Completado | 0 | 0 | 29,496 | 0/8 | 1 | 7 |
-| `context-portal-v32` | Fallo de script | 32,768 | 4,096 | 0 | Sin episodios de comprobación terminados | 0 | 0 |
-| `context-portal-v32-verification` | Completado | 0 | 0 | 29,496 | 0/8 | 0 | 8 |
-| `approach-portal-v33` | Fallo de script | 0 | 0 | 0 | Sin episodios de comprobación terminados | 0 | 0 |
-| `approach-portal-v34` | Completado | 0 | 1,536 | 28,480 | 3/8 | 1 | 4 |
-| `range-approach-portal-v35` | Completado | 0 | 0 | 29,496 | 0/8 | 0 | 8 |
-| `dagger-approach-v37` | Completado | 32,768 | 4,096 | 29,496 | 1/8 | 2 | 5 |
-| `range-only-approach-v38` | Completado | 0 | 2,048 | 28,480 | 0/8 | 3 | 5 |
-| `tube-approach-v39` | Completado | 0 | 0 | 29,496 | 1/8 | 0 | 7 |
-| `aligned-approach-v40` | Completado | 0 | 2,048 | 29,496 | 1/8 | 2 | 5 |
-| `observed-voxel-v41` | Completado | 0 | 0 | 29,584 | 1/8 | 1 | 6 |
-| `observed-voxel-v42` | Completado | 0 | 0 | 29,584 | 1/8 | 0 | 7 |
-| `observed-voxel-v43` | Completado | 0 | 0 | 29,496 | 5/8 | 0 | 3 |
-| `observed-voxel-v44` | Completado | 0 | 0 | 29,496 | 5/8 | 0 | 3 |
-| `observed-voxel-v45` | Completado | 0 | 0 | 3,687 | 0/1 | 0 | 1 |
-| `observed-voxel-v46` | Completado | 0 | 0 | 3,687 | 0/1 | 0 | 1 |
-| `observed-voxel-v47` | Completado | 0 | 0 | 1,999 | 0/1 | 1 | 0 |
-| `observed-voxel-v48` | Completado | 0 | 0 | 29,496 | 1/8 | 0 | 7 |
-| `observed-voxel-v49` | Fallo de script | 0 | 0 | 8,480 | Sin episodios de comprobación terminados | 0 | 0 |
-| `observed-voxel-v50` | Completado | 0 | 0 | 28,480 | 1/8 | 0 | 7 |
-| `observed-voxel-v51` | Completado | 0 | 0 | 29,496 | 0/8 | 0 | 8 |
-| `observed-voxel-v52` | Completado | 0 | 0 | 29,496 | 0/8 | 0 | 8 |
-| `observed-voxel-v53` | Completado | 0 | 0 | 29,496 | 0/8 | 0 | 8 |
-| `observed-voxel-v54` | Completado | 0 | 0 | 28,480 | 3/8 | 0 | 5 |
-| `observed-voxel-v55` | Completado | 0 | 0 | 25,168 | 8/8 | 0 | 0 |
-| `observed-v55-development` | Completado | 0 | 0 | 56,544 | 13/16 | 0 | 3 |
+| `portal-feedback-v13` | Completed | 0 | 1,024 | 3,504 | 0/8 | 8 | 0 |
+| `portal-feedback-v14` | Completed | 0 | 4,096 | 6,224 | 0/8 | 8 | 0 |
+| `whitened-portal-v15` | Completed | 32,768 | 4,096 | 28,304 | 0/8 | 5 | 3 |
+| `local-peak-portal-v16` | Completed | 0 | 0 | 28,480 | 0/8 | 7 | 1 |
+| `centered-portal-v17` | Completed | 32,768 | 4,096 | 3,952 | 0/8 | 8 | 0 |
+| `guarded-portal-v18` | Completed | 0 | 0 | 26,680 | 0/8 | 8 | 0 |
+| `free-space-portal-v19` | Completed | 0 | 0 | 29,496 | 0/8 | 1 | 7 |
+| `context-portal-v32` | Script failure | 32,768 | 4,096 | 0 | No completed verification episodes | 0 | 0 |
+| `context-portal-v32-verification` | Completed | 0 | 0 | 29,496 | 0/8 | 0 | 8 |
+| `approach-portal-v33` | Script failure | 0 | 0 | 0 | No completed verification episodes | 0 | 0 |
+| `approach-portal-v34` | Completed | 0 | 1,536 | 28,480 | 3/8 | 1 | 4 |
+| `range-approach-portal-v35` | Completed | 0 | 0 | 29,496 | 0/8 | 0 | 8 |
+| `dagger-approach-v37` | Completed | 32,768 | 4,096 | 29,496 | 1/8 | 2 | 5 |
+| `range-only-approach-v38` | Completed | 0 | 2,048 | 28,480 | 0/8 | 3 | 5 |
+| `tube-approach-v39` | Completed | 0 | 0 | 29,496 | 1/8 | 0 | 7 |
+| `aligned-approach-v40` | Completed | 0 | 2,048 | 29,496 | 1/8 | 2 | 5 |
+| `observed-voxel-v41` | Completed | 0 | 0 | 29,584 | 1/8 | 1 | 6 |
+| `observed-voxel-v42` | Completed | 0 | 0 | 29,584 | 1/8 | 0 | 7 |
+| `observed-voxel-v43` | Completed | 0 | 0 | 29,496 | 5/8 | 0 | 3 |
+| `observed-voxel-v44` | Completed | 0 | 0 | 29,496 | 5/8 | 0 | 3 |
+| `observed-voxel-v45` | Completed | 0 | 0 | 3,687 | 0/1 | 0 | 1 |
+| `observed-voxel-v46` | Completed | 0 | 0 | 3,687 | 0/1 | 0 | 1 |
+| `observed-voxel-v47` | Completed | 0 | 0 | 1,999 | 0/1 | 1 | 0 |
+| `observed-voxel-v48` | Completed | 0 | 0 | 29,496 | 1/8 | 0 | 7 |
+| `observed-voxel-v49` | Script failure | 0 | 0 | 8,480 | No completed verification episodes | 0 | 0 |
+| `observed-voxel-v50` | Completed | 0 | 0 | 28,480 | 1/8 | 0 | 7 |
+| `observed-voxel-v51` | Completed | 0 | 0 | 29,496 | 0/8 | 0 | 8 |
+| `observed-voxel-v52` | Completed | 0 | 0 | 29,496 | 0/8 | 0 | 8 |
+| `observed-voxel-v53` | Completed | 0 | 0 | 29,496 | 0/8 | 0 | 8 |
+| `observed-voxel-v54` | Completed | 0 | 0 | 28,480 | 3/8 | 0 | 5 |
+| `observed-voxel-v55` | Completed | 0 | 0 | 25,168 | 8/8 | 0 | 0 |
+| `observed-v55-development` | Completed | 0 | 0 | 56,544 | 13/16 | 0 | 3 |
 
-V36 se conserva separado: 29.496 transiciones de diagnóstico geométrico, 1/8 llegadas, cero colisiones y siete timeouts; cero entrenamiento y ajustes.
+V36 is retained separately: 29,496 geometric-diagnostic transitions, 1/8 arrivals, zero collisions, and seven timeouts; zero training and fitting updates.
 
-### 8.2. Diagnósticos geométricos v20 a v31
+### 8.2. Geometric diagnostics v20–v31
 
-No eran políticas aprendidas. V27 a v30 cancelaban recurrencia como límite de información, no evidencia de beneficio biológico. V31 retenía 5% proyectado.
+These were not learned policies. V27–v30 canceled recurrence as an information bound, not as evidence of biological benefit. V31 retained 5% of its projection.
 
-| Variante | Transiciones | Llegadas / episodios | Colisiones | Timeouts |
+| Variant | Transitions | Arrivals / episodes | Collisions | Timeouts |
 | --- | ---: | ---: | ---: | ---: |
 | v20 | 293 | 0/1 | 1 | 0 |
 | v21 | 300 | 0/1 | 1 | 0 |
@@ -239,66 +238,65 @@ No eran políticas aprendidas. V27 a v30 cancelaban recurrencia como límite de 
 | v30 | 2,399 | 1/1 | 0 | 0 |
 | v31 | 29,496 | 4/8 | 0 | 4 |
 
-El grupo suma 53.316 transiciones físicas y cero entrenamiento. Una llegada de v30 en una habitación conocida demostraba viabilidad de ese vuelo, no robustez en ocho habitaciones.
+The group totals 53,316 physical transitions and zero training. One arrival by v30 in a known room demonstrated the feasibility of that flight, not robustness across eight rooms.
 
+### 8.3. Perception diagnostics that changed decisions
 
-### 8.3. Diagnósticos de percepción que cambiaron las decisiones
+V13 had a 90th-percentile angular error of approximately 50.92 degrees on reused samples. V14 added heading equivariance: rotating the image and goal should rotate the reference. That test passed, while flights remained at 0/8. A correct algebraic property of a network does not eliminate every error in a sequential task.
 
-V13 tenía percentil 90 de error angular de aproximadamente 50,92 grados en muestras reutilizadas. V14 incorporó equivariancia de rumbo: rotar imagen y objetivo debía rotar la referencia. El test pasó y sus vuelos siguieron en 0/8. Una propiedad algebraica correcta de la red no elimina todos los errores de una tarea secuencial.
+Among 512 v17 records, 72 direction errors exceeded 90 degrees, and 45 labels fell outside the permitted hemisphere. A favorable median could conceal infrequent but decisive errors. V19 expanded candidates to 150 degrees relative to the goal and braked in a 45-degree cone; it ended with one collision and seven timeouts.
 
-En 512 registros de v17 se identificaron 72 errores de dirección mayores de 90 grados y 45 etiquetas fuera del hemisferio permitido. Una mediana favorable podía ocultar errores infrecuentes decisivos. V19 amplió candidatos hasta 150 grados respecto del objetivo y frenó en un cono de 45 grados; terminó con una colisión y siete timeouts.
+V32 fitted direction with a median of 1.55 degrees and a 90th percentile of 3.40 across 512 training fields. Distance RMSE was 1.14 units; for 73 references within two units, it was 0.54. It reached zero goals. A metric error small relative to the room can be large relative to an opening's clearance.
 
-V32 ajustó dirección con mediana 1,55 grados y percentil 90 de 3,40 en 512 campos de entrenamiento. El RMSE de distancia era 1,14 unidades; para 73 referencias a menos de dos unidades, 0,54. Llegó a cero objetivos. Un error métrico pequeño respecto de la habitación puede ser grande respecto del espacio de una abertura.
+V34 reused v32 data and fitted only the wall normal over 1,536 updates. During alignment it aimed 1.3 units before the center; during crossing, 1.2 beyond it. This is learned perception with proportional control, not new PPO training. Its source history was 98,304 transitions; that is not equivalent to the project's global expenditure.
 
-V34 reutilizó los datos de v32 y ajustó solo la normal de pared en 1.536 actualizaciones. Durante alineación apuntaba 1,3 unidades antes del centro; durante cruce, 1,2 más allá. Es percepción aprendida con control proporcional, no PPO nuevo. Su historial fuente era 98.304 transiciones; no equivale al gasto global del proyecto.
+V37 added 16,384 student steps and 16,384 guided-recovery steps. During collection, the student finished with zero goals and one collision; the teacher had two goals and eight collisions. Joint fitting of direction, distance, and normal worsened angular error: approximately 7.35 degrees median and 30.15 at the 90th percentile. Recovery was not infallible either.
 
-V37 añadió 16.384 pasos del estudiante y 16.384 de recuperación guiada. En recogida, el estudiante terminó con cero objetivos y una colisión; el profesor, dos objetivos y ocho colisiones. El ajuste conjunto de dirección, distancia y normal empeoró el error angular: mediana aproximadamente 7,35 grados y percentil 90 de 30,15. La recuperación tampoco era infalible.
+V38 froze angular tensors and verified identical scores while fitting distance; flight did not improve. V39 retained v34 weights and narrowed the protection tube; it reduced collisions but yielded only 1/8. V40 aligned panoramas using the neural goal bearing and fitted existing records 2,048 times; it also yielded 1/8.
 
-V38 congeló tensores angulares y comprobó puntuaciones idénticas mientras ajustaba distancia; no mejoró el vuelo. V39 conservó los pesos de v34 y estrechó el tubo de protección; redujo colisiones pero dio solo 1/8. V40 alineó panoramas mediante bearing neuronal del objetivo y ajustó 2.048 veces sobre registros existentes; también dio 1/8.
+The approximate visibility audit found a nearby ray that passed beyond the center for 7,773 of 8,928 v32 references and 7,679 of 9,192 v37 references. In v37, 68 references exceeded panoramic range. The remainder cannot automatically be classified as hidden: the nearest ray is not an exact geometric visibility test of the reference. Earlier labels were privileged supervision references, not centers with certified visibility.
 
-La auditoría de visibilidad aproximada encontró un rayo próximo que pasaba más allá del centro en 7.773 de 8.928 referencias de v32 y 7.679 de 9.192 de v37. En v37, 68 referencias superaban el alcance panorámico. El resto no puede clasificarse automáticamente como oculto: el rayo próximo no es un test geométrico exacto de la referencia. Las etiquetas anteriores eran referencias de supervisión privilegiadas, no centros cuya visibilidad se hubiera certificado.
+## 9. Data, connectome, and exact transformations
 
-## 9. Datos, conectoma y transformaciones exactas
+### 9.1. Original data and project choices
 
-### 9.1. Datos originales y decisiones del proyecto
+MaleCNS v1.0 supplies connectivity, annotations, neurotransmitter predictions, and soma coordinates. Fly RL adds neuronal-segment selection, normalization, simplified signs, an artificial sensory projection, continuous activity, sensors, dynamics, and navigation rules. The dataset authors did not produce this controller. Attribution and licensing are in [references](REFERENCES.md) and [data and model](DATA_AND_MODEL.md).
 
-MaleCNS v1.0 aporta conectividad, anotaciones, predicciones de neurotransmisor y coordenadas de somas. Fly RL añade selección de segmentos neuronales, normalización, signo simplificado, proyección sensorial artificial, actividad continua, sensores, dinámica y reglas de navegación. Los autores del dataset no produjeron este controlador. La atribución y la licencia están en [referencias](REFERENCES.md) y [datos y modelo](DATA_AND_MODEL.md).
+The official annotation and connectivity tables used specify minimum confidence 0.5 in their names. The criterion retains segments with `Traced` status or an assigned superclass, excluding `Glia`, `Orphan`, and `Unimportant`. Within that criterion, all neurons and connections between them are retained. This does not claim unfiltered inclusion of every segment in the tables.
 
-Las tablas oficiales de anotaciones y conectividad usadas indican confianza mínima 0,5 en sus nombres. El criterio conserva segmentos con estado `Traced` o superclass asignada, excluyendo `Glia`, `Orphan` y `Unimportant`. Dentro de ese criterio se retienen todas las neuronas y conexiones entre ellas. No se afirma que se incluyan sin filtrado todos los segmentos de las tablas.
+The retained graph contains 167,184 neurons, 25,583,622 directed pairs, and 124,176,995 represented synapses. No reduced graph replaced it in the cited flights, full diagnostics, or PPO checks. Algebraic tests with synthetic matrices are unit tests, not navigation or evidence of dataset coverage.
 
-Se conservan 167.184 neuronas, 25.583.622 pares dirigidos y 124.176.995 sinapsis representadas. No se sustituyó por un grafo reducido en los vuelos, diagnósticos completos o verificaciones PPO citados. Los tests algebraicos con matrices sintéticas son tests unitarios, no navegación ni evidencia de cobertura del dataset.
+There are 140,033 somas with coordinates and 27,151 neurons without supplied coordinates. The latter still participate in computation even though they do not appear as points. The anatomical view represents somas, not complete arborizations or experimentally measured activity.
 
-Hay 140.033 somas con coordenadas y 27.151 neuronas sin coordenadas suministradas. Estas últimas siguen calculándose aunque no aparezcan como puntos. La vista anatómica representa somas, no arborizaciones completas ni actividad experimental medida.
+### 9.2. Matrix and neural activity
 
-### 9.2. Matriz y actividad neuronal
-
-La matriz usa filas postsinápticas y columnas presinápticas; los pares repetidos se suman. Con conteo C_ij y signo sigma_j:
+The matrix uses postsynaptic rows and presynaptic columns; repeated pairs are summed. With count C_ij and sign sigma_j:
 
 \[
 W_{ij}=\frac{0.9\,\sigma_j C_{ij}}{\max(1,\sum_k C_{ik})}.
 \]
 
-Sigma es -1 para fuentes con predicción GABA y +1 para las otras o desconocidas. No representa conductancias, retardos o plasticidad según tipos celulares. La actualización fija es:
+Sigma is -1 for sources with a GABA prediction and +1 for other or unknown sources. It does not represent conductances, delays, or plasticity by cell type. The fixed update is:
 
 \[
 h_t=0.5h_{t-1}+0.5\tanh(Wh_{t-1}+Ax_t-c).
 \]
 
-A es la proyección sensorial y c el centrado panorámico. La proyección base usa dos asignaciones por neurona, semilla 42 y amplitud 0,5; la panorámica añade dos, semilla 123457 y amplitud 0,25. Son asignaciones sintéticas, no conexiones visuales biológicas reconstruidas. La matriz y estas proyecciones no se optimizan durante PPO.
+A is the sensory projection, and c is panoramic centering. The base projection uses two assignments per neuron, seed 42, and amplitude 0.5; the panorama adds two assignments, seed 123457, and amplitude 0.25. These are synthetic assignments, not reconstructed biological visual connections. The matrix and these projections are not optimized during PPO.
 
-### 9.3. Lectura de proyección y límites de información
+### 9.3. Projection readout and information bounds
 
-Un resumen agrupado puede mezclar coordenadas útiles para navegar. El diagnóstico de 128 transiciones sobre el grafo completo dio RMSE de distancia panorámica 1,724 para un ajuste afín agrupado, 0,824 para la proyección con recurrencia retenida y aproximadamente 0,0000446 para el límite que la cancela. El ajuste afín se midió sobre las muestras donde se ajustó: es un diagnóstico favorable, no validación independiente.
+A grouped summary can mix coordinates useful for navigation. The 128-transition diagnostic on the full graph yielded panoramic-distance RMSE of 1.724 for a grouped affine fit, 0.824 for projection with retained recurrence, and approximately 0.0000446 for the bound that cancels it. The affine fit was measured on the samples used to fit it: this is a favorable diagnostic, not independent validation.
 
-Desde los estados anteriores y actuales:
+From previous and current states:
 
 \[
 z_t=\operatorname{atanh}(\operatorname{clip}(2h_t-h_{t-1},-1+10^{-6},1-10^{-6}))+c.
 \]
 
-En precisión ideal y sin saturación equivale a Wh_(t-1)+Ax_t. El clipping evita invertir tanh en sus extremos, pero introduce aproximación para valores saturados. El límite de información resta Wh_(t-1). La lectura whitened lo conserva; contrast resta 95%, dejando aproximadamente 5% proyectado.
+With ideal precision and no saturation, this equals Wh_(t-1)+Ax_t. Clipping avoids inverting tanh at its endpoints, but introduces an approximation for saturated values. The information bound subtracts Wh_(t-1). The whitened readout retains it; contrast subtracts 95%, leaving approximately 5% projected.
 
-V55 separa canales:
+V55 separates channels:
 
 \[
 f_t=A^+(z_t-Wh_{t-1})+D A^+Wh_{t-1},
@@ -306,106 +304,106 @@ f_t=A^+(z_t-Wh_{t-1})+D A^+Wh_{t-1},
 D_{kk}=\begin{cases}0,&k<269\\0.05,&k\ge269.\end{cases}
 \]
 
-Si N contiene las normas de columnas y B=A N^-1, se forma G=B^T B+10^-6 I y se resuelve N^-1 G^-1 B^T mediante Cholesky. A^+ designa aquí la reconstrucción estabilizada implementada, no una inversión exacta sin ridge. `reconstruct_activity` no consulta sensores del mundo; compararlos con canales reconstruidos es una verificación externa de precisión.
+If N contains column norms and B=A N^-1, G=B^T B+10^-6 I is formed and N^-1 G^-1 B^T is solved through Cholesky. A^+ here denotes the implemented stabilized reconstruction, not an exact inversion without ridge regularization. `reconstruct_activity` does not consult world sensors; comparing them with reconstructed channels is an external accuracy check.
 
-El grafo completo sigue actualizándose, mientras la base cancela la recurrencia en distancias cortas, objetivo y movimiento; el panorama conserva 5%. Son hechos distintos. El resultado no demuestra que esa fracción ni el cableado biológico sean la causa del éxito. No se realizó una comparación pareada final contra grafos alternativos.
 
-## 10. Contrato sensorial, memoria y separación de entradas
+The full graph continues updating, while the base cancels recurrence in short distances, the goal, and motion; the panorama retains 5%. These are distinct facts. The result does not establish that this fraction or the biological wiring causes the success. No final paired comparison against alternative graphs was performed.
 
-| Índices base cero | Cantidad | Contenido | Escala de reconstrucción |
+## 10. Sensor contract, memory, and input separation
+
+| Zero-based indices | Count | Content | Reconstruction scale |
 | --- | ---: | --- | --- |
-| 0–127 | 128 | Distancias cortas | Por 8 |
-| 128–255 | 128 | Velocidades de aproximación cortas | Velocidad con escala 3 |
-| 256–258 | 3 | Dirección del objetivo en el cuerpo | Normalizar para obtener vector |
-| 259 | 1 | Distancia al objetivo | Por norma de room - 0,32 |
-| 260–262 | 3 | Velocidad corporal | Por 3 |
-| 263–266 | 4 | Acción anterior | Comandos normalizados |
-| 267 | 1 | Altitud | Por 16 en `large` |
-| 268 | 1 | Velocidad de giro | Por 2,6 |
-| 269–2068 | 1.800 | Distancias panorámicas | Por 24 |
-| 2069–3868 | 1.800 | Aproximación panorámica | Velocidad con escala 3 |
+| 0–127 | 128 | Short distances | Multiply by 8 |
+| 128–255 | 128 | Short-range approach velocities | Velocity with scale 3 |
+| 256–258 | 3 | Goal direction in body coordinates | Normalize to obtain a vector |
+| 259 | 1 | Goal distance | Multiply by the norm of room - 0.32 |
+| 260–262 | 3 | Body velocity | Multiply by 3 |
+| 263–266 | 4 | Previous action | Normalized commands |
+| 267 | 1 | Altitude | Multiply by 16 in `large` |
+| 268 | 1 | Turning velocity | Multiply by 2.6 |
+| 269–2068 | 1,800 | Panoramic distances | Multiply by 24 |
+| 2069–3868 | 1,800 | Panoramic approach | Velocity with scale 3 |
 
-El panorama tiene 25 filas por 72 columnas: elevación de -84 a 84 grados, azimut de -180 a 175 y alcance 24. Los rayos cortos combinan 26 direcciones de vecindad 3D y 102 adicionales distribuidas en esfera. Son 1.928 rayos y 3.869 valores, contando objetivos y estado.
+The panorama has 25 rows and 72 columns: elevation from -84 to 84 degrees, azimuth from -180 to 175, and range 24. Short rays combine 26 three-dimensional neighborhood directions with 102 additional directions distributed over a sphere. There are 1,928 rays and 3,869 values, including goals and state.
 
-Los sensores parten del centro del cuerpo y usan cajas sin inflar. La colisión sí incluye radio 0,16. Un despeje observado de 0,2 no significa tener 0,2 después de descontar el radio. La distinción es relevante al ajustar el freno.
+Sensors originate at the body center and use uninflated boxes. Collision includes a radius of 0.16. An observed clearance of 0.2 does not mean 0.2 remains after subtracting the radius. This distinction matters when tuning braking.
 
-El adaptador exige observación finita `(1, 9, 3869)`: ocho frames históricos y el actual, stride ocho decisiones. V55 toma el actual; su memoria útil es el mapa, la pose estimada y la ruta. No usa esos ocho frames como una política recurrente aprendida; conserva el contrato de la tubería.
+The adapter requires a finite observation of shape `(1, 9, 3869)`: eight historical frames and the current frame, with a stride of eight decisions. V55 takes the current frame; its useful memory is the map, estimated pose, and route. It does not use those eight frames as a learned recurrent policy; it preserves the pipeline contract.
 
-Los resets vacían actividad, historial y contadores. En un lote, los elementos terminados se reinician independientemente y se preserva el estado neuronal de los que continúan. El visor vacía también el controlador al fin de episodio, con R y con N.
+Resets clear activity, history, and counters. Within a batch, finished members reset independently while the neural state of continuing members is preserved. The viewer also clears the controller at episode end, on R, and on N.
 
-La alineación v40 usaba cambio de bearing del objetivo y remuestreo circular de columnas. La traslación también altera ese bearing; no era odometría exacta. Pasar tests de rotación de 45 grados, borde circular y gradientes no establecía éxito de vuelo.
+V40 alignment used changes in goal bearing and circular column resampling. Translation also changes that bearing; this was not exact odometry. Passing tests of 45-degree rotation, circular boundaries, and gradients did not establish flight success.
 
-## 11. Odometría y conocimiento del objetivo
+## 11. Odometry and knowledge of the goal
 
-La posición del mapa empieza en x=y=0 y z se reconstruye de altitud. El yaw empieza en cero: es un marco relativo al rumbo inicial, no la pose absoluta de la habitación. Las superficies se rotan a ese marco antes de acumularse.
+Map position starts at x=y=0, with z reconstructed from altitude. Yaw starts at zero: the frame is relative to initial heading, not the room's absolute pose. Surfaces are rotated into that frame before accumulation.
 
-Cada decisión integra giro observado durante 0,05 segundos y transforma velocidad corporal con la rotación estimada. El objetivo local es:
+Each decision integrates observed turning over 0.05 seconds and transforms body velocity using the estimated rotation. The local goal is:
 
 \[
 g_{\mathrm{local}}=\frac{f_{256:259}}{\max(\|f_{256:259}\|,10^{-6})}\max(f_{259},0)\|[48,48,16]-0.32\|.
 \]
 
-La primera observación fija `initial_goal`. Si la distancia horizontal local supera dos unidades, se compara bearing esperado del ancla con observado. El error envuelto de yaw se limita a +/-0,02 radianes y se multiplica por 0,2. La corrección de posición por el ancla limita cada componente a +/-0,2 y aplica factor 0,15. La altitud combina 80% de estimación y 20% de lectura.
+The first observation fixes `initial_goal`. If local horizontal distance exceeds two units, expected anchor bearing is compared with observed bearing. Wrapped yaw error is limited to +/-0.02 radians and multiplied by 0.2. Anchor-based position correction limits each component to +/-0.2 and applies a factor of 0.15. Altitude combines 80% estimate and 20% readout.
 
-No hay pose verdadera en la interfaz, pero sí una dirección y distancia sintéticas al objetivo. Es una ayuda explícita de la tarea; no es navegación sin referencia ni descubrimiento autónomo del objetivo. La geometría verdadera guardada para auditoría no entra en estos cálculos.
+The interface contains no true pose, but it does contain a synthetic direction and distance to the goal. This is explicit task assistance; it is neither navigation without a reference nor autonomous goal discovery. True geometry saved for auditing does not enter these calculations.
 
-Un sesgo de yaw rota todas las superficies acumuladas y puede inutilizar el mapa tras miles de decisiones. El lector estable reduce ese error numérico. V43 y v44 dieron ambos 5/8, demostrando que no era la única limitación.
+A yaw bias rotates all accumulated surfaces and can render the map unusable after thousands of decisions. The stable reader reduces that numerical error. V43 and v44 both yielded 5/8, showing that this was not the only limitation.
 
+## 12. Exact map construction
 
-## 12. Construcción exacta del mapa
+The grid has shape `(216,216,28)`, resolution 0.6, and origin `[-64.8,-64.8,0]` in the relative frame. This is 1,306,368 cells. Its horizontal extent accommodates rooms rotated relative to initial heading; it is not the physical room size.
 
-La cuadrícula tiene forma `(216,216,28)`, resolución 0,6 y origen `[-64.8,-64.8,0]` en el marco relativo. Son 1.306.368 celdas. El rango horizontal permite representar habitaciones rotadas respecto del rumbo inicial; no es el tamaño de la habitación física.
+Evidence uses `int8`, starts at zero, and updates on the first decision and every ten decisions, approximately 0.5 simulated seconds. Planning runs on the first decision and every twenty decisions, approximately one second, or when no route is available.
 
-La evidencia usa `int8`, comienza en cero y se actualiza en la primera decisión y cada diez, aproximadamente 0,5 segundos simulados. Se planifica en la primera y cada veinte decisiones, aproximadamente un segundo, o si falta ruta.
+Free points are sampled at distances from 0.3 to below 24, in increments of 0.45, before the measured distance minus 0.35. Each unique cell observed as free loses one, with a floor of -8. Unique indices prevent repeated changes from many rays within one integration.
 
-Se muestrean puntos libres a distancias desde 0,3 hasta menos de 24, paso 0,45, antes de la distancia medida menos 0,35. Cada celda única observada libre pierde uno, con suelo -8. Se usan índices únicos para impedir cambios repetidos por muchos rayos en una integración.
+Endpoints with distance below 23.4 are hits. Each group of four neighboring panoramic pixels can be filled as a surface if all depths are below 23.4 and their variation is below 1.6. Twenty-five bilinear points are added per group, using coefficients 0, 0.25, 0.5, 0.75, and 1 on each axis. Each unique surface cell gains three, capped at 12. The current cell is marked free, with evidence -8.
 
-Los extremos con distancia menor de 23,4 son impactos. Cada grupo de cuatro píxeles panorámicos vecinos puede rellenarse como superficie si todas sus profundidades son menores de 23,4 y su variación es menor de 1,6. Se añaden 25 puntos bilineales por grupo, con coeficientes 0, 0,25, 0,5, 0,75 y 1 en cada eje. Cada celda única de superficie gana tres, con techo 12. La celda actual se marca libre, evidencia -8.
+Filling reduces gaps between rays but can connect surfaces that should remain separate. Discretization, perspective, readout, and persistence can produce gaps or false occupancy. There is no calibrated uncertainty model or guarantee of exact box reconstruction.
 
-El relleno reduce agujeros entre rayos, pero puede conectar superficies que no deberían unirse. La discretización, perspectiva, lectura y persistencia pueden producir huecos u ocupación falsa. No hay un modelo de incertidumbre calibrado ni garantía de reconstrucción exacta de cajas.
+Evidence of at least two means occupied. The bottom and top layers are blocked, and solids are dilated by one cell along axial directions. Cost is 1 for observed free space, 2.8 for unknown space, and infinity for solids or margins.
 
-Evidencia al menos dos significa ocupado. Se bloquean capas inferior y superior, y se dilatan sólidos una celda en las direcciones axiales. El coste es 1 para observado libre, 2,8 para desconocido e infinito para sólido o margen.
+If the position lies in the margin, `tight` mode activates. In a local region five cells wide on each axis, margin cells that are not solids acquire cost 8; observed surfaces remain blocked. The current cell costs 1. This is a local escape, not global relaxation of walls.
 
-Si la posición cae en el margen se activa `tight`. En una región local de cinco celdas por eje, las celdas del margen que no son sólidos pasan a coste 8; las superficies observadas siguen bloqueadas. La celda actual cuesta 1. Es un escape local, no relajación global de paredes.
+## 13. Route search and following
 
-## 13. Búsqueda y seguimiento de ruta
-
-La búsqueda considera 26 desplazamientos. Cada transición cuesta el valor de celda destino por longitud del desplazamiento: 1, raíz de 2 o raíz de 3 en unidades de celda. La prioridad es:
+Search considers 26 displacements. Each transition costs the destination-cell value multiplied by displacement length: 1, square root of 2, or square root of 3 in cell units. Priority is:
 
 \[
-F(n)=g(n)+4.5\,h(n),\qquad h(n)=\|n-n_{\mathrm{objetivo}}\|_2.
+F(n)=g(n)+4.5\,h(n),\qquad h(n)=\|n-n_{\mathrm{goal}}\|_2.
 \]
 
-El factor 4,5 favorece progreso con menos expansiones. No garantiza ruta mínima. Para una diagonal, se rechaza el paso si alguna celda intermedia axial está bloqueada. No es una prueba continua de despeje de una esfera en todas las diagonales.
+The factor 4.5 favors progress with fewer expansions. It does not guarantee the minimum route. A diagonal move is rejected if any axial intermediate cell is blocked. This is not a continuous sphere-clearance proof for every diagonal.
 
-La condición final exige índice exacto del voxel objetivo y después añade su coordenada continua. Si se alcanzan 12.000 expansiones sin llegar, se eliminan entradas cerradas de la cabeza del heap y se usa la mejor frontera abierta restante. Si no hay frontera abierta, se conserva el mejor visitado por cercanía. Esto evita usar por defecto un nodo cerrado junto a pared mientras queda otra alternativa abierta, pero aún puede escoger un desvío insuficiente.
+The terminal condition requires the exact goal-voxel index, after which its continuous coordinate is appended. If 12,000 expansions are reached without arriving, closed entries are removed from the heap head and the best remaining open frontier is used. If no open frontier exists, the visited node closest to the goal is retained. This avoids defaulting to a closed node near a wall while another open alternative remains, but can still select an insufficient detour.
 
-La ruta se reconstruye mediante padres y centros de celdas. Se encuentra su punto más cercano y se elimina el prefijo anterior. Si hay otro punto y el primero está a menos de 0,35, se avanza. Así no se permanece en un centro ya alcanzado.
+The route is reconstructed using parents and cell centers. Its nearest point is found, and the earlier prefix is removed. If another point exists and the first is within 0.35, following advances. This prevents remaining at an already reached center.
 
-La anticipación es tres unidades, o una en modo `tight`. Cada segmento se muestrea aproximadamente cada 0,1 y se exige estar dentro de la cuadrícula y en costes finitos. Se consulta el coste guardado de la última planificación, no una prueba geométrica oculta. A menos de 1,5 del objetivo observado se usa su vector directamente.
+Lookahead is three units, or one in `tight` mode. Each segment is sampled approximately every 0.1, requiring points inside the grid with finite costs. The saved cost from the latest planning pass is consulted, not a hidden geometric test. Within 1.5 of the observed goal, its vector is used directly.
 
-Antes se aceptaba finalizar a menos de 1,6 celdas del objetivo, casi 0,96 unidades con esta resolución. Una búsqueda con `found=true` podía detenerse antes de atravesar la referencia. La igualdad de voxel más el objetivo continuo eliminó esa condición anticipada.
+Previously, completion was accepted within 1.6 cells of the goal, nearly 0.96 units at this resolution. A search with `found=true` could stop before crossing the reference. Voxel equality plus the continuous goal eliminated that premature condition.
 
-## 14. Frenado tridimensional, vuelo y recompensa
+## 14. Three-dimensional braking, flight, and reward
 
-Sea d la referencia en el cuerpo, D=max(norm(d),10^-6), u=d/D y p un extremo reconstruido. Se combinan 128 rayos cortos y 1.800 panorámicos:
+Let d be the reference in body coordinates, D=max(norm(d),10^-6), u=d/D, and p a reconstructed endpoint. The 128 short rays and 1,800 panoramic rays are combined:
 
 \[
 \ell=p^Tu,\qquad \rho=\|p-\ell u\|.
 \]
 
-El despeje L es la menor ell positiva con rho menor de 0,25; si no hay ninguna, se inicia en 24. La velocidad solicitada es:
+Clearance L is the smallest positive ell with rho below 0.25; if none exists, it starts at 24. Requested speed is:
 
 \[
 s=\min\left(v_{\max},1.5D,\sqrt{2.4\max(L-0.27,0)}\right),
 \quad v_{\max}=\begin{cases}0.8,&\mathrm{tight}\\1.8,&\mathrm{normal}.\end{cases}
 \]
 
-Se mide la dirección solicitada, no el frente o la velocidad horizontal actual. Eso permite comprobar una subida libre aunque haya pared delante. Los rayos siguen siendo dispersos: no garantizan ver todos los obstáculos dentro del tubo.
+The requested direction is measured, rather than the front or current horizontal velocity. This allows checking a clear ascent despite a wall ahead. Rays remain sparse: they do not guarantee seeing every obstacle within the tube.
 
-Con error de yaw e, la velocidad horizontal deseada es s u_xy max(cos(e),0)^4. La vertical es s u_z, independientemente del giro horizontal. Si la componente horizontal de la referencia tiene norma menor o igual a 0,05, se usa e=0 para que ruido horizontal mínimo no bloquee un movimiento casi vertical.
+With yaw error e, desired horizontal velocity is s u_xy max(cos(e),0)^4. Vertical velocity is s u_z, independently of horizontal turning. If the reference's horizontal component has norm at most 0.05, e=0 is used so minimal horizontal noise cannot block nearly vertical movement.
 
-Los comandos de aceleración se derivan de esa velocidad:
+Acceleration commands derive from that velocity:
 
 \[
 T=\operatorname{clip}(3(\|v^*_{xy}\|-v_x)+0.6\|v^*_{xy}\|,-1.2,3),
@@ -420,109 +418,108 @@ a_{\mathrm{vertical}}=\operatorname{clip}((3(v^*_z-v_z)+0.8v^*_z)/2.5,-1,1),
 \qquad a_{\mathrm{yaw}}=\operatorname{clip}(2e/1.8,-1,1).
 \]
 
-El comando lateral es cero. Los factores 0,6 y 0,8 compensan arrastre simplificado frontal y vertical. No hay integral o derivada explícita del error de posición: es control proporcional de velocidad con referencia espacial y compensación de arrastre.
+The lateral command is zero. Factors 0.6 and 0.8 compensate for simplified forward and vertical drag. There is no explicit integral or derivative of position error: this is proportional velocity control with a spatial reference and drag compensation.
 
-La dinámica coordinada calcula yaw rate deseado 1,8 a_yaw + 0,8 a_lateral y lo suaviza con factor min(1; 5 dt). La aceleración corporal positiva es `[3 a_forward, 0.35 a_lateral, 2.5 a_vertical]`; para frontal negativo se usa 1,2. El arrastre es `[0.6,2.8,0.8]`. La velocidad física se limita a tres unidades por segundo. Bank y pitch son estados visuales suavizados; no simulan batido de alas o aerodinámica real.
+Coordinated dynamics calculate desired yaw rate as 1.8 a_yaw + 0.8 a_lateral and smooth it with factor min(1; 5 dt). Positive body acceleration is `[3 a_forward, 0.35 a_lateral, 2.5 a_vertical]`; negative forward acceleration uses 1.2. Drag is `[0.6,2.8,0.8]`. Physical speed is capped at three units per second. Bank and pitch are smoothed visual states; they do not simulate wingbeats or real aerodynamics.
 
-La colisión usa el segmento de posición anterior a nueva contra cajas infladas por radio 0,16, además de los límites del cuarto. Puede detectar atravesar una caja entre decisiones. Esa prueba física sigue activa y no se sustituye por la cuadrícula.
+Collision checks the segment from previous to new position against boxes inflated by radius 0.16, as well as room boundaries. It can detect crossing a box between decisions. This physical check remains active and is not replaced by the grid.
 
-La recompensa base es dos veces la reducción de distancia menos 0,02 por paso, con +20 en llegada, -5 en colisión y -5 en timeout. V55 no optimiza esta recompensa; la registra por compatibilidad. El límite de episodio del perfil depende de la longitud certificada L_ref:
+Base reward is twice the distance reduction minus 0.02 per step, with +20 on arrival, -5 on collision, and -5 on timeout. V55 does not optimize this reward; it records it for compatibility. The profile's episode limit depends on certified length L_ref:
 
 \[
 \operatorname{ceil}\left(\frac{\max(60,2L_{\mathrm{ref}}/1.5+15)}{0.05}\right).
 \]
 
-La ruta certificada fija parte del protocolo del entorno, pero no entra en las acciones del planificador. No se ampliaron esos plazos originales para obtener el 13/16.
+The certified route determines part of the environment protocol but does not enter planner actions. These original deadlines were not extended to obtain 13/16.
 
-## 15. Resultados por habitación y diagnóstico de los timeouts
 
-### 15.1. Optimización canónica
+## 15. Results for each room and timeout diagnosis
 
-| Semilla | Resultado | Decisiones | Segundos simulados | Distancia final |
+### 15.1. Canonical optimization
+
+| Seed | Outcome | Decisions | Simulated seconds | Final distance |
 | --- | --- | ---: | ---: | ---: |
-| 370000 | Llegada | 2857 | 142.85 | 0.422525 |
-| 370001 | Llegada | 2773 | 138.65 | 0.412719 |
-| 370002 | Llegada | 2026 | 101.30 | 0.419600 |
-| 370003 | Llegada | 2053 | 102.65 | 0.443625 |
-| 370004 | Llegada | 2998 | 149.90 | 0.400518 |
-| 370005 | Llegada | 2678 | 133.90 | 0.401159 |
-| 370006 | Llegada | 3146 | 157.30 | 0.449248 |
-| 370007 | Llegada | 2166 | 108.30 | 0.448753 |
+| 370000 | Arrival | 2857 | 142.85 | 0.422525 |
+| 370001 | Arrival | 2773 | 138.65 | 0.412719 |
+| 370002 | Arrival | 2026 | 101.30 | 0.419600 |
+| 370003 | Arrival | 2053 | 102.65 | 0.443625 |
+| 370004 | Arrival | 2998 | 149.90 | 0.400518 |
+| 370005 | Arrival | 2678 | 133.90 | 0.401159 |
+| 370006 | Arrival | 3146 | 157.30 | 0.449248 |
+| 370007 | Arrival | 2166 | 108.30 | 0.448753 |
 
-### 15.2. Desarrollo prospectivo congelado
+### 15.2. Frozen prospective development
 
-| Semilla | Resultado | Decisiones | Segundos simulados | Distancia final |
+| Seed | Outcome | Decisions | Simulated seconds | Final distance |
 | --- | --- | ---: | ---: | ---: |
-| 8500000 | Llegada | 3069 | 153.45 | 0.409150 |
-| 8500001 | Llegada | 1952 | 97.60 | 0.413202 |
-| 8500002 | Llegada | 1918 | 95.90 | 0.398511 |
-| 8500003 | Llegada | 1910 | 95.50 | 0.439138 |
-| 8500004 | Llegada | 1916 | 95.80 | 0.413129 |
-| 8500005 | Llegada | 2088 | 104.40 | 0.421456 |
-| 8500006 | Llegada | 1663 | 83.15 | 0.421959 |
-| 8500007 | Llegada | 2013 | 100.65 | 0.427010 |
-| 8500008 | Llegada | 2029 | 101.45 | 0.446484 |
-| 8500009 | Llegada | 3365 | 168.25 | 0.449494 |
-| 8500010 | Llegada | 1739 | 86.95 | 0.441575 |
+| 8500000 | Arrival | 3069 | 153.45 | 0.409150 |
+| 8500001 | Arrival | 1952 | 97.60 | 0.413202 |
+| 8500002 | Arrival | 1918 | 95.90 | 0.398511 |
+| 8500003 | Arrival | 1910 | 95.50 | 0.439138 |
+| 8500004 | Arrival | 1916 | 95.80 | 0.413129 |
+| 8500005 | Arrival | 2088 | 104.40 | 0.421456 |
+| 8500006 | Arrival | 1663 | 83.15 | 0.421959 |
+| 8500007 | Arrival | 2013 | 100.65 | 0.427010 |
+| 8500008 | Arrival | 2029 | 101.45 | 0.446484 |
+| 8500009 | Arrival | 3365 | 168.25 | 0.449494 |
+| 8500010 | Arrival | 1739 | 86.95 | 0.441575 |
 | 8500011 | Timeout | 3345 | 167.25 | 6.853000 |
 | 8500012 | Timeout | 3534 | 176.70 | 26.957935 |
 | 8500013 | Timeout | 3503 | 175.15 | 14.086490 |
-| 8500014 | Llegada | 2872 | 143.60 | 0.408959 |
-| 8500015 | Llegada | 2365 | 118.25 | 0.399152 |
+| 8500014 | Arrival | 2872 | 143.60 | 0.408959 |
+| 8500015 | Arrival | 2365 | 118.25 | 0.399152 |
 
+Time is simulated, with decisions every 0.05 seconds. Final distance is not route length. Running out of time is not counted as success merely because progress occurred.
 
-El tiempo es simulado, con decisiones de 0,05 segundos. La distancia final no es longitud de recorrido. Agotar tiempo no se cuenta como éxito por haber avanzado.
+Final traces from 8500011 and 8500012 showed `found=false` and 12,000 expansions. In 8500013, a route was found but not completed in time. Increasing only the search limit has not been established as a solution for all three cases. Reference changes, detours, odometry, and costs require further analysis.
 
-Las trazas finales de 8500011 y 8500012 mostraban `found=false` y 12.000 expansiones. En 8500013 se encontraba una ruta, pero no se completó a tiempo. Aumentar únicamente el límite de búsqueda no está demostrado como solución de los tres casos. Cambios de referencia, desvíos, odometría y costes requieren análisis adicional.
+Their final distances were 6.853, 26.958, and 14.086 units, respectively. Recorded movement was present: these were neither three omitted arrivals nor three concealed collisions. Details come from existing traces, without new evaluation.
 
-Sus distancias finales fueron 6,853, 26,958 y 14,086 unidades, respectivamente. Había movimiento registrado: no eran tres llegadas omitidas ni tres colisiones ocultadas. Los detalles proceden de las trazas existentes, sin evaluación nueva.
-
-El intervalo de Wilson usa k=13, n=16, p_hat=k/n y z=1,959964:
+The Wilson interval uses k=13, n=16, p_hat=k/n, and z=1.959964:
 
 \[
 \frac{\hat p+z^2/(2n)\ \pm\ z\sqrt{\hat p(1-\hat p)/n+z^2/(4n^2)}}{1+z^2/n}.
 \]
 
-Da 57,0–93,4%. La estimación 81,25% no establece una garantía de al menos 80%; cero colisiones en 16 tampoco implica riesgo cero. No se compararon v55 y v34 de forma pareada en estos 16 mapas.
+It yields 57.0–93.4%. The 81.25% estimate does not establish a guarantee of at least 80%; zero collisions in 16 flights does not imply zero risk either. V55 and v34 were not compared in a paired evaluation on these 16 maps.
 
+## 16. Resources, timing, and GPU use
 
-## 16. Recursos, tiempos y uso de GPU
+The tested environment uses Python 3.11, PyTorch 2.7.1 with CUDA 12.8, Stable-Baselines3 2.7.0, and Panda3D 1.10.16 on a 12 GB RTX 3060. V55 added no dependencies.
 
-El entorno probado usa Python 3.11, PyTorch 2.7.1 con CUDA 12.8, Stable-Baselines3 2.7.0 y Panda3D 1.10.16, en una RTX 3060 de 12 GB. V55 no añadió dependencias.
+Sparse connectome updates, reconstruction, and `torch-cuda` sensors use the GPU. Odometry, the grid, SciPy, the search heap, much of the physics, and writing use the CPU. Reconstruction returns features to NumPy, involving transfers and synchronization. Low GPU utilization does not mean execution has stopped or that all time is spent in the optimizer.
 
-La actualización dispersa del conectoma, la reconstrucción y los sensores `torch-cuda` usan GPU. La odometría, cuadrícula, SciPy, heap de búsqueda, buena parte de física y escritura usan CPU. La reconstrucción devuelve características a NumPy, con transferencias y sincronización. Un porcentaje bajo de GPU no significa que esté detenido ni que todo el tiempo se dedique al optimizador.
+The stable-reader diagnostic over 128 transitions recorded approximately 0.682 seconds after initialization, peak allocated VRAM of 560 MiB, normalized base RMSE of 0.00000567, yaw-rate RMSE of 0.00000472 rad/s, and panoramic-distance RMSE of 0.0419. This peak is PyTorch allocated memory during that check, not total process, rendering, or driver memory, nor an end-to-end benchmark.
 
-El diagnóstico estable de 128 transiciones registró aproximadamente 0,682 segundos después de inicializar, pico de 560 MiB de VRAM asignada, RMSE base normalizado 0,00000567, de yaw rate 0,00000472 rad/s y de distancia panorámica 0,0419. Ese pico es memoria asignada de PyTorch en esa comprobación, no memoria total de proceso, render o driver ni benchmark integral.
+The eight-map batch began at 13:02:20 UTC and ended at 13:05:35, approximately 195.27 seconds including initialization and closing. The prospective batch began at 13:06:22 and ended at 13:12:22, approximately 360.69 seconds. Dividing physical counters by those durations gives around 129 and 157 batch transitions per second. These are rates for those runs, not universal training or rendered-demo measurements.
 
-La tanda de ocho mapas comenzó a 13:02:20 UTC y terminó a 13:05:35, unos 195,27 segundos con inicialización y cierre. La prospectiva comenzó a 13:06:22 y terminó a 13:12:22, unos 360,69 segundos. Dividir sus contadores físicos por esos tiempos da alrededor de 129 y 157 transiciones de lote por segundo. Son tasas de esas ejecuciones, no una medición universal de entrenamiento ni del demo renderizado.
+The grid contains approximately 1.31 million cells per controller. Search creates cost, score, parent, and visited arrays as well as the heap. Evidence alone does not represent all CPU memory. Batch size, expansions, rays, and anatomical rendering affect different components.
 
-La cuadrícula contiene unos 1,31 millones de celdas por controlador. La búsqueda crea arrays de costes, scores, padres y visitados, además del heap. La evidencia por sí sola no representa toda la memoria de CPU. Lote, expansiones, rayos y render anatómico afectan componentes diferentes.
+## 17. What the tests and checks established
 
-## 17. Qué comprobaron los tests y verificaciones
+The integrated version passed 265 tests. They establish the checked properties, not success in every room. The six new planner tests cover advancing an already reached reference, escaping the margin without opening solids, clear ascent in front of a frontal wall, braking toward an obstacle, clearing the map and odometry on reset, and rejecting incompatible or nonfinite history.
 
-La versión integrada pasó 265 tests. Acreditan las propiedades comprobadas, no éxito en cualquier habitación. Los seis nuevos del planificador cubren avance de referencia alcanzada, escape del margen sin abrir sólidos, subida libre ante pared frontal, frenado hacia obstáculo, eliminación de mapa y odometría al reset y rechazo de historia incompatible o no finita.
+Readout tests verify algebra, nonzero visual recurrence, distinct contracts, and independent resets. Visualization tests check body IDs and sensitivity appropriate to the reader. V55 saves activity and change, with sensitivity unavailable; it does not calculate a PPO derivative for an action PPO did not decide.
 
-Los tests de lectura verifican álgebra, recurrencia visual no nula, contratos distintos y resets independientes. Los de visualización comprueban body IDs y sensibilidad acorde con el lector. V55 guarda actividad y cambio, con sensibilidad no disponible; no calcula una derivada PPO para una acción que PPO no decidió.
+The batch included three temporary PPO checks of 128 transitions and one update each. These are separate verification, not substantive training or navigation performance. The stable-reader check recorded finite losses, value loss 0.824498, approximate KL 0, and maximum CPU action-reload error of 3.5763e-7. The temporary checkpoint was deleted. One update and zero KL do not establish learning.
 
-La tanda incluyó tres verificaciones temporales PPO de 128 transiciones y una actualización cada una. Son comprobaciones separadas, no entrenamiento sustantivo ni rendimiento de navegación. La del lector estable registró pérdidas finitas, value loss 0,824498, KL aproximada 0 y error máximo CPU de recarga de acción 3,5763e-7. El checkpoint temporal se eliminó. Una actualización y KL cero no demuestran aprendizaje.
+Two 40-step launches checked controls and closing. The 3,200-step flight verified a known arrival and automatic reset. Keys and windows were exercised programmatically in offscreen mode; this is not presented as manual testing of every device. Room and brain images were visually inspected.
 
-Dos aperturas de 40 pasos comprobaron controles y cierre. El vuelo de 3.200 verificó una llegada conocida y reset automático. Las teclas y ventanas se ejercitaron por programa en modo offscreen; no se presenta como una prueba manual de todos los dispositivos. Las imágenes de habitación y cerebro se inspeccionaron visualmente.
+A neural index applied to a gradient that still contained the history dimension was corrected. For projection readers, the gradient was transformed to the reconstructed neural drive with previous states held fixed, rather than being called sensitivity of the recurrent state. The planner shows only activity and change. Brain-image saving avoids an empty PNG: it encodes in memory, requires data, and replaces through a temporary file.
 
-Se corrigió un índice neuronal aplicado sobre un gradiente que aún contenía dimensión histórica. Para lectores de proyección, el gradiente se transformó al impulso neuronal reconstruido manteniendo fijos estados anteriores, en vez de llamarlo sensibilidad del estado recurrente. Para el planificador se muestra solo actividad y cambio. El guardado cerebral evita un PNG vacío: codifica en memoria, exige datos y reemplaza mediante archivo temporal.
+## 18. Recording, reproduction, and preservation
 
-## 18. Registros, reproducción y conservación
+### 18.1. Historical archive and preview
 
-### 18.1. Archivo histórico y previsualización
+Each session has a unique directory in `runs/demo`; it does not overwrite earlier sessions. The preview image and `reports/demo.json` can represent the latest session but are not the complete historical archive.
 
-Cada sesión tiene directorio único en `runs/demo`; no sobrescribe sesiones previas. La imagen de previsualización y `reports/demo.json` pueden representar la última sesión, pero no son el archivo histórico completo.
+The manifest saves the dataset, brain fingerprint, readout, sensor contract, feature count, dynamics, configuration, software versions, Git revision, and whether the working tree was modified. Compressed blocks save previous and next sensors, features, actions and applied actions, positions, velocities, yaw, reward, and termination. Events record rooms, resets, episode ends, and neural observations. Full-neuron snapshots are optional with `--record-brain`.
 
-El manifest guarda dataset, huella del cerebro, lectura, contrato sensorial, número de características, dinámica, configuración, versiones de software, revisión Git y si el árbol estaba modificado. Los bloques comprimidos guardan sensores anteriores y siguientes, características, acciones y acciones aplicadas, posiciones, velocidades, yaw, recompensa y terminación. Los eventos registran habitaciones, resets, fin de episodios y observaciones neuronales. Los snapshots de todas las neuronas son opcionales con `--record-brain`.
+V55 archives `controller.py` and `controller.json` with type, version, and SHA-256, rather than a PPO checkpoint suggesting movement weights. The frozen public source has SHA-256 `faec0e96a8fb6e26a88675a25c7fb4468593aca481e70a4e50d463c621053dd2`. The prototype and public module have different structures: equivalence was verified through actions/maps and integrated flight, not by assuming identical hashes across different sources.
 
-V55 archiva `controller.py` y `controller.json` con tipo, versión y SHA-256, no un checkpoint PPO que aparente pesos de movimiento. La fuente pública congelada tiene SHA-256 `faec0e96a8fb6e26a88675a25c7fb4468593aca481e70a4e50d463c621053dd2`. Prototipo y módulo público tienen estructuras distintas: su equivalencia se verificó por acciones/mapa y vuelo integrado, no suponiendo hashes iguales entre fuentes diferentes.
+Telemetry uses 128-row chunks, checksums, and temporary replacement. Its audit checks schema, finiteness, steps, hashes, and room references. Documented sessions closed without archive errors or warnings. Replay reproduces saved states without recomputing the brain or controller.
 
-La telemetría usa chunks de 128 filas, checksums y reemplazo temporal. Su auditoría comprueba schema, finitud, pasos, hashes y referencias a habitaciones. Las sesiones documentadas cerraron sin errores ni advertencias de archivo. Replay reproduce estados guardados sin recalcular cerebro o controlador.
-
-### 18.2. Comandos y contratos de ejecución
+### 18.2. Commands and execution contracts
 
 ```powershell
 .\launch-observed-map.cmd
@@ -530,61 +527,61 @@ La telemetría usa chunks de 128 filas, checksums y reemplazo temporal. Su audit
 .\launch-observed-map.cmd --record-brain
 ```
 
-El wrapper `.cmd` llama a PowerShell explícitamente para evitar que la asociación de `.ps1` abra un editor. El CLI fija `large`, dinámica coordinada, sensors-v6 y lector estable. Rechaza combinar el planificador con checkpoint PPO, otro perfil o contrato sensorial incompatible. No promete tamaños arbitrarios.
+The `.cmd` wrapper calls PowerShell explicitly to avoid a `.ps1` file association opening an editor. The CLI fixes `large`, coordinated dynamics, sensors-v6, and the stable reader. It rejects combining the planner with a PPO checkpoint, another profile, or an incompatible sensor contract. It does not promise arbitrary sizes.
 
-Shift multiplica por diez el tiempo simulado, no los pesos, fuerzas, radio o velocidad física máxima. Acelerar reproducción requiere ejecutar más decisiones por segundo de reloj; el límite de cómputo puede reducir la aceleración visible. El demo no entrena.
+Shift multiplies simulated time by ten, not weights, forces, radius, or maximum physical speed. Accelerating playback requires more decisions per wall-clock second; computation limits may reduce the visible acceleration. The demo does not train.
 
-Para una sesión ya guardada, sustituir el nombre por el directorio real:
+For an already saved session, replace the name with the actual directory:
 
 ```powershell
-.\.conda\python.exe -m fly_rl inspect runs/demo/NOMBRE_DE_SESION
-.\.conda\python.exe -m fly_rl replay runs/demo/NOMBRE_DE_SESION
+.\.conda\python.exe -m fly_rl inspect runs/demo/SESSION_NAME
+.\.conda\python.exe -m fly_rl replay runs/demo/SESSION_NAME
 ```
 
-Repetir un vuelo en una semilla conocida produce datos nuevos de comprobación, pero no nuevos mapas independientes. Inspeccionar o reproducir registros no requiere optimizar una política.
+Repeating a flight on a known seed produces new verification data, but not new independent maps. Inspecting or replaying records does not require optimizing a policy.
 
-### 18.3. Fuentes para localizar cada componente
+### 18.3. Sources for each component
 
-| Componente | Fuente |
+| Component | Source |
 | --- | --- |
-| Selección neuronal, conteos, normalización y checksums | [data.py](../fly_rl/connectome/data.py) |
-| Grafo recurrente, proyección y actividad | [brain.py](../fly_rl/connectome/brain.py) |
-| Reconstrucciones y lector estable | [innovation.py](../fly_rl/connectome/innovation.py) |
-| Orden y geometría sensorial | [sensors.py](../fly_rl/simulation/sensors.py) |
-| Dinámica coordinada | [flight.py](../fly_rl/simulation/flight.py) |
-| Colisión, observación, recompensa y terminación | [world.py](../fly_rl/simulation/world.py) |
-| Perfiles y plazo geométrico | [map_profiles.py](../fly_rl/simulation/map_profiles.py) |
-| Lotes, historia y reset neuronal | [learning.py](../fly_rl/training/learning.py) |
-| Mapa, búsqueda, seguimiento y comandos de v55 | [observed_map.py](../fly_rl/navigation/observed_map.py) |
-| Visor, registro y reinicio de controlador | [viewer.py](../fly_rl/visualization/viewer.py) |
-| Actividad y sensibilidad | [neural_view.py](../fly_rl/visualization/neural_view.py) |
-| Ventana anatómica y captura | [brain_map.py](../fly_rl/visualization/brain_map.py) |
-| Manifest y bloques de telemetría | [recording.py](../fly_rl/recordings/recording.py) |
-| Auditoría de archivos | [archive.py](../fly_rl/recordings/archive.py) |
-| Regresiones del planificador | [test_observed_map.py](../tests/navigation/test_observed_map.py) |
+| Neuron selection, counts, normalization, and checksums | [data.py](../fly_rl/connectome/data.py) |
+| Recurrent graph, projection, and activity | [brain.py](../fly_rl/connectome/brain.py) |
+| Reconstructions and stable reader | [innovation.py](../fly_rl/connectome/innovation.py) |
+| Sensor order and geometry | [sensors.py](../fly_rl/simulation/sensors.py) |
+| Coordinated dynamics | [flight.py](../fly_rl/simulation/flight.py) |
+| Collision, observation, reward, and termination | [world.py](../fly_rl/simulation/world.py) |
+| Profiles and geometric deadline | [map_profiles.py](../fly_rl/simulation/map_profiles.py) |
+| Batches, history, and neural reset | [learning.py](../fly_rl/training/learning.py) |
+| V55 map, search, route following, and commands | [observed_map.py](../fly_rl/navigation/observed_map.py) |
+| Viewer, recording, and controller reset | [viewer.py](../fly_rl/visualization/viewer.py) |
+| Activity and sensitivity | [neural_view.py](../fly_rl/visualization/neural_view.py) |
+| Anatomical window and capture | [brain_map.py](../fly_rl/visualization/brain_map.py) |
+| Manifest and telemetry blocks | [recording.py](../fly_rl/recordings/recording.py) |
+| Archive audit | [archive.py](../fly_rl/recordings/archive.py) |
+| Planner regressions | [test_observed_map.py](../tests/navigation/test_observed_map.py) |
 
-### 18.4. Commits y modelos preservados
+### 18.4. Commits and preserved models
 
-`8bccaf4` incorporó lectores/pilotos y corrigió sensibilidad. `972ceb4` integró el planificador y demo. `dedc676` documentó el proceso. Esta ampliación es documental: no modifica código congelado, pesos, resultados o contratos de ejecución.
+`8bccaf4` incorporated readers/pilots and corrected sensitivity. `972ceb4` integrated the planner and demo. `dedc676` documented the process. This expansion is documentation only: it does not modify frozen code, weights, results, or execution contracts.
 
-El [informe de v55](evidence/observed-map-v55-results.md) conserva los SHA-256 antes/después de los seis archivos de aliases anteriores. Se verificaron también checkpoints fuente y experimentales. Los artefactos locales retienen planes, hashes, estados de fallo, fuentes congeladas, geometría de auditoría y trazas. No se reescribió un fallo de script como éxito de navegación.
+The [v55 report](evidence/observed-map-v55-results.md) retains before/after SHA-256 values for the six previous alias files. Source and experimental checkpoints were also verified. Local artifacts retain plans, hashes, failure statuses, frozen sources, audit geometry, and traces. A script failure was not rewritten as navigation success.
 
-## 19. Separación de datos y límites científicos
+## 19. Data separation and scientific limits
 
-Entrenamiento recoge experiencia para ajustar parámetros; optimización de diseño prueba variantes sobre mapas conocidos; desarrollo prospectivo comprueba una versión congelada en mapas nuevos; el test reservado tiene su propio protocolo de acceso. No se mezclan en una tasa única.
+Training collects experience to fit parameters; design optimization tests variants on known maps; prospective development checks a frozen version on new maps; the reserved test has its own access protocol. These are not combined into a single rate.
 
-La geometría verdadera genera habitaciones, comprueba colisión, supervisa durante entrenamiento y audita después. V55 no la recibe. Sí recibe objetivo sintético, tamaño conocido y una lectura construida con la proyección conocida. No consultar cajas ocultas no equivale a carecer de ayudas artificiales.
+True geometry generates rooms, checks collision, provides supervision during training, and supports later auditing. V55 does not receive it. It does receive a synthetic goal, known size, and a readout constructed with the known projection. Not consulting hidden boxes does not mean being free of artificial assistance.
 
-Reutilizar 370000 a 370007 puede adaptar reglas a esos mapas aunque no se entrenen pesos. El 8/8 no elimina ese riesgo. Los 16 nuevos se fijaron antes de la comprobación, sin cambios durante los vuelos; son prospectivos para v55. Sus fallos se inspeccionaron después. Si ahora se usan para ajustar otra versión, hará falta otro conjunto nuevo.
+Reusing 370000–370007 can adapt rules to those maps even without training weights. The 8/8 does not eliminate that risk. The 16 new rooms were fixed before checking, with no changes during flights; they are prospective for v55. Their failures were inspected afterward. If they are now used to tune another version, another new set will be required.
 
-No se demostró ruta óptima, ventaja biológica, transferencia a `maze`, aprendizaje sin supervisión, robustez frente a ruido o diversidad fuera de este generador. Tampoco se aisló mediante ablación cada corrección final. El paso de 3/8 en v54 a 8/8 en v55 combina avance de ruta, dirección del freno, velocidad en margen y control vertical independiente; no se atribuye a un solo parámetro.
+No optimal route, biological advantage, transfer to `maze`, unsupervised learning, robustness to noise, or diversity outside this generator was established. Nor was each final correction isolated through ablation. The change from 3/8 in v54 to 8/8 in v55 combines route advancement, braking direction, margin speed, and independent vertical control; it is not attributed to one parameter.
 
-El gasto acumulado del proyecto no es el historial de un modelo individual. Las 131.072 transiciones nuevas del 5 de octubre son cuatro tandas de 32.768, v15, v17, v32 y v37. V34 reutiliza registros y no añade pasos; v55 no tiene pesos aprendidos. Las transiciones de comprobación y las actualizaciones supervisadas se conservan aparte. No se suman dos veces el entrenamiento v32 y su verificación posterior.
+Cumulative project expenditure is not the history of an individual model. The 131,072 new transitions on October 5 are four batches of 32,768: v15, v17, v32, and v37. V34 reuses records and adds no steps; v55 has no learned weights. Verification transitions and supervised updates remain separate. V32 training and its subsequent verification are not counted twice.
 
-## 20. Criterios cumplidos y trabajo pendiente
+## 20. Completed criteria and remaining work
 
-El alcance funcional de esta entrega es abrir un demo, observar vuelo autónomo que consume actividad del grafo completo y completar recorridos grandes con registros verificables. Se cumple en las comprobaciones documentadas. La política aprendida fiable y el objetivo de al menos 80% en un test final independiente siguen abiertos.
+This delivery's functional scope is to open a demo, observe autonomous flight consuming full-graph activity, and complete large routes with verifiable records. The documented checks meet that scope. A reliable learned policy and the objective of at least 80% on an independent final test remain open.
 
-El trabajo siguiente debe conservar v55 como referencia, diagnosticar los tres timeouts por separado, congelar cualquier corrección antes de nuevos mapas y estudiar si un estudiante puede aprender recorridos completos del planificador. Comparar planificación, percepción aprendida y PPO requiere contratos y presupuestos declarados, varias inicializaciones y evaluación pareada que no seleccione versiones.
+Next work should retain v55 as a reference, diagnose the three timeouts separately, freeze any correction before opening new maps, and study whether a student can learn complete planner routes. Comparing planning, learned perception, and PPO requires declared contracts and budgets, multiple initializations, and paired evaluation that does not select versions.
 
-La memoria de mapa no se presenta como memoria aprendida. Conservar todas las neuronas no demuestra que la anatomía sea necesaria para el algoritmo. La explicación respaldada es que se hizo más utilizable la lectura artificial, se añadió memoria espacial explícita y se corrigió la ejecución de rutas. Hay llegadas reales y tres fallos nuevos que delimitan el alcance. No existe todavía una prueba de que PPO haya aprendido esa solución.
+Map memory is not presented as learned memory. Retaining all neurons does not establish that anatomy is necessary for the algorithm. The supported explanation is that the artificial readout became more usable, explicit spatial memory was added, and route execution was corrected. Actual arrivals and three new failures define the scope. There is still no evidence that PPO has learned this solution.

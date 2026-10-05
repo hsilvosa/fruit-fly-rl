@@ -1,25 +1,25 @@
-# DiagnÃ³stico durante neural-waypoint-v6
+# Diagnosis during neural-waypoint-v6
 
-Este diagnÃ³stico lee datos de optimizaciÃ³n ya recogidos. No aÃ±ade transiciones de vuelo, no modifica checkpoints y no usa el test reservado. La ejecuciÃ³n conserva su configuraciÃ³n original mientras estÃ¡ activa.
+This diagnosis reads optimization data already collected. It adds no flight transitions, modifies no checkpoints, and uses no reserved test. The run retains its original configuration while active.
 
-## Control y percepciÃ³n
+## Control and perception
 
-Las tres primeras tandas autÃ³nomas, de 16.384 transiciones cada una, registraron cero Ã©xitos y 28, 39 y 30 colisiones. Estos resultados de entrenamiento no son validaciÃ³n independiente.
+The first three autonomous batches, each with 16,384 transitions, recorded zero successes and 28, 39, and 30 collisions. These training results are not independent validation.
 
-En las dos primeras tandas, el error cuadrÃ¡tico medio de las acciones ejecutadas frente a las correcciones de la guÃ­a fue aproximadamente 0,78 y 0,74 en giro, y 0,52 y 0,53 en control vertical. La actividad neuronal era finita y variaba entre observaciones. Esto descarta una entrada constante en esas muestras, pero no demuestra que la representaciÃ³n permita resolver todos los estados.
+In the first two batches, mean squared error of executed actions against guide corrections was approximately 0.78 and 0.74 for turning, and 0.52 and 0.53 for vertical control. Neural activity was finite and varied between observations. This rules out constant input in those samples, but does not establish that the representation can resolve every state.
 
-Un anÃ¡lisis posterior del checkpoint student-round-1 sobre muestras de esos mismos datos produjo errores de giro de 0,39 y 0,34. Son datos usados para ajustar el modelo: esos errores tampoco prueban generalizaciÃ³n ni Ã©xito de navegaciÃ³n.
+A later analysis of checkpoint student-round-1 on samples from those same data produced turning errors of 0.39 and 0.34. These data were used to fit the model: those errors likewise establish neither generalization nor navigation success.
 
-## Cobertura visual
+## Visual coverage
 
-En muestras de 1.024 filas por tanda, el punto local usado como etiqueta por la guÃ­a quedÃ³ fuera del abanico visual denso en el 38,6% y el 30,5% de las observaciones autÃ³nomas. El abanico apunta hacia el objetivo final y cubre 150 grados horizontales; los sensores generales cubren otras direcciones con menor resoluciÃ³n y menor alcance. Estar fuera del abanico no implica que todos los sensores sean ciegos ni identifica por sÃ­ solo la causa de cada colisiÃ³n.
+In samples of 1,024 rows per batch, the local point used as the guide label fell outside the dense visual fan in 38.6% and 30.5% of autonomous observations. The fan points toward the final goal and covers 150 horizontal degrees; general sensors cover other directions at lower resolution and range. Being outside the fan does not imply that every sensor is blind or independently identify the cause of each collision.
 
-Se comprobÃ³ ademÃ¡s la direcciÃ³n del centro de la siguiente abertura geomÃ©trica sobre 128 observaciones existentes. En el 10,9% de ellas, el rayo mÃ¡s cercano del abanico estaba a mÃ¡s de diez grados. Un prototipo panorÃ¡mico de 1.800 rayos redujo esa proporciÃ³n al 0,8% con elevaciones de menos 60 a mÃ¡s 60 grados. Es una medida estÃ¡tica de cobertura, no una comparaciÃ³n de vuelos ni de aprendizaje.
+The direction of the next geometric opening center was also checked on 128 existing observations. In 10.9%, the nearest fan ray was more than ten degrees away. A 1,800-ray panoramic prototype reduced that proportion to 0.8% with elevations from minus 60 to plus 60 degrees. This is a static coverage measurement, not a flight or learning comparison.
 
-## Prototipo aislado
+## Isolated prototype
 
-El prototipo final amplÃ­a la elevaciÃ³n a menos 84 y mÃ¡s 84 grados, conserva 72 columnas alrededor de todo el cuerpo y usa 25 filas. Los rayos miden la primera superficie visible hasta 24 unidades; no reciben centros de aberturas, rutas ni Ã­ndices de progreso.
+The final prototype extends elevation to minus 84 and plus 84 degrees, retains 72 columns around the entire body, and uses 25 rows. Rays measure the first visible surface up to 24 units; they receive no opening centers, routes, or progress indices.
 
-La integraciÃ³n estÃ¡tica con el MaleCNS completo conservÃ³ 167.184 neuronas y 25.583.622 conexiones. Produjo 3.869 grupos de actividad por observaciÃ³n, con valores finitos y resets independientes. Se comprobaron las dimensiones del controlador, gradientes finitos y la continuidad circular del procesamiento horizontal. No se ejecutaron pasos fÃ­sicos ni actualizaciones del optimizador en estas comprobaciones.
+Static integration with the full MaleCNS retained 167,184 neurons and 25,583,622 connections. It produced 3,869 activity groups per observation, with finite values and independent resets. Controller dimensions, finite gradients, and circular continuity of horizontal processing were checked. No physical steps or optimizer updates were run in these checks.
 
-El prototipo vive en private y todavÃ­a no es la interfaz de producciÃ³n ni un checkpoint entrenado. La siguiente correcciÃ³n debe comprobar vuelos completos desde posiciones y orientaciones originales, conservar episodios entre ajustes y mantener una validaciÃ³n separada del test reservado. Ampliar los sensores no basta para declarar resuelto el problema.
+The prototype lives in private and is not yet the production interface or a trained checkpoint. The next correction must check complete flights from original positions and orientations, preserve episodes between fits, and retain validation separate from the reserved test. Expanding sensors is insufficient to declare the problem resolved.
