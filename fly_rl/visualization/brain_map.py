@@ -1,4 +1,5 @@
 """An independent window with real soma positions and activity-linked colors."""
+from fly_rl.atomic_io import replace_file
 import numpy as np
 from fly_rl.connectome.anatomy import load_anatomy,display_positions
 
@@ -160,7 +161,7 @@ class BrainMap:
         if not payload: return False
         path.parent.mkdir(parents=True,exist_ok=True)
         temporary=path.with_name(path.stem+'.tmp'+path.suffix)
-        temporary.write_bytes(payload);temporary.replace(path)
+        temporary.write_bytes(payload);replace_file(temporary, path)
         return True
     def contains(self,point):
         x,y=(np.asarray(point)+1)*.5;l,r,b,t=self.bounds

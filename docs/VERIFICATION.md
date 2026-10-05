@@ -76,3 +76,23 @@ V6 runner scope/reset tests, waypoint transfer and sampler tests: six passed. Ex
 ## Panoramic interface verification
 
 The v6 sensory interface preserves original room geometry, physical dynamics and the first 269 sensor channels. Neutral extra input preserves the original fixed sparse recurrence. Focused checks cover panoramic ray geometry, body-heading rotation, target-independent scan, circular convolution and controller dimensions, legacy fan/readout compatibility, independent episode resets and before/after-action trace phases. The full graph collector ran 128 verification transitions and three supervised updates with finite losses and compatible reload. A forty-step offscreen original-large demo invoked no training and its screenshot was inspected. These checks do not establish navigation performance. The preceding waypoint run completed its separate development measurement at zero of eight goals.
+
+## Readout, braking, and file-write verification, October 5
+
+The full regression suite passed 358 tests after distance/dual reader contracts, generic projection history, actual-motion braking, and bounded Windows file-replacement fixes. Two earlier full runs exposed a transient rename failure in different status writers; these failures were retained and the shared retry helper was then applied to atomic file publication paths. A separate seven-test inspector check verifies the dual-feature derivative against a numerical neural-drive perturbation, without presenting it as a causal biological effect.
+
+Distance-stable and dual-readout full-connectome optimizer checks each used exactly 128 physical transitions and one PPO update. Losses were finite, parameters changed, and deterministic reload actions matched exactly. Temporary weights and metadata were deleted; original aliases and sources remained intact. The first distance-reader attempt failed before any physical steps because its history extractor assumed 256 features. The repair retains existing legacy architecture and transfer while using the declared observation width for projection readers. These smokes verify the pipeline, not successful learned navigation.
+
+Separate planner-1.2-exp.4 and planner-1.2 rendered checks each recorded 200 steps, finite activity, zero collisions, working reset/new-room/camera handlers, and a separate anatomical window. Their archives passed source and transition integrity checks. Neither completed an episode, so the screenshots are implementation checks rather than performance evidence. planner-1.2 archives retain the declared 5,669-feature width and separate readout dependency.
+
+Final October 5 regression after the dual-output sensitivity check and English plot-label updates: **359 tests passed**, with the expected PyTorch sparse-CSR beta warning. Earlier 358-test evidence remains the preceding snapshot rather than being retroactively relabeled.
+
+
+A subsequent offline planner-execution reporter passed eight focused tests: sampled reversal/search-cap counts, second-half boundaries, missing-field coverage, nonfinite geometry, nonincreasing steps, invalid diagnostics, and absent room selection. It was then run on two already-saved timeout traces, adding zero physical transitions and zero optimizer updates. The preceding full suite remains the 359-test snapshot; no larger full-suite count is claimed.
+
+
+## Numbered controller naming migration
+
+The complete regression suite passed **389 tests**, with the expected PyTorch sparse-CSR beta warning. The focused naming/protocol/archive subset passed 54 tests. Checks cover all eleven selectable planner mappings, equivalent old and new arguments, unchanged controller/readout identity, independent resets, source provenance, and rejection of unknown names. Existing measurements are not relabeled as new navigation experiments.
+
+A separate one-second offscreen full-connectome launch with `--controller-version 1.2` recorded 20 finite physical steps, zero collisions, and no completed episode or optimization. The numbered label was visually inspected. The archive passed its twenty-transition and naming/source integrity checks. It is rendering and compatibility evidence, not navigation performance. An offline report using `--baseline-version 1.1 --candidate-version 1.2` reproduced the existing 15/16 paired tie without running another evaluation. All sixteen protected original files retained their hashes.

@@ -1,11 +1,34 @@
 # Results
 
-The observed-map planner v55 now navigates `large` rooms: 8/8 arrivals on reused optimization maps and 13/16 in prospective development, without collisions and with three development timeouts. This is explicit planning from full-connectome activity, not a learned movement policy. Student v34 retains its 3/8 result; reliable learning remains unresolved. The [results and limits](evidence/observed-map-v55-results.md) distinguish the two. Original aliases and the reserved test remain intact.
+The latest experimental planner-1.2 preserves contextual mapping while using separate clean neural ranges for braking. In fresh frozen paired development, both planner-1.1 and planner-1.2 reached 15/16 goals with zero collisions and one timeout (Wilson 95% interval 71.7–98.9%). planner-1.2 also resolved retained false stopping and contacts, but did not improve the paired success rate. Learned large-room navigation and the independent-final target remain unresolved. [Complete latest evidence](evidence/planner-dual-v65-results.md) and [per-room outcomes](evidence/planner-v65-development-results.md).
+
+The earlier frozen [paired planner development](evidence/planner-v60-development-results.md) reached **14/16 goals for planner-1.1**, versus **12/16 for planner-1.0**, with no collisions. planner-1.1 had two timeouts and a Wilson 95% interval of 64.0–96.5%. Twelve rooms succeeded in both arms, two only in planner-1.1, and two in neither. The task, initial layouts, graph, and source contracts matched. This separate prospective development check consumed 111,360 physical verification transitions and no training or reserved test. It does not establish the independent-final 80% target or biological benefit.
+
+The [planner-1.1 follow-up](evidence/planner-followup-v57-v60.md) reached all three already inspected planner-1.0 failures without collisions or timeouts. Isolated speed and clearance checks exposed a regression when combined unconditionally; planner-1.1 applies broader clearance recovery only after search saturation. This tuned 3/3 does not revise planner-1.0's historical 13/16 prospective development score. No training or reserved-test evaluation was performed, and planner-1.0 remains the demo default. The earlier [planner-1.0.1-exp.1 correction](evidence/planner-timeouts-v56-results.md) retains its separate 1/3 result.
+
+The observed-map planner-1.0 now navigates `large` rooms: 8/8 arrivals on reused optimization maps and 13/16 in prospective development, without collisions and with three development timeouts. This is explicit planning from full-connectome activity, not a learned movement policy. Student v34 retains its 3/8 result; reliable learning remains unresolved. The [results and limits](evidence/observed-map-v55-results.md) distinguish the two. Original aliases and the reserved test remain intact.
 
 The [resolution history](NAVIGATION_RESOLUTION.md) explains the original problem, learning and perception attempts that were insufficient, corrected blockages, and the final solution. The operational improvement combines observed-map memory, correct reference advancement, and braking in the requested three-dimensional direction; it does not turn the planner's 13/16 into a PPO result.
 
 
 Navigation performance is separate from implementation correctness and anatomical fidelity. The full fixed MaleCNS v1.0 graph was retained in these experiments; its synapses were not optimized. Outcomes do not establish a biological advantage.
+
+## Latest planner experiments
+
+All rows below use the original `large` profile: 48 x 48 x 16, 112 obstacles and five narrow passages. Every row is a separate frozen paired **development** cohort, not a reserved final test. Compare arms within a row; differences across cohorts do not establish a ranking. [Revision mapping](CONTROLLER_VERSIONS.md) connects these names to the unchanged historical records.
+
+| Cohort | Baseline | Candidate | Baseline goals / collisions / timeouts | Candidate goals / collisions / timeouts | Conclusion |
+| --- | --- | --- | --- | --- | --- |
+| 9500000–9500015 | planner-1.0 | planner-1.1 | 12 / 0 / 4 | 14 / 0 / 2 | Two added goals, no lost baseline goals. [Evidence](evidence/planner-v60-development-results.md) |
+| 10000000–10000015 | planner-1.1 | planner-1.2-exp.1 | 15 / 1 / 0 | 13 / 2 / 1 | Clean ranges alone regressed. [Evidence](evidence/planner-v61-development-results.md) |
+| 11000000–11000015 | planner-1.1 | planner-1.2-exp.4 | 15 / 0 / 1 | 12 / 0 / 4 | Momentum braking corrected known contacts but regressed fresh completion. [Evidence](evidence/planner-v64-development-results.md) |
+| 13000000–13000015 | planner-1.1 | planner-1.2 | 15 / 0 / 1 | 15 / 0 / 1 | Identical paired outcomes; no success-rate advantage measured. [Evidence](evidence/planner-v65-development-results.md) |
+
+The latest paired cohort used 55,984 physical transitions per arm, 111,968 total, with zero training transitions or optimizer updates. Both 15/16 estimates have Wilson 95% intervals of 71.7–98.9%. These inspected rooms are now design cases for a successor, not untouched evidence for future tuning.
+
+Separately, planner-1.2 reached four retained collision/control goals and corrected the stationary room 9500001 at step 1,782. Retained detour 9500014 and the shared fresh failure 13000013 still timed out. Offline trace inspection found continuing movement, no sampled second-half momentum guards, small pose error, repeated reference-direction reversals, and mostly unknown or ambiguous final route points. These clues support further route/frontier-execution diagnosis, not a proven causal solution. [Detailed report and failure figures](evidence/planner-dual-v65-results.md#offline-inspection-of-the-remaining-timeouts).
+
+Distance and dual readouts each passed an earlier separate 128-transition, one-PPO-update verification smoke with finite losses and compatible reload; those temporary weights were deleted. That verifies the learning pipeline, not learned navigation. The naming migration adds no training, flights, or new performance measurement and leaves the default and original aliases unchanged. Learned large-room navigation and the independent-final objective remain unresolved.
 
 ## Latest original-large corrections
 
@@ -131,7 +154,7 @@ Warm-start sensor validation selected v2 seed 42, the fresh sensor comparison se
 
 The [geometry failure diagnosis](GEOMETRY_DIAGNOSIS.md) records a bounded check of retained validation rooms: the unchanged earlier controller reproduced 3/4 original-room goals but reached 0/4 on new large rooms. The legacy world matched its frozen implementation over 480 transitions. The review identifies progression without passage mastery and selection of initialization after all trained target candidates failed. It does not establish a single causal explanation or reuse the final pools.
 
-The independent large-room 80% target remains unmet. Single-opening navigation has since been measured at 61/64 on its final pool, while planner v55 reached 13/16 in prospective large-room development. These are different tasks and controller families. Reliable learned large-room navigation remains unresolved; [the roadmap](../ROADMAP.md) orders planner diagnosis, fresh assessment, student learning, and progressive difficulty. Any later tuned final assessment requires a new independent pool and declared budget.
+The independent large-room 80% target remains unmet. Single-opening navigation has since been measured at 61/64 on its final pool, while planner-1.0 reached 13/16 in prospective large-room development. These are different tasks and controller families. Reliable learned large-room navigation remains unresolved; [the roadmap](../ROADMAP.md) orders planner diagnosis, fresh assessment, student learning, and progressive difficulty. Any later tuned final assessment requires a new independent pool and declared budget.
 
 [Mathematics](MATHEMATICS.md) specifies formulas and optimizer settings. [Geometry protocol](GEOMETRY_CURRICULUM.md) defines maps, clearance certificates and reset mixtures. [Verification](VERIFICATION.md) describes implementation and publication checks without treating passing tests as learning evidence.
 
@@ -182,3 +205,15 @@ The [panoramic v7 protocol](evidence/panoramic-neural-v7-plan.md) sets a limit o
 ## Completion of the panoramic corrections
 
 Batches v8, v9, v10, and v12 finished and added 505,856 transitions. The latest autonomous assessment on reused development maps reached 0/8 goals, with one collision and seven timeouts. Completed substantive training totals 1,472,512 transitions. Navigation in the original large maps remained unresolved; the reserved test was not used and original aliases were not promoted. The [two-hour window report](evidence/two-hour-navigation-results.md), its checkpoints, and experimental launcher `launch-panorama.ps1` are retained. Work paused at the requested deadline, October 4 at 22:40:52 Madrid time.
+
+## Distance-stable readout comparison, October 5
+
+A known false-stop correction succeeded on its stationary design room but regressed the subsequent frozen paired development suite. On sixteen new rooms, planner-1.1 reached 15/16 goals with one collision and no timeouts (Wilson 95% interval 71.7–98.9%); planner-1.2-exp.1 reached 13/16 with two collisions and one timeout (57.0–93.4%). Thirteen rooms succeeded in both, two only in planner-1.1, and one in neither. This supports retaining planner-1.1 over planner-1.2-exp.1 on this measured suite, rather than promoting the range correction as a generally improved controller.
+
+The two arms used 105,488 physical transitions in total, zero training transitions, and no reserved-test access. Original aliases, frozen sources, graph-data/projection contracts, and initial layout hashes passed. Different readouts were explicitly declared. The suite is now inspected development evidence and cannot be reused as fresh selection evidence for a tuned successor. See [per-room outcomes](evidence/planner-v61-development-results.md) and [known-case diagnosis](evidence/planner-readout-v61-v63.md).
+
+## planner-1.2-exp.4 regression and planner-1.2 separation
+
+The momentum-only planner-1.2-exp.4 candidate corrected two known collisions but regressed its subsequent development suite: 12/16 goals versus planner-1.1’s 15/16, with no collisions in either arm. planner-1.2 then retained the original contextual mapping features and appended clean neural ranges for braking. On the next frozen suite, both arms reached the same fifteen goals and timed out in room 13000013. There were no lost or added paired successes. The 111,968 physical transitions added no optimization or reserved-test access.
+
+Separate known planner-1.2 checks reached four collision/control goals and resolved the previously stationary room at 1,782; the retained detour room still timed out. Two new-reader optimizer smokes each used 128 transitions and one update, with temporary weights deleted. Those pipeline checks do not train or establish a navigation policy. Original aliases and frozen references were preserved. [Contracts, hashes, limitations, and viewing](evidence/planner-dual-v65-results.md).

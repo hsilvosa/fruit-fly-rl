@@ -1,4 +1,5 @@
 """SB3 integration: the frozen brain advances only during environment transitions."""
+from fly_rl.atomic_io import replace_file
 from pathlib import Path
 import json
 import numpy as np
@@ -24,8 +25,10 @@ class BrainEnv(VecEnv):
         self.worlds=[FlightWorld(seed+i,mode,layout_seeds,dynamics,sensor_version,self.map_profile) for i in range(batch)]
         from fly_rl.connectome.readout import InputGroupedBrain,GROUP_READOUT,LEGACY_READOUT
         from fly_rl.connectome.innovation import WhitenedActivityBrain,WHITENED_READOUT,ContrastActivityBrain,CONTRAST_READOUT,MotionStableActivityBrain,MOTION_STABLE_READOUT
-        if readout_version not in (GROUP_READOUT,LEGACY_READOUT,WHITENED_READOUT,CONTRAST_READOUT,MOTION_STABLE_READOUT):raise ValueError('Unknown brain readout')
-        brain_type=MotionStableActivityBrain if readout_version==MOTION_STABLE_READOUT else ContrastActivityBrain if readout_version==CONTRAST_READOUT else WhitenedActivityBrain if readout_version==WHITENED_READOUT else InputGroupedBrain if readout_version==GROUP_READOUT else Brain
+        from fly_rl.connectome.distance_readout import DistanceStableActivityBrain,DISTANCE_STABLE_READOUT
+        from fly_rl.connectome.dual_readout import DualActivityBrain,DUAL_READOUT
+        if readout_version not in (GROUP_READOUT,LEGACY_READOUT,WHITENED_READOUT,CONTRAST_READOUT,MOTION_STABLE_READOUT,DISTANCE_STABLE_READOUT,DUAL_READOUT):raise ValueError('Unknown brain readout')
+        brain_type=DualActivityBrain if readout_version==DUAL_READOUT else DistanceStableActivityBrain if readout_version==DISTANCE_STABLE_READOUT else MotionStableActivityBrain if readout_version==MOTION_STABLE_READOUT else ContrastActivityBrain if readout_version==CONTRAST_READOUT else WhitenedActivityBrain if readout_version==WHITENED_READOUT else InputGroupedBrain if readout_version==GROUP_READOUT else Brain
         self.brain=brain or brain_type(data,batch,device,sensor_version=sensor_version)
         if sensor_backend=="torch-cuda" and self.brain.device.type!="cuda":raise ValueError("CUDA sensor backend requires a CUDA brain")
         self.feature_count=getattr(self.brain,'feature_count',FEATURES)
@@ -200,7 +203,7 @@ class TimedCheckpoint(BaseCallback):
         if hasattr(self.training_env,'reward_shaping'):status['reward_shaping']=self.training_env.reward_shaping.snapshot()
         if hasattr(self.training_env,'curriculum'):status['curriculum']=self.training_env.curriculum.snapshot()
         path=self.directory/'progress.json';path.parent.mkdir(parents=True,exist_ok=True)
-        tmp=path.with_suffix('.tmp');tmp.write_text(json.dumps(status,indent=2));tmp.replace(path)
+        tmp=path.with_suffix('.tmp');tmp.write_text(json.dumps(status,indent=2));replace_file(tmp, path)
 
 class TrainingSession:
     """Keep live episodes and PPO state between chunks; not a disk resume format."""
@@ -329,7 +332,9 @@ def checkpoint_sensor_version(path):
     expected=f':reservoir-v2-{value}-256-seed42-leak0.5-scale0.9'
     readout=metadata.get('readout_version','random-pool-256-v1')
     from fly_rl.connectome.innovation import WHITENED_READOUT,CONTRAST_READOUT,MOTION_STABLE_READOUT
-    if readout in ('input-associated-neural-mean-v1',WHITENED_READOUT,CONTRAST_READOUT,MOTION_STABLE_READOUT):expected+=':'+readout
+    from fly_rl.connectome.distance_readout import DISTANCE_STABLE_READOUT
+    from fly_rl.connectome.dual_readout import DUAL_READOUT
+    if readout in ('input-associated-neural-mean-v1',WHITENED_READOUT,CONTRAST_READOUT,MOTION_STABLE_READOUT,DISTANCE_STABLE_READOUT,DUAL_READOUT):expected+=':'+readout
     elif readout!='random-pool-256-v1':raise ValueError('Unknown checkpoint readout')
     if not metadata.get('fingerprint','').endswith(expected):
         raise ValueError('Checkpoint sensor metadata/fingerprint mismatch')

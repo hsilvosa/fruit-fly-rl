@@ -8,6 +8,7 @@ import sys
 import subprocess
 from importlib.metadata import version,PackageNotFoundError
 import numpy as np
+from fly_rl.atomic_io import replace_file
 from fly_rl.simulation.sensors import SENSOR_NAMES,SENSOR_VERSION,DIRECTIONS,RAY_RANGE,sensor_names,SENSOR_V5,SENSOR_V6,FAN_SPEC,PANORAMA_SPEC
 
 def serializable(value):
@@ -51,7 +52,7 @@ class FlightRecorder:
     def _save_manifest(self):
         tmp=self.path/'manifest.tmp'
         tmp.write_text(json.dumps(self.manifest,indent=2,default=serializable),encoding='utf8')
-        tmp.replace(self.path/'manifest.json')
+        replace_file(tmp, self.path/'manifest.json')
 
     def event(self,kind,step,payload):
         self.events.write(json.dumps({'event':kind,'step':step,'payload':payload},default=serializable)+'\n')
@@ -80,7 +81,7 @@ class FlightRecorder:
         name=f'transitions-{number:06d}.npz';tmp=self.path/(name+'.tmp')
         arrays={key:np.stack([row[key] for row in self.buffer]) for key in self.buffer[0]}
         with tmp.open('wb') as f: np.savez_compressed(f,**arrays)
-        target=self.path/name;tmp.replace(target)
+        target=self.path/name;replace_file(tmp, target)
         digest=hashlib.sha256(target.read_bytes()).hexdigest()
         self.manifest['chunks'].append({'file':name,'rows':len(self.buffer),'sha256':digest})
         self.manifest['transition_count']+=len(self.buffer);self.buffer.clear();self._save_manifest()
@@ -88,7 +89,7 @@ class FlightRecorder:
     def brain_snapshot(self,step,state):
         name=f'brain-{step:09d}.npz';tmp=self.path/(name+'.tmp')
         with tmp.open('wb') as f: np.savez_compressed(f,activity=np.asarray(state,dtype=np.float32),step=step)
-        tmp.replace(self.path/name);self.manifest['brain_snapshots'].append(name)
+        replace_file(tmp, self.path/name);self.manifest['brain_snapshots'].append(name)
 
     def close(self,summary=None):
         if self.closed: return

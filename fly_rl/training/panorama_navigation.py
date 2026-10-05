@@ -1,4 +1,5 @@
 """Bounded neural waypoint supervision with continuous autonomous student flights."""
+from fly_rl.atomic_io import replace_file
 import hashlib,json,os,traceback
 from pathlib import Path
 from datetime import datetime,timezone
@@ -58,7 +59,7 @@ def run(plan_path,device='cuda'):
         'plan_sha256':sha(plan_path),'added_transitions':0,'test_evaluated':False,'guided_results':[],'fit_results':[],
         'reused_optimization_rows':plan['reuse_rows'],'source_checkpoint':plan['source']}
     def save():
-        temporary=status_path.with_suffix('.tmp');temporary.write_text(json.dumps(status,indent=2));temporary.replace(status_path)
+        temporary=status_path.with_suffix('.tmp');temporary.write_text(json.dumps(status,indent=2));replace_file(temporary, status_path)
         record={key:status.get(key) for key in ('status','stage','added_transitions','fragment','student_round','stage_updates','stage_loss')}
         record['observed_utc']=datetime.now(timezone.utc).isoformat()
         with (folder/'progress.jsonl').open('a',encoding='utf8') as stream:stream.write(json.dumps(record)+'\n')

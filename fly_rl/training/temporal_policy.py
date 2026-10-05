@@ -6,11 +6,12 @@ from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
 class ResidualBrainHistory(BaseFeaturesExtractor):
     def __init__(self,observation_space,hidden_size=64):
-        if len(observation_space.shape)!=2 or observation_space.shape[1]!=256:
-            raise ValueError('Temporal readout requires a history of 256 connectome features')
-        super().__init__(observation_space,features_dim=256)
-        self.memory=nn.GRU(256,hidden_size,batch_first=True)
-        self.residual=nn.Linear(hidden_size,256)
+        if len(observation_space.shape)!=2 or any(size <= 0 for size in observation_space.shape):
+            raise ValueError('Temporal readout requires a positive history and feature width')
+        width=observation_space.shape[1]
+        super().__init__(observation_space,features_dim=width)
+        self.memory=nn.GRU(width,hidden_size,batch_first=True)
+        self.residual=nn.Linear(hidden_size,width)
         nn.init.zeros_(self.residual.weight);nn.init.zeros_(self.residual.bias)
 
     def forward(self,observations):

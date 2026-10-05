@@ -63,3 +63,7 @@ git -c core.autocrlf=false archive --format=zip --output=dist/fly-rl-public.zip 
 ```
 
 The export contains committed source and public documentation, without `.git`, private notes, data or models. `.gitattributes` still controls declared line endings even with automatic conversion disabled; the audit compares canonical Git content and accepts that declared conversion while rejecting content changes. Review the publication diff too: automated patterns cannot detect every confidential string. Preserve private backups locally and share the audited public branch or source-only export rather than assuming the development history has been sanitized.
+
+## Temporary Windows file locks
+
+Status files, recording manifests/chunks, preview images, and atomic checkpoint publication use bounded file-replacement retries for Windows errors 5, 32, and 33. The waits total at most 170 ms; persistent errors still propagate. The previous destination remains valid until a rename succeeds, and a failed rename retains its temporary file for diagnosis. This addresses observed transient status-write failures without suppressing genuine permissions or disk errors. Atomic visibility does not guarantee durability after power loss, and this does not permit simultaneous writers to the same status file.

@@ -1,4 +1,5 @@
 """Promote the strongest measured obstacle-room checkpoint, preserving sources."""
+from fly_rl.atomic_io import replace_file
 import json
 import shutil
 from pathlib import Path
@@ -16,7 +17,7 @@ def select_policy(iteration_path,output):
     metadata['selection']={'iteration':str(source.resolve()),'checkpoint':str(checkpoint),
         'development_evaluation':best['obstacles'],'criterion':'success, then collisions, then remaining distance'}
     output.parent.mkdir(parents=True,exist_ok=True)
-    tmp=output.with_suffix('.zip.tmp');shutil.copy2(checkpoint,tmp);tmp.replace(output)
-    tmp=output.with_suffix('.json.tmp');tmp.write_text(json.dumps(metadata,indent=2));tmp.replace(output.with_suffix('.json'))
+    tmp=output.with_suffix('.zip.tmp');shutil.copy2(checkpoint,tmp);replace_file(tmp, output)
+    tmp=output.with_suffix('.json.tmp');tmp.write_text(json.dumps(metadata,indent=2));replace_file(tmp, output.with_suffix('.json'))
     return {'output':str(output),'source':str(checkpoint),'success_rate':best['obstacles']['success_rate'],
             'selection_uses_development_rooms':True,'training_invoked':False}

@@ -1,4 +1,5 @@
 """A bounded curriculum with saved results and success-based stage promotion."""
+from fly_rl.atomic_io import replace_file
 from pathlib import Path
 import json
 from datetime import datetime,timezone
@@ -15,7 +16,7 @@ def iterate(data,device,output,baseline,steps=65536,rounds=3,batch=16,dynamics='
         'reward_version':REWARD_VERSION,'steps_per_round':steps,'rounds':rounds,'batch':batch,
         'software':software_info(),'baseline_checkpoint':baseline,'results':[],'dynamics':dynamics}
     def save():
-        tmp=folder/'iteration.tmp';tmp.write_text(json.dumps(state,indent=2));tmp.replace(folder/'iteration.json')
+        tmp=folder/'iteration.tmp';tmp.write_text(json.dumps(state,indent=2));replace_file(tmp, folder/'iteration.json')
     save()
     try:
         state['baseline']=evaluate(data,device,baseline,mode='obstacles',dynamics=dynamics,allow_transfer=dynamics!='legacy');save()

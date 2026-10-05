@@ -1,4 +1,5 @@
 """Predeclared equal-budget v2/v3 warm-start comparison; final selection is validation only."""
+from fly_rl.atomic_io import replace_file
 import json,shutil,time
 from pathlib import Path
 from datetime import datetime,timezone
@@ -50,7 +51,7 @@ def run_comparison(data,device,suite,baseline,output):
     started=time.time();original=sha256(baseline);original_meta=sha256(Path(baseline).with_suffix('.json'))
     state={'status':'running','budget_added_transitions':262144,'steps_per_seed':65536,'rounds_per_seed':2,'batch':8,'training_seeds':[42,73],'suite':str(Path(suite).resolve()),'baseline':str(Path(baseline).resolve()),'baseline_sha256':original,'baseline_metadata_sha256':original_meta,'results':[],'test_evaluated':False}
     def save():
-        tmp=base/'status.tmp';tmp.write_text(json.dumps(state,indent=2));tmp.replace(base/'status.json')
+        tmp=base/'status.tmp';tmp.write_text(json.dumps(state,indent=2));replace_file(tmp, base/'status.json')
     save()
     try:
         snapshots=[];repository=Path(__file__).resolve().parents[2]

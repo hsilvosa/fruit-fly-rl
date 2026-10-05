@@ -1,4 +1,5 @@
 """Bounded full-connectome spatial imitation experiment on original large rooms."""
+from fly_rl.atomic_io import replace_file
 import json
 import hashlib
 import os
@@ -33,7 +34,7 @@ def run(plan_path,device='cuda'):
     status={'status':'running','stage':'initializing','pid':os.getpid(),'started_utc':datetime.now(timezone.utc).isoformat(),
         'plan_sha256':sha(plan_path),'added_transitions':0,'test_evaluated':False,'guided_results':[],'fit_results':[]}
     def save():
-        temp=path.with_suffix('.tmp');temp.write_text(json.dumps(status,indent=2));temp.replace(path)
+        temp=path.with_suffix('.tmp');temp.write_text(json.dumps(status,indent=2));replace_file(temp, path)
     save();env=None;model=None
     torch.set_num_threads(4)
     # Batch-eight convolutions can select TF32 kernels. Keep the declared

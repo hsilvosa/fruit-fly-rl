@@ -1,4 +1,5 @@
 """Evaluate a frozen selection once; test outcomes never select or change weights."""
+from fly_rl.atomic_io import replace_file
 import hashlib
 import json
 import math
@@ -56,9 +57,9 @@ def final_test(data,device,experiment):
     with report.open('x',encoding='utf8') as handle: json.dump(result,handle,indent=2)
     result['test_access_record']=claim_test(suite,str(folder.resolve()))
     state.update(final_test_evaluated=True,test_report=str(report.resolve()))
-    tmp=folder/'experiment.tmp';tmp.write_text(json.dumps(state,indent=2));tmp.replace(folder/'experiment.json')
+    tmp=folder/'experiment.tmp';tmp.write_text(json.dumps(state,indent=2));replace_file(tmp, folder/'experiment.json')
     def save():
-        tmp=report.with_suffix('.tmp');tmp.write_text(json.dumps(result,indent=2));tmp.replace(report)
+        tmp=report.with_suffix('.tmp');tmp.write_text(json.dumps(result,indent=2));replace_file(tmp, report)
     try:
         kwargs={'map_profile':suite['map_profile']} if suite.get('map_profile') else {}
         result['selected']=evaluate(data,device,checkpoint,len(seeds),frozen['mode'],seeds[0],dynamics=frozen['dynamics'],route_metrics=frozen.get('evaluation_configuration',{}).get('route_metrics',False),**kwargs)

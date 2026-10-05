@@ -6,16 +6,17 @@ The project separates the biological dataset from the engineered controller, the
 
 ```text
 World state
-  -> 269 engineered sensor values
+  -> versioned engineered sensors (3,869 values for v6)
   -> seeded sensory projection
   -> full fixed recurrent connectome activity
-  -> 256 pooled features
-  -> PPO actor: four movement commands
+  -> versioned neural readout and optional history
+  -> PPO actor or explicit observed-map planner
+  -> four movement commands
   -> fixed-timestep flight and collision update
   -> next world state
 ```
 
-The policy receives pooled brain features. It does not receive a second direct sensor input, the obstacle list, or the generator's reference route. The sensory interface does include target direction and distance even when the target is occluded. This is a navigation task with engineered sensing, not image-based target recognition.
+Controllers receive features derived from brain activity. Earlier policies use 256 pooled features; later projection readers use 3,869 coordinates. Experimental planner-1.2 uses a 5,669-coordinate dual readout: the original contextual features for mapping and separate clean neural ranges for braking. Both derive from the same full-neuron states, with one recurrent graph update. There is no second direct world-sensor input, hidden obstacle list, or generator reference route at inference. The sensory interface does include target direction and distance even when the target is occluded. This is navigation with engineered sensing, not image-based target recognition or biological vision.
 
 ## Code ownership
 
@@ -27,6 +28,8 @@ The policy receives pooled brain features. It does not receive a second direct s
 | [Visualization](../fly_rl/visualization/__init__.py) | `viewer.py` runs live viewing and archived playback; `camera.py` controls the camera; `brain_map.py`, `neural_view.py`, and `neural_trace.py` support anatomical inspection; `playback.py` defines speed scaling; plotting modules render existing results |
 | [Recordings](../fly_rl/recordings/__init__.py) | `recording.py` writes telemetry; `archive.py` inspects, compares, and recovers archives; `replay.py` presents saved states; `shutdown.py` finalizes records independently of optional screenshots |
 | [CLI](../fly_rl/cli.py) | Parses explicit commands and dispatches to these areas; importing the package does not download data or begin learning |
+| [Navigation versions](../fly_rl/navigation/registry.py) | Keeps planner-1.0 frozen, selects experimental planners explicitly, validates feature width, resets episode memory, and archives actual controller/readout dependencies |
+| [Atomic file replacement](../fly_rl/atomic_io.py) | Retries short Windows rename conflicts without discarding the previous valid status/manifest; persistent errors remain failures |
 
 Tests follow the same five areas under `tests/`. The root Windows scripts are intentionally kept near the README so a person can find and launch the demo easily. Large local artifacts keep their existing `data/`, `runs/`, and `reports/` paths.
 

@@ -1,4 +1,5 @@
 """Bounded matched fresh v3 risk/control experiment; explicit invocation only."""
+from fly_rl.atomic_io import replace_file
 import json,shutil,time
 from pathlib import Path
 from fly_rl.training.risk_shaping import VERSION,PROTOCOL
@@ -61,7 +62,7 @@ def run_risk_comparison(configuration,output,device='cuda'):
     state={'status':'running','kind':plan['kind'],'configuration_sha256':sha256(configuration),'budget_added_transitions':total,'initializations':[],'results':[],'test_evaluated':False,'alias_hashes_before':aliases}
     shutil.copy2(configuration,base/'configuration.json')
     def save():
-        tmp=base/'status.tmp';tmp.write_text(json.dumps(state,indent=2),encoding='utf-8');tmp.replace(base/'status.json')
+        tmp=base/'status.tmp';tmp.write_text(json.dumps(state,indent=2),encoding='utf-8');replace_file(tmp, base/'status.json')
     save()
     try:
         root=Path(__file__).resolve().parents[2]

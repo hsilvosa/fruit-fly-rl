@@ -1,0 +1,81 @@
+"""Explicit experimental planner selection and complete source provenance."""
+import hashlib
+import importlib
+import inspect
+import json
+import numpy as np
+from pathlib import Path
+from fly_rl.navigation.observed_map import ObservedMapPolicy
+from fly_rl.navigation.versions import revision
+
+CONTROLLERS = dict(v55=('observed_map', 'ObservedMapController'),
+    v56=('goal_margin', 'GoalMarginController'), v57=('cruise', 'CruiseController'),
+    v58=('free_margin', 'FreeMarginController'), v59=('speed_margin', 'SpeedMarginController'),
+    v60=('adaptive_margin', 'AdaptiveMarginController'),
+    v61=('distance_stable', 'DistanceStableController'),
+    v62=('persistent_route', 'PersistentRouteController'),
+    v63=('ray_consistent', 'RayConsistentController'),
+    v64=('momentum_guard', 'MomentumGuardController'),
+    v65=('dual_safety', 'DualSafetyController'))
+
+
+class VersionedPlannerPolicy(ObservedMapPolicy):
+    """Viewer adapter; selecting a version does not train or promote it."""
+
+    def __init__(self, version):
+        self.revision = revision(version)
+        self.version = self.revision.legacy
+        self.reset()
+
+    def reset(self):
+        module, name = CONTROLLERS[self.version]
+        self.controller = getattr(importlib.import_module(f'fly_rl.navigation.{module}'), name)()
+
+    def predict(self, features, deterministic=True):
+        features = np.asarray(features)
+        module = inspect.getmodule(type(self.controller))
+        width = getattr(module, 'FEATURE_COUNT', 3869)
+        if features.shape != (1, 9, width) or not np.isfinite(features).all():
+            raise ValueError('Planner requires its declared finite nine-frame neural observation')
+        return self.controller.action(features[0])[None], None
+
+    def source_files(self):
+        paths = {Path(__file__), Path(inspect.getfile(revision))}
+        for kind in type(self.controller).__mro__:
+            if kind is not object:
+                paths.add(Path(inspect.getfile(kind)))
+        module=inspect.getmodule(type(self.controller))
+        if hasattr(module, 'READOUT_MODULE'):
+            paths.add(Path(inspect.getfile(importlib.import_module(module.READOUT_MODULE))))
+        if hasattr(module, 'READOUT_CLASS'):
+            for kind in module.READOUT_CLASS.__mro__:
+                if kind is not object:
+                    paths.add(Path(inspect.getfile(kind)))
+        return sorted(paths)
+
+    @property
+    def specification(self):
+        primary = Path(inspect.getfile(type(self.controller)))
+        module = inspect.getmodule(type(self.controller))
+        spec = dict(super().specification)
+        root = Path(__file__).resolve().parents[2]
+        spec.update(version=module.CONTROLLER_VERSION,
+            controller_version=self.revision.name,
+            controller_label=self.revision.label,
+            legacy_alias=self.revision.legacy,
+            readout=getattr(module, 'READOUT_VERSION', spec['readout']),
+            experimental=self.version != 'v55',
+            feature_count=getattr(module, 'FEATURE_COUNT', 3869),
+            source_sha256=hashlib.sha256(primary.read_bytes()).hexdigest(),
+            sources=[dict(module='.'.join(p.resolve().relative_to(root).with_suffix('').parts),
+                archive_file=f'controller-{p.stem}.py',
+                sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in self.source_files()])
+        return spec
+
+    def archive_sources(self, directory):
+        directory = Path(directory)
+        primary = Path(inspect.getfile(type(self.controller)))
+        (directory/'controller.py').write_bytes(primary.read_bytes())
+        for path in self.source_files():
+            (directory/f'controller-{path.stem}.py').write_bytes(path.read_bytes())
+        (directory/'controller.json').write_text(json.dumps(self.specification, indent=2)+'\n', encoding='utf-8')

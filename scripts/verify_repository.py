@@ -24,6 +24,13 @@ def verify(root):
             if not (path.parent / target).exists():
                 errors.append(f"Broken link in {path.relative_to(root)}: {target}")
     modules = [
+        "fly_rl.navigation.observed_map", "fly_rl.navigation.goal_margin",
+        "fly_rl.navigation.cruise", "fly_rl.navigation.free_margin",
+        "fly_rl.navigation.speed_margin", "fly_rl.navigation.adaptive_margin",
+        "fly_rl.navigation.registry", "fly_rl.navigation.versions", "fly_rl.navigation.distance_stable",
+        "fly_rl.navigation.persistent_route", "fly_rl.navigation.ray_consistent",
+        "fly_rl.connectome.distance_readout", "fly_rl.connectome.dual_readout",
+        "fly_rl.navigation.momentum_guard", "fly_rl.navigation.dual_safety", "fly_rl.atomic_io",
         "fly_rl.training.mastery_curriculum",
         "fly_rl.simulation.map_profiles", "fly_rl.training.geometry_curriculum", "fly_rl.training.geometry_comparison", "fly_rl.visualization.map_report",
         "fly_rl.training.collision_diagnostics", "fly_rl.training.risk_shaping", "fly_rl.training.risk_comparison", "fly_rl.cli", "fly_rl.connectome.brain", "fly_rl.connectome.data",
@@ -44,7 +51,7 @@ def verify(root):
         elif not Path(spec.origin).resolve().is_relative_to(root.resolve()):
             errors.append(f"Module resolves outside this repository: {module}")
     commands = [
-        "map-report", "prepare-geometry-comparison", "run-geometry-comparison",
+        "controller-versions", "map-report", "prepare-geometry-comparison", "run-geometry-comparison",
         "diagnose-collisions", "prepare-risk-comparison", "run-risk-comparison", "prepare-data", "benchmark", "demo", "inspect", "recover", "compare", "replay",
         "train", "smoke-test", "evaluate", "select-policy", "plot-training", "prepare-suite",
         "train-dense", "plot-dense", "final-test", "iterate", "diagnose-validation", "select-experiment", "plot-generalization", "migrate-sensors", "compare-sensors", "prepare-approach-comparison", "run-approach-comparison", "trace-validation", "plot-validation-trace", "plot-validation-failures", "prepare-fresh-comparison", "run-fresh-comparison",

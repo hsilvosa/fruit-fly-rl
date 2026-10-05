@@ -57,6 +57,15 @@ class NeuralInspector:
         brain=self.brain
         gradient=gradient.to(brain.device)
         if hasattr(brain,'projection_transpose'):
+            from fly_rl.connectome.dual_readout import DUAL_READOUT, DUAL_FEATURES
+            if getattr(brain,'readout_version',None)==DUAL_READOUT:
+                if gradient.shape!=(DUAL_FEATURES,):
+                    raise ValueError('Dual readout sensitivity requires its declared feature width')
+                # Both outputs depend on the same reconstructed current drive.
+                # Sum their contributions; previous-state context remains fixed.
+                combined=gradient[:brain.sensor_count].clone()
+                combined[269:2069]+=gradient[brain.sensor_count:]
+                gradient=combined
             # y = N^-1 G^-1 B^T drive. Previous-state recurrence and centering
             # are fixed here. This derivative is with respect to reconstructed
             # preactivation drive, not the plotted leaky neuron state.
