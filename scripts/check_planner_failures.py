@@ -1,5 +1,6 @@
 """Bounded diagnostics on reused v55 failures; no optimization or reserved tests."""
 from fly_rl.atomic_io import replace_file
+from fly_rl.navigation.versions import legacy_version, public_version, PUBLIC_VERSIONS
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -36,6 +37,7 @@ def validate_request(seeds, cap, kind):
 
 def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
           deadline=None, frozen_sources=None, protocol_sha256=None):
+    version = legacy_version(version)
     seeds = [8500011, 8500012, 8500013] if seeds is None else seeds
     validate_request(seeds, cap, kind)
     batch = len(seeds)
@@ -88,7 +90,7 @@ def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
     for name in ['observed_map', 'goal_margin', 'cruise', 'free_margin', 'speed_margin', 'adaptive_margin', 'distance_stable', 'persistent_route', 'ray_consistent', 'momentum_guard']:
         path = f'fly_rl/navigation/{name}.py'
         protected[path] = digest(path)
-    state = dict(status='running', controller=version, kind=kind,
+    state = dict(status='running', controller=version, controller_version=public_version(version), kind=kind,
                  seeds=seeds, physical_cap=cap, protocol_sha256=protocol_sha256, readout_version=readout_version,
                  physical_transitions=0, added_training_transitions=0, optimizer_updates=0,
                  reserved_test_evaluated=False, started_utc=datetime.now(timezone.utc).isoformat(),
@@ -201,7 +203,7 @@ def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--controller', choices=['v55', 'v56', 'v57', 'v58', 'v59', 'v60', 'v61', 'v62', 'v63', 'v64', 'v65'], default='v55')
+    parser.add_argument('--controller', type=public_version, choices=PUBLIC_VERSIONS, default='planner-1.0', help='Public controller revision; historical aliases remain accepted')
     parser.add_argument('--cap', type=int, default=12000)
     args = parser.parse_args()
     if not 3 <= args.cap <= 12000 or args.cap % 3:

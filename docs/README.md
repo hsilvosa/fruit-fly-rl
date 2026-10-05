@@ -12,6 +12,7 @@ Start with the root [README](../README.md) for installation, demos and controls.
 | Cameras, neural colors and activity traces | [Flight and neuron inspection](FLIGHT_AND_NEURONS.md) |
 | Progressive map generation and geometry curriculum | [Progressive maps](GEOMETRY_CURRICULUM.md) |
 | Independent suites, selection and route measurements | [Generalization and routes](GENERALIZATION_AND_ROUTES.md) |
+| Controller revision numbers, descriptions, and historical aliases | [Controller versions](CONTROLLER_VERSIONS.md) |
 | Sensor contracts and explicit transfer | [Sensors v3](SENSORS_V3.md) |
 | Bounded diagnostic trajectories | [Validation traces](VALIDATION_TRACES.md) |
 | Fresh initialization comparison | [Fresh comparison](VALIDATION_AND_FRESH_COMPARISON.md) |
@@ -20,13 +21,13 @@ Start with the root [README](../README.md) for installation, demos and controls.
 | Aggregate outcomes and uncertainty | [Results](RESULTS.md) |
 | Complete large-room diagnosis, attempts, and operational solution | [Navigation resolution](NAVIGATION_RESOLUTION.md) |
 | Bounded timeout diagnosis and experimental goal-margin correction | [Planner timeout results](evidence/planner-timeouts-v56-results.md) |
-| Speed/clearance isolation, regression, and conditional v60 recovery | [Planner follow-up](evidence/planner-followup-v57-v60.md) |
+| Speed/clearance isolation, regression, and conditional planner-1.1 recovery | [Planner follow-up](evidence/planner-followup-v57-v60.md) |
 | Frozen paired measurement, budgets, and experimental viewing | [Planner development protocol](PLANNER_DEVELOPMENT.md) |
-| V55/v60 matched room outcomes and uncertainty | [Paired development results](evidence/planner-v60-development-results.md) |
-| False stopping, stable distances, and unsuccessful route/mapping attempts | [V61–v63 readout diagnosis](evidence/planner-readout-v61-v63.md) |
+| planner-1.0/planner-1.1 matched room outcomes and uncertainty | [Paired development results](evidence/planner-v60-development-results.md) |
+| False stopping, stable distances, and unsuccessful route/mapping attempts | [planner-1.2-exp.1–planner-1.2-exp.3 readout diagnosis](evidence/planner-readout-v61-v63.md) |
 | Actual-motion braking, known collision fixes, and fresh regression | [Momentum correction](evidence/planner-momentum-v64-results.md) |
-| V60/v61 declared readout comparison and regression | [Readout development results](evidence/planner-v61-development-results.md) |
-| Dual mapping/safety interface, retained corrections, and matched fresh result | [V65 results](evidence/planner-dual-v65-results.md) |
+| planner-1.1/planner-1.2-exp.1 declared readout comparison and regression | [Readout development results](evidence/planner-v61-development-results.md) |
+| Dual mapping/safety interface, retained corrections, and matched fresh result | [planner-1.2 results](evidence/planner-dual-v65-results.md) |
 | Twelve procedural map configurations and figure provenance | [Map gallery](images/README.md) |
 | Source release checks, licensing, and history separation | [Public release](PUBLICATION.md) |
 | Verified causes, limitations and correction order after zero success | [Geometry failure diagnosis](GEOMETRY_DIAGNOSIS.md) |

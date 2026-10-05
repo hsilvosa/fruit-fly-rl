@@ -6,6 +6,7 @@ import json
 import numpy as np
 from pathlib import Path
 from fly_rl.navigation.observed_map import ObservedMapPolicy
+from fly_rl.navigation.versions import revision
 
 CONTROLLERS = dict(v55=('observed_map', 'ObservedMapController'),
     v56=('goal_margin', 'GoalMarginController'), v57=('cruise', 'CruiseController'),
@@ -22,9 +23,8 @@ class VersionedPlannerPolicy(ObservedMapPolicy):
     """Viewer adapter; selecting a version does not train or promote it."""
 
     def __init__(self, version):
-        if version not in CONTROLLERS:
-            raise ValueError('Unknown planner version')
-        self.version = version
+        self.revision = revision(version)
+        self.version = self.revision.legacy
         self.reset()
 
     def reset(self):
@@ -40,7 +40,7 @@ class VersionedPlannerPolicy(ObservedMapPolicy):
         return self.controller.action(features[0])[None], None
 
     def source_files(self):
-        paths = {Path(__file__)}
+        paths = {Path(__file__), Path(inspect.getfile(revision))}
         for kind in type(self.controller).__mro__:
             if kind is not object:
                 paths.add(Path(inspect.getfile(kind)))
@@ -60,6 +60,9 @@ class VersionedPlannerPolicy(ObservedMapPolicy):
         spec = dict(super().specification)
         root = Path(__file__).resolve().parents[2]
         spec.update(version=module.CONTROLLER_VERSION,
+            controller_version=self.revision.name,
+            controller_label=self.revision.label,
+            legacy_alias=self.revision.legacy,
             readout=getattr(module, 'READOUT_VERSION', spec['readout']),
             experimental=self.version != 'v55',
             feature_count=getattr(module, 'FEATURE_COUNT', 3869),

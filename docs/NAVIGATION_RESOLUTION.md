@@ -1,5 +1,7 @@
 # Resolving navigation in large maps
 
+This history retains original experiment IDs and measured source snapshots. Current public names are listed in [Controller versions](CONTROLLER_VERSIONS.md): planner-1.0 is historical v55, planner-1.1 is v60, and planner-1.2 is v65. The naming migration does not change their recorded results. [Latest paired experiments](RESULTS.md#latest-planner-experiments).
+
 Date: October 5, 2026. Operational version: `observed-neuronal-map-v55`, integrated in commit `972ceb4`.
 
 This document reconstructs the problem, the hypotheses tested, the failed attempts, and the available solution. The working result is an explicit planner that consumes activity from the full connectome. The learned policy still does not reproduce that performance. The [v55 report](evidence/observed-map-v55-results.md) contains the figures, prospective protocol, and preservation hashes; the [attempt protocol](evidence/portal-feedback-protocol.md) records the experimental development.

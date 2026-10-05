@@ -38,10 +38,12 @@ def main():
     parser=argparse.ArgumentParser(description='A full-connectome virtual fly. Learning runs only through explicit training commands.')
     parser.add_argument('--data',default='data');parser.add_argument('--device',choices=['cuda','cpu'],default='cuda')
     sub=parser.add_subparsers(dest='command',required=True)
+    sub.add_parser('controller-versions',help='List controller revision numbers, descriptions, and historical aliases; no simulation')
     sub.add_parser('prepare-data')
     bench=sub.add_parser('benchmark');bench.add_argument('--seconds',type=float,default=20)
     demo=sub.add_parser('demo');demo.add_argument('--controller',choices=['policy','observed-map'],default='policy');demo.add_argument('--checkpoint');demo.add_argument('--seed',type=int,default=10)
-    demo.add_argument('--planner-version',choices=['v55','v56','v57','v58','v59','v60','v61','v62','v63','v64','v65'],default='v55',help='Explicit planner version; versions after v55 are experimental')
+    from fly_rl.navigation.versions import DEFAULT_REVISION,PUBLIC_VERSIONS,public_version
+    demo.add_argument('--controller-version','--planner-version',dest='planner_version',type=public_version,choices=PUBLIC_VERSIONS,default=DEFAULT_REVISION,help='Controller revision; accepts the number or planner- prefix. Legacy aliases v55, v56, v57, v58, v59, v60, v61, v62, v63, v64, v65 remain valid. Only planner-1.0 is the default baseline; later revisions remain experimental.')
     demo.add_argument('--offscreen',action='store_true');demo.add_argument('--seconds',type=float,default=0)
     demo.add_argument('--screenshot',default='reports/demo.png')
     demo.add_argument('--speed',type=float,default=1.,help='Live simulation time multiplier; Shift boosts it 10x')
@@ -153,7 +155,11 @@ def main():
     runfresh=sub.add_parser('run-fresh-comparison');runfresh.add_argument('configuration');runfresh.add_argument('--output',required=True)
     args=parser.parse_args()
     torch.set_num_threads(4)
-    if args.command=='demo' and args.controller!='observed-map' and args.planner_version!='v55':
+    if args.command=='controller-versions':
+        from fly_rl.navigation.versions import catalog
+        print(json.dumps(catalog(),indent=2))
+        return
+    if args.command=='demo' and args.controller!='observed-map' and args.planner_version!=DEFAULT_REVISION:
         parser.error('Planner versions require --controller observed-map')
     if args.command=='demo' and args.controller=='observed-map':
         from fly_rl.simulation.sensors import SENSOR_V6

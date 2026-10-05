@@ -84,7 +84,7 @@ The [resumed protocol](evidence/portal-feedback-protocol.md) separates activity 
 
 ## Observed-map navigation
 
-The [v55 planner](evidence/observed-map-v55-results.md) is an explicit alternative to the guided student. It receives reconstructed connectome channels, builds its own map, and searches for routes; it does not consult true geometry. It reached 13/16 in prospective development, without collisions and with three timeouts. It has no learned movement weights. These flights are not added to student arrivals or PPO training. Future supervision from the planner must count new transitions and separate its performance from the student's; that batch has not started.
+The [planner-1.0 planner](evidence/observed-map-v55-results.md) is an explicit alternative to the guided student. It receives reconstructed connectome channels, builds its own map, and searches for routes; it does not consult true geometry. It reached 13/16 in prospective development, without collisions and with three timeouts. It has no learned movement weights. These flights are not added to student arrivals or PPO training. Future supervision from the planner must count new transitions and separate its performance from the student's; that batch has not started.
 
 
 The [resolution report](NAVIGATION_RESOLUTION.md) explains why supervision and finite losses were insufficient, how readout and control failures were isolated, and what the planner currently resolves. Its result does not replace validation of a learned student.

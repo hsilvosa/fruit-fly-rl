@@ -3,6 +3,7 @@ import argparse
 from datetime import datetime, timezone
 import json
 from pathlib import Path
+from fly_rl.navigation.versions import legacy_version, public_version
 
 try:
     from scripts.check_planner_failures import check, digest, save, validate_request
@@ -32,6 +33,7 @@ FEATURE_WIDTHS = {arm: (5669 if arm == 'v65' else 3869) for arm in READOUTS}
 
 
 def prepare(output, seed_start, deadline, baseline='v55', candidate='v60'):
+    baseline, candidate = legacy_version(baseline), legacy_version(candidate)
     output = Path(output)
     if output.exists():
         raise FileExistsError('Use a new protocol filename')
@@ -61,6 +63,7 @@ def prepare(output, seed_start, deadline, baseline='v55', candidate='v60'):
     protocol = dict(schema=3, kind='frozen-prospective-development',
         created_utc=datetime.now(timezone.utc).isoformat(), deadline_utc=stop.isoformat(),
         arms=[baseline, candidate], readouts={arm: READOUTS[arm] for arm in [baseline, candidate]},
+        controller_versions={arm: public_version(arm) for arm in [baseline, candidate]},
         feature_widths={arm: FEATURE_WIDTHS[arm] for arm in [baseline, candidate]}, sensor_count=3869,
         seeds=seeds, physical_cap_per_arm=81920,
         training_transitions=0, reserved_test_access=False,
@@ -78,6 +81,8 @@ def validate(protocol):
         raise ValueError('Unsupported protocol')
     if tuple(protocol.get('arms', [])) not in ALLOWED_PAIRS or protocol.get('task') != 'large':
         raise ValueError('Unsupported frozen arms or task')
+    if 'controller_versions' in protocol and protocol['controller_versions'] != {arm: public_version(arm) for arm in protocol['arms']}:
+        raise ValueError('Public controller names do not match the frozen aliases')
     if protocol['schema'] == 1 and protocol['arms'] != ['v55', 'v60']:
         raise ValueError('Readout comparisons require schema two')
     if protocol['schema'] >= 2 and protocol.get('readouts') != {arm: READOUTS[arm] for arm in protocol['arms']}:
@@ -107,6 +112,7 @@ def validate(protocol):
 
 
 def run(protocol_path, arm, output):
+    arm = legacy_version(arm)
     protocol_path = Path(protocol_path)
     protocol = json.loads(protocol_path.read_text(encoding='utf-8'))
     stop = validate(protocol)
@@ -124,11 +130,11 @@ def main():
     prep.add_argument('--output', type=Path, required=True)
     prep.add_argument('--seed-start', type=int, default=9500000)
     prep.add_argument('--deadline', required=True)
-    prep.add_argument('--baseline-version', choices=['v55', 'v60', 'v61'], default='v55')
-    prep.add_argument('--candidate-version', choices=['v60', 'v61', 'v63', 'v64', 'v65'], default='v60')
+    prep.add_argument('--baseline-version', type=public_version, choices=['planner-1.0', 'planner-1.1', 'planner-1.2-exp.1'], default='planner-1.0', help='Controller revision number or historical alias')
+    prep.add_argument('--candidate-version', type=public_version, choices=['planner-1.1', 'planner-1.2-exp.1', 'planner-1.2-exp.3', 'planner-1.2-exp.4', 'planner-1.2'], default='planner-1.1', help='Controller revision number or historical alias')
     execute = commands.add_parser('run')
     execute.add_argument('protocol', type=Path)
-    execute.add_argument('--arm', choices=['v55', 'v60', 'v61', 'v63', 'v64', 'v65'], required=True)
+    execute.add_argument('--arm', type=public_version, choices=['planner-1.0', 'planner-1.1', 'planner-1.2-exp.1', 'planner-1.2-exp.3', 'planner-1.2-exp.4', 'planner-1.2'], required=True, help='Controller revision number or historical alias')
     execute.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     if args.command == 'prepare':

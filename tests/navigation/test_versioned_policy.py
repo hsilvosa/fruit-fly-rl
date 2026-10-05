@@ -25,7 +25,7 @@ def test_archive_contains_every_dependency_with_matching_hash(tmp_path):
     policy = VersionedPlannerPolicy('v60')
     policy.archive_sources(tmp_path)
     spec = json.loads((tmp_path/'controller.json').read_text())
-    expected = {'adaptive_margin', 'cruise', 'goal_margin', 'observed_map', 'registry'}
+    expected = {'adaptive_margin', 'cruise', 'goal_margin', 'observed_map', 'registry', 'versions'}
     assert {entry['module'].split('.')[-1] for entry in spec['sources']} == expected
     for entry in spec['sources']:
         assert hashlib.sha256((tmp_path/entry['archive_file']).read_bytes()).hexdigest() == entry['sha256']

@@ -3,6 +3,7 @@ import argparse
 import json
 import math
 from pathlib import Path
+from fly_rl.navigation.versions import legacy_version, public_version
 
 
 def wilson(successes, total):
@@ -17,6 +18,7 @@ def wilson(successes, total):
 
 
 def compare(baseline, candidate, expected_pair=('v55', 'v60')):
+    expected_pair = tuple(legacy_version(arm) for arm in expected_pair)
     allowed = [('v55', 'v60'), ('v60', 'v61'), ('v60', 'v63'), ('v60', 'v64'), ('v61', 'v64'), ('v60', 'v65')]
     if tuple(expected_pair) not in allowed:
         raise ValueError('Unsupported declared comparison')
@@ -83,6 +85,7 @@ def compare(baseline, candidate, expected_pair=('v55', 'v60')):
         rooms.append(dict(seed=seed, **{expected_pair[0]: b[seed], expected_pair[1]: c[seed]}))
     return dict(kind='frozen-prospective-development', protocol_sha256=baseline['protocol_sha256'],
         arms=arms, paired=paired, rooms=rooms, controllers=list(expected_pair),
+        controller_versions={arm: public_version(arm) for arm in expected_pair},
         readouts={arm: readouts[arm] for arm in expected_pair},
         feature_widths={arm: widths[arm] for arm in expected_pair},
         training_invoked=False, evaluation_invoked=False,
@@ -92,17 +95,18 @@ def compare(baseline, candidate, expected_pair=('v55', 'v60')):
 
 def render(result):
     names = result.get('controllers', ['v55', 'v60'])
-    lines = [f"# Frozen {'/'.join(names)} paired development results", '',
+    labels = {name: f'{public_version(name)} ({name})' for name in names}
+    lines = [f"# Frozen {' / '.join(labels[name] for name in names)} paired development results", '',
         'These are fresh development measurements of frozen controllers, not a reserved final test.', '',
         '| Arm | Goals / 16 | Collisions | Timeouts | Wilson 95% interval |',
         '| --- | ---: | ---: | ---: | --- |']
     for name, arm in result['arms'].items():
         low, high = arm['wilson_95']
-        lines.append(f"| {name} | {arm['goals']} | {arm['collisions']} | {arm['timeouts']} | {100*low:.1f}–{100*high:.1f}% |")
+        lines.append(f"| {labels[name]} | {arm['goals']} | {arm['collisions']} | {arm['timeouts']} | {100*low:.1f}–{100*high:.1f}% |")
     p = result['paired']
     lines += ['', f"Paired outcomes: {p['both_success']} both succeed, {p['baseline_only']} baseline only, "
         f"{p['candidate_only']} candidate only, {p['neither_success']} neither succeeds.", '',
-        f'| Room | {names[0]} outcome / steps / flown distance | {names[1]} outcome / steps / flown distance |',
+        f'| Room | {labels[names[0]]} outcome / steps / flown distance | {labels[names[1]]} outcome / steps / flown distance |',
         '| --- | --- | --- |']
     for row in result['rooms']:
         cells = []
@@ -124,8 +128,8 @@ if __name__ == '__main__':
     parser.add_argument('baseline', type=Path)
     parser.add_argument('candidate', type=Path)
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--baseline-version', choices=['v55', 'v60', 'v61'], default='v55')
-    parser.add_argument('--candidate-version', choices=['v60', 'v61', 'v63', 'v64', 'v65'], default='v60')
+    parser.add_argument('--baseline-version', type=public_version, choices=['planner-1.0', 'planner-1.1', 'planner-1.2-exp.1'], default='planner-1.0', help='Controller revision number or historical alias')
+    parser.add_argument('--candidate-version', type=public_version, choices=['planner-1.1', 'planner-1.2-exp.1', 'planner-1.2-exp.3', 'planner-1.2-exp.4', 'planner-1.2'], default='planner-1.1', help='Controller revision number or historical alias')
     args = parser.parse_args()
     result = compare(json.loads(args.baseline.read_text()), json.loads(args.candidate.read_text()),
                      (args.baseline_version, args.candidate_version))

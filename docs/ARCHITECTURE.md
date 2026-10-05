@@ -16,7 +16,7 @@ World state
   -> next world state
 ```
 
-Controllers receive features derived from brain activity. Earlier policies use 256 pooled features; later projection readers use 3,869 coordinates. Experimental v65 uses a 5,669-coordinate dual readout: the original contextual features for mapping and separate clean neural ranges for braking. Both derive from the same full-neuron states, with one recurrent graph update. There is no second direct world-sensor input, hidden obstacle list, or generator reference route at inference. The sensory interface does include target direction and distance even when the target is occluded. This is navigation with engineered sensing, not image-based target recognition or biological vision.
+Controllers receive features derived from brain activity. Earlier policies use 256 pooled features; later projection readers use 3,869 coordinates. Experimental planner-1.2 uses a 5,669-coordinate dual readout: the original contextual features for mapping and separate clean neural ranges for braking. Both derive from the same full-neuron states, with one recurrent graph update. There is no second direct world-sensor input, hidden obstacle list, or generator reference route at inference. The sensory interface does include target direction and distance even when the target is occluded. This is navigation with engineered sensing, not image-based target recognition or biological vision.
 
 ## Code ownership
 
@@ -28,7 +28,7 @@ Controllers receive features derived from brain activity. Earlier policies use 2
 | [Visualization](../fly_rl/visualization/__init__.py) | `viewer.py` runs live viewing and archived playback; `camera.py` controls the camera; `brain_map.py`, `neural_view.py`, and `neural_trace.py` support anatomical inspection; `playback.py` defines speed scaling; plotting modules render existing results |
 | [Recordings](../fly_rl/recordings/__init__.py) | `recording.py` writes telemetry; `archive.py` inspects, compares, and recovers archives; `replay.py` presents saved states; `shutdown.py` finalizes records independently of optional screenshots |
 | [CLI](../fly_rl/cli.py) | Parses explicit commands and dispatches to these areas; importing the package does not download data or begin learning |
-| [Navigation versions](../fly_rl/navigation/registry.py) | Keeps v55 frozen, selects experimental planners explicitly, validates feature width, resets episode memory, and archives actual controller/readout dependencies |
+| [Navigation versions](../fly_rl/navigation/registry.py) | Keeps planner-1.0 frozen, selects experimental planners explicitly, validates feature width, resets episode memory, and archives actual controller/readout dependencies |
 | [Atomic file replacement](../fly_rl/atomic_io.py) | Retries short Windows rename conflicts without discarding the previous valid status/manifest; persistent errors remain failures |
 
 Tests follow the same five areas under `tests/`. The root Windows scripts are intentionally kept near the README so a person can find and launch the demo easily. Large local artifacts keep their existing `data/`, `runs/`, and `reports/` paths.

@@ -1,20 +1,20 @@
 # Frozen planner development comparison
 
-This protocol compares frozen v55 and v60 on the same sixteen new `large` rooms. It follows the correction of three previously inspected timeouts. Those tuned cases remain design evidence; this prospective check is a separate development measurement, not a reserved final test.
+This protocol compares frozen planner-1.0 and planner-1.1 on the same sixteen new `large` rooms. It follows the correction of three previously inspected timeouts. Those tuned cases remain design evidence; this prospective check is a separate development measurement, not a reserved final test.
 
 ## Predeclared contract
 
 The October 5 comparison uses seeds 9500000 through 9500015, fixed before either arm executes. Preparation checks for overlap against retained suite manifests, plan files, and diagnostic statuses. It records those inventory hashes, source hashes, and original alias hashes in the ignored local protocol. This is a check of the retained records, not proof about unavailable experiments.
 
-Both arms use sixteen parallel instances, full-connectome activity, the original `large` geometry, coordinated dynamics, sensors v6, eight history frames at stride eight, and the stable motion readout. V55 and v60 remain unchanged throughout. V60 is the conditional-recovery candidate described in the [follow-up report](evidence/planner-followup-v57-v60.md).
+Both arms use sixteen parallel instances, full-connectome activity, the original `large` geometry, coordinated dynamics, sensors v6, eight history frames at stride eight, and the stable motion readout. planner-1.0 and planner-1.1 remain unchanged throughout. planner-1.1 is the conditional-recovery candidate described in the [follow-up report](evidence/planner-followup-v57-v60.md).
 
 Each arm has a hard cap of **81,920 physical environment transitions**, for a maximum of 163,840 across both. Vector slots that have finished still step while other slots complete; those physical transitions are counted, but no additional episodes from those slots are scored. No optimization, training collection, checkpoint changes, or final-test access is part of this protocol. A timezone-aware wall-clock cutoff ends a run at the requested stop time even if episodes remain incomplete. Incomplete arms cannot produce the completed paired report.
 
 The source contract covers navigation, connectome, simulation, the environment adapter, and verification runners. It is checked before an arm starts and after it finishes. Initial room fingerprints and the prepared brain fingerprint must match across arms. Audit-only true poses, boxes, and terminal states never enter the controller's action inputs.
 
-Schema two also supports the explicitly declared v60/v61 and v60/v63 readout comparisons. Graph-data and projection/specification fingerprints must match, while each arm must report its predeclared readout suffix. Requiring an identical full brain fingerprint would incorrectly reject the intended readout difference; permitting an undeclared difference would hide a changed interface. Both are checked. The offline reporter is included in the frozen source contract.
+Schema two also supports the explicitly declared planner-1.1/planner-1.2-exp.1 and planner-1.1/planner-1.2-exp.3 readout comparisons. Graph-data and projection/specification fingerprints must match, while each arm must report its predeclared readout suffix. Requiring an identical full brain fingerprint would incorrectly reject the intended readout difference; permitting an undeclared difference would hide a changed interface. Both are checked. The offline reporter is included in the frozen source contract.
 
-Schema three additionally declares per-arm feature widths and the unchanged sensor count. V65 emits 5,669 neural coordinates instead of 3,869; both arms still receive the same 3,869 world sensor values through the full recurrent graph. The dual readout cannot be represented with an older schema. The protocol also freezes the atomic-write helper and generic history extractor. Metadata, helper changes, and controller changes belong to distinct recorded source snapshots; earlier completed runs retain their actual launch sources privately.
+Schema three additionally declares per-arm feature widths and the unchanged sensor count. planner-1.2 emits 5,669 neural coordinates instead of 3,869; both arms still receive the same 3,869 world sensor values through the full recurrent graph. The dual readout cannot be represented with an older schema. The protocol also freezes the atomic-write helper and generic history extractor. Metadata, helper changes, and controller changes belong to distinct recorded source snapshots; earlier completed runs retain their actual launch sources privately.
 
 ## Commands
 
@@ -38,7 +38,7 @@ This reporting command performs no environment steps. It refuses incomplete, inc
 
 ## Interpretation
 
-The October 5 comparison completed: v55 reached 12/16 and v60 reached 14/16, with zero collisions. There were twelve successes in both arms, two only in v60, and two in neither; both arms used 55,680 physical transitions. All source, alias, graph, and layout checks passed. See [complete per-room results](evidence/planner-v60-development-results.md). The short experimental viewer check separately passed 800 recorded steps, controls, finite activity, rendering, and archive inspection; it did not complete a navigation episode. The full suite passed 326 tests.
+The October 5 comparison completed: planner-1.0 reached 12/16 and planner-1.1 reached 14/16, with zero collisions. There were twelve successes in both arms, two only in planner-1.1, and two in neither; both arms used 55,680 physical transitions. All source, alias, graph, and layout checks passed. See [complete per-room results](evidence/planner-v60-development-results.md). The short experimental viewer check separately passed 800 recorded steps, controls, finite activity, rendering, and archive inspection; it did not complete a navigation episode. The full suite passed 326 tests.
 
 Report both frozen arms without retuning either on this suite. Show goals, collisions, timeouts, Wilson 95% intervals, and paired outcomes: both succeed, baseline only, candidate only, and neither succeeds. Distinguish total physical transitions from scored episode steps. Flown distance sums every scored physical displacement; it does not establish route optimality. Wall-clock time and peak allocated VRAM describe these checks, not a general hardware benchmark.
 
@@ -46,7 +46,7 @@ Sixteen rooms from one generator leave substantial uncertainty. A development po
 
 ## Experimental viewing and source preservation
 
-The standard observed-map launcher retains v55. Select v60 explicitly to inspect the candidate:
+The standard observed-map launcher retains planner-1.0. Select planner-1.1 explicitly to inspect the candidate:
 
 ```powershell
 .\launch-observed-map.cmd --planner-version v60 --seed 8500012
@@ -56,12 +56,12 @@ The viewer labels experimental versions and opens live inference without trainin
 
 ## Recorded readout comparison
 
-The schema-two v60/v61 comparison used seeds 10000000–10000015 and protocol SHA-256 `10ac830e075e78f5dbcef27bc42867c81a664b552ee89724eb2ddcb1d957ded2`. Both frozen arms completed. V60 reached 15/16 with one collision; v61 reached 13/16 with two collisions and one timeout. No candidate-only successes were recorded. This is a regression on the measured suite, despite the earlier stationary-room correction. [Per-room evidence](evidence/planner-v61-development-results.md). The 105,488 physical transitions are development measurement, not optimizer steps.
+The schema-two planner-1.1/planner-1.2-exp.1 comparison used seeds 10000000–10000015 and protocol SHA-256 `10ac830e075e78f5dbcef27bc42867c81a664b552ee89724eb2ddcb1d957ded2`. Both frozen arms completed. planner-1.1 reached 15/16 with one collision; planner-1.2-exp.1 reached 13/16 with two collisions and one timeout. No candidate-only successes were recorded. This is a regression on the measured suite, despite the earlier stationary-room correction. [Per-room evidence](evidence/planner-v61-development-results.md). The 105,488 physical transitions are development measurement, not optimizer steps.
 
 The corresponding commands specify `--baseline-version v60 --candidate-version v61` during preparation and offline reporting, and use distinct protocol/output paths. The readout difference is declared before either flight. No reserved final pool was opened.
 
 ## Recorded dual-feature comparison
 
-The schema-three v60/v65 comparison used seeds 13000000–13000015 and protocol SHA-256 `1f01a244654a24fa2b79222a704e8447ea45dd2a039266eb5b2fc879b481faa7`. V60 declared 3,869 features; v65 declared 5,669, with unchanged sensor count 3,869. Both reached the same fifteen goals and timed out in room 13000013, with zero collisions. Each used 55,984 physical transitions. Preservation, graph/projection, layout, and declared-width checks passed. [Every room](evidence/planner-v65-development-results.md) and [correction/verification details](evidence/planner-dual-v65-results.md).
+The schema-three planner-1.1/planner-1.2 comparison used seeds 13000000–13000015 and protocol SHA-256 `1f01a244654a24fa2b79222a704e8447ea45dd2a039266eb5b2fc879b481faa7`. planner-1.1 declared 3,869 features; planner-1.2 declared 5,669, with unchanged sensor count 3,869. Both reached the same fifteen goals and timed out in room 13000013, with zero collisions. Each used 55,984 physical transitions. Preservation, graph/projection, layout, and declared-width checks passed. [Every room](evidence/planner-v65-development-results.md) and [correction/verification details](evidence/planner-dual-v65-results.md).
 
-This matched development outcome supports the retained-case corrections without a success-rate advantage on this suite. It is not the independent final assessment. No candidate was retuned from its results; future use of the inspected timeout belongs to design optimization. V55 remains the standard launcher default; v65 requires explicit selection.
+This matched development outcome supports the retained-case corrections without a success-rate advantage on this suite. It is not the independent final assessment. No candidate was retuned from its results; future use of the inspected timeout belongs to design optimization. planner-1.0 remains the standard launcher default; planner-1.2 requires explicit selection.
