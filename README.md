@@ -148,7 +148,7 @@ Each demo retains a unique archive in `runs/demo/`, with metadata, states, actio
 
 ## Next steps
 
-1. **Resolve the remaining planner timeouts.** Experimental v56 corrected an observed-free goal blocked by its safety margin in one of three known failures. Two still time out. Diagnose their route changes and detours from retained traces, preserving frozen v55 as the default. [Bounded correction results](docs/evidence/planner-timeouts-v56-results.md).
+1. **Check the corrected planner beyond known failures.** Experimental v60 reaches all three inspected v55 timeout rooms without collisions, combining higher cruising speed with clearance recovery triggered by a capped search. V55 remains the demo default pending fresh measurement. [Correction attempts and results](docs/evidence/planner-followup-v57-v60.md).
 2. **Measure a corrected planner on fresh rooms.** Declare selection rules and suites, freeze the candidate, and report goals, collisions, timeouts, confidence intervals, route length, flight time, and compute. Inspected failures become development cases.
 3. **Teach a student complete navigation.** Collect planner demonstrations under an explicit budget and include student-state recovery. Separate teacher arrivals from teacher-free student arrivals; preserve simpler-task references.
 4. **Increase difficulty through verified stages.** Separate extra walls, narrow openings, altitude changes, and clutter before combining them. Advance through two-gate, passage, and large tasks only after measured mastery. Check size/sensor contracts before `maze`.

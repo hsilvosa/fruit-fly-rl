@@ -27,11 +27,12 @@ def summarize(source, output):
         debug = [row['controller'] for row in samples]
         expanded = np.array([row['expanded'] for row in debug])
         speed = np.array([row.get('requested_speed', np.nan) for row in debug])
-        delta = np.array([row['target_delta_global'] for row in debug])
+        delta = np.array([row.get('target_delta_global', [np.nan]*3) for row in debug])
         lengths = np.linalg.norm(delta, axis=1)
         unit = delta/np.maximum(lengths[:, None], 1e-8)
         turn = np.degrees(np.arccos(np.clip((unit[:-1]*unit[1:]).sum(1), -1, 1)))
         summary = dict(seed=seed, samples=len(samples),
+            missing_route_reference_samples=int((~np.isfinite(delta).all(axis=1)).sum()),
             sampled_path_length=float(np.linalg.norm(np.diff(positions, axis=0), axis=1).sum()),
             capped_search_samples=int((expanded >= 12000).sum()),
             found_route_samples=sum(row['found'] for row in debug),

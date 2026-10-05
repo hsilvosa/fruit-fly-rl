@@ -1,6 +1,6 @@
 # Results
 
-The latest [v56 timeout correction](evidence/planner-timeouts-v56-results.md) reached one of three already inspected v55 failures; two still timed out, with zero collisions. Its 1/3 diagnostic result does not revise the independent status of v55's historical 13/16 prospective development result. No training or reserved-test evaluation was performed, and v55 remains the demo default.
+The [v60 follow-up](evidence/planner-followup-v57-v60.md) reached all three already inspected v55 failures without collisions or timeouts. Isolated speed and clearance checks exposed a regression when combined unconditionally; v60 applies broader clearance recovery only after search saturation. This tuned 3/3 does not revise v55's historical 13/16 prospective development score. No training or reserved-test evaluation was performed, and v55 remains the demo default. The earlier [v56 correction](evidence/planner-timeouts-v56-results.md) retains its separate 1/3 result.
 
 The observed-map planner v55 now navigates `large` rooms: 8/8 arrivals on reused optimization maps and 13/16 in prospective development, without collisions and with three development timeouts. This is explicit planning from full-connectome activity, not a learned movement policy. Student v34 retains its 3/8 result; reliable learning remains unresolved. The [results and limits](evidence/observed-map-v55-results.md) distinguish the two. Original aliases and the reserved test remain intact.
 

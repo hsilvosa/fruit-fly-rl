@@ -25,7 +25,19 @@ def check(output, version, cap):
     from fly_rl.simulation.sensors import SENSOR_V6
     from fly_rl.connectome.innovation import MOTION_STABLE_READOUT
     from fly_rl.navigation.observed_map import ObservedMapController
-    if version == 'v56':
+    if version == 'v60':
+        from fly_rl.navigation.adaptive_margin import AdaptiveMarginController
+        controller_type = AdaptiveMarginController
+    elif version == 'v59':
+        from fly_rl.navigation.speed_margin import SpeedMarginController
+        controller_type = SpeedMarginController
+    elif version == 'v58':
+        from fly_rl.navigation.free_margin import FreeMarginController
+        controller_type = FreeMarginController
+    elif version == 'v57':
+        from fly_rl.navigation.cruise import CruiseController
+        controller_type = CruiseController
+    elif version == 'v56':
         from fly_rl.navigation.goal_margin import GoalMarginController
         controller_type = GoalMarginController
     else:
@@ -33,15 +45,18 @@ def check(output, version, cap):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=False)
     protected = {str(p): digest(p) for p in Path('runs').glob('*policy.*')}
-    protected['fly_rl/navigation/observed_map.py'] = digest('fly_rl/navigation/observed_map.py')
+    for name in ['observed_map', 'goal_margin', 'cruise', 'free_margin', 'speed_margin']:
+        path = f'fly_rl/navigation/{name}.py'
+        protected[path] = digest(path)
     state = dict(status='running', controller=version, kind='reused-failure-diagnostic',
                  seeds=[8500011, 8500012, 8500013], physical_cap=cap,
                  physical_transitions=0, added_training_transitions=0, optimizer_updates=0,
                  reserved_test_evaluated=False, started_utc=datetime.now(timezone.utc).isoformat(),
                  protected_before=protected, episodes=[])
     import inspect
-    state['source_hashes'] = {str(p): digest(p) for p in
-        [Path(__file__), Path(inspect.getfile(controller_type)), Path('fly_rl/navigation/observed_map.py')]}
+    source_paths = [Path(__file__)] + [Path(inspect.getfile(kind))
+        for kind in controller_type.__mro__ if kind is not object]
+    state['source_hashes'] = {str(p): digest(p) for p in source_paths}
     save(output/'status.json', state)
     env = None
     trace = []
@@ -113,7 +128,7 @@ def check(output, version, cap):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--controller', choices=['v55', 'v56'], default='v55')
+    parser.add_argument('--controller', choices=['v55', 'v56', 'v57', 'v58', 'v59', 'v60'], default='v55')
     parser.add_argument('--cap', type=int, default=12000)
     args = parser.parse_args()
     if not 3 <= args.cap <= 12000 or args.cap % 3:
