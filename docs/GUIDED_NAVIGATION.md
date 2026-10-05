@@ -76,3 +76,7 @@ La tanda waypoint v6 completó 81.920 transiciones nuevas, con pérdidas finitas
 
 Se conservan los [resultados verificados](evidence/neural-waypoint-v6-results.md) y el [diagnóstico de control y cobertura](evidence/neural-waypoint-v6-diagnostics.md). La siguiente corrección usa visión panorámica medida alrededor del cuerpo y vuelos guiados completos desde los estados originales. Su controlador recibe únicamente actividad neuronal; la ruta oculta solo etiqueta datos durante entrenamiento.
 El [protocolo panorámico v7](evidence/panoramic-neural-v7-plan.md) fija un límite de 98.304 transiciones nuevas, 12.288 actualizaciones supervisadas y una única validación de desarrollo. Empieza un controlador nuevo por el cambio de dimensiones, conserva todos los checkpoints anteriores y no consume el test reservado.
+
+## Percepción de aberturas y lectura neuronal
+
+El [protocolo retomado](evidence/portal-feedback-protocol.md) separa lectura de actividad, estimación de centros visibles y control físico. Añadió 65.536 transiciones guiadas de entrenamiento y comprobaciones autónomas separadas; todavía no produjo llegadas en los mapas grandes. La variante de mínimos cuadrados conserva la recurrencia proyectada. El lector que la cancela solo se usa como diagnóstico de información, sin afirmar ventajas biológicas.
