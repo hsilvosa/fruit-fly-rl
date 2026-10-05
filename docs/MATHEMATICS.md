@@ -352,3 +352,23 @@ For current and previous horizontal neuronal goal bearings g and g_old, the imag
 With normalized sensory projection B = A N^-1 and Gram G = B^T B + ridge I, the drive readout is f = N^-1 G^-1 B^T z. For a policy gradient q = d(action)/df, its local drive sensitivity is B G^-1 N^-1 q. The anatomical inspector plots that quantity for projection readers, holding previous state and previous history fixed. It is a derivative with respect to reconstructed drive, not with respect to the recurrent neuron state or a causal intervention. The trace metadata names the basis. Group-mean and legacy readers use their own state sensitivity mapping.
 
 The trajectory guard projects each reconstructed distance endpoint p onto the horizontal motion direction u. It uses the smallest positive p^T u with norm(p - u p^T u) <= 0.28 m. Vertical guards use endpoints inside a horizontal radius of 0.28 m. This avoids braking for some side obstacles, but sparse rays and reconstruction errors can miss surfaces. The eight optimization flights showed no improvement over the preceding controller.
+
+
+## Motion-stable projection reader
+
+The motion-stable variant computes f = A^+(z - W h_previous) + D A^+ W h_previous. D is diagonal: zero for the first 269 base distance, target and motor channels, and 0.05 for the 3,600 panorama distance and approach channels. It decodes previous and current modeled neuron states; no world sensor values are appended in reconstruction. All neuron states and recurrent edges still advance. Canceling recurrence in synthetic motion coordinates supports odometry, while panorama coordinates retain the declared recurrent fraction. This remains an engineered readout, with its own checkpoint fingerprint.
+
+A 128-transition check using the full graph measured normalized base-channel RMSE 0.00000567, yaw-rate RMSE 0.00000472 rad/s and panorama-distance RMSE 0.0419 m. It took 0.682 seconds after initialization and used 560 MiB peak allocated VRAM. This short check describes numerical reconstruction and does not establish navigation. A separate temporary 128-transition, one-update PPO smoke had finite losses and maximum CPU reload action error 0.000000358; its checkpoint was removed.
+
+
+## Observed-map planning and flight control
+
+The map uses 0.6 m voxels in an initial body-relative frame. A free ray reduces cell evidence by one, down to -8; observed surface samples increase it by three, up to 12. Evidence at least two marks a solid cell. Free cost is 1, unknown cost 2.8, and observed solids plus one axial safety shell are impassable. If the current cell lies inside that shell, non-solid margin cells in a local five-by-five-by-five region temporarily cost 8, allowing escape without opening solid cells.
+
+The search considers 26 neighbors, checks axial intermediate cells before diagonal moves, and uses priority g + 4.5 h, where g sums cell cost times step length and h is Euclidean distance to the goal cell in voxel units. This weighted, bounded search is not a shortest-path guarantee. It stops at the exact goal cell, appends the continuous goal, and after 12,000 expansions uses the best remaining open frontier. Route following advances past reached cells and uses an observed-clear look-ahead of 3 m, reduced to 1 m in a tight margin.
+
+For waypoint delta d and distance D = norm(d), u = d / max(D, 1e-6). Each reconstructed ray endpoint p contributes clearance l = p^T u when l > 0 and norm(p - l u) < 0.25 m. The nearest such endpoint gives L. Requested speed is min(v_max, 1.5 D, sqrt(2.4 max(L - 0.27, 0))), with v_max = 1.8 m/s normally and 0.8 m/s in the margin. Sparse rays and map discretization do not guarantee collision avoidance.
+
+Horizontal desired velocity is u_xy times requested speed times max(cos(yaw_error), 0)^4. Vertical desired velocity is u_z times requested speed, independently of the horizontal heading. With observed body-forward velocity v_x, thrust is clip(3 (norm(desired_xy) - v_x) + 0.6 norm(desired_xy), -1.2, 3), normalized by 3 for positive thrust and 1.2 for braking. Vertical command is clip((3 (desired_z - v_z) + 0.8 desired_z) / 2.5, -1, 1). Yaw command is clip(2 yaw_error / 1.8, -1, 1). Lateral command is zero in coordinated flight. These are explicit proportional controls and planning costs, not optimization of learned movement weights.
+
+The anatomical window can display actual modeled activity and change for this planner. Its decision logic includes discrete search and stateful memory; no PPO action gradient is computed or presented as planner sensitivity. Archived traces mark sensitivity unavailable.

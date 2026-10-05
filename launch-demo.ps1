@@ -4,7 +4,7 @@ $demoArguments = @($args)
 $untrained = $demoArguments -contains '--untrained'
 $demoArguments = @($demoArguments | Where-Object { $_ -ne '--untrained' })
 $navigationPolicy = Join-Path $PSScriptRoot 'runs\navigation-policy.zip'
-if (-not $untrained -and (Test-Path -LiteralPath $navigationPolicy) -and -not ($demoArguments -contains '--checkpoint')) {
+if (-not ($demoArguments -contains 'observed-map') -and -not $untrained -and (Test-Path -LiteralPath $navigationPolicy) -and -not ($demoArguments -contains '--checkpoint')) {
     Write-Host 'Opening the selected navigation policy. Use --untrained for the initial controller.'
     $demoArguments = @('--checkpoint', $navigationPolicy) + $demoArguments
 }

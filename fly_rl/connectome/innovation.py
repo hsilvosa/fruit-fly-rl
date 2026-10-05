@@ -107,3 +107,35 @@ class ContrastActivityBrain(InnovationBrain):
         drive += self.centering_drive[:, None]
         rhs = torch.sparse.mm(self.projection_transpose, drive)
         return (torch.cholesky_solve(rhs, self.factor) / self.norm[:, None]).T.contiguous().cpu().numpy()
+
+
+MOTION_STABLE_READOUT = 'neural-projection-motion-stable-visual005-v1'
+
+
+class MotionStableActivityBrain(InnovationBrain):
+    """Cancel projected recurrence in base channels; retain it in panorama.
+
+    This engineered readout decodes the full neuronal drive twice using the
+    fixed projection. It reads no sensor values during reconstruction. Synthetic base distance, target and motion channels support odometry;
+    panorama channels retain five
+    percent projected recurrence. It is not a biological sensory mechanism.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.readout_version = MOTION_STABLE_READOUT
+        self.model_spec = self.model_spec.replace(INNOVATION_READOUT, MOTION_STABLE_READOUT)
+        self.recurrent_gain = torch.full((self.sensor_count, 1), .05, device=self.device)
+        self.recurrent_gain[:269] = 0
+
+    @torch.no_grad()
+    def reconstruct_activity(self, previous, current):
+        if previous.shape != self.state.shape or current.shape != self.state.shape:
+            raise ValueError('Full previous and current neuron states are required')
+        drive = torch.atanh((2 * current - previous).clamp(-1 + 1e-6, 1 - 1e-6))
+        drive += self.centering_drive[:, None]
+        recurrent = torch.sparse.mm(self.matrix, previous)
+        rhs = torch.sparse.mm(self.projection_transpose, torch.cat([drive - recurrent, recurrent], dim=1))
+        decoded = torch.cholesky_solve(rhs, self.factor) / self.norm[:, None]
+        clean, context = decoded.chunk(2, dim=1)
+        result = clean + self.recurrent_gain * context
+        return result.T.contiguous().cpu().numpy()

@@ -18,6 +18,7 @@ class NeuralTrace:
         row={'body_id':int(self.body_id),'decision_step':step,'seconds':(step-1)*DT,'phase':'before_action',
              'episode_id':episode,'activity':float(neural.snapshot[self.index]),
              'change':float(neural.delta[self.index]),'sensitivity':float(neural.sensitivity[self.index]),
+             'sensitivity_available':neural.last.get('sensitivity_available',True),
              'sensitivity_basis':neural.last.get('sensitivity_basis','recurrent_neuron_state'),
              'sensitivity_control':neural.last['dominant_control'],'action':neural.last['action'],
              'speed':float(np.linalg.norm(world.velocity)),'target_distance':float(world.distance),
