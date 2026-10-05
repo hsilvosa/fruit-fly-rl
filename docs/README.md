@@ -19,6 +19,7 @@ Start with the root [README](../README.md) for installation, demos and controls.
 | Observed-ray risk objective | [Collision risk](COLLISION_RISK.md) |
 | Aggregate outcomes and uncertainty | [Results](RESULTS.md) |
 | Complete large-room diagnosis, attempts, and operational solution | [Navigation resolution](NAVIGATION_RESOLUTION.md) |
+| Bounded timeout diagnosis and experimental goal-margin correction | [Planner timeout results](evidence/planner-timeouts-v56-results.md) |
 | Twelve procedural map configurations and figure provenance | [Map gallery](images/README.md) |
 | Source release checks, licensing, and history separation | [Public release](PUBLICATION.md) |
 | Verified causes, limitations and correction order after zero success | [Geometry failure diagnosis](GEOMETRY_DIAGNOSIS.md) |

@@ -17,9 +17,11 @@ The planner is the operational solution today. It has explicit map memory, bound
 
 ## Priority 1: Diagnose and resolve planner timeouts
 
+October 5 progress: bounded full-graph checks reproduced all three failures. Experimental v56 corrected the observed-free goal-margin blockage in room 8500011 (arrival at step 1,939); rooms 8500012 and 8500013 still timed out. Both versions had zero collisions. The checks used 21,204 physical transitions, no optimization, and no reserved tests. All six aliases and frozen v55 retained their hashes. Priority 1 remains open; v55 remains the demo default. [Diagnosis, regression checks, and outcomes](docs/evidence/planner-timeouts-v56-results.md).
+
 Keep v55 frozen as the reference. Use the existing traces from rooms 8500011, 8500012, and 8500013 to separate search saturation, frontier selection, route oscillation, accumulated odometry error, conservative occupancy, and insufficient remaining flight time. The first two ended at the 12,000-expansion cap; the third found a route but did not finish. Increasing the cap alone is not an established fix.
 
-Add bounded diagnostic plots for visited/frontier cells, map evidence, selected route references, estimated pose, commands, and remaining time. Study the relevant local failures before increasing compute or changing deadlines. Compare individual changes first, then declare any combined candidate. Preserve the physical collision checks and original room deadlines.
+Trajectory, search-effort, command, pose-error, and final observed-evidence diagnostics are now implemented. Visited/frontier arrays are not recorded yet. Use the retained records to examine reference advancement and detours in the two unresolved rooms before another bounded intervention or increased compute. Compare individual changes first, then declare any combined candidate. Preserve the physical collision checks and original room deadlines.
 
 Completion requires reproducible diagnoses from retained data, focused regression checks for the selected fixes, and explicit reporting of all three development outcomes. Fixing known rooms establishes a correction on those rooms, not generalization.
 
