@@ -11,7 +11,7 @@ Placeholders such as `ARCHIVE`, `LEFT`, and `RIGHT` must be replaced with actual
 
 ## Viewing and saved flights
 
-`launch-observed-map.cmd` keeps frozen v55 as its default. Experimental versions require explicit selection, for example `launch-observed-map.cmd --planner-version v60 --seed 8500012`. This runs the conditional-recovery planner live and records its source dependencies; it never trains. Versions refer to controller changes, not different room generators. See [planner development](PLANNER_DEVELOPMENT.md) for the candidate's evidence and limits.
+`launch-observed-map.cmd` keeps frozen v55 as its default. Experimental versions require explicit selection, for example `launch-observed-map.cmd --planner-version v65 --seed 10000005`. This runs the dual mapping/safety planner live and records its source dependencies; it never trains. Versions refer to controller changes, not different room generators. See [planner development](PLANNER_DEVELOPMENT.md) for the candidate's evidence and limits.
 
 ```powershell
 .\launch-dense.cmd

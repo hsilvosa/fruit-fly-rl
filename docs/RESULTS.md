@@ -1,5 +1,7 @@
 # Results
 
+The latest experimental v65 preserves contextual mapping while using separate clean neural ranges for braking. In fresh frozen paired development, both v60 and v65 reached 15/16 goals with zero collisions and one timeout (Wilson 95% interval 71.7–98.9%). V65 also resolved retained false stopping and contacts, but did not improve the paired success rate. Learned large-room navigation and the independent-final target remain unresolved. [Complete latest evidence](evidence/planner-dual-v65-results.md) and [per-room outcomes](evidence/planner-v65-development-results.md).
+
 The latest frozen [paired planner development](evidence/planner-v60-development-results.md) reached **14/16 goals for v60**, versus **12/16 for v55**, with no collisions. V60 had two timeouts and a Wilson 95% interval of 64.0–96.5%. Twelve rooms succeeded in both arms, two only in v60, and two in neither. The task, initial layouts, graph, and source contracts matched. This separate prospective development check consumed 111,360 physical verification transitions and no training or reserved test. It does not establish the independent-final 80% target or biological benefit.
 
 The [v60 follow-up](evidence/planner-followup-v57-v60.md) reached all three already inspected v55 failures without collisions or timeouts. Isolated speed and clearance checks exposed a regression when combined unconditionally; v60 applies broader clearance recovery only after search saturation. This tuned 3/3 does not revise v55's historical 13/16 prospective development score. No training or reserved-test evaluation was performed, and v55 remains the demo default. The earlier [v56 correction](evidence/planner-timeouts-v56-results.md) retains its separate 1/3 result.
@@ -186,3 +188,15 @@ The [panoramic v7 protocol](evidence/panoramic-neural-v7-plan.md) sets a limit o
 ## Completion of the panoramic corrections
 
 Batches v8, v9, v10, and v12 finished and added 505,856 transitions. The latest autonomous assessment on reused development maps reached 0/8 goals, with one collision and seven timeouts. Completed substantive training totals 1,472,512 transitions. Navigation in the original large maps remained unresolved; the reserved test was not used and original aliases were not promoted. The [two-hour window report](evidence/two-hour-navigation-results.md), its checkpoints, and experimental launcher `launch-panorama.ps1` are retained. Work paused at the requested deadline, October 4 at 22:40:52 Madrid time.
+
+## Distance-stable readout comparison, October 5
+
+A known false-stop correction succeeded on its stationary design room but regressed the subsequent frozen paired development suite. On sixteen new rooms, v60 reached 15/16 goals with one collision and no timeouts (Wilson 95% interval 71.7–98.9%); v61 reached 13/16 with two collisions and one timeout (57.0–93.4%). Thirteen rooms succeeded in both, two only in v60, and one in neither. This supports retaining v60 over v61 on this measured suite, rather than promoting the range correction as a generally improved controller.
+
+The two arms used 105,488 physical transitions in total, zero training transitions, and no reserved-test access. Original aliases, frozen sources, graph-data/projection contracts, and initial layout hashes passed. Different readouts were explicitly declared. The suite is now inspected development evidence and cannot be reused as fresh selection evidence for a tuned successor. See [per-room outcomes](evidence/planner-v61-development-results.md) and [known-case diagnosis](evidence/planner-readout-v61-v63.md).
+
+## V64 regression and v65 separation
+
+The momentum-only v64 candidate corrected two known collisions but regressed its subsequent development suite: 12/16 goals versus v60’s 15/16, with no collisions in either arm. V65 then retained the original contextual mapping features and appended clean neural ranges for braking. On the next frozen suite, both arms reached the same fifteen goals and timed out in room 13000013. There were no lost or added paired successes. The 111,968 physical transitions added no optimization or reserved-test access.
+
+Separate known v65 checks reached four collision/control goals and resolved the previously stationary room at 1,782; the retained detour room still timed out. Two new-reader optimizer smokes each used 128 transitions and one update, with temporary weights deleted. Those pipeline checks do not train or establish a navigation policy. Original aliases and frozen references were preserved. [Contracts, hashes, limitations, and viewing](evidence/planner-dual-v65-results.md).

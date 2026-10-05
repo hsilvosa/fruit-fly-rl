@@ -1,4 +1,5 @@
 """Frozen, bounded original-large PPO correction with an explicit KL gate."""
+from fly_rl.atomic_io import replace_file
 import hashlib
 import json
 import os
@@ -36,7 +37,7 @@ def run_guarded_navigation(plan_path, device='cuda'):
             'started_utc':datetime.now(timezone.utc).isoformat(),'plan_sha256':sha(plan_path),
             'added_transitions':0,'test_evaluated':False}
     def save():
-        temp=status_path.with_suffix('.tmp');temp.write_text(json.dumps(status,indent=2));temp.replace(status_path)
+        temp=status_path.with_suffix('.tmp');temp.write_text(json.dumps(status,indent=2));replace_file(temp, status_path)
     save();env=None;model=None;initial=0
     torch.set_num_threads(4)
     try:

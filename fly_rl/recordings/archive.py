@@ -1,4 +1,5 @@
 """Inspect and conservatively index saved flights without loading a policy."""
+from fly_rl.atomic_io import replace_file
 from pathlib import Path
 from datetime import datetime,timezone
 import hashlib
@@ -145,7 +146,7 @@ def recover(path,apply=False):
         manifest['recovery']={'time_utc':datetime.now(timezone.utc).isoformat(),'backup':backup.name,
                               'errors':report['errors'],'warnings':report['warnings'],'unwritten_tail_recoverable':False}
         tmp=archive.path/'manifest.recovery.tmp';tmp.write_text(json.dumps(manifest,indent=2),encoding='utf8')
-        tmp.replace(archive.path/'manifest.json');result['applied']=True;result['backup']=str(backup)
+        replace_file(tmp, archive.path/'manifest.json');result['applied']=True;result['backup']=str(backup)
     return result
 
 def compare(left,right):

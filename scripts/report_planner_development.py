@@ -16,8 +16,18 @@ def wilson(successes, total):
     return [max(0., center-radius), min(1., center+radius)]
 
 
-def compare(baseline, candidate):
-    for arm, state in [('v55', baseline), ('v60', candidate)]:
+def compare(baseline, candidate, expected_pair=('v55', 'v60')):
+    allowed = [('v55', 'v60'), ('v60', 'v61'), ('v60', 'v63'), ('v60', 'v64'), ('v61', 'v64'), ('v60', 'v65')]
+    if tuple(expected_pair) not in allowed:
+        raise ValueError('Unsupported declared comparison')
+    readouts = dict(v55='neural-projection-motion-stable-visual005-v1',
+        v60='neural-projection-motion-stable-visual005-v1',
+        v61='neural-projection-distance-stable-speed005-v1',
+        v63='neural-projection-distance-stable-speed005-v1',
+        v64='neural-projection-distance-stable-speed005-v1',
+        v65='neural-projection-dual-map005-distance-clean-v1')
+    widths = {arm: (5669 if arm == 'v65' else 3869) for arm in readouts}
+    for arm, state in zip(expected_pair, [baseline, candidate]):
         if state['controller'] != arm or state['kind'] != 'frozen-prospective-development':
             raise ValueError('Wrong arm or evidence type')
         if state['status'] != 'completed' or state['incomplete_episodes']:
@@ -28,6 +38,10 @@ def compare(baseline, candidate):
             raise ValueError('Preservation checks did not pass')
         if state['graph_neurons'] != 167184 or state['graph_edges'] != 25583622:
             raise ValueError('Full graph contract mismatch')
+        if state.get('readout_version', readouts[arm]) != readouts[arm]:
+            raise ValueError('Undeclared readout contract')
+        if state.get('feature_count', 3869) != widths[arm] or state.get('sensor_count', 3869) != 3869:
+            raise ValueError('Declared feature width or sensor count mismatch')
         if len(state['episodes']) != 16 or {e['seed'] for e in state['episodes']} != set(state['seeds']):
             raise ValueError('Missing, duplicate, or undeclared outcomes')
         if state['physical_transitions'] > state['physical_cap']:
@@ -37,10 +51,16 @@ def compare(baseline, candidate):
                 raise ValueError('Ambiguous terminal outcome')
             if type(e['steps']) is not int or e['steps'] <= 0 or not math.isfinite(e['flown_distance']) or e['flown_distance'] < 0:
                 raise ValueError('Invalid physical episode measurements')
-    for name in ['seeds', 'protocol_sha256', 'layout_hashes', 'brain_fingerprint',
+    for name in ['seeds', 'protocol_sha256', 'layout_hashes',
                  'frozen_sources_before', 'protected_before']:
         if baseline[name] != candidate[name]:
             raise ValueError(f'Paired contract mismatch: {name}')
+    graphs = [s.get('graph_data_fingerprint', s['brain_fingerprint'].split(':')[0]) for s in [baseline, candidate]]
+    if graphs[0] != graphs[1]:
+        raise ValueError('Graph data fingerprints differ')
+    models = [s['brain_fingerprint'].rsplit(':', 1)[0] for s in [baseline, candidate]]
+    if models[0] != models[1]:
+        raise ValueError('Undeclared base brain model difference')
     if not baseline['protocol_sha256']:
         raise ValueError('Missing frozen protocol fingerprint')
     arms = {}
@@ -60,15 +80,19 @@ def compare(baseline, candidate):
         left, right = b[seed]['success'], c[seed]['success']
         key = 'both_success' if left and right else 'baseline_only' if left else 'candidate_only' if right else 'neither_success'
         paired[key] += 1
-        rooms.append(dict(seed=seed, v55=b[seed], v60=c[seed]))
+        rooms.append(dict(seed=seed, **{expected_pair[0]: b[seed], expected_pair[1]: c[seed]}))
     return dict(kind='frozen-prospective-development', protocol_sha256=baseline['protocol_sha256'],
-        arms=arms, paired=paired, rooms=rooms, training_invoked=False, evaluation_invoked=False,
+        arms=arms, paired=paired, rooms=rooms, controllers=list(expected_pair),
+        readouts={arm: readouts[arm] for arm in expected_pair},
+        feature_widths={arm: widths[arm] for arm in expected_pair},
+        training_invoked=False, evaluation_invoked=False,
         reserved_test_access=False, aliases_unchanged=True, sources_unchanged=True,
         limitations='Sixteen development rooms from one generator; not a final test or biological evidence.')
 
 
 def render(result):
-    lines = ['# Frozen v55/v60 paired development results', '',
+    names = result.get('controllers', ['v55', 'v60'])
+    lines = [f"# Frozen {'/'.join(names)} paired development results", '',
         'These are fresh development measurements of frozen controllers, not a reserved final test.', '',
         '| Arm | Goals / 16 | Collisions | Timeouts | Wilson 95% interval |',
         '| --- | ---: | ---: | ---: | --- |']
@@ -78,18 +102,18 @@ def render(result):
     p = result['paired']
     lines += ['', f"Paired outcomes: {p['both_success']} both succeed, {p['baseline_only']} baseline only, "
         f"{p['candidate_only']} candidate only, {p['neither_success']} neither succeeds.", '',
-        '| Room | v55 outcome / steps / flown distance | v60 outcome / steps / flown distance |',
+        f'| Room | {names[0]} outcome / steps / flown distance | {names[1]} outcome / steps / flown distance |',
         '| --- | --- | --- |']
     for row in result['rooms']:
         cells = []
-        for arm in ['v55', 'v60']:
+        for arm in names:
             e = row[arm]
             outcome = 'goal' if e['success'] else 'collision' if e['collision'] else 'timeout'
             cells.append(f"{outcome} / {e['steps']} / {e['flown_distance']:.2f}")
         lines.append(f"| {row['seed']} | {cells[0]} | {cells[1]} |")
     total = sum(a['physical_transitions'] for a in result['arms'].values())
     lines += ['', f'Physical transitions across both arms: {total:,}. Zero training transitions or optimizer updates.',
-        'Original aliases and frozen sources match before/after. Initial layout and graph fingerprints match across arms.',
+        'Original aliases and frozen sources match before/after. Initial layout and graph-data fingerprints match across arms.',
         'Flown distance includes every scored physical step; it is not an optimal-route measurement.', '',
         f"Protocol SHA-256: `{result['protocol_sha256']}`.", '', result['limitations'], '']
     return '\n'.join(lines)
@@ -100,8 +124,11 @@ if __name__ == '__main__':
     parser.add_argument('baseline', type=Path)
     parser.add_argument('candidate', type=Path)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--baseline-version', choices=['v55', 'v60', 'v61'], default='v55')
+    parser.add_argument('--candidate-version', choices=['v60', 'v61', 'v63', 'v64', 'v65'], default='v60')
     args = parser.parse_args()
-    result = compare(json.loads(args.baseline.read_text()), json.loads(args.candidate.read_text()))
+    result = compare(json.loads(args.baseline.read_text()), json.loads(args.candidate.read_text()),
+                     (args.baseline_version, args.candidate_version))
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output/'results.json').write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8')
     (args.output/'results.md').write_text(render(result), encoding='utf-8')

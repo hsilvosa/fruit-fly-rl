@@ -31,3 +31,11 @@ Recorded command:
 ```
 
 The named public image is copied from that output after visual inspection. Its flight archive and QA reports remain ignored local artifacts. No downloaded anatomical or dataset image is included in this screenshot.
+
+## Momentum correction diagnostic figure
+
+[planner-momentum-v64.png](planner-momentum-v64.png) plots saved known-case flights in rooms 10000005 and 10000008, sampled every twenty decisions. It was generated with `scripts/plot_planner_diagnostics.py` from the retained v64 trace, then visually inspected. XY paths hide altitude, sampled lengths undercount full flight, and sampled guard events are not every braking decision. This is design evidence, not independent performance. [Counts and protocol](../evidence/planner-momentum-v64-results.md).
+
+## Dual mapping/safety render
+
+[planner-v65-scene.png](planner-v65-scene.png) is the actual Panda3D v65 viewer on the original `large` profile, requested seed 10000005. The controls check restores that seed after exercising new-room/reset handlers. The 200-step recording had finite activity and zero collisions, with a separately inspected brain window; no episode completed. It verifies rendering and archive compatibility rather than performance. Recorded command: `python -s -m fly_rl demo --controller observed-map --planner-version v65 --seed 10000005 --offscreen --seconds 5 --speed 2 --brain-view --record-dir runs/verification/planner-v65-viewer --screenshot reports/planner-v65-viewer.png`. The public image was copied after visual inspection; detailed flight records remain local.

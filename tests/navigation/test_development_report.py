@@ -44,3 +44,19 @@ def test_wilson_extremes_retain_small_sample_uncertainty():
     assert low == pytest.approx(.8064, abs=5e-5) and high == pytest.approx(1.)
     low, high = wilson(0, 16)
     assert low == pytest.approx(0.) and high == pytest.approx(.1936, abs=5e-5)
+
+
+def test_declared_readout_difference_preserves_graph_pairing():
+    baseline, candidate = states()
+    baseline['controller'] = 'v60'
+    candidate['controller'] = 'v63'
+    baseline['brain_fingerprint'] = 'same:base-model:motion-readout'
+    candidate['brain_fingerprint'] = 'same:base-model:distance-readout'
+    baseline['graph_data_fingerprint'] = candidate['graph_data_fingerprint'] = 'same'
+    baseline['readout_version'] = 'neural-projection-motion-stable-visual005-v1'
+    candidate['readout_version'] = 'neural-projection-distance-stable-speed005-v1'
+    result = compare(baseline, candidate, ('v60', 'v63'))
+    assert result['controllers'] == ['v60', 'v63']
+    candidate['graph_data_fingerprint'] = 'different'
+    with pytest.raises(ValueError, match='fingerprints'):
+        compare(baseline, candidate, ('v60', 'v63'))

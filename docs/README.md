@@ -23,6 +23,10 @@ Start with the root [README](../README.md) for installation, demos and controls.
 | Speed/clearance isolation, regression, and conditional v60 recovery | [Planner follow-up](evidence/planner-followup-v57-v60.md) |
 | Frozen paired measurement, budgets, and experimental viewing | [Planner development protocol](PLANNER_DEVELOPMENT.md) |
 | V55/v60 matched room outcomes and uncertainty | [Paired development results](evidence/planner-v60-development-results.md) |
+| False stopping, stable distances, and unsuccessful route/mapping attempts | [V61–v63 readout diagnosis](evidence/planner-readout-v61-v63.md) |
+| Actual-motion braking, known collision fixes, and fresh regression | [Momentum correction](evidence/planner-momentum-v64-results.md) |
+| V60/v61 declared readout comparison and regression | [Readout development results](evidence/planner-v61-development-results.md) |
+| Dual mapping/safety interface, retained corrections, and matched fresh result | [V65 results](evidence/planner-dual-v65-results.md) |
 | Twelve procedural map configurations and figure provenance | [Map gallery](images/README.md) |
 | Source release checks, licensing, and history separation | [Public release](PUBLICATION.md) |
 | Verified causes, limitations and correction order after zero success | [Geometry failure diagnosis](GEOMETRY_DIAGNOSIS.md) |

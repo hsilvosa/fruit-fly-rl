@@ -41,7 +41,7 @@ def main():
     sub.add_parser('prepare-data')
     bench=sub.add_parser('benchmark');bench.add_argument('--seconds',type=float,default=20)
     demo=sub.add_parser('demo');demo.add_argument('--controller',choices=['policy','observed-map'],default='policy');demo.add_argument('--checkpoint');demo.add_argument('--seed',type=int,default=10)
-    demo.add_argument('--planner-version',choices=['v55','v56','v57','v58','v59','v60'],default='v55',help='Explicit planner version; versions after v55 are experimental')
+    demo.add_argument('--planner-version',choices=['v55','v56','v57','v58','v59','v60','v61','v62','v63','v64','v65'],default='v55',help='Explicit planner version; versions after v55 are experimental')
     demo.add_argument('--offscreen',action='store_true');demo.add_argument('--seconds',type=float,default=0)
     demo.add_argument('--screenshot',default='reports/demo.png')
     demo.add_argument('--speed',type=float,default=1.,help='Live simulation time multiplier; Shift boosts it 10x')

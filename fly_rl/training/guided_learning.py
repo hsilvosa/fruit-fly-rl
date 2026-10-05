@@ -1,4 +1,5 @@
 """Explicit bounded imitation warm-start; the teacher is absent at inference."""
+from fly_rl.atomic_io import replace_file
 from pathlib import Path
 import numpy as np
 import torch
@@ -229,7 +230,7 @@ def run_guided(plan_path,device='cuda'):
             'started_utc':datetime.now(timezone.utc).isoformat(),'plan_sha256':sha(plan_path),
             'test_evaluated':False,'added_transitions':0,'guided_results':[],'fit_results':[]}
     def save():
-        temp=status_path.with_suffix('.tmp');temp.write_text(json.dumps(status,indent=2));temp.replace(status_path)
+        temp=status_path.with_suffix('.tmp');temp.write_text(json.dumps(status,indent=2));replace_file(temp, status_path)
     save();env=None;model=None;initial=0
     torch.set_num_threads(4);rng=np.random.default_rng(plan['training_seed'])
     try:

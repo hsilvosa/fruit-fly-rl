@@ -40,3 +40,31 @@ def test_invalid_protocol_cannot_start_check(tmp_path, monkeypatch, field, value
 def test_known_failure_budget_and_seed_contract(seeds, cap):
     with pytest.raises(ValueError):
         validate_request(seeds, cap, 'reused-failure-diagnostic')
+
+
+def test_readout_difference_must_be_predeclared(tmp_path, monkeypatch):
+    from scripts.check_planner_development import READOUTS
+    p = protocol(tmp_path, monkeypatch)
+    p.update(schema=2, arms=['v60', 'v61'], readouts={arm: READOUTS[arm] for arm in ['v60', 'v61']})
+    validate(p)
+    p['readouts']['v61'] = READOUTS['v60']
+    with pytest.raises(ValueError, match='explicitly predeclared'):
+        validate(p)
+
+
+def test_old_schema_cannot_hide_a_changed_readout(tmp_path, monkeypatch):
+    p = protocol(tmp_path, monkeypatch)
+    p['arms'] = ['v60', 'v61']
+    with pytest.raises(ValueError, match='schema two'):
+        validate(p)
+
+
+def test_dual_feature_width_and_sensor_contract_must_be_declared(tmp_path, monkeypatch):
+    from scripts.check_planner_development import READOUTS
+    p=protocol(tmp_path,monkeypatch)
+    p.update(schema=3,arms=['v60','v65'],readouts={arm:READOUTS[arm] for arm in ['v60','v65']},
+             feature_widths={'v60':3869,'v65':5669},sensor_count=3869)
+    validate(p)
+    p['feature_widths']['v65']=3869
+    with pytest.raises(ValueError,match='Feature widths'):
+        validate(p)

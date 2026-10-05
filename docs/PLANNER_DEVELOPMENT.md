@@ -12,6 +12,10 @@ Each arm has a hard cap of **81,920 physical environment transitions**, for a ma
 
 The source contract covers navigation, connectome, simulation, the environment adapter, and verification runners. It is checked before an arm starts and after it finishes. Initial room fingerprints and the prepared brain fingerprint must match across arms. Audit-only true poses, boxes, and terminal states never enter the controller's action inputs.
 
+Schema two also supports the explicitly declared v60/v61 and v60/v63 readout comparisons. Graph-data and projection/specification fingerprints must match, while each arm must report its predeclared readout suffix. Requiring an identical full brain fingerprint would incorrectly reject the intended readout difference; permitting an undeclared difference would hide a changed interface. Both are checked. The offline reporter is included in the frozen source contract.
+
+Schema three additionally declares per-arm feature widths and the unchanged sensor count. V65 emits 5,669 neural coordinates instead of 3,869; both arms still receive the same 3,869 world sensor values through the full recurrent graph. The dual readout cannot be represented with an older schema. The protocol also freezes the atomic-write helper and generic history extractor. Metadata, helper changes, and controller changes belong to distinct recorded source snapshots; earlier completed runs retain their actual launch sources privately.
+
 ## Commands
 
 Use a new protocol filename and new output directories. Do not rerun the documented suite under a new version and describe it as fresh. Preparing or running another check requires its own declared budget and access rules.
@@ -49,3 +53,15 @@ The standard observed-map launcher retains v55. Select v60 explicitly to inspect
 ```
 
 The viewer labels experimental versions and opens live inference without training. Episode resets clear map, pose, and recovery state. Each experimental flight archive records the controller specification, primary source, viewer adapter, and inherited controller sources with SHA-256 hashes. Archive inspection detects missing or modified controller files. These are provenance copies, not a self-contained executable script; reproduce them in the matching package structure and dependency environment.
+
+## Recorded readout comparison
+
+The schema-two v60/v61 comparison used seeds 10000000–10000015 and protocol SHA-256 `10ac830e075e78f5dbcef27bc42867c81a664b552ee89724eb2ddcb1d957ded2`. Both frozen arms completed. V60 reached 15/16 with one collision; v61 reached 13/16 with two collisions and one timeout. No candidate-only successes were recorded. This is a regression on the measured suite, despite the earlier stationary-room correction. [Per-room evidence](evidence/planner-v61-development-results.md). The 105,488 physical transitions are development measurement, not optimizer steps.
+
+The corresponding commands specify `--baseline-version v60 --candidate-version v61` during preparation and offline reporting, and use distinct protocol/output paths. The readout difference is declared before either flight. No reserved final pool was opened.
+
+## Recorded dual-feature comparison
+
+The schema-three v60/v65 comparison used seeds 13000000–13000015 and protocol SHA-256 `1f01a244654a24fa2b79222a704e8447ea45dd2a039266eb5b2fc879b481faa7`. V60 declared 3,869 features; v65 declared 5,669, with unchanged sensor count 3,869. Both reached the same fifteen goals and timed out in room 13000013, with zero collisions. Each used 55,984 physical transitions. Preservation, graph/projection, layout, and declared-width checks passed. [Every room](evidence/planner-v65-development-results.md) and [correction/verification details](evidence/planner-dual-v65-results.md).
+
+This matched development outcome supports the retained-case corrections without a success-rate advantage on this suite. It is not the independent final assessment. No candidate was retuned from its results; future use of the inspected timeout belongs to design optimization. V55 remains the standard launcher default; v65 requires explicit selection.

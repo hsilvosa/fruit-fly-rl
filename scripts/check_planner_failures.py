@@ -1,4 +1,5 @@
 """Bounded diagnostics on reused v55 failures; no optimization or reserved tests."""
+from fly_rl.atomic_io import replace_file
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -16,7 +17,7 @@ def digest(path):
 def save(path, value):
     temporary = path.with_suffix('.tmp')
     temporary.write_text(json.dumps(value, indent=2)+'\n', encoding='utf-8')
-    temporary.replace(path)
+    replace_file(temporary, path)
 
 
 def validate_request(seeds, cap, kind):
@@ -43,7 +44,28 @@ def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
     from fly_rl.simulation.sensors import SENSOR_V6
     from fly_rl.connectome.innovation import MOTION_STABLE_READOUT
     from fly_rl.navigation.observed_map import ObservedMapController
-    if version == 'v60':
+    readout_version = MOTION_STABLE_READOUT
+    if version == 'v65':
+        from fly_rl.navigation.dual_safety import DualSafetyController, READOUT_VERSION
+        controller_type = DualSafetyController
+        readout_version = READOUT_VERSION
+    elif version == 'v64':
+        from fly_rl.navigation.momentum_guard import MomentumGuardController, READOUT_VERSION
+        controller_type = MomentumGuardController
+        readout_version = READOUT_VERSION
+    elif version == 'v63':
+        from fly_rl.navigation.ray_consistent import RayConsistentController, READOUT_VERSION
+        controller_type = RayConsistentController
+        readout_version = READOUT_VERSION
+    elif version == 'v62':
+        from fly_rl.navigation.persistent_route import PersistentRouteController, READOUT_VERSION
+        controller_type = PersistentRouteController
+        readout_version = READOUT_VERSION
+    elif version == 'v61':
+        from fly_rl.navigation.distance_stable import DistanceStableController, READOUT_VERSION
+        controller_type = DistanceStableController
+        readout_version = READOUT_VERSION
+    elif version == 'v60':
         from fly_rl.navigation.adaptive_margin import AdaptiveMarginController
         controller_type = AdaptiveMarginController
     elif version == 'v59':
@@ -63,11 +85,11 @@ def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
     output = Path(output)
     output.mkdir(parents=True, exist_ok=False)
     protected = {str(p): digest(p) for p in Path('runs').glob('*policy.*')}
-    for name in ['observed_map', 'goal_margin', 'cruise', 'free_margin', 'speed_margin']:
+    for name in ['observed_map', 'goal_margin', 'cruise', 'free_margin', 'speed_margin', 'adaptive_margin', 'distance_stable', 'persistent_route', 'ray_consistent', 'momentum_guard']:
         path = f'fly_rl/navigation/{name}.py'
         protected[path] = digest(path)
     state = dict(status='running', controller=version, kind=kind,
-                 seeds=seeds, physical_cap=cap, protocol_sha256=protocol_sha256,
+                 seeds=seeds, physical_cap=cap, protocol_sha256=protocol_sha256, readout_version=readout_version,
                  physical_transitions=0, added_training_transitions=0, optimizer_updates=0,
                  reserved_test_evaluated=False, started_utc=datetime.now(timezone.utc).isoformat(),
                  protected_before=protected, episodes=[])
@@ -83,7 +105,11 @@ def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
         torch.set_num_threads(4)
         env = BrainEnv('data', batch, 'cuda', seed=seeds[0], mode='dense', dynamics='coordinated',
                        sensor_version=SENSOR_V6, map_profile='large', history_frames=8,
-                       history_stride=8, readout_version=MOTION_STABLE_READOUT, sensor_backend='torch-cuda')
+                       history_stride=8, readout_version=readout_version, sensor_backend='torch-cuda')
+        for brain_type in type(env.brain).__mro__:
+            if brain_type is not object:
+                path = Path(inspect.getfile(brain_type))
+                state['source_hashes'][str(path)] = digest(path)
         env.seed(seeds[0])
         features = env.reset()
         controllers = [controller_type() for _ in seeds]
@@ -98,7 +124,9 @@ def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
                          for layout in layouts]
         torch.cuda.reset_peak_memory_stats()
         state.update(graph_neurons=env.brain.n, graph_edges=env.brain.audit['edges'],
-                     brain_fingerprint=env.brain.fingerprint, layout_hashes=layout_hashes)
+                     feature_count=env.feature_count, sensor_count=env.brain.sensor_count,
+                     brain_fingerprint=env.brain.fingerprint, graph_data_fingerprint=env.brain.audit['fingerprint'],
+                     layout_hashes=layout_hashes)
         stopped_for_deadline = False
         for step in range(cap//batch):
             if deadline is not None and datetime.now(timezone.utc) >= deadline:
@@ -173,7 +201,7 @@ def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--controller', choices=['v55', 'v56', 'v57', 'v58', 'v59', 'v60'], default='v55')
+    parser.add_argument('--controller', choices=['v55', 'v56', 'v57', 'v58', 'v59', 'v60', 'v61', 'v62', 'v63', 'v64', 'v65'], default='v55')
     parser.add_argument('--cap', type=int, default=12000)
     args = parser.parse_args()
     if not 3 <= args.cap <= 12000 or args.cap % 3:

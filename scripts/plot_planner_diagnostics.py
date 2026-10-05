@@ -1,6 +1,7 @@
 """Summarize saved planner traces without recomputing sensors, brain, or actions."""
 import argparse
 import json
+import textwrap
 from pathlib import Path
 
 import matplotlib
@@ -9,21 +10,39 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def summarize(source, output):
+def summarize(source, output, seeds=None):
     source, output = Path(source), Path(output)
     output.mkdir(parents=True, exist_ok=True)
     trace_file = source/'trace.json'
     if not trace_file.exists():
         trace_file = source/'development-trace.json'
     rows = json.loads(trace_file.read_text(encoding='utf-8'))
+    if seeds is None:
+        seeds = sorted({row['seed'] for row in rows})
+    if not seeds or len(seeds) > 16 or len(set(seeds)) != len(seeds):
+        raise ValueError('Select one to sixteen distinct recorded seeds')
+    for seed in seeds:
+        samples = [row for row in rows if row['seed'] == seed]
+        if not samples:
+            raise ValueError(f'Missing diagnostic seed {seed}')
+        positions = np.asarray([row['position'] for row in samples])
+        ticks = np.asarray([row['step'] for row in samples])
+        if positions.shape != (len(samples), 3) or not np.isfinite(positions).all():
+            raise ValueError('Recorded positions must be finite three-dimensional vectors')
+        if (ticks < 0).any() or (np.diff(ticks) <= 0).any():
+            raise ValueError('Recorded steps must be nonnegative and strictly increasing')
     summaries = []
-    fig, axes = plt.subplots(3, 3, figsize=(15, 11), constrained_layout=True)
-    for index, seed in enumerate([8500011, 8500012, 8500013]):
+    fig, axes = plt.subplots(len(seeds), 3, figsize=(15, max(4, 3.7*len(seeds))), constrained_layout=True, squeeze=False)
+    for index, seed in enumerate(seeds):
         samples = [row for row in rows if row['seed'] == seed]
         if not samples:
             raise ValueError(f'Missing diagnostic seed {seed}')
         positions = np.array([row['position'] for row in samples])
         ticks = np.array([row['step'] for row in samples])
+        if positions.shape != (len(samples), 3) or not np.isfinite(positions).all():
+            raise ValueError('Recorded positions must be finite three-dimensional vectors')
+        if (ticks < 0).any() or (np.diff(ticks) <= 0).any():
+            raise ValueError('Recorded steps must be nonnegative and strictly increasing')
         debug = [row['controller'] for row in samples]
         expanded = np.array([row['expanded'] for row in debug])
         speed = np.array([row.get('requested_speed', np.nan) for row in debug])
@@ -36,6 +55,11 @@ def summarize(source, output):
             sampled_path_length=float(np.linalg.norm(np.diff(positions, axis=0), axis=1).sum()),
             capped_search_samples=int((expanded >= 12000).sum()),
             found_route_samples=sum(row['found'] for row in debug),
+            reused_route_samples=sum(row.get('plan_reused', False) for row in debug),
+            found_search_samples=sum(row['found'] and not row.get('plan_reused', False) for row in debug),
+            momentum_guard_samples=sum(row.get('momentum_guard', False) for row in debug),
+            sampled_stride_min=int(np.diff(ticks).min()) if len(ticks) > 1 else None,
+            sampled_stride_max=int(np.diff(ticks).max()) if len(ticks) > 1 else None,
             tight_samples=sum(row.get('tight', False) for row in debug),
             low_requested_speed_samples=int((speed < .05).sum()),
             reference_reversals_over_90_degrees=int((turn > 90).sum()))
@@ -54,17 +78,24 @@ def summarize(source, output):
         axes[index, 1].axhline(12000, color='#dc2626', linestyle='--', linewidth=1)
         axes[index, 1].set(title='Search effort', xlabel='Simulated seconds', ylabel='Expanded cells')
         axes[index, 2].plot(ticks*.05, speed, color='#059669', label='Requested speed')
+        if any('effective_desired_speed' in row for row in debug):
+            effective = np.array([row.get('effective_desired_speed', np.nan) for row in debug])
+            axes[index, 2].plot(ticks*.05, effective, color='#2563eb', linewidth=1, label='Effective desired speed')
         axes[index, 2].plot(ticks*.05, lengths, color='#d97706', alpha=.6, label='Reference distance')
         axes[index, 2].set(title='Following and braking', xlabel='Simulated seconds', ylabel='Units / units per second')
         axes[index, 2].legend(fontsize=8)
-    fig.suptitle('Reused planner failures | saved observations only; no independent generalization claim', fontsize=13)
+    fig.suptitle('Recorded planner diagnostics | saved observations only; no independent generalization claim', fontsize=13)
     fig.savefig(output/'planner-diagnostics.png', dpi=120)
     plt.close(fig)
-    snapshots = [source/f'map-{seed}.npz' for seed in [8500011, 8500012, 8500013]]
+    snapshots = [source/f'map-{seed}.npz' for seed in seeds]
     if all(path.is_file() for path in snapshots):
         from matplotlib.colors import ListedColormap
-        fig, axes = plt.subplots(1, 3, figsize=(15, 5), constrained_layout=True)
-        for ax, path in zip(axes, snapshots):
+        columns = min(4, len(seeds))
+        rows_count = int(np.ceil(len(seeds)/columns))
+        fig, axes = plt.subplots(rows_count, columns, figsize=(5*columns, 5*rows_count), constrained_layout=True, squeeze=False)
+        for ax in axes.ravel()[len(seeds):]:
+            ax.set_visible(False)
+        for ax, path in zip(axes.ravel(), snapshots):
             with np.load(path) as snapshot:
                 evidence = snapshot['evidence']
                 origin, resolution = snapshot['origin'], float(snapshot['resolution'])
@@ -85,12 +116,13 @@ def summarize(source, output):
                        ylim=(min(position[1], goal[1])-12, max(position[1], goal[1])+12),
                        xlabel='Relative X', ylabel='Relative Y', title=path.stem)
                 ax.legend(fontsize=7)
-        fig.suptitle('Final observed-map slice at goal altitude | blue: free, white: unknown, dark: solid\n'
-                     'Route is an XY projection across altitudes; no visited/frontier arrays were recorded.')
+        title = ('Final observed-map slice at goal altitude. Blue: free; white: unknown; dark: solid. '
+                 'Route is an XY projection across altitudes. Visited/frontier arrays were not recorded.')
+        fig.suptitle(textwrap.fill(title, width=52*columns), fontsize=10)
         fig.savefig(output/'observed-map-slices.png', dpi=120)
         plt.close(fig)
     result = dict(kind='offline-planner-diagnosis', training_invoked=False,
-                  evaluation_invoked=False, sampling_stride=20, rooms=summaries,
+                  evaluation_invoked=False, rooms=summaries,
                   limitations='Sampled path lengths underestimate full paths; reversals are reference changes, not proof of a cause.')
     (output/'summary.json').write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8')
     print(json.dumps(result, indent=2))
@@ -100,5 +132,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('source', type=Path)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--seeds', type=int, nargs='+', help='Optional subset of recorded room seeds')
     args = parser.parse_args()
-    summarize(args.source, args.output)
+    summarize(args.source, args.output, args.seeds)

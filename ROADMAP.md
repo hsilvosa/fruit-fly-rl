@@ -12,6 +12,8 @@ Current as of October 5, 2026. This is proposed work, not an active training sch
 | Learned structured large-room navigation | Initial final result 0/64; best recent student v34 is 3/8 on reused optimization maps | Unresolved |
 | Explicit large-room planner v55 | 8/8 reused optimization; 13/16 frozen prospective development, zero collisions, three timeouts; interval 57.0–93.4% | Working demo, incomplete robustness |
 | Experimental large-room planner v60 | 3/3 corrected known failures; separate frozen paired development 14/16, zero collisions, two timeouts; interval 64.0–96.5%. V55 reached 12/16 on the same new rooms | Available explicitly; two new failures remain |
+| Distance-stable planner v61 | Stationary known case corrected; new paired development 13/16 with two collisions and one timeout versus v60’s 15/16 with one collision | Regressed; not selected as the stronger candidate |
+| Dual mapping/safety planner v65 | Four known collision/control goals, stationary known goal; new frozen development 15/16 with zero collisions and one timeout, identical to v60’s paired outcomes | Available explicitly; retained detours and independent final objective remain open |
 | `maze`, noise, wind, moving obstacles | Geometry or proposed capabilities without verified navigation results | Future work |
 
 The planner is the operational solution today. It has explicit map memory, bounded search, and proportional flight control, not learned movement weights. Its result does not fulfill the learned-policy objective or prove biological benefit. [Results](docs/RESULTS.md) and [resolution history](docs/NAVIGATION_RESOLUTION.md) retain the full evidence.
@@ -22,11 +24,16 @@ October 5 progress: bounded full-graph checks reproduced all three failures. Exp
 
 Follow-up: v57 isolated higher cruise speed, v58 isolated broader known-free margin traversal, and v59 combined them but regressed one room. V60 enables the broader margin rule only after a capped search; it reached **3/3 known failures**, with zero collisions or timeouts. This addresses the retained cases without establishing generalization. The four follow-up checks used 41,226 physical transitions, zero training transitions, and no final test. Twenty-eight navigation checks passed. Freeze v60 and its dependencies before priority 2; keep v55 as the operational reference. [Detailed attempts and outcomes](docs/evidence/planner-followup-v57-v60.md).
 
+The later v61 readout diagnosis corrected false stopping on one inspected room, but a fresh sixteen-room paired comparison regressed to 13/16 versus v60’s 15/16, with two versus one collisions. V62 route persistence and v63 ray-consistent interpolation still timed out in the retained detour room. Diagnose momentum, physical clearance, and route execution before another change; do not promote a semantic fix solely because one tuned room improved. [Known-case report](docs/evidence/planner-readout-v61-v63.md) and [paired results](docs/evidence/planner-v61-development-results.md).
+
 Keep v55 frozen as the reference. Use the existing traces from rooms 8500011, 8500012, and 8500013 to separate search saturation, frontier selection, route oscillation, accumulated odometry error, conservative occupancy, and insufficient remaining flight time. The first two ended at the 12,000-expansion cap; the third found a route but did not finish. Increasing the cap alone is not an established fix.
 
 Trajectory, search-effort, command, pose-error, and final observed-evidence diagnostics are now implemented. Visited/frontier arrays are not recorded yet. Use the retained records to examine reference advancement and detours in the two unresolved rooms before another bounded intervention or increased compute. Compare individual changes first, then declare any combined candidate. Preserve the physical collision checks and original room deadlines.
 
 Completion requires reproducible diagnoses from retained data, focused regression checks for the selected fixes, and explicit reporting of all three development outcomes. Fixing known rooms establishes a correction on those rooms, not generalization.
+
+
+Latest correction: v64’s actual-motion braking fixed the retained collisions, but its fresh suite regressed to 12/16 versus v60’s 15/16. V65 preserves the original contextual mapping prefix while using separate clean neural ranges for braking. It reached 4/4 retained collision/control rooms, resolved the stationary room at step 1,782, and matched v60 at 15/16 on a new paired suite with zero collisions. Retained room 9500014 and shared fresh timeout 13000013 remain unresolved. Preserve all variants and diagnose those detours before another narrow intervention. [Known cases and contracts](docs/evidence/planner-dual-v65-results.md) and [fresh paired evidence](docs/evidence/planner-v65-development-results.md).
 
 ## Priority 2: Measure the corrected planner independently
 
@@ -39,6 +46,9 @@ Report goals, collisions, timeouts, Wilson confidence intervals, elapsed compute
 The existing goal is at least 80% on a declared independent final suite, with uncertainty shown. The protocol must state whether that means a point estimate or a stronger confidence-bound requirement. A small point estimate alone cannot establish broad robustness. If claiming improvement over v55, use a predeclared paired comparison on the same fresh layouts, without selecting either controller from that final result.
 
 Completion requires a frozen protocol, verified dataset/source/suite fingerprints, one final report with all failures, and an explicit conclusion about whether the stated target was met.
+
+
+The latest v60/v65 comparison used a schema-three protocol that explicitly declares 3,869 versus 5,669 neural features with unchanged sensor input, graph, projection, and layouts. Both arms reached the same fifteen goals and timed out in the same room; neither collided. The Wilson interval is 71.7–98.9%. This is further development evidence, not the untouched final assessment or a demonstrated success-rate improvement.
 
 ## Priority 3: Learn complete large-room navigation
 

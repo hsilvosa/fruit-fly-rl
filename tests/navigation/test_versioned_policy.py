@@ -33,6 +33,16 @@ def test_archive_contains_every_dependency_with_matching_hash(tmp_path):
     assert hashlib.sha256((tmp_path/'controller.py').read_bytes()).hexdigest() == spec['source_sha256']
 
 
+def test_distance_readout_and_dependencies_are_identified(tmp_path):
+    policy = VersionedPlannerPolicy('v61')
+    policy.archive_sources(tmp_path)
+    spec = json.loads((tmp_path/'controller.json').read_text())
+    assert spec['readout'] == 'neural-projection-distance-stable-speed005-v1'
+    modules = {entry['module'] for entry in spec['sources']}
+    assert {'fly_rl.connectome.distance_readout', 'fly_rl.connectome.innovation',
+            'fly_rl.connectome.brain'}.issubset(modules)
+
+
 def test_bad_version_or_observation_is_rejected():
     with pytest.raises(ValueError):
         VersionedPlannerPolicy('unknown')
@@ -43,6 +53,18 @@ def test_bad_version_or_observation_is_rejected():
     observation[0, 0, 0] = np.nan
     with pytest.raises(ValueError):
         policy.predict(observation)
+
+
+def test_cli_help_lists_every_registered_planner(monkeypatch, capsys):
+    import sys
+    from fly_rl.cli import main
+    from fly_rl.navigation.registry import CONTROLLERS
+    monkeypatch.setattr(sys, 'argv', ['fly-rl', 'demo', '--help'])
+    with pytest.raises(SystemExit) as stopped:
+        main()
+    assert stopped.value.code == 0
+    help_text = capsys.readouterr().out
+    assert all(version in help_text for version in CONTROLLERS)
 
 
 @pytest.mark.parametrize('corruption', ['dependency', 'primary', 'specification', 'missing'])

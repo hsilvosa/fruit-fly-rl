@@ -1,4 +1,5 @@
 """Panda3D spectator viewer with flight recording; it never invokes training."""
+from fly_rl.atomic_io import replace_file
 from pathlib import Path
 import math
 import time
@@ -71,12 +72,12 @@ def run(args):
                 if self.is_planner:
                     from fly_rl.connectome.innovation import MOTION_STABLE_READOUT
                     from fly_rl.navigation.observed_map import ObservedMapPolicy
-                    self.env=BrainEnv(args.data,1,args.device,args.seed,mode='dense',dynamics='coordinated',sensor_version=SENSOR_V6,map_profile='large',readout_version=MOTION_STABLE_READOUT,sensor_backend='torch-cuda' if args.device=='cuda' else 'numpy',history_frames=8,history_stride=8)
                     if getattr(args,'planner_version','v55')=='v55':
                         self.policy=ObservedMapPolicy()
                     else:
                         from fly_rl.navigation.registry import VersionedPlannerPolicy
                         self.policy=VersionedPlannerPolicy(args.planner_version)
+                    self.env=BrainEnv(args.data,1,args.device,args.seed,mode='dense',dynamics='coordinated',sensor_version=SENSOR_V6,map_profile='large',readout_version=self.policy.specification['readout'],sensor_backend='torch-cuda' if args.device=='cuda' else 'numpy',history_frames=8,history_stride=8)
                 else:
                     self.env=BrainEnv(args.data,1,args.device,args.seed,mode=getattr(args,'room_mode','obstacles'),dynamics=getattr(args,'dynamics','legacy'),sensor_version=sensors,map_profile=profile,readout_version=json.loads(Path(args.checkpoint).with_suffix('.json').read_text()).get('readout_version','random-pool-256-v1') if args.checkpoint else 'random-pool-256-v1',sensor_backend='torch-cuda' if sensors==SENSOR_V6 and args.device=='cuda' else 'numpy',**checkpoint_history(args.checkpoint))
                     self.policy=load_model(args.checkpoint,self.env.brain,self.env,getattr(args,'transfer',False)) if args.checkpoint else make_policy(self.env)
@@ -475,7 +476,7 @@ def run(args):
             saved=bool(self.win.getScreenshot(picture) and picture.write(stream,path.name))
             if saved:
                 temporary=path.with_name(path.stem+'.tmp'+path.suffix)
-                temporary.write_bytes(stream.getData());temporary.replace(path)
+                temporary.write_bytes(stream.getData());replace_file(temporary, path)
             if self.brain_map and not self.brain_map.closed:
                 self.brain_map.capture(path.with_name(path.stem+'-brain'+path.suffix))
             return saved

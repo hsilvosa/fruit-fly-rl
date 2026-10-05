@@ -21,10 +21,22 @@ def integers(value):
             yield from integers(item)
 
 
-def prepare(output, seed_start, deadline):
+ALLOWED_PAIRS = [('v55', 'v60'), ('v60', 'v61'), ('v60', 'v63'), ('v60', 'v64'), ('v61', 'v64'), ('v60', 'v65')]
+READOUTS = dict(v55='neural-projection-motion-stable-visual005-v1',
+    v60='neural-projection-motion-stable-visual005-v1',
+    v61='neural-projection-distance-stable-speed005-v1',
+    v63='neural-projection-distance-stable-speed005-v1',
+    v64='neural-projection-distance-stable-speed005-v1',
+    v65='neural-projection-dual-map005-distance-clean-v1')
+FEATURE_WIDTHS = {arm: (5669 if arm == 'v65' else 3869) for arm in READOUTS}
+
+
+def prepare(output, seed_start, deadline, baseline='v55', candidate='v60'):
     output = Path(output)
     if output.exists():
         raise FileExistsError('Use a new protocol filename')
+    if (baseline, candidate) not in ALLOWED_PAIRS:
+        raise ValueError('Unsupported frozen comparison')
     stop = datetime.fromisoformat(deadline)
     if stop.tzinfo is None or stop <= datetime.now(timezone.utc):
         raise ValueError('Deadline must be a future timezone-aware ISO timestamp')
@@ -43,11 +55,14 @@ def prepare(output, seed_start, deadline):
     sources = set()
     for folder in ['fly_rl/navigation', 'fly_rl/connectome', 'fly_rl/simulation']:
         sources.update(Path(folder).glob('*.py'))
-    sources.update(Path(path) for path in ['fly_rl/training/learning.py',
-        'scripts/check_planner_failures.py', 'scripts/check_planner_development.py'])
-    protocol = dict(schema=1, kind='frozen-prospective-development',
+    sources.update(Path(path) for path in ['fly_rl/atomic_io.py', 'fly_rl/training/temporal_policy.py', 'fly_rl/training/learning.py',
+        'scripts/check_planner_failures.py', 'scripts/check_planner_development.py',
+        'scripts/report_planner_development.py'])
+    protocol = dict(schema=3, kind='frozen-prospective-development',
         created_utc=datetime.now(timezone.utc).isoformat(), deadline_utc=stop.isoformat(),
-        arms=['v55', 'v60'], seeds=seeds, physical_cap_per_arm=81920,
+        arms=[baseline, candidate], readouts={arm: READOUTS[arm] for arm in [baseline, candidate]},
+        feature_widths={arm: FEATURE_WIDTHS[arm] for arm in [baseline, candidate]}, sensor_count=3869,
+        seeds=seeds, physical_cap_per_arm=81920,
         training_transitions=0, reserved_test_access=False,
         selection_rule='Report both frozen arms; do not retune either from this suite.',
         task='large', sources={p.as_posix(): digest(p) for p in sorted(sources)},
@@ -59,10 +74,18 @@ def prepare(output, seed_start, deadline):
 
 
 def validate(protocol):
-    if protocol.get('schema') != 1 or protocol.get('kind') != 'frozen-prospective-development':
+    if protocol.get('schema') not in [1, 2, 3] or protocol.get('kind') != 'frozen-prospective-development':
         raise ValueError('Unsupported protocol')
-    if protocol.get('arms') != ['v55', 'v60'] or protocol.get('task') != 'large':
+    if tuple(protocol.get('arms', [])) not in ALLOWED_PAIRS or protocol.get('task') != 'large':
         raise ValueError('Unsupported frozen arms or task')
+    if protocol['schema'] == 1 and protocol['arms'] != ['v55', 'v60']:
+        raise ValueError('Readout comparisons require schema two')
+    if protocol['schema'] >= 2 and protocol.get('readouts') != {arm: READOUTS[arm] for arm in protocol['arms']}:
+        raise ValueError('Readout differences must be explicitly predeclared')
+    if protocol['schema'] < 3 and 'v65' in protocol['arms']:
+        raise ValueError('Dual features require schema three')
+    if protocol['schema'] == 3 and (protocol.get('feature_widths') != {arm: FEATURE_WIDTHS[arm] for arm in protocol['arms']} or protocol.get('sensor_count') != 3869):
+        raise ValueError('Feature widths and unchanged sensor count must be predeclared')
     if protocol.get('training_transitions') != 0 or protocol.get('reserved_test_access') is not False:
         raise ValueError('This command cannot train or access final tests')
     validate_request(protocol['seeds'], protocol['physical_cap_per_arm'], protocol['kind'])
@@ -101,13 +124,15 @@ def main():
     prep.add_argument('--output', type=Path, required=True)
     prep.add_argument('--seed-start', type=int, default=9500000)
     prep.add_argument('--deadline', required=True)
+    prep.add_argument('--baseline-version', choices=['v55', 'v60', 'v61'], default='v55')
+    prep.add_argument('--candidate-version', choices=['v60', 'v61', 'v63', 'v64', 'v65'], default='v60')
     execute = commands.add_parser('run')
     execute.add_argument('protocol', type=Path)
-    execute.add_argument('--arm', choices=['v55', 'v60'], required=True)
+    execute.add_argument('--arm', choices=['v55', 'v60', 'v61', 'v63', 'v64', 'v65'], required=True)
     execute.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     if args.command == 'prepare':
-        result = prepare(args.output, args.seed_start, args.deadline)
+        result = prepare(args.output, args.seed_start, args.deadline, args.baseline_version, args.candidate_version)
         print(json.dumps(dict(kind=result['kind'], seeds=result['seeds'], arms=result['arms'],
                              physical_cap_per_arm=result['physical_cap_per_arm']), indent=2))
     else:
