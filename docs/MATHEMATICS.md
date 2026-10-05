@@ -306,3 +306,49 @@ For heading error e and target distance D, desired speed is min(1.2, 1.5 D) time
 The sparse visual variant retains only the nine largest ray logits before applying softmax. Its direction estimate and pooled visual features use those selected weights. Empty history frames retain a uniform score distribution and an explicitly zero direction, so tied empty scores do not invent a heading. This changes inference even when every learned tensor is identical to the source checkpoint; it is not output-preserving transfer.
 
 The distance-only variant zeros the 1,800 approach-speed neural groups in the visual panorama. Distance groups and the original 269 neural groups remain available. The complete graph and all sensory projections still run; neurons and synapses are not removed. This tests an explicit visual velocity shortcut while retaining motor-state features. It does not remove every possible velocity influence from recurrent neural activity, and improvement cannot be assumed from the implementation alone.
+
+## Learned portal perception and explicit flight feedback
+
+The portal pilots learn a body-frame spatial reference delta and local velocity v from current and recent grouped neural activity. They do not append training route or aperture coordinates to runtime observations. For unit bearing u = delta / max(norm(delta), epsilon), heading error e = atan2(delta_y, delta_x), and distance D = norm(delta), desired speed is min(1.2, 1.5 D) max(0, cos(e))^4. Desired velocity is u times this speed.
+
+Horizontal thrust is clip(3(norm(desired_xy) - v_x) + 0.6 norm(desired_xy), -1.2, 3), normalized by 3 for positive thrust and 1.2 for braking. Vertical action is clip((3(desired_z - v_z) + 0.8 desired_z)/2.5, -1, 1). Yaw action is clip(2e/1.8, -1, 1); lateral action is zero. This control is explicit physics feedback, not a learned action regression or a collision-free guarantee.
+
+The attention target is a soft angular distribution proportional to exp(dot(training bearing, ray direction)/0.006). Supervised loss is 0.3 cross entropy against that distribution, plus mean angular loss 1 - dot(predicted bearing, target bearing), plus 0.5 times squared distance error normalized by 12, plus twice velocity MSE. Adam uses a learning rate of 0.0003 and gradient norm clipping at one. The perception fit is separate from PPO optimization.
+
+V14 removes fixed horizontal ray coordinates from CNN inputs. Shared circular convolutions score depth activity, goal alignment, elevation and the neural goal-distance group. The direction is the normalized softmax-weighted sum of ray directions. Its cyclic yaw equivariance concerns this bearing calculation; the velocity and range decoder and the biological reservoir do not acquire an exact rotation symmetry from that test. See the [portal protocol](evidence/portal-feedback-protocol.md) for sampling, exposure and observed failures.
+
+## Projection whitening and the information diagnostic
+
+Let A be the known synthetic sensory projection, c its fixed visual-centering drive, W the complete signed recurrent matrix and h the neuron state. The brain update is h_t = 0.5 h_(t-1) + 0.5 tanh(W h_(t-1) + A x_t - c). From the full previous and current activities, z_t = atanh(2 h_t - h_(t-1)) + c recovers the combined input and recurrent drive, subject to floating-point precision and saturation.
+
+The information upper-bound diagnostic solves A x_hat = z_t - W h_(t-1) by stabilized least squares. It explicitly cancels recurrent computation and must not be interpreted as a beneficial connectome readout. The navigation candidate instead solves A f_t = z_t, retaining f_t approximately equal to x_t + A^+ W h_(t-1). It corrects cross-talk between the seeded projections while retaining their projected recurrent context. These are derived neuron-activity features, not values appended from the world observation.
+
+Columns of A are normalized by their Euclidean norm before forming the Gram matrix. A diagonal ridge of 0.000001 stabilizes its Cholesky factorization. Activity inversion clamps tanh arguments to [-1 + 0.000001, 1 - 0.000001]; saturated values are therefore approximate. Tests verify the projection algebra and that retaining recurrent drive changes the decoded features. Actual diagnostics use the full graph, with no graph reduction.
+
+In a short 128-transition optimization diagnostic, the recurrence-canceling bound reconstructed panorama distances with approximately 0.000045 metre RMSE. The recurrence-retaining candidate had 0.824 metre RMSE. An affine fit of the preceding grouped readout, fitted and measured on those same observations, had 1.724 metre RMSE. This is a small, favorable diagnostic sample and does not establish navigation performance, independent generalization, a unique failure cause or biological advantage. Its two 128-transition checks and the separate 128-transition PPO smoke are verification, not substantive training.
+
+
+La lectura de contraste de v32 mantiene una fracción explícita de recurrencia:
+
+\[
+y_{\mathrm{contrast}} = A^+\left[z - 0.95Wh_{t-1}\right]
+\approx x_t + 0.05A^+Wh_{t-1}.
+\]
+
+La matriz neuronal, la proyección y la actualización de todos los estados se conservan. Es una decisión de ingeniería para reducir interferencia en coordenadas sensoriales; no reproduce un mecanismo demostrado en la mosca. El contrato tiene una huella propia y requiere transferencia explícita respecto del lector anterior. La fracción recurrente se comprueba por álgebra y las acciones por recarga de checkpoint.
+
+El contexto de percepción usa una reducción del panorama completo a una cuadrícula de 5 por 12 y una red que predice escala y sesgo para los canales locales. Esos parámetros condicionan las puntuaciones de aberturas antes de seleccionar un máximo local. Su objetivo supervisado conserva entropía cruzada angular, error de dirección y error de distancia; no modifica el conectoma ni constituye por sí mismo entrenamiento PPO.
+
+
+Para separar aproximación y cruce se aprende una normal horizontal de pared \(n\) a partir de la imagen neuronal. Las etiquetas de orientación provienen únicamente de las poses de entrenamiento. Con centro estimado \(c\), se descompone \(c=n(n^Tc)+c_\perp\). Durante la aproximación, la referencia es \(c-1.3n\); tras alinearse, es \(c+1.2n\). Cerca del objetivo se usa su dirección y distancia neuronales existentes. La cabeza de orientación se ajusta con pérdida \(1-\hat n^Tn^*\), conservando los pesos de percepción anteriores.
+
+V35 limita la componente longitudinal de aproximación mediante la mediana de distancias cortas proyectadas sobre la normal aprendida. Se usan rayos a menos de 7,7 metros, casi horizontales y alineados con la normal en un cono cuyo coseno mínimo es 0,9. Si no hay una medida utilizable se conserva la estimación aprendida. Es una heurística de control con incertidumbre, no una garantía de seguridad ni una modificación de pesos.
+
+
+## Temporal image alignment and inspection basis
+
+For current and previous horizontal neuronal goal bearings g and g_old, the image warp uses delta = atan2(g_old_y, g_old_x) - atan2(g_y, g_x). Each current panorama column samples the previous image at column + 72 delta/(2 pi), with circular interpolation. Empty bearings use zero shift. This approximates camera yaw and includes translational error; no exact pose or fixed history age is assumed.
+
+With normalized sensory projection B = A N^-1 and Gram G = B^T B + ridge I, the drive readout is f = N^-1 G^-1 B^T z. For a policy gradient q = d(action)/df, its local drive sensitivity is B G^-1 N^-1 q. The anatomical inspector plots that quantity for projection readers, holding previous state and previous history fixed. It is a derivative with respect to reconstructed drive, not with respect to the recurrent neuron state or a causal intervention. The trace metadata names the basis. Group-mean and legacy readers use their own state sensitivity mapping.
+
+The trajectory guard projects each reconstructed distance endpoint p onto the horizontal motion direction u. It uses the smallest positive p^T u with norm(p - u p^T u) <= 0.28 m. Vertical guards use endpoints inside a horizontal radius of 0.28 m. This avoids braking for some side obstacles, but sparse rays and reconstruction errors can miss surfaces. The eight optimization flights showed no improvement over the preceding controller.

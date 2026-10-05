@@ -1,5 +1,7 @@
 # Roadmap
 
+La navegación fiable en `large` sigue pendiente. El mejor estudiante de esta tanda, v34, llegó a 3 de 8 objetivos en mapas de optimización reutilizados, con una colisión y cuatro timeouts. Se añadieron 131.072 transiciones físicas de entrenamiento; los ajustes sobre datos ya guardados y las comprobaciones se contabilizan por separado. Los candidatos posteriores no mejoraron ese resultado. El [protocolo y los resultados](docs/evidence/portal-feedback-protocol.md) documentan cada variante, incluido el mapa observado que sigue en diagnóstico. El test reservado y los aliases originales se conservan.
+
 Original-large navigation remains unresolved. The [spatial neural experiment](docs/evidence/spatial-neural-v5-results.md) consumed 98,304 additional transitions, bringing substantive use to 786,432. Its two student-only rounds reached no goals, with 143 and three collisions. The original launcher aliases and reserved final tests remain preserved.
 
 A CPU/CUDA precision discrepancy stopped its post-training verification after the final checkpoint was saved. Identical saved tensors and exact same-GPU reload were confirmed; disabling convolution TF32 resolves the numerical comparison. Its one declared development validation was completed separately without training using unchanged weights and frozen runtime sources: 0/8 goals, six collisions and two timeouts. This reused suite is not an independent final test.
@@ -8,7 +10,7 @@ The [next bounded correction](docs/evidence/neural-waypoint-v6-plan.md) adds lea
 
 The full-connectome controller, procedural 3D rooms, anatomical inspection, recording, replay and bounded experiment tools are implemented. This roadmap describes proposed work; it does not start another training run.
 
-The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0Ã¢â‚¬â€œ5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
+The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0-5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
 
 The [post-v2 controller diagnosis](docs/evidence/critic-history-diagnosis.md) records teacher-to-student distribution errors, actor degradation after PPO and a verified option to isolate critic memory gradients. The matched 65,536-transition experiment completed with 0/8 goals and eight collisions on original-large development validation. [Frozen comparison](docs/evidence/guided-navigation-v3-plan.md) records the scope.
 

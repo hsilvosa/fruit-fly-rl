@@ -1,5 +1,7 @@
 # Results
 
+La navegación fiable en `large` sigue pendiente. El mejor estudiante de esta tanda, v34, llegó a 3 de 8 objetivos en mapas de optimización reutilizados, con una colisión y cuatro timeouts. Se añadieron 131.072 transiciones físicas de entrenamiento; los ajustes sobre datos ya guardados y las comprobaciones se contabilizan por separado. Los candidatos posteriores no mejoraron ese resultado. El [protocolo y los resultados](evidence/portal-feedback-protocol.md) documentan cada variante, incluido el mapa observado que sigue en diagnóstico. El test reservado y los aliases originales se conservan.
+
 Navigation performance is separate from implementation correctness and anatomical fidelity. The full fixed MaleCNS v1.0 graph was retained in these experiments; its synapses were not optimized. Outcomes do not establish a biological advantage.
 
 ## Latest original-large corrections

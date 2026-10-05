@@ -1,5 +1,7 @@
 # Fly RL
 
+La navegación fiable en `large` sigue pendiente. El mejor estudiante de esta tanda, v34, llegó a 3 de 8 objetivos en mapas de optimización reutilizados, con una colisión y cuatro timeouts. Se añadieron 131.072 transiciones físicas de entrenamiento; los ajustes sobre datos ya guardados y las comprobaciones se contabilizan por separado. Los candidatos posteriores no mejoraron ese resultado. El [protocolo y los resultados](docs/evidence/portal-feedback-protocol.md) documentan cada variante, incluido el mapa observado que sigue en diagnóstico. El test reservado y los aliases originales se conservan.
+
 Original-large navigation remains unresolved. The [spatial neural experiment](docs/evidence/spatial-neural-v5-results.md) consumed 98,304 additional transitions, bringing substantive use to 786,432. Its two student-only rounds reached no goals, with 143 and three collisions. The original launcher aliases and reserved final tests remain preserved.
 
 A CPU/CUDA precision discrepancy stopped its post-training verification after the final checkpoint was saved. Identical saved tensors and exact same-GPU reload were confirmed; disabling convolution TF32 resolves the numerical comparison. Its one declared development validation was completed separately without training using unchanged weights and frozen runtime sources: 0/8 goals, six collisions and two timeouts. This reused suite is not an independent final test.
@@ -14,7 +16,7 @@ This is an engineered navigation experiment. Synthetic distance rays and target 
 
 The MaleCNS reconstruction, annotations and soma coordinates were produced by the FlyEM team at HHMI Janelia Research Campus, the University of Cambridge Department of Zoology, the MRC Laboratory of Molecular Biology, Google Research, and the contributors credited in the original publication. See the [official project](https://male-cns.janelia.org/).
 
-Cite Berg, S., Beckett, I. R., Costa, M., et al. (2026), *Sexual dimorphism in the complete Drosophila male central nervous system connectome*, Cell, 189(18), 5504Ã¢â‚¬â€œ5526.e15. [DOI](https://doi.org/10.1016/j.cell.2026.08.015).
+Cite Berg, S., Beckett, I. R., Costa, M., et al. (2026), *Sexual dimorphism in the complete Drosophila male central nervous system connectome*, Cell, 189(18), 5504-5526.e15. [DOI](https://doi.org/10.1016/j.cell.2026.08.015).
 
 The source data is released under CC BY 4.0, as linked by the [official download page](https://male-cns.janelia.org/download/). Fly RL filters and transforms those tables; the original researchers did not produce this controller or its training results. [Credits and references](docs/REFERENCES.md) describes attribution, modifications and reusable citations.
 
@@ -24,12 +26,12 @@ The audited graph contains 167,184 neurons, 25,583,622 directed edges and 124,17
 
 | Profile | Room dimensions | Collision boxes | Structure |
 | --- | --- | --- | --- |
-| `gate-near` | 12 Ãƒâ€” 12 Ãƒâ€” 10 | 4 | One wide opening and nearby goal |
-| `gate-long` | 24 Ãƒâ€” 12 Ãƒâ€” 10 | 4 | The same opening with longer travel |
-| `open` | 32 Ãƒâ€” 32 Ãƒâ€” 12 | 24 | Scattered obstacles |
-| `passages` | 32 Ãƒâ€” 32 Ãƒâ€” 12 | 64 | Three partitions with openings |
-| `large` | 48 Ãƒâ€” 48 Ãƒâ€” 16 | 112 | Five partitions and narrower passages |
-| `maze` | 64 Ãƒâ€” 64 Ãƒâ€” 20 | 192 | Eight partitions and four dead-end branches |
+| `gate-near` | 12 x 12 x 10 | 4 | One wide opening and nearby goal |
+| `gate-long` | 24 x 12 x 10 | 4 | The same opening with longer travel |
+| `open` | 32 x 32 x 12 | 24 | Scattered obstacles |
+| `passages` | 32 x 32 x 12 | 64 | Three partitions with openings |
+| `large` | 48 x 48 x 16 | 112 | Five partitions and narrower passages |
+| `maze` | 64 x 64 x 20 | 192 | Eight partitions and four dead-end branches |
 
 The original dense generator remains available. Each new profiled layout has a hidden clearance certificate and a route-dependent time allowance. The controller receives neither the certificate nor the complete obstacle map. [Progressive maps](docs/GEOMETRY_CURRICULUM.md) explains generation, difficulty measurements and the curriculum.
 
@@ -72,7 +74,7 @@ Achievable speed depends on compute and rendering load. Physics keeps its fixed 
 
 ## Results and verification
 
-The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0Ã¢â‚¬â€œ5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
+The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0-5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
 
 Results are selected using validation only. One frozen winner is assessed on each reserved final pool, which is then consumed. Different experiments use different final rooms and do not establish a paired performance improvement. [Results](docs/RESULTS.md) records aggregate outcomes and uncertainty; [verification](docs/VERIFICATION.md) distinguishes correctness checks from learning performance.
 

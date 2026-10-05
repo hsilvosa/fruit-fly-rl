@@ -23,8 +23,9 @@ class BrainEnv(VecEnv):
         self.map_profile=resolve_profile(map_profile)
         self.worlds=[FlightWorld(seed+i,mode,layout_seeds,dynamics,sensor_version,self.map_profile) for i in range(batch)]
         from fly_rl.connectome.readout import InputGroupedBrain,GROUP_READOUT,LEGACY_READOUT
-        if readout_version not in (GROUP_READOUT,LEGACY_READOUT):raise ValueError('Unknown brain readout')
-        brain_type=InputGroupedBrain if readout_version==GROUP_READOUT else Brain
+        from fly_rl.connectome.innovation import WhitenedActivityBrain,WHITENED_READOUT,ContrastActivityBrain,CONTRAST_READOUT
+        if readout_version not in (GROUP_READOUT,LEGACY_READOUT,WHITENED_READOUT,CONTRAST_READOUT):raise ValueError('Unknown brain readout')
+        brain_type=ContrastActivityBrain if readout_version==CONTRAST_READOUT else WhitenedActivityBrain if readout_version==WHITENED_READOUT else InputGroupedBrain if readout_version==GROUP_READOUT else Brain
         self.brain=brain or brain_type(data,batch,device,sensor_version=sensor_version)
         if sensor_backend=="torch-cuda" and self.brain.device.type!="cuda":raise ValueError("CUDA sensor backend requires a CUDA brain")
         self.feature_count=getattr(self.brain,'feature_count',FEATURES)
@@ -234,10 +235,15 @@ def train(data,device,steps,batch,output,resume=None,smoke=False,mode='obstacles
     if smoke and (steps!=128 or batch!=1): raise ValueError('Smoke test is exactly 128 transitions and one PPO update')
     if target_envs and curriculum!='geometry-v2-practice-mastery':raise ValueError('Dedicated target exposure requires mastery curriculum')
     if not np.isfinite(gamma) or not .9 <= gamma < 1.:raise ValueError('Discount gamma must be finite and in [0.9, 1)')
+    live_env=session.env if session is not None and session.env is not None else None
+    readout_version=getattr(live_env.brain,'readout_version','random-pool-256-v1') if live_env is not None else checkpoint_readout(resume)
+    sensory_version=sensor_version or (live_env.brain.sensor_version if live_env is not None else checkpoint_sensor_version(resume))
+    from fly_rl.simulation.sensors import SENSOR_V6
+    sensor_backend='torch-cuda' if device=='cuda' and sensory_version==SENSOR_V6 else 'numpy'
     contract=json.dumps({'data':str(Path(data).resolve()),'device':device,'batch':batch,'mode':mode,
-        'layouts':layout_seeds,'dynamics':dynamics,'seed':training_seed,'sensor':sensor_version or checkpoint_sensor_version(resume),
+        'layouts':layout_seeds,'dynamics':dynamics,'seed':training_seed,'sensor':sensory_version,
         'curriculum':curriculum,'total':curriculum_total,'profiles':curriculum_profiles,'practice':practice_seeds,
-        'profile':map_profile,'reward':reward_shaping,'gamma':gamma,'timeout_as_terminal':timeout_as_terminal,'target_envs':target_envs,'history_frames':history_frames,'history_stride':history_stride},sort_keys=True,default=str)
+        'profile':map_profile,'reward':reward_shaping,'gamma':gamma,'timeout_as_terminal':timeout_as_terminal,'target_envs':target_envs,'history_frames':history_frames,'history_stride':history_stride,'readout':readout_version,'sensor_backend':sensor_backend},sort_keys=True,default=str)
     continuing=session is not None and session.env is not None
     if continuing:
         if session.contract!=contract or str(Path(resume).resolve())!=session.last_checkpoint:
@@ -247,7 +253,7 @@ def train(data,device,steps,batch,output,resume=None,smoke=False,mode='obstacles
             raise ValueError('Continuous curriculum state mismatch')
         session.restore_random_state()
     else:
-        env=BrainEnv(data,batch,device,mode=mode,layout_seeds=layout_seeds,dynamics=dynamics,seed=training_seed,sensor_version=sensor_version or checkpoint_sensor_version(resume),map_profile=map_profile,timeout_as_terminal=timeout_as_terminal,history_frames=history_frames,history_stride=history_stride)
+        env=BrainEnv(data,batch,device,mode=mode,layout_seeds=layout_seeds,dynamics=dynamics,seed=training_seed,sensor_version=sensory_version,map_profile=map_profile,timeout_as_terminal=timeout_as_terminal,history_frames=history_frames,history_stride=history_stride,readout_version=readout_version,sensor_backend=sensor_backend)
     if curriculum is not None and not continuing:
         from fly_rl.training.approach_curriculum import VERSION,configure_curriculum
         from fly_rl.training.geometry_curriculum import VERSION as GEOMETRY_VERSION,configure_geometry_curriculum
@@ -322,11 +328,19 @@ def checkpoint_sensor_version(path):
     value=validate_sensor_version(metadata.get('sensor_version',SENSOR_VERSION))
     expected=f':reservoir-v2-{value}-256-seed42-leak0.5-scale0.9'
     readout=metadata.get('readout_version','random-pool-256-v1')
-    if readout=='input-associated-neural-mean-v1':expected+=':'+readout
+    from fly_rl.connectome.innovation import WHITENED_READOUT,CONTRAST_READOUT
+    if readout in ('input-associated-neural-mean-v1',WHITENED_READOUT,CONTRAST_READOUT):expected+=':'+readout
     elif readout!='random-pool-256-v1':raise ValueError('Unknown checkpoint readout')
     if not metadata.get('fingerprint','').endswith(expected):
         raise ValueError('Checkpoint sensor metadata/fingerprint mismatch')
     return value
+
+
+def checkpoint_readout(path):
+    """Validated reader contract for both demo and explicit checkpoint resume."""
+    if not path:return 'random-pool-256-v1'
+    checkpoint_sensor_version(path)
+    return json.loads(Path(path).with_suffix('.json').read_text()).get('readout_version','random-pool-256-v1')
 
 
 def checkpoint_history(path):

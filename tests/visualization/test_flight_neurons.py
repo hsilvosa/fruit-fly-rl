@@ -42,3 +42,52 @@ def test_neural_ids_and_local_sensitivity_match_finite_difference(tmp_path):
     finite=(mean(features+direction)-mean(features-direction))/(2*epsilon)
     assert np.isclose(row['value'],finite,rtol=.05,atol=1e-5)
     inspector.reset();assert inspector.previous is None
+
+
+@pytest.mark.parametrize('readout', ['grouped', 'contrast'])
+def test_history_sensitivity_uses_actual_reader_finite_difference(tmp_path, readout):
+    import torch
+    from types import SimpleNamespace
+    from fly_rl.connectome.readout import InputGroupedBrain
+    from fly_rl.connectome.innovation import ContrastActivityBrain
+    from fly_rl.simulation.sensors import SENSOR_V6
+    from fly_rl.visualization.neural_view import NeuralInspector
+    torch.set_num_threads(2)
+    # Algebra unit graph only. Viewer and flight verification use all neurons.
+    n=400 if readout=='grouped' else 30000
+    cls=InputGroupedBrain if readout=='grouped' else ContrastActivityBrain
+    brain=cls(matrix=sparse.eye(n, format='csr', dtype=np.float32)*.2,
+              device='cpu', sensor_version=SENSOR_V6)
+    sensors=np.full((1,3869),.3,np.float32)
+    brain.step(sensors);previous=brain.state.clone();current_features=brain.step(sensors)
+    features=np.zeros((1,9,3869),np.float32);features[:,-1]=current_features
+    folder=tmp_path/'processed';folder.mkdir();np.save(folder/'neuron_ids.npy',np.arange(n)+100000)
+
+    class LinearActor(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            weights=torch.zeros(3869);weights[[256,269,1600,3100]]=.1
+            self.weights=torch.nn.Parameter(weights)
+        def get_distribution(self,x):
+            scalar=x[:,-1]@self.weights
+            mean=torch.stack([scalar,scalar*0,scalar*0,scalar*0],1)
+            return SimpleNamespace(distribution=SimpleNamespace(mean=mean))
+    actor=LinearActor();model=SimpleNamespace(policy=actor)
+    inspector=NeuralInspector(brain,tmp_path);result=inspector.sample(model,features,[1,0,0,0],1)
+    index=int(result['local_sensitivity'][0]['neuron_id'])-100000
+    analytic=result['local_sensitivity'][0]['value'];saved=brain.state.clone();epsilon=.01
+    def perturbed(sign):
+        if readout=='grouped':
+            brain.state=saved.clone();brain.state[index,0]+=sign*epsilon
+            values=brain.read_activity()
+        else:
+            drive=torch.atanh((2*saved-previous).clamp(-1+1e-6,1-1e-6))
+            drive[index,0]+=sign*epsilon
+            states=.5*previous+.5*torch.tanh(drive)
+            values=brain.reconstruct_activity(previous,states)
+        x=features.copy();x[:,-1]=values
+        with torch.no_grad():return actor.get_distribution(torch.tensor(x)).distribution.mean[0,0].item()
+    finite=(perturbed(1)-perturbed(-1))/(2*epsilon)
+    assert np.isclose(analytic,finite,rtol=.03,atol=2e-6)
+    assert result['sensitivity_basis']==('recurrent_neuron_state' if readout=='grouped' else 'reconstructed_neuronal_drive')
+    assert np.isfinite(inspector.sensitivity).all()
