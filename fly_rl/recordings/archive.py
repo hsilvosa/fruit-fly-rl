@@ -56,6 +56,20 @@ class Archive:
 
     def inspect(self):
         errors=list(self.event_errors);warnings=[];valid=[];episodes={};previous=0;total=0
+        controller=self.manifest.get('metadata',{}).get('controller',{})
+        if controller.get('kind')=='explicit_geometry_planner':
+            try:
+                archived=json.loads((self.path/'controller.json').read_text(encoding='utf-8'))
+                if archived!=controller: raise ValueError('Controller specification differs from manifest')
+                if digest(self.path/'controller.py')!=controller['source_sha256']:
+                    raise ValueError('Primary controller checksum mismatch')
+                for source in controller.get('sources',[]):
+                    name=source['archive_file']
+                    if Path(name).name!=name: raise ValueError('Invalid controller source filename')
+                    if digest(self.path/name)!=source['sha256']:
+                        raise ValueError(f'Controller dependency checksum mismatch: {name}')
+            except (OSError,ValueError,KeyError,TypeError) as exc:
+                errors.append(f'Controller sources: {exc}')
         indexed={c['file']:c for c in self.manifest['chunks']}
         candidates=sorted(set(indexed)|{p.name for p in self.path.glob('transitions-*.npz')})
         dt=float(self.manifest.get('metadata',{}).get('dt',.05))

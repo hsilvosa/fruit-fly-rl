@@ -19,3 +19,15 @@ Regenerate from the repository root after installing dependencies:
 ```
 
 The script intentionally replaces these named public figure files. It does not overwrite demo archives, train weights, or evaluate a policy. See the [README gallery](../../README.md#map-gallery) for task descriptions and measured results.
+
+## Experimental planner render
+
+[planner-v60-scene.png](planner-v60-scene.png) is a Panda3D screenshot from the actual v60 viewer in the original `large` profile, seed 8500012. It is separate from the geometry-only galleries. The verification ran 800 physical steps with full-connectome activity, zero collisions, and no training. It ended before completing an episode, so the image is not a navigation result or a selected-success claim. The separate brain window was also exercised; this image shows the room window.
+
+Recorded command:
+
+```powershell
+.\.conda\python.exe -s -m fly_rl demo --controller observed-map --planner-version v60 --seed 8500012 --offscreen --seconds 10 --speed 4 --brain-view --record-dir runs/verification/planner-v60-viewer --screenshot reports/planner-v60-viewer.png
+```
+
+The named public image is copied from that output after visual inspection. Its flight archive and QA reports remain ignored local artifacts. No downloaded anatomical or dataset image is included in this screenshot.

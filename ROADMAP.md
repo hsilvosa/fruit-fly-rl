@@ -11,6 +11,7 @@ Current as of October 5, 2026. This is proposed work, not an active training sch
 | Learned medium dense-room navigation | Historical independent pools range from 54.7% to 78.1%; several results around 67–78% | Useful, variable performance; not interchangeable with new profiles |
 | Learned structured large-room navigation | Initial final result 0/64; best recent student v34 is 3/8 on reused optimization maps | Unresolved |
 | Explicit large-room planner v55 | 8/8 reused optimization; 13/16 frozen prospective development, zero collisions, three timeouts; interval 57.0–93.4% | Working demo, incomplete robustness |
+| Experimental large-room planner v60 | 3/3 corrected known failures; separate frozen paired development 14/16, zero collisions, two timeouts; interval 64.0–96.5%. V55 reached 12/16 on the same new rooms | Available explicitly; two new failures remain |
 | `maze`, noise, wind, moving obstacles | Geometry or proposed capabilities without verified navigation results | Future work |
 
 The planner is the operational solution today. It has explicit map memory, bounded search, and proportional flight control, not learned movement weights. Its result does not fulfill the learned-policy objective or prove biological benefit. [Results](docs/RESULTS.md) and [resolution history](docs/NAVIGATION_RESOLUTION.md) retain the full evidence.
@@ -28,6 +29,8 @@ Trajectory, search-effort, command, pose-error, and final observed-evidence diag
 Completion requires reproducible diagnoses from retained data, focused regression checks for the selected fixes, and explicit reporting of all three development outcomes. Fixing known rooms establishes a correction on those rooms, not generalization.
 
 ## Priority 2: Measure the corrected planner independently
+
+October 5 progress: the predeclared sixteen-room paired development check completed with frozen v55 and v60. Results were 12/16 versus 14/16, no collisions, with two added v60 successes and no lost baseline successes. Both arms used 55,680 physical transitions; source, layout, graph, and alias checks passed. The [protocol](docs/PLANNER_DEVELOPMENT.md) and [per-room report](docs/evidence/planner-v60-development-results.md) retain the evidence. This is development, not the reserved final suite; the independent-final 80% objective remains open. Once inspected, the two new failures become design cases for subsequent corrections.
 
 Predeclare fresh development layouts, selection rules, compute limits, and an untouched final pool. Freeze code and sensor/readout contracts before prospective measurement. Use development only for selecting versions; assess the frozen winner once on its final pool and mark that pool consumed. Do not use earlier final pools again to select changes.
 

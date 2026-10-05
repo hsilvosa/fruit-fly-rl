@@ -19,6 +19,7 @@ These are recorded measurements, current as of October 5, 2026. A **goal** means
 | Original medium dense rooms, `dense-v3`, 32 x 32 x 12, 48 obstacles | Separate historical learned-policy experiments: **43/64 (67.2%)**, **50/64 (78.1%)**, **35/64 (54.7%)**, **45/64 (70.3%)**, and **48/64 (75.0%)** | Earlier roughly 70–80% results were real but varied by experiment. Each used its own final pool; these are not a paired ranking. [Counts and uncertainty](docs/RESULTS.md#earlier-dense-room-results) |
 | Structured large rooms, `large`, 48 x 48 x 16, 112 boxes and five narrow passages | Initial geometry comparison: **0/64** on its final pool. Best recent learned student v34: **3/8** on reused optimization maps | Learned large-room navigation remains unreliable. The 3/8 is not an independent test or a replacement for the earlier final result |
 | The same `large` profile, planner v55 | **8/8** reused optimization goals; frozen prospective development: **13/16 (81.25%)**, zero collisions, three timeouts; Wilson 95% interval **57.0–93.4%** | A working autonomous planner demo, not a PPO learning result. The small sample does not establish a guaranteed 80% rate. [Evidence](docs/evidence/observed-map-v55-results.md) |
+| The same `large` profile, experimental planner v60 | **3/3** corrected known failures; new frozen paired development: **14/16 (87.5%)**, zero collisions, two timeouts; Wilson 95% interval **64.0–96.5%**. V55 reached 12/16 on these same new rooms | Conditional clearance recovery and higher cruising speed. Two added successes, no lost baseline successes on this suite; not a reserved final result. [Paired evidence](docs/evidence/planner-v60-development-results.md) |
 | `open`, `passages`, intermediate diagnostic profiles, and `maze` | Geometry is implemented; no broad reliable-navigation result is claimed | A generated map or passing geometry test does not mean a controller can navigate it |
 
 **Map structure matters more than size labels.** A long room with one wide gate can be easier than a smaller room with several narrow alternating passages. The gate result does not cover every small map, and the older dense result is not a result for the newer `open` profile.
@@ -79,7 +80,13 @@ Moving from `dense-v3` to `large` changed the task: five partitions require deto
 
 V55 reconstructs distance, goal, and motion from neural states. It estimates relative pose, builds an occupancy grid, runs bounded weighted search, and converts a nearby route reference into flight commands. It has no learned movement weights and receives no true poses, hidden boxes, seeds, or certified route. It knows the room contract and observes a synthetic goal beacon. All connectome states advance, although the engineered reader cancels recurrence in base channels and retains 5% in panoramic channels.
 
-This is the **current operational solution**, not a definitive solution to learned navigation. Three prospective timeouts remain, route optimality is not guaranteed, and biological benefit is untested. The [resolution report](docs/NAVIGATION_RESOLUTION.md) retains twenty detailed sections covering attempts, formulas, budgets, per-room outcomes, and limitations.
+This is the **current operational solution**, not a definitive solution to learned navigation. Frozen v55 had three prospective timeouts; route optimality is not guaranteed and biological benefit is untested. The [resolution report](docs/NAVIGATION_RESOLUTION.md) retains the detailed attempts, formulas, budgets, per-room outcomes, and limitations.
+
+The latest experimental correction, v60, resolves those three inspected timeouts and reaches 14/16 on a separate frozen development comparison. Raising speed and relaxing margins indiscriminately caused a regression; v60 enables broader known-free margin traversal only after a search hits its cap. Two new development timeouts remain. V55 stays the standard launcher's default, while v60 is available explicitly. [Correction history](docs/evidence/planner-followup-v57-v60.md) and [development protocol](docs/PLANNER_DEVELOPMENT.md) explain the tradeoff and uncertainty.
+
+![Experimental v60 in the original large room](docs/images/planner-v60-scene.png)
+
+This is an actual 800-step rendered verification of v60, with finite activity and no collisions. It did not complete an episode and is not performance evidence. [Image provenance](docs/images/README.md).
 
 ## Install and run
 
@@ -100,6 +107,7 @@ Setup creates the local `.conda`, installs dependencies, and downloads/prepares 
 ```powershell
 .\launch-observed-map.cmd --speed 4 --seed 370001
 .\launch-observed-map.cmd --record-brain
+.\launch-observed-map.cmd --planner-version v60 --seed 8500012
 ```
 
 To see an untrained policy interface instead:
@@ -148,7 +156,7 @@ Each demo retains a unique archive in `runs/demo/`, with metadata, states, actio
 
 ## Next steps
 
-1. **Check the corrected planner beyond known failures.** Experimental v60 reaches all three inspected v55 timeout rooms without collisions, combining higher cruising speed with clearance recovery triggered by a capped search. V55 remains the demo default pending fresh measurement. [Correction attempts and results](docs/evidence/planner-followup-v57-v60.md).
+1. **Resolve the two new development timeouts.** V60 corrected the three earlier failures and reached 14/16 in fresh paired development, but one new room barely moved and another exhausted its deadline on detours. Diagnose them without retuning the frozen reported versions. [Correction attempts](docs/evidence/planner-followup-v57-v60.md) and [paired results](docs/evidence/planner-v60-development-results.md).
 2. **Measure a corrected planner on fresh rooms.** Declare selection rules and suites, freeze the candidate, and report goals, collisions, timeouts, confidence intervals, route length, flight time, and compute. Inspected failures become development cases.
 3. **Teach a student complete navigation.** Collect planner demonstrations under an explicit budget and include student-state recovery. Separate teacher arrivals from teacher-free student arrivals; preserve simpler-task references.
 4. **Increase difficulty through verified stages.** Separate extra walls, narrow openings, altitude changes, and clutter before combining them. Advance through two-gate, passage, and large tasks only after measured mastery. Check size/sensor contracts before `maze`.

@@ -72,7 +72,11 @@ def run(args):
                     from fly_rl.connectome.innovation import MOTION_STABLE_READOUT
                     from fly_rl.navigation.observed_map import ObservedMapPolicy
                     self.env=BrainEnv(args.data,1,args.device,args.seed,mode='dense',dynamics='coordinated',sensor_version=SENSOR_V6,map_profile='large',readout_version=MOTION_STABLE_READOUT,sensor_backend='torch-cuda' if args.device=='cuda' else 'numpy',history_frames=8,history_stride=8)
-                    self.policy=ObservedMapPolicy()
+                    if getattr(args,'planner_version','v55')=='v55':
+                        self.policy=ObservedMapPolicy()
+                    else:
+                        from fly_rl.navigation.registry import VersionedPlannerPolicy
+                        self.policy=VersionedPlannerPolicy(args.planner_version)
                 else:
                     self.env=BrainEnv(args.data,1,args.device,args.seed,mode=getattr(args,'room_mode','obstacles'),dynamics=getattr(args,'dynamics','legacy'),sensor_version=sensors,map_profile=profile,readout_version=json.loads(Path(args.checkpoint).with_suffix('.json').read_text()).get('readout_version','random-pool-256-v1') if args.checkpoint else 'random-pool-256-v1',sensor_backend='torch-cuda' if sensors==SENSOR_V6 and args.device=='cuda' else 'numpy',**checkpoint_history(args.checkpoint))
                     self.policy=load_model(args.checkpoint,self.env.brain,self.env,getattr(args,'transfer',False)) if args.checkpoint else make_policy(self.env)
@@ -116,6 +120,8 @@ def run(args):
             self.accept('b',self.toggle_brain)
             self.controls=OnscreenText(text='LMB drag orbit / RMB look / MMB pan / wheel zoom\nC camera modes / WASD + Q/E free move / SHIFT: simulation 10x / F focus fly\nSPACE pause / R reset / N new room / V sensors / ESC exit',pos=(-1.53,-.82),scale=.027,fg=(.62,.72,.82,1),align=TextNode.ALeft)
             label=('REPLAY / SAVED STATES / '+self.env.inspection['status'].upper()) if self.is_replay else ('OBSERVED MAP PLANNER / NO LEARNED MOVEMENT WEIGHTS' if self.is_planner else 'UNTRAINED POLICY / NO TRAINING RUNNING' if self.untrained_policy else 'CHECKPOINT POLICY / NO TRAINING RUNNING')
+            if self.is_planner and self.policy.specification.get('experimental'):
+                label='EXPERIMENTAL '+getattr(args,'planner_version','').upper()+' PLANNER / NO TRAINING RUNNING'
             self.label=OnscreenText(text=label,pos=(1.52,.89),scale=.029,fg=(1,.72,.32,1),align=TextNode.ARight)
             if self.is_replay:
                 self.controls.setText('Mouse + C: camera / WASD + Q/E: free move / F: focus\nSPACE pause / R rewind / N next episode / PageUp-Down seek / V sensors / ESC exit')
@@ -165,10 +171,13 @@ def run(args):
                         'map_profile':self.env.map_profile.to_dict() if self.env.map_profile else None}})
                 from fly_rl.training.learning import save_model
                 if self.is_planner:
-                    from fly_rl.navigation import observed_map
-                    source=Path(observed_map.__file__)
-                    (self.flight_record.path/'controller.py').write_bytes(source.read_bytes())
-                    (self.flight_record.path/'controller.json').write_text(json.dumps(self.policy.specification,indent=2),encoding='utf-8')
+                    if hasattr(self.policy,'archive_sources'):
+                        self.policy.archive_sources(self.flight_record.path)
+                    else:
+                        from fly_rl.navigation import observed_map
+                        source=Path(observed_map.__file__)
+                        (self.flight_record.path/'controller.py').write_bytes(source.read_bytes())
+                        (self.flight_record.path/'controller.json').write_text(json.dumps(self.policy.specification,indent=2),encoding='utf-8')
                 else: save_model(self.policy,self.flight_record.path/'policy.zip',self.env.brain)
                 self.record_room('initial')
                 print('Recording flight to',self.flight_record.path,flush=True)

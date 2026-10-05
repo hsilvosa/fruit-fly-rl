@@ -19,7 +19,25 @@ def save(path, value):
     temporary.replace(path)
 
 
-def check(output, version, cap):
+def validate_request(seeds, cap, kind):
+    if not isinstance(seeds, list) or not 1 <= len(seeds) <= 16:
+        raise ValueError('Use one to sixteen contiguous integer room seeds')
+    if any(type(seed) is not int or seed < 0 for seed in seeds):
+        raise ValueError('Room seeds must be nonnegative integers')
+    if seeds != list(range(seeds[0], seeds[0]+len(seeds))):
+        raise ValueError('Room seeds must be contiguous, ordered, and distinct')
+    if kind not in ['reused-failure-diagnostic', 'frozen-prospective-development']:
+        raise ValueError('Unsupported verification kind')
+    limit = 12000 if kind == 'reused-failure-diagnostic' else 81920
+    if type(cap) is not int or not len(seeds) <= cap <= limit or cap % len(seeds):
+        raise ValueError('Physical cap exceeds this protocol or is not batch divisible')
+
+
+def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
+          deadline=None, frozen_sources=None, protocol_sha256=None):
+    seeds = [8500011, 8500012, 8500013] if seeds is None else seeds
+    validate_request(seeds, cap, kind)
+    batch = len(seeds)
     import torch
     from fly_rl.training.learning import BrainEnv
     from fly_rl.simulation.sensors import SENSOR_V6
@@ -48,8 +66,8 @@ def check(output, version, cap):
     for name in ['observed_map', 'goal_margin', 'cruise', 'free_margin', 'speed_margin']:
         path = f'fly_rl/navigation/{name}.py'
         protected[path] = digest(path)
-    state = dict(status='running', controller=version, kind='reused-failure-diagnostic',
-                 seeds=[8500011, 8500012, 8500013], physical_cap=cap,
+    state = dict(status='running', controller=version, kind=kind,
+                 seeds=seeds, physical_cap=cap, protocol_sha256=protocol_sha256,
                  physical_transitions=0, added_training_transitions=0, optimizer_updates=0,
                  reserved_test_evaluated=False, started_utc=datetime.now(timezone.utc).isoformat(),
                  protected_before=protected, episodes=[])
@@ -63,17 +81,30 @@ def check(output, version, cap):
     start = time.perf_counter()
     try:
         torch.set_num_threads(4)
-        env = BrainEnv('data', 3, 'cuda', seed=8500011, mode='dense', dynamics='coordinated',
+        env = BrainEnv('data', batch, 'cuda', seed=seeds[0], mode='dense', dynamics='coordinated',
                        sensor_version=SENSOR_V6, map_profile='large', history_frames=8,
                        history_stride=8, readout_version=MOTION_STABLE_READOUT, sensor_backend='torch-cuda')
-        env.seed(8500011)
+        env.seed(seeds[0])
         features = env.reset()
-        controllers = [controller_type() for _ in range(3)]
-        active = np.ones(3, bool)
+        controllers = [controller_type() for _ in seeds]
+        active = np.ones(batch, bool)
         initial = [(w.position.copy(), w.yaw) for w in env.worlds]
-        state.update(graph_neurons=env.brain.n, graph_edges=env.brain.audit['edges'])
-        for step in range(cap//3):
-            actions = np.zeros((3, 4), np.float32)
+        previous = [w.position.copy() for w in env.worlds]
+        flown = np.zeros(batch)
+        from fly_rl.recordings.recording import serializable
+        layouts = [w.snapshot() for w in env.worlds]
+        save(output/'initial-layouts.json', json.loads(json.dumps(layouts, default=serializable)))
+        layout_hashes = [hashlib.sha256(json.dumps(layout, sort_keys=True, default=serializable).encode()).hexdigest()
+                         for layout in layouts]
+        torch.cuda.reset_peak_memory_stats()
+        state.update(graph_neurons=env.brain.n, graph_edges=env.brain.audit['edges'],
+                     brain_fingerprint=env.brain.fingerprint, layout_hashes=layout_hashes)
+        stopped_for_deadline = False
+        for step in range(cap//batch):
+            if deadline is not None and datetime.now(timezone.utc) >= deadline:
+                stopped_for_deadline = True
+                break
+            actions = np.zeros((batch, 4), np.float32)
             for i in np.flatnonzero(active):
                 c = controllers[i]
                 actions[i] = c.action(features[i])
@@ -90,17 +121,21 @@ def check(output, version, cap):
                                  goal_evidence=int(c.evidence[cell]),
                                  estimated_pose_error=float(np.linalg.norm(c.position-actual)),
                                  estimated_yaw_error=float((c.yaw-angle+np.pi)%(2*np.pi)-np.pi))
-                    trace.append(dict(seed=8500011+int(i), step=step,
+                    trace.append(dict(seed=seeds[i], step=step,
                                       position=env.worlds[i].position.tolist(), controller=debug))
             features, _, done, infos = env.step(actions)
-            state['physical_transitions'] += 3
+            state['physical_transitions'] += batch
+            for i in np.flatnonzero(active):
+                position = infos[i]['transition_state']['position']
+                flown[i] += np.linalg.norm(position-previous[i])
+                previous[i] = position.copy()
             for i in np.flatnonzero(active & done):
                 info = infos[i]
-                state['episodes'].append(dict(seed=8500011+int(i), steps=step+1,
+                state['episodes'].append(dict(seed=seeds[i], steps=step+1, flown_distance=float(flown[i]),
                     success=bool(info['success']), collision=bool(info['collision']),
                     timeout=bool(info['truncated']), distance_end=float(info['distance'])))
                 c = controllers[i]
-                np.savez_compressed(output/f'map-{8500011+int(i)}.npz', evidence=c.evidence,
+                np.savez_compressed(output/f'map-{seeds[i]}.npz', evidence=c.evidence,
                                     position=c.position, goal=c.initial_goal, origin=c.origin,
                                     route=np.asarray(c.route), resolution=c.res)
                 active[i] = False
@@ -109,7 +144,10 @@ def check(output, version, cap):
                 save(output/'status.json', state)
             if not active.any():
                 break
-        state.update(status='completed', incomplete_episodes=int(active.sum()))
+        state.update(status='paused_deadline' if stopped_for_deadline else
+                     'budget_exhausted' if active.any() else 'completed',
+                     incomplete_episodes=int(active.sum()),
+                     peak_vram_gb=torch.cuda.max_memory_allocated()/2**30)
     except Exception as error:
         state.update(status='failed', error=str(error))
         raise
@@ -120,9 +158,16 @@ def check(output, version, cap):
                      finished_utc=datetime.now(timezone.utc).isoformat(),
                      protected_after={p: digest(p) for p in protected})
         state['protected_unchanged'] = state['protected_before'] == state['protected_after']
+        if frozen_sources is not None:
+            state['frozen_sources_before'] = frozen_sources
+            state['frozen_sources_after'] = {path: digest(path) for path in frozen_sources}
+            state['sources_unchanged'] = frozen_sources == state['frozen_sources_after']
+            if not state['sources_unchanged']:
+                state.update(status='failed', error='Frozen sources changed during verification')
         save(output/'trace.json', trace)
         save(output/'status.json', state)
     print(json.dumps(state, indent=2))
+    return state
 
 
 if __name__ == '__main__':

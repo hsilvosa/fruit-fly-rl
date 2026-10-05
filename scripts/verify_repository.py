@@ -27,6 +27,7 @@ def verify(root):
         "fly_rl.navigation.observed_map", "fly_rl.navigation.goal_margin",
         "fly_rl.navigation.cruise", "fly_rl.navigation.free_margin",
         "fly_rl.navigation.speed_margin", "fly_rl.navigation.adaptive_margin",
+        "fly_rl.navigation.registry",
         "fly_rl.training.mastery_curriculum",
         "fly_rl.simulation.map_profiles", "fly_rl.training.geometry_curriculum", "fly_rl.training.geometry_comparison", "fly_rl.visualization.map_report",
         "fly_rl.training.collision_diagnostics", "fly_rl.training.risk_shaping", "fly_rl.training.risk_comparison", "fly_rl.cli", "fly_rl.connectome.brain", "fly_rl.connectome.data",
