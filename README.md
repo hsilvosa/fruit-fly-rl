@@ -1,6 +1,6 @@
 # Fly RL
 
-A virtual fruit fly explores procedural 3D rooms using activity from the full annotated **MaleCNS v1.0 fruit-fly connectome**. The experiment asks whether a controller can turn that activity into useful navigation: avoid obstacles, cross openings, and reach a goal in rooms it has not seen.
+Fly RL is a **connectome-based 3D navigation project exploring reinforcement learning, imitation learning, and explicit planning**. It places a virtual fruit fly in procedural rooms and uses the full annotated **MaleCNS v1.0 fruit-fly connectome** as a fixed recurrent model that transforms simulated sensor readings into neural activity. Controllers use that activity to choose flight actions, learning from rewards, imitating guided trajectories, or building an observed map and planning a route. The goal is to navigate around obstacles, cross openings, and reach a target in rooms the controller has not seen before.
 
 There are two controller families: learned policies and an explicit observed-map planner. **Learned navigation works well on a single wide opening and moderately well in older dense rooms. The current large-room demo works through explicit planning; a reliable learned policy for those rooms remains unresolved.**
 
