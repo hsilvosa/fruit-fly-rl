@@ -99,3 +99,12 @@ The next hypothesis is an interaction between repeated replanning, route-referen
 
 
 The offline execution reporter makes these counts reproducible from retained traces. Room 9500014 had 24 reference-direction changes greater than 90 degrees across 173 eligible consecutive sampled pairs, including 13/86 in its second half. Room 13000013 had 15/174 overall and 8/87 in its second half. Each reached the search cap in one recorded frame. A reference can change because the fly moved, reached a waypoint, or changed its observed map; these counts do not identify erroneous replanning by themselves. The report hashes the input and preserves missing-field coverage. Eight synthetic reporter tests passed separately from the preceding 359-test full suite. [Command](../COMMANDS.md#offline-planner-execution-diagnostics).
+
+
+![Recorded v65 timeout path, search effort, and requested versus effective speed](../images/planner-v65-timeout.png)
+
+The path repeatedly crosses the same horizontal corridor rather than reaching the target before its deadline. This is a projection of sampled positions; altitude is omitted and the sample-to-sample path length is a lower bound. The plot reads the existing trace without running the planner again.
+
+![Final observed-map slice for the timed-out room](../images/planner-v65-timeout-map.png)
+
+The final estimated position and goal are shown on the observed grid at goal altitude. The route is projected across altitudes, so an apparent intersection with a solid slice cannot establish a route collision. Much of the region toward the goal remains unknown. This view motivates examining frontier progress and executable route references; it is not the hidden true map or proof that the final route is safe. [Figure provenance](../images/README.md#remaining-timeout-diagnostics).

@@ -39,3 +39,14 @@ The named public image is copied from that output after visual inspection. Its f
 ## Dual mapping/safety render
 
 [planner-v65-scene.png](planner-v65-scene.png) is the actual Panda3D v65 viewer on the original `large` profile, requested seed 10000005. The controls check restores that seed after exercising new-room/reset handlers. The 200-step recording had finite activity and zero collisions, with a separately inspected brain window; no episode completed. It verifies rendering and archive compatibility rather than performance. Recorded command: `python -s -m fly_rl demo --controller observed-map --planner-version v65 --seed 10000005 --offscreen --seconds 5 --speed 2 --brain-view --record-dir runs/verification/planner-v65-viewer --screenshot reports/planner-v65-viewer.png`. The public image was copied after visual inspection; detailed flight records remain local.
+
+
+## Remaining timeout diagnostics
+
+[planner-v65-timeout.png](planner-v65-timeout.png) and [planner-v65-timeout-map.png](planner-v65-timeout-map.png) were generated from the retained v65 fresh-development room 13000013 after its frozen comparison ended. This room timed out in both v60 and v65. They show sampled physical positions and a final observed-grid slice, respectively; they are neither new flights nor selected-success examples. The route is an XY projection across altitudes, and the grid slice uses goal altitude. Unknown cells remain visible rather than being presented as measured free space. Both figures were visually inspected.
+
+```powershell
+.\.conda\python.exe -s scripts/plot_planner_diagnostics.py runs/diagnostics/planner-v65-development/v65 --seeds 13000013 --output reports/planner-v65-shared-timeout-plot
+```
+
+The local input trace SHA-256 is `8229f67bea1d3a10e7b1301c4a5e57da6be8e3e0a4d5274e179d92e52f5c1c54`. Its every-twenty-step sampling does not show all intervening actions. The public figures were copied from the generated output; the underlying trace and maps remain ignored local records. [Interpretation and limits](../evidence/planner-dual-v65-results.md#offline-inspection-of-the-remaining-timeouts).
