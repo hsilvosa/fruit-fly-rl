@@ -16,6 +16,8 @@ Run checks that exercise the changed behavior. Use the full suite when changing 
 
 The repository verifier checks package discovery, documentation links and command parsing. The publication verifier checks tracked files, links available in the publication tree, personal paths and common credential patterns. Neither executes training or policy evaluation. CUDA, renderer and full-data checks are separate and should be run when the change affects them. Automated scans supplement a review of the publication diff; they cannot identify every possible secret.
 
+Map figures can be regenerated with `scripts/render_map_gallery.py`; these are geometry previews without policy evaluation. Public figure provenance belongs in `docs/images/`, not general QA output. See [public release preparation](docs/PUBLICATION.md) for the complete release checks and the distinction between MIT project code and CC BY 4.0 source data.
+
 ## Experiments
 
 Give every experiment a new output directory and explicit transition budget. Generic PPO commands can round requests to rollout boundaries; bounded dense training rejects incompatible budgets. Select models using validation only, freeze the winner before final assessment, and treat the final pool as consumed even if evaluation fails. Preserve unsuccessful results and original launcher aliases.

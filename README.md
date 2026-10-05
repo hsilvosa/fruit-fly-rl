@@ -1,128 +1,189 @@
 # Fly RL
 
-The observed-map planner v55 now navigates `large` rooms: 8/8 arrivals on reused optimization maps and 13/16 in prospective development, without collisions and with three development timeouts. This is explicit planning from full-connectome activity, not a learned movement policy. Student v34 retains its 3/8 result; reliable learning remains unresolved. The [results and limits](docs/evidence/observed-map-v55-results.md) distinguish the two. Original aliases and the reserved test remain intact.
+A virtual fruit fly explores procedural 3D rooms using activity from the full annotated **MaleCNS v1.0 fruit-fly connectome**. The experiment asks whether a controller can turn that activity into useful navigation: avoid obstacles, cross openings, and reach a goal in rooms it has not seen.
 
-The [resolution history](docs/NAVIGATION_RESOLUTION.md) explains the original problem, learning and perception attempts that were insufficient, corrected blockages, and the final solution. The operational improvement combines observed-map memory, correct reference advancement, and braking in the requested three-dimensional direction; it does not turn the planner's 13/16 into a PPO result.
+There are two controller families: learned policies and an explicit observed-map planner. **Learned navigation works well on a single wide opening and moderately well in older dense rooms. The current large-room demo works through explicit planning; a reliable learned policy for those rooms remains unresolved.**
 
-To watch it on Windows:
+This is an engineered experiment. Sensors, neural equations, sensory projection, and flight dynamics are project choices. It is not a simulation of biological vision, spiking neurons, or wing aerodynamics. Navigation success does not establish an advantage from fly wiring.
 
-```powershell
-.\launch-observed-map.cmd
-```
+[Results](#what-works-today) · [Map gallery](#map-gallery) · [Large-room progression](#large-room-progression) · [Run it](#install-and-run) · [Next steps](#next-steps) · [Documentation](docs/README.md)
 
-It also accepts `--speed 4` or `--seed 370001`. Shift accelerates simulation tenfold; R resets, N creates another room, C changes the camera, and F focuses on the fly. The brain window opens separately.
+## What works today
 
-A virtual fruit fly navigates procedural 3D rooms using features from the full annotated MaleCNS v1.0 connectome. A fixed sparse recurrent model converts simulated sensor readings into activity; a PPO actor and critic learn flight commands. Panda3D displays the room and an optional separate anatomical activity window.
+These are recorded measurements, current as of October 5, 2026. A **goal** means reaching the target before the deadline without colliding. Collision and timeout are failures.
 
-This is an engineered navigation experiment. Synthetic distance rays and target direction are available to the controller. The recurrent equations, sensor projection and flight dynamics are project choices, rather than a biological simulation of vision, spiking neurons or wing aerodynamics. Navigation success alone does not establish a benefit from fruit-fly wiring.
+| Task | Controller and outcome | What the result establishes |
+| --- | --- | --- |
+| Original small room, 12 x 12 x 6, three obstacles | Early demonstration task; launch and simulation checks are documented | A working environment. No independent small-room success percentage is claimed here |
+| Single wide opening, `gate-long`, 24 x 12 x 10 | **Learned baseline: 61/64 goals (95.3%)**, zero collisions, three timeouts; Wilson 95% interval **87.1–98.4%** | Strong performance on this simpler distribution. Selected checkpoint: 114,688 lifetime training transitions. [Evidence](docs/evidence/passage-mastery-v2-results.md) |
+| Original medium dense rooms, `dense-v3`, 32 x 32 x 12, 48 obstacles | Separate historical learned-policy experiments: **43/64 (67.2%)**, **50/64 (78.1%)**, **35/64 (54.7%)**, **45/64 (70.3%)**, and **48/64 (75.0%)** | Earlier roughly 70–80% results were real but varied by experiment. Each used its own final pool; these are not a paired ranking. [Counts and uncertainty](docs/RESULTS.md#earlier-dense-room-results) |
+| Structured large rooms, `large`, 48 x 48 x 16, 112 boxes and five narrow passages | Initial geometry comparison: **0/64** on its final pool. Best recent learned student v34: **3/8** on reused optimization maps | Learned large-room navigation remains unreliable. The 3/8 is not an independent test or a replacement for the earlier final result |
+| The same `large` profile, planner v55 | **8/8** reused optimization goals; frozen prospective development: **13/16 (81.25%)**, zero collisions, three timeouts; Wilson 95% interval **57.0–93.4%** | A working autonomous planner demo, not a PPO learning result. The small sample does not establish a guaranteed 80% rate. [Evidence](docs/evidence/observed-map-v55-results.md) |
+| `open`, `passages`, intermediate diagnostic profiles, and `maze` | Geometry is implemented; no broad reliable-navigation result is claimed | A generated map or passing geometry test does not mean a controller can navigate it |
 
-## Dataset credit
+**Map structure matters more than size labels.** A long room with one wide gate can be easier than a smaller room with several narrow alternating passages. The gate result does not cover every small map, and the older dense result is not a result for the newer `open` profile.
 
-The MaleCNS reconstruction, annotations and soma coordinates were produced by the FlyEM team at HHMI Janelia Research Campus, the University of Cambridge Department of Zoology, the MRC Laboratory of Molecular Biology, Google Research, and the contributors credited in the original publication. See the [official project](https://male-cns.janelia.org/).
+The early 0/64 final pool has been consumed. Later large-room corrections did not use another reserved final pool. V55's 16 new development rooms were fixed before its flights, with the controller frozen throughout. Their three failures were inspected afterward and cannot be fresh evidence for a future tuned version. Teacher flights, training practice, optimization maps, prospective development, and final tests remain separate in the [complete results](docs/RESULTS.md).
 
-Cite Berg, S., Beckett, I. R., Costa, M., et al. (2026), *Sexual dimorphism in the complete Drosophila male central nervous system connectome*, Cell, 189(18), 5504-5526.e15. [DOI](https://doi.org/10.1016/j.cell.2026.08.015).
+## Map gallery
 
-The source data is released under CC BY 4.0, as linked by the [official download page](https://male-cns.janelia.org/download/). Fly RL filters and transforms those tables; the original researchers did not produce this controller or its training results. [Credits and references](docs/REFERENCES.md) describes attribution, modifications and reusable citations.
+These images come from the actual geometry code with preview seed 10. Blue marks the start, amber the goal, and transparent boxes expose openings. **They are room previews, not flown trajectories or performance measurements.** Controller revisions v34 and v55 use the same `large` geometry; their version numbers do not identify new map types.
 
-## Model and maps
+### Compact rooms and gate progression
 
-The audited graph contains 167,184 neurons, 25,583,622 directed edges and 124,176,995 represented synapses. The anatomical view uses 140,033 official soma positions. The remaining 27,151 neurons are simulated but have no supplied soma coordinates.
+![Original small room, gate-near, gate-long, and gate-two](docs/images/maps-small.png)
 
-| Profile | Room dimensions | Collision boxes | Structure |
-| --- | --- | --- | --- |
-| `gate-near` | 12 x 12 x 10 | 4 | One wide opening and nearby goal |
-| `gate-long` | 24 x 12 x 10 | 4 | The same opening with longer travel |
-| `open` | 32 x 32 x 12 | 24 | Scattered obstacles |
-| `passages` | 32 x 32 x 12 | 64 | Three partitions with openings |
-| `large` | 48 x 48 x 16 | 112 | Five partitions and narrower passages |
-| `maze` | 64 x 64 x 20 | 192 | Eight partitions and four dead-end branches |
+| Configuration | Dimensions | Boxes | Role |
+| --- | --- | ---: | --- |
+| Original small | 12 x 12 x 6 | 3 | Initial movement demonstration |
+| `gate-near` | 12 x 12 x 10 | 4 | One wide opening, nearby goal; curriculum practice |
+| `gate-long` | 24 x 12 x 10 | 4 | Longer travel through the same gate; 61/64 learned final result |
+| `gate-two` | 24 x 12 x 10 | 8 | Two-opening diagnostic progression; no independent success score |
 
-The original dense generator remains available. Each new profiled layout has a hidden clearance certificate and a route-dependent time allowance. The controller receives neither the certificate nor the complete obstacle map. [Progressive maps](docs/GEOMETRY_CURRICULUM.md) explains generation, difficulty measurements and the curriculum.
+### Medium rooms and passages
 
-## Install
+![Legacy dense, open, passages-wide, and passages](docs/images/maps-medium.png)
 
-Commands assume PowerShell in the repository root, with Conda already installed:
+| Configuration | Dimensions | Boxes | Structure |
+| --- | --- | ---: | --- |
+| `dense-v3` | 32 x 32 x 12 | 48 | Older dense generator; scattered boxes, no compulsory partitions |
+| `open` | 32 x 32 x 12 | 24 | New profiled generator with scattered obstacles |
+| `passages-wide` | 32 x 32 x 12 | 12 | Three partitions with wide openings, no extra clutter |
+| `passages` | 32 x 32 x 12 | 64 | Three partitions with 4 x 4 openings and additional obstacles |
+
+### Large rooms and future difficulty
+
+![Large-wide, large-narrow, large, and maze](docs/images/maps-large.png)
+
+| Configuration | Dimensions | Boxes | Structure |
+| --- | --- | ---: | --- |
+| `large-wide` | 48 x 48 x 16 | 20 | Five partitions with wide openings; diagnostic isolation |
+| `large-narrow` | 48 x 48 x 16 | 20 | Five 3.2 x 3.2 openings, without extra clutter |
+| `large` | 48 x 48 x 16 | 112 | Five narrow alternating openings plus clutter; current demo |
+| `maze` | 64 x 64 x 20 | 192 | Eight partitions and four dead-end branches; navigation unverified |
+
+Profiled maps have a hidden clearance certificate and route-dependent deadline. The controller receives neither the certificate nor the obstacle map. Feasible geometry is not proof of an optimal or dynamically executable flight. See [map generation](docs/GEOMETRY_CURRICULUM.md) and [image provenance](docs/images/README.md).
+
+## Large-room progression
+
+Moving from `dense-v3` to `large` changed the task: five partitions require detours, alternating altitude, and repeated narrow crossings. The fresh comparison restarted learning instead of continuing the earlier successful policy. An unchanged older checkpoint reproduced 3/4 arrivals in retained original rooms but reached 0/4 in large rooms. This shows failed transfer to a harder task, rather than proven loss of the old skill on the same task.
+
+| Stage | Changes and observations | Outcome |
+| --- | --- | --- |
+| Initial large comparison | Fresh baseline/curriculum runs; progression could advance without passage mastery, and selection retained untrained initialization | **0/64 final goals**. Consuming the training budget did not produce a usable selected policy |
+| Learning corrections | Practice gates, temporal features, reward/credit checks, guided supervision, critic isolation, PPO guards | Single-gate learning succeeded separately, but multiple large-room corrections remained at **0/8** development goals. Finite losses and teacher arrivals were insufficient |
+| Perception corrections | Full-body panorama, projection readouts, heading equivariance, learned opening references | Better coverage and fitting alone still produced **0/8** in several pilots |
+| Learned approach and crossing, v34 | Learn wall orientation, align before the opening, then aim beyond it | **3/8** reused optimization goals, one collision, four timeouts; best learned student in this batch |
+| Observed map, v43/v44 | Accumulate observed geometry and estimated motion, then search for routes | **5/8** each, no collisions, three timeouts. Stable motion readout alone did not remove every blockage |
+| Current operational solution, v55 | Escape local safety margins without opening solids; search the exact goal cell; advance past reached route points; brake along the requested 3D direction; retain vertical movement during turns | **8/8 optimization**, then **13/16 frozen prospective development**, no collisions, three timeouts. Explicit planning, not learned movement |
+
+V55 reconstructs distance, goal, and motion from neural states. It estimates relative pose, builds an occupancy grid, runs bounded weighted search, and converts a nearby route reference into flight commands. It has no learned movement weights and receives no true poses, hidden boxes, seeds, or certified route. It knows the room contract and observes a synthetic goal beacon. All connectome states advance, although the engineered reader cancels recurrence in base channels and retains 5% in panoramic channels.
+
+This is the **current operational solution**, not a definitive solution to learned navigation. Three prospective timeouts remain, route optimality is not guaranteed, and biological benefit is untested. The [resolution report](docs/NAVIGATION_RESOLUTION.md) retains twenty detailed sections covering attempts, formulas, budgets, per-room outcomes, and limitations.
+
+## Install and run
+
+Tested on Windows with Conda, Python 3.11, PyTorch 2.7.1+cu128, Stable-Baselines3 2.7.0, Panda3D 1.10.16, and an NVIDIA RTX 3060 with 12 GB VRAM. CUDA is the default; CPU execution is available through the CLI, but full-graph interactive performance there is unestablished. [Tested versions](requirements-lock.txt).
+
+From the repository root, with Conda installed:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\setup.ps1
 .\.conda\python.exe -s -m fly_rl --help
+.\launch-observed-map.cmd
 ```
 
-Setup creates the local `.conda` environment, installs dependencies and downloads the pinned public dataset. It requires network access and substantial storage. The tested environment uses Python 3.11, CUDA-enabled PyTorch 2.7.1+cu128, Stable-Baselines3 2.7.0 and Panda3D 1.10.16. Tested versions are recorded in `requirements-lock.txt`.
+Setup creates the local `.conda`, installs dependencies, and downloads/prepares the pinned connectome. It requires network access and substantial storage. A fresh clone contains source, public evidence, and images, but no downloaded data, trained checkpoints, or flight archives.
 
-## Watch a fly
+**The observed-map demo requires prepared data but no trained checkpoint.** It computes live sensors, neural activity, and planner actions; it is not a recording of a successful flight. The room and brain open in separate windows. Optional arguments:
 
-A fresh clone contains no local checkpoint. Open an untrained full-connectome simulation:
+```powershell
+.\launch-observed-map.cmd --speed 4 --seed 370001
+.\launch-observed-map.cmd --record-brain
+```
+
+To see an untrained policy interface instead:
 
 ```powershell
 .\.conda\python.exe -s -m fly_rl demo --map-profile large --dynamics coordinated --brain-view
 ```
 
-Viewing never starts an optimizer or modifies weights. Loading a checkpoint runs live sensor, brain and policy calculations; it does not replay a recorded flight. Checkpoint contracts prevent silently changing the sensor, dynamics or map interface. Explicit `--transfer` allows a deliberate distribution transfer and does not establish trained performance in the new room.
+Older `launch-dense.cmd`, `launch-flight.cmd`, and `launch-demo.cmd` support local historical models. Those trained weights are not shipped here. The dense launcher reports a missing-model error when no candidate exists. `.cmd` wrappers explicitly invoke PowerShell to avoid `.ps1` associations opening an editor. [Commands](docs/COMMANDS.md) covers other modes and checkpoint loading.
 
-On a machine with the original local models, `launch-dense.cmd` opens the coordinated dense policy with its brain window. The `.cmd` wrappers run PowerShell explicitly, avoiding `.ps1` file associations opening a text editor. `launch-flight.cmd` and `launch-demo.cmd` also remain available. The original dense launcher reports a missing-model error when none of its candidate checkpoints exists.
+Viewing never starts training or modifies weights. Checkpoint loading runs live inference; replay restores saved states without executing a brain. Sensor, dynamics, and readout contracts prevent silent reinterpretation. Explicit transfer does not establish performance in a new task.
 
 | Control | Action |
 | --- | --- |
-| Space | Pause or resume |
-| Shift | Temporarily request ten times the simulation rate |
+| Space | Pause/resume |
+| Shift | Request ten times the simulation rate while held |
 | R / N | Reset this room / generate the next room |
-| C | Cycle orbit, chase and free cameras |
-| Mouse drag / wheel | Rotate, pan, look or zoom |
+| C / F | Cycle orbit, chase, and free cameras / focus on the fly |
+| Mouse drag / wheel | Rotate, pan, look, or zoom |
 | WASD and Q/E | Move the free camera, including altitude |
 | V | Toggle sensor rays |
-| B | Open or restore the separate brain window |
-| Escape | Exit and finalize the recording |
+| B | Open or restore the brain window |
+| Escape | Exit and finalize recording |
 
-Achievable speed depends on compute and rendering load. Physics keeps its fixed 0.05-second timestep. Neural colors display modeled signed activity; they do not identify biological excitation, inhibition or movement causation. [Flight and neuron inspection](docs/FLIGHT_AND_NEURONS.md) covers the complete controls and their interpretation.
+Shift changes simulation speed, not physical acceleration or maximum flight speed. Compute and rendering limit achieved acceleration; physics keeps its 0.05-second timestep. Neural colors show modeled activity, not experimental firing or a causal explanation of movement. The planner supplies no PPO action gradient. See [flight and neuron inspection](docs/FLIGHT_AND_NEURONS.md).
 
-## Results and verification
+## How the experiment is organized
 
-The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0-5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
+```mermaid
+flowchart LR
+    A[Simulated sensors and goal beacon] --> B[Fixed sensory projection]
+    B --> C[Full fixed MaleCNS recurrent graph]
+    C --> D[Neural activity readout]
+    D --> E[Learned policy]
+    D --> F[Observed map and explicit planner]
+    E --> G[Flight commands and physics]
+    F --> G
+    G --> A
+```
 
-Results are selected using validation only. One frozen winner is assessed on each reserved final pool, which is then consumed. Different experiments use different final rooms and do not establish a paired performance improvement. [Results](docs/RESULTS.md) records aggregate outcomes and uncertainty; [verification](docs/VERIFICATION.md) distinguishes correctness checks from learning performance.
+The graph contains **167,184 neurons**, **25,583,622 directed edges**, and **124,176,995 represented synapses** after the documented annotation filter. PPO optimizes the actor and critic, not connectome synapses. The anatomical view uses 140,033 supplied soma positions; the remaining 27,151 neurons compute but lack supplied coordinates. [Data and model](docs/DATA_AND_MODEL.md), [architecture](docs/ARCHITECTURE.md), and [mathematics](docs/MATHEMATICS.md) explain assumptions and optimization equations.
 
-The [geometry failure diagnosis](docs/GEOMETRY_DIAGNOSIS.md) confirms that the earlier controller reproduced its outcomes in four retained original validation rooms. The new progression advanced without passage mastery, and the overall selection retained untrained initialization after all trained target candidates failed. Single-opening navigation is the next prerequisite before expanding map complexity further.
+Training fits parameters. Practice can control curriculum progression. Validation selects candidates. Optimization maps guide design changes. Prospective development measures a frozen version on new maps. A reserved final test follows selection and is then consumed. These are not combined into one success curve. Tests, finite losses, reload compatibility, and teacher arrivals do not substitute for autonomous results.
 
-The corrected practice-mastery v2 tools start with `gate-near`, withhold 16 training layouts for progression checks, preserve easier examples and leave the final pool unused if no trained candidate succeeds in validation. They passed physical passage checks and a full-graph 128-transition optimizer smoke. The completed 524,288-transition comparison selected baseline seed 42, reaching 61/64 final single-opening goals (95.3%), with zero collisions and three timeouts; Wilson 95% interval 87.1-98.4%. This result applies to the simpler single-opening distribution. The curriculum did not beat baseline in validation. [Completion evidence](docs/evidence/passage-mastery-v2-results.md) includes all seeds, practice rounds and preserved alias hashes. See the [corrected protocol and preparation commands](docs/GEOMETRY_CURRICULUM.md#corrected-practice-mastery-protocol).
+Each demo retains a unique archive in `runs/demo/`, with metadata, states, actions, and integrity checks. Latest previews and `reports/demo.json` may be overwritten; historical session directories are not. `--record-brain` adds full-neuron snapshots, which cannot be reconstructed from pooled features. Planner sessions archive controller code and specification rather than a fictitious PPO checkpoint. [Operations](docs/OPERATIONS.md) explains storage, replay, recovery, and backups.
 
-[Mathematical model and optimization](docs/MATHEMATICS.md) explains the recurrent update, sensory projection, pooling, flight, reward, PPO, GAE and Adam equations. PPO updates the actor and critic, while connectome weights remain fixed.
+## Next steps
+
+1. **Resolve the three v55 timeouts.** Diagnose search limits, route changes, detours, and odometry from existing traces. Preserve frozen v55 and test individual interventions before combining them.
+2. **Measure a corrected planner on fresh rooms.** Declare selection rules and suites, freeze the candidate, and report goals, collisions, timeouts, confidence intervals, route length, flight time, and compute. Inspected failures become development cases.
+3. **Teach a student complete navigation.** Collect planner demonstrations under an explicit budget and include student-state recovery. Separate teacher arrivals from teacher-free student arrivals; preserve simpler-task references.
+4. **Increase difficulty through verified stages.** Separate extra walls, narrow openings, altitude changes, and clutter before combining them. Advance through two-gate, passage, and large tasks only after measured mastery. Check size/sensor contracts before `maze`.
+5. **Measure the connectome's contribution.** Compare real wiring, altered/disconnected recurrence, and a conventional controller with matched sensors, budgets, seeds, and selection. Extend neural replay and exact resumption alongside this work.
+
+These are proposed experiments, not ongoing runs. The [roadmap](ROADMAP.md) defines order and acceptance criteria. Reliable learned large-room navigation and the independent 80% target remain open.
 
 ## Repository map
 
 ```text
-fly_rl/connectome/    Source tables, audits, recurrent brain and anatomy
-fly_rl/simulation/    Sensors, rooms, collisions and flight dynamics
-fly_rl/training/      PPO, checkpoint contracts, curriculum and evaluation
-fly_rl/visualization/ Live windows, cameras, neural traces and plots
-fly_rl/recordings/    Telemetry, integrity checks, archive recovery and replay
+fly_rl/connectome/    Data preparation, audits, fixed brain, anatomy, readouts
+fly_rl/simulation/    Sensors, rooms, collision, and flight dynamics
+fly_rl/navigation/   Observed-map planner and stateful controller
+fly_rl/training/     Policies, PPO, supervision, curriculum, selection, evaluation
+fly_rl/visualization/ Live windows, cameras, neural inspection, and plots
+fly_rl/recordings/    Telemetry, integrity checks, recovery, and replay
 tests/               Checks grouped by responsibility
-scripts/             Verification and publication tools
-docs/                Public guides, formulas, protocols and result summaries
-private/             Local detailed notes and original evidence; ignored
-data/                Downloaded and prepared data; ignored
-runs/                Checkpoints, experiments and recordings; ignored
-reports/             Generated figures and QA output; ignored
+scripts/             Repository/publication checks and map-image generation
+docs/                Guides, formulas, protocols, and measured results
+docs/images/         Public geometry previews and provenance
+private/             Detailed local journals and machine evidence; ignored
+data/                Downloaded/prepared data; ignored
+runs/                Checkpoints, experiments, recordings; ignored
+reports/             Generated QA and analysis output; ignored
 .conda/              Local dependencies; ignored
 ```
 
-Each demo retains a unique archive under `runs/demo/`; its latest preview and summary may be overwritten. Full-neuron snapshots require `--record-brain`: pooled features cannot reconstruct them. Saved-state flight replay does not execute a live brain. Back up local artifacts separately.
+The public tree contains aggregate evidence rather than machine logs or model binaries. Back up ignored artifacts independently. [Contributing](CONTRIBUTING.md) covers code boundaries and checks; [public release preparation](docs/PUBLICATION.md) covers export, history separation, and licensing.
 
-[Documentation index](docs/README.md), [command reference](docs/COMMANDS.md), [operations](docs/OPERATIONS.md), [contribution workflow](CONTRIBUTING.md) and [roadmap](ROADMAP.md) cover use and further work. Training requires an explicit command and budget.
+## Credits and licenses
 
+Original project code and documentation use the [MIT license](LICENSE). MaleCNS data retains its separate **CC BY 4.0** license; MIT does not relicense the dataset or dependencies. Preserve original attribution and identify transformations when sharing derived data.
 
-The earlier [critic-isolation v3 run](docs/evidence/guided-navigation-v3-results.md) and subsequent guarded corrections did not resolve original large-room navigation. Their checkpoints and evidence remain available; those experiments are no longer running.
+The MaleCNS reconstruction, annotations, and soma coordinates were produced by the FlyEM team at HHMI Janelia Research Campus, the University of Cambridge Department of Zoology, the MRC Laboratory of Molecular Biology, Google Research, and contributors credited in the [official project](https://male-cns.janelia.org/).
 
+Cite Berg, S., Beckett, I. R., Costa, M., et al. (2026), *Sexual dimorphism in the complete Drosophila male central nervous system connectome*, Cell, 189(18), 5504–5526.e15. [DOI](https://doi.org/10.1016/j.cell.2026.08.015). The source license is linked on the [official download page](https://male-cns.janelia.org/download/).
 
-## Panoramic correction and waypoint v6 result
-
-The waypoint v6 batch completed 81,920 new transitions, with finite losses and compatible reload, but autonomous validation on original `large` rooms remained at 0/8: eight collisions and no timeouts. Completed substantive training totals 868,352 transitions. Original aliases and the source checkpoint remain intact. The reserved test was not used, and navigation remained unresolved at this stage.
-
-The [verified results](docs/evidence/neural-waypoint-v6-results.md) and [control and coverage diagnosis](docs/evidence/neural-waypoint-v6-diagnostics.md) are retained. The next correction uses panoramic vision measured around the body and complete guided flights from original states. Its controller receives only neural activity; the hidden route labels data only during training.
-The [panoramic v7 protocol](docs/evidence/panoramic-neural-v7-plan.md) sets a limit of 98,304 new transitions, 12,288 supervised updates, and a single development validation. It starts a new controller because dimensions change, preserves all previous checkpoints, and does not consume the reserved test.
-
-The user set an [additional two-hour window](docs/evidence/two-hour-navigation-plan.md), stopping on October 4 at 22:40:52 Madrid time. The coverage correction extends guided flights and starts on original maps, using CUDA sensors previously checked against NumPy. Autonomous results were still pending at this stage; the time limit did not imply that navigation was resolved.
-
-## Completion of the panoramic corrections
-
-Batches v8, v9, v10, and v12 finished and added 505,856 transitions. The latest autonomous assessment on reused development maps reached 0/8 goals, with one collision and seven timeouts. Completed substantive training totals 1,472,512 transitions. Navigation in the original large maps remained unresolved; the reserved test was not used and original aliases were not promoted. The [two-hour window report](docs/evidence/two-hour-navigation-results.md), its checkpoints, and experimental launcher `launch-panorama.ps1` are retained. Work paused at the requested deadline, October 4 at 22:40:52 Madrid time.
+Fly RL filters and transforms those tables; the original researchers did not produce this controller or its results. [Credits and references](docs/REFERENCES.md) describes modifications and reusable citations. Use the [documentation index](docs/README.md) for the remaining guides.

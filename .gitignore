@@ -19,3 +19,27 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Other local environments, caches, logs, and editor state
+/.venv/
+/venv/
+/.idea/
+/.vscode/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.log
+*.tmp
+*.bak
+*.py[cod]
+
+# Model binaries and private credentials belong outside the public source tree
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.pkl
+*.pem
+*.key

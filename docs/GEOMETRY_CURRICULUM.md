@@ -74,7 +74,7 @@ Generate a geometry-only report and illustration:
 
 The figure shows the hidden certificate for human inspection. Its route is not passed to the controller. [The saved preview](evidence/geometry-v1-maps.png) uses seed 10 and includes all four new profiles.
 
-`--map-profile` also accepts a JSON file containing the complete profile. Fields are `name`, `room_size`, `obstacle_count`, `wall_count`, `aperture_width`, `aperture_height`, `route_clearance`, `minimum_separation`, optional `branch_count` and `version`. The version must be `rooms-v4-profiled-passages`. Dimensions are bounded to 10â€“96 units, boxes to 256, partitions to ten and extra clearance to 0.05â€“0.35. Each branch requires an interior chamber and four collision boxes; configuration checks its opening width. A missing or zero branch count preserves already-frozen branch-free profiles. Configuration validation rejects apertures that cannot fit the declared clearance. Dense custom configurations can still exhaust the bounded placement attempts and fail explicitly. Frozen suites serialize the actual values, so editing a named preset or JSON file cannot silently change an existing experiment.
+`--map-profile` also accepts a JSON file containing the complete profile. Fields are `name`, `room_size`, `obstacle_count`, `wall_count`, `aperture_width`, `aperture_height`, `route_clearance`, `minimum_separation`, optional `branch_count` and `version`. The version must be `rooms-v4-profiled-passages`. Dimensions are bounded to 10–96 units, boxes to 256, partitions to ten and extra clearance to 0.05–0.35. Each branch requires an interior chamber and four collision boxes; configuration checks its opening width. A missing or zero branch count preserves already-frozen branch-free profiles. Configuration validation rejects apertures that cannot fit the declared clearance. Dense custom configurations can still exhaust the bounded placement attempts and fail explicitly. Frozen suites serialize the actual values, so editing a named preset or JSON file cannot silently change an existing experiment.
 
 ## Corrected practice-mastery protocol
 
@@ -115,9 +115,9 @@ The prepared experiment uses a fresh, audited suite under `runs/suites/geometry-
 
 | Split | Seed range | Geometry |
 | --- | --- | --- |
-| Training | 280000â€“280255 | Frozen `open`, `passages` and `large` variants for each of 256 seeds |
-| Validation | 290000â€“290031 | 32 fixed `large` layouts |
-| Final test | 300000â€“300063 | 64 fixed `large` layouts, untouched at launch and consumed at completion |
+| Training | 280000–280255 | Frozen `open`, `passages` and `large` variants for each of 256 seeds |
+| Validation | 290000–290031 | 32 fixed `large` layouts |
+| Final test | 300000–300063 | 64 fixed `large` layouts, untouched at launch and consumed at completion |
 
 Schema 3 freezes each variant's configuration, layout and geometry hashes, metrics, and the final-pool fingerprint. Loading audits all variants. Structural inspection of the reserved geometry is not a policy assessment, but exploratory policy viewing on those final seeds would consume their independence.
 
@@ -155,7 +155,7 @@ Procedural diversity is motivated by [Cobbe and colleagues' Procgen study](https
 
 ## Completed comparison
 
-The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0â€“5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
+The geometry comparison completed 524,288 added transitions across four fresh runs. Validation selected curriculum, seed 73, with 0 lifetime transitions in the selected checkpoint (initial untrained controller). Its one final assessment on fixed `large` rooms reached 0/64 (0.0%), with 1 collision and 63 timeouts; Wilson 95% interval 0.0–5.7%. The 80% navigation target remains unmet. Original launcher aliases were preserved.
 
 See [aggregate results](RESULTS.md) and [machine-readable completion evidence](evidence/geometry-v1-results.json).
 

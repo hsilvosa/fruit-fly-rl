@@ -1,0 +1,153 @@
+{
+  "kind": "documentation-map-gallery",
+  "seed": 10,
+  "training_invoked": false,
+  "policy_evaluated": false,
+  "brain_loaded": false,
+  "maps": [
+    {
+      "profile": "Original small",
+      "seed": 10,
+      "room": [
+        12.0,
+        12.0,
+        6.0
+      ],
+      "collision_boxes": 3,
+      "geometry_sha256": "028a784b369c536e2c45f854311a26faf418444920d8eae8624afcd020692da2",
+      "image": "maps-small.png"
+    },
+    {
+      "profile": "gate-near",
+      "seed": 10,
+      "room": [
+        12.0,
+        12.0,
+        10.0
+      ],
+      "collision_boxes": 4,
+      "geometry_sha256": "7092e6712524ddded67e04656128cab5da252167bed5104eec9dc89b91e5b7d3",
+      "image": "maps-small.png"
+    },
+    {
+      "profile": "gate-long",
+      "seed": 10,
+      "room": [
+        24.0,
+        12.0,
+        10.0
+      ],
+      "collision_boxes": 4,
+      "geometry_sha256": "d2da0a2e5f36c23c96a14e05d62dd9154a799f8b9809ef490346debacde75a8a",
+      "image": "maps-small.png"
+    },
+    {
+      "profile": "gate-two",
+      "seed": 10,
+      "room": [
+        24.0,
+        12.0,
+        10.0
+      ],
+      "collision_boxes": 8,
+      "geometry_sha256": "dc2274f5b44d51dd1d7c87c757632da08cfb60898434056dbd8101c85cea6dd3",
+      "image": "maps-small.png"
+    },
+    {
+      "profile": "dense-v3",
+      "seed": 10,
+      "room": [
+        32.0,
+        32.0,
+        12.0
+      ],
+      "collision_boxes": 48,
+      "geometry_sha256": "a76a6cca6548805df2724d2da70ad8d58692b722e01c7319423fd9bf7bebc6a6",
+      "image": "maps-medium.png"
+    },
+    {
+      "profile": "open",
+      "seed": 10,
+      "room": [
+        32.0,
+        32.0,
+        12.0
+      ],
+      "collision_boxes": 24,
+      "geometry_sha256": "20978175318b6b513646906e224995d2ae44bae365a27f7622dcecf5c09e159d",
+      "image": "maps-medium.png"
+    },
+    {
+      "profile": "passages-wide",
+      "seed": 10,
+      "room": [
+        32.0,
+        32.0,
+        12.0
+      ],
+      "collision_boxes": 12,
+      "geometry_sha256": "ddf05c8e9dc41d83eb1969b4f81b01c76f0c514314d808572e4364f96b517de8",
+      "image": "maps-medium.png"
+    },
+    {
+      "profile": "passages",
+      "seed": 10,
+      "room": [
+        32.0,
+        32.0,
+        12.0
+      ],
+      "collision_boxes": 64,
+      "geometry_sha256": "ee50db0093ed498617b9312a99e1ac92e3c6da2f9910cf522d55f017b97adfcf",
+      "image": "maps-medium.png"
+    },
+    {
+      "profile": "large-wide",
+      "seed": 10,
+      "room": [
+        48.0,
+        48.0,
+        16.0
+      ],
+      "collision_boxes": 20,
+      "geometry_sha256": "ee496c5d89c831da3c3278da421ca840d3b797c6f4dc74c1ad96a1d1514fcad2",
+      "image": "maps-large.png"
+    },
+    {
+      "profile": "large-narrow",
+      "seed": 10,
+      "room": [
+        48.0,
+        48.0,
+        16.0
+      ],
+      "collision_boxes": 20,
+      "geometry_sha256": "bf0ffd51fc2e6b613c08131396594e84b95e02671829d6a829d7dc920e493c80",
+      "image": "maps-large.png"
+    },
+    {
+      "profile": "large",
+      "seed": 10,
+      "room": [
+        48.0,
+        48.0,
+        16.0
+      ],
+      "collision_boxes": 112,
+      "geometry_sha256": "989f247ae7b52e54c3ae2fedba994a5ba04ebb6c3eca5726e65f0975aca46f78",
+      "image": "maps-large.png"
+    },
+    {
+      "profile": "maze",
+      "seed": 10,
+      "room": [
+        64.0,
+        64.0,
+        20.0
+      ],
+      "collision_boxes": 192,
+      "geometry_sha256": "c6071f758ae872a59cc132602ee32240c0702a957886ddbc55cbe863f791e49d",
+      "image": "maps-large.png"
+    }
+  ]
+}
