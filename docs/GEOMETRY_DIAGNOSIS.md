@@ -52,6 +52,6 @@ The [practice-mastery v2 implementation](GEOMETRY_CURRICULUM.md#corrected-practi
 All 16 physical oracle examples passed, and a separate full-connectome CUDA smoke completed exactly 128 transitions and one PPO update with finite losses and reload. Its practice inference failed both gates and correctly stayed at stage zero. This is a correctness check, not evidence of improved navigation. Reward and temporal-horizon interventions remain untested proposals.
 
 
-## Resolución operativa posterior
+## Subsequent operational resolution
 
-El [informe del 5 de octubre](NAVIGATION_RESOLUTION.md) conserva esta distinción entre tareas y documenta las correcciones posteriores. El planificador v55 llegó a 8/8 en optimización y 13/16 en desarrollo prospectivo, sin colisiones. El mejor estudiante aprendido de la última tanda quedó en 3/8. La navegación por planificación ya tiene una demostración funcional; el aprendizaje fiable y el objetivo de test independiente siguen pendientes.
+The [October 5 report](NAVIGATION_RESOLUTION.md) preserves this distinction between tasks and documents subsequent corrections. Planner v55 reached 8/8 in optimization and 13/16 in prospective development, without collisions. The best learned student in the latest batch remained at 3/8. Planning-based navigation now has a working demonstration; reliable learning and the independent-test objective remain unresolved.

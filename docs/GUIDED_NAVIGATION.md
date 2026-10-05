@@ -70,21 +70,21 @@ The full 98,304-transition training cap was consumed. Student-only optimization 
 The next bounded correction uses privileged local-waypoint labels only as supervised targets, while the actor estimates them from neural histories at runtime. Training starts retain natural headings and student episodes survive fitting boundaries, allowing complete long flights. The declared additional cap is 81,920; old optimization rows are reused without adding world steps. The fixed final checkpoint receives one reused development suite, without final-test consumption or alias promotion. [Frozen protocol](evidence/neural-waypoint-v6-plan.md).
 
 
-## Corrección panorámica y resultado de waypoint v6
+## Panoramic correction and waypoint v6 result
 
-La tanda waypoint v6 completó 81.920 transiciones nuevas, con pérdidas finitas y recarga compatible, pero su validación autónoma original large siguió en 0/8: ocho colisiones y ningún timeout. El total de entrenamiento sustantivo completado es 868.352 transiciones. Los aliases originales y el checkpoint fuente permanecen intactos. No se utilizó el test reservado y la navegación continúa sin resolverse.
+The waypoint v6 batch completed 81,920 new transitions, with finite losses and compatible reload, but autonomous validation on original `large` rooms remained at 0/8: eight collisions and no timeouts. Completed substantive training totals 868,352 transitions. Original aliases and the source checkpoint remain intact. The reserved test was not used, and navigation remained unresolved at this stage.
 
-Se conservan los [resultados verificados](evidence/neural-waypoint-v6-results.md) y el [diagnóstico de control y cobertura](evidence/neural-waypoint-v6-diagnostics.md). La siguiente corrección usa visión panorámica medida alrededor del cuerpo y vuelos guiados completos desde los estados originales. Su controlador recibe únicamente actividad neuronal; la ruta oculta solo etiqueta datos durante entrenamiento.
-El [protocolo panorámico v7](evidence/panoramic-neural-v7-plan.md) fija un límite de 98.304 transiciones nuevas, 12.288 actualizaciones supervisadas y una única validación de desarrollo. Empieza un controlador nuevo por el cambio de dimensiones, conserva todos los checkpoints anteriores y no consume el test reservado.
+The [verified results](evidence/neural-waypoint-v6-results.md) and [control and coverage diagnosis](evidence/neural-waypoint-v6-diagnostics.md) are retained. The next correction uses panoramic vision measured around the body and complete guided flights from original states. Its controller receives only neural activity; the hidden route labels data only during training.
+The [panoramic v7 protocol](evidence/panoramic-neural-v7-plan.md) sets a limit of 98,304 new transitions, 12,288 supervised updates, and a single development validation. It starts a new controller because dimensions change, preserves all previous checkpoints, and does not consume the reserved test.
 
-## Percepción de aberturas y lectura neuronal
+## Opening perception and neural readout
 
-El [protocolo retomado](evidence/portal-feedback-protocol.md) separa lectura de actividad, estimación de referencias geométricas de abertura y control físico. Añadió 65.536 transiciones guiadas de entrenamiento y comprobaciones autónomas separadas; todavía no produjo llegadas en los mapas grandes. La variante de mínimos cuadrados conserva la recurrencia proyectada. El lector que la cancela solo se usa como diagnóstico de información, sin afirmar ventajas biológicas.
-
-
-## Navegación por mapa observado
-
-El [planificador v55](evidence/observed-map-v55-results.md) constituye una alternativa explícita al estudiante guiado. Recibe canales reconstruidos del conectoma, construye su propio mapa y busca rutas; no consulta la geometría verdadera. Llegó a 13/16 en desarrollo prospectivo, sin colisiones y con tres timeouts. No tiene pesos aprendidos de movimiento. Estos vuelos no se suman a las llegadas del estudiante ni al entrenamiento PPO. La próxima supervisión desde el planificador deberá contar las transiciones nuevas y separar su rendimiento del estudiante; no se ha iniciado esa tanda.
+The [resumed protocol](evidence/portal-feedback-protocol.md) separates activity readout, estimation of geometric opening references, and physical control. It added 65,536 guided training transitions and separate autonomous checks; it had not yet produced arrivals in large maps at that stage. The least-squares variant retains projected recurrence. The reader that cancels recurrence serves only as an information diagnostic, without claims of biological advantage.
 
 
-El [informe de resolución](NAVIGATION_RESOLUTION.md) explica por qué la supervisión y las pérdidas finitas no bastaron, cómo se aislaron los fallos de lectura y control y qué parte resuelve actualmente el planificador. Su resultado no sustituye la validación de un estudiante aprendido.
+## Observed-map navigation
+
+The [v55 planner](evidence/observed-map-v55-results.md) is an explicit alternative to the guided student. It receives reconstructed connectome channels, builds its own map, and searches for routes; it does not consult true geometry. It reached 13/16 in prospective development, without collisions and with three timeouts. It has no learned movement weights. These flights are not added to student arrivals or PPO training. Future supervision from the planner must count new transitions and separate its performance from the student's; that batch has not started.
+
+
+The [resolution report](NAVIGATION_RESOLUTION.md) explains why supervision and finite losses were insufficient, how readout and control failures were isolated, and what the planner currently resolves. Its result does not replace validation of a learned student.
