@@ -70,7 +70,7 @@ def audit(root):
 
 
 def audit_archive(root, archive):
-    """Compare an archive with committed blobs, respecting Git newline normalization."""
+    """Compare committed content, accounting for declared Git text-line conversion."""
     root = Path(root).resolve()
     report = audit(root)
     result = subprocess.run(['git', '-c', f'safe.directory={root.as_posix()}', 'ls-files', '-z'],
@@ -96,6 +96,15 @@ def audit_archive(root, archive):
         for name in sorted(files & expected):
             content = source.read(name)
             actual = hashlib.new(algorithm, b'blob '+str(len(content)).encode('ascii')+b'\0'+content).hexdigest()
+            if actual != blobs.get(name):
+                # Git archive honors eol attributes even with core.autocrlf=false.
+                # Clean through the path's declared attributes before comparing.
+                canonical = subprocess.run(
+                    ['git', '-c', f'safe.directory={root.as_posix()}', '-c', 'core.autocrlf=false',
+                     'hash-object', f'--path={name}', '--stdin'],
+                    cwd=root, input=content, capture_output=True, check=True,
+                ).stdout.decode('ascii').strip()
+                actual = canonical
             if actual != blobs.get(name):
                 report['errors'].append({'file': name, 'reason': 'archive bytes differ from committed source blob'})
     report['archive_files'] = len(files)
