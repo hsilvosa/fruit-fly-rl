@@ -3,6 +3,7 @@ import json
 import shutil
 import time
 from pathlib import Path
+from fly_rl.atomic_io import replace_file
 from fly_rl.training.geometry_curriculum import VERSION, PROTOCOL, GeometrySchedule
 from fly_rl.training.fresh_sensor_comparison import prepare_fresh_comparison, validate_budget, code_hashes, initialize_pair
 from fly_rl.training.generalization import sha256, final_test
@@ -139,7 +140,7 @@ def run_geometry_comparison(configuration, output, device='cuda'):
     def save():
         temporary = base/'status.tmp'
         temporary.write_text(json.dumps(state, indent=2), encoding='utf-8')
-        temporary.replace(base/'status.json')
+        replace_file(temporary, base/'status.json')
     save()
     try:
         root = Path(__file__).resolve().parents[2]

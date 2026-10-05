@@ -8,6 +8,8 @@ This is an engineered experiment. Sensors, neural equations, sensory projection,
 
 [Results](#what-works-today) · [Map gallery](#map-gallery) · [Large-room progression](#large-room-progression) · [Run it](#install-and-run) · [Next steps](#next-steps) · [Documentation](docs/README.md)
 
+Controller revisions now use numbered names: **planner-1.0** is the frozen default, **planner-1.1** adds adaptive clearance, and **planner-1.2** separates mapping from braking ranges. Later revisions remain experimental. [Complete version mapping and compatibility](docs/CONTROLLER_VERSIONS.md) explains intermediate candidates and preserved historical aliases.
+
 ## What works today
 
 These are recorded measurements, current as of October 5, 2026. A **goal** means reaching the target before the deadline without colliding. Collision and timeout are failures.
@@ -18,16 +20,19 @@ These are recorded measurements, current as of October 5, 2026. A **goal** means
 | Single wide opening, `gate-long`, 24 x 12 x 10 | **Learned baseline: 61/64 goals (95.3%)**, zero collisions, three timeouts; Wilson 95% interval **87.1–98.4%** | Strong performance on this simpler distribution. Selected checkpoint: 114,688 lifetime training transitions. [Evidence](docs/evidence/passage-mastery-v2-results.md) |
 | Original medium dense rooms, `dense-v3`, 32 x 32 x 12, 48 obstacles | Separate historical learned-policy experiments: **43/64 (67.2%)**, **50/64 (78.1%)**, **35/64 (54.7%)**, **45/64 (70.3%)**, and **48/64 (75.0%)** | Earlier roughly 70–80% results were real but varied by experiment. Each used its own final pool; these are not a paired ranking. [Counts and uncertainty](docs/RESULTS.md#earlier-dense-room-results) |
 | Structured large rooms, `large`, 48 x 48 x 16, 112 boxes and five narrow passages | Initial geometry comparison: **0/64** on its final pool. Best recent learned student v34: **3/8** on reused optimization maps | Learned large-room navigation remains unreliable. The 3/8 is not an independent test or a replacement for the earlier final result |
-| The same `large` profile, planner v55 | **8/8** reused optimization goals; frozen prospective development: **13/16 (81.25%)**, zero collisions, three timeouts; Wilson 95% interval **57.0–93.4%** | A working autonomous planner demo, not a PPO learning result. The small sample does not establish a guaranteed 80% rate. [Evidence](docs/evidence/observed-map-v55-results.md) |
+| The same `large` profile, planner-1.0 | **8/8** reused optimization goals; frozen prospective development: **13/16 (81.25%)**, zero collisions, three timeouts; Wilson 95% interval **57.0–93.4%** | A working autonomous planner demo, not a PPO learning result. The small sample does not establish a guaranteed 80% rate. [Evidence](docs/evidence/observed-map-v55-results.md) |
+| The same `large` profile, experimental planner-1.1 | **3/3** corrected known failures; new frozen paired development: **14/16 (87.5%)**, zero collisions, two timeouts; Wilson 95% interval **64.0–96.5%**. planner-1.0 reached 12/16 on these same new rooms | Conditional clearance recovery and higher cruising speed. Two added successes, no lost baseline successes on this suite; not a reserved final result. [Paired evidence](docs/evidence/planner-v60-development-results.md) |
+| Experimental distance-stable reader, planner-1.2-exp.1 | Known stationary room corrected; a separate frozen comparison reached **13/16**, two collisions, one timeout, versus **15/16** and one collision for planner-1.1 | The readout fix regressed this fresh development suite and is not selected as the stronger candidate. [Paired outcomes](docs/evidence/planner-v61-development-results.md) |
+| Latest experimental planner-1.2, the same `large` profile | **15/16 (93.75%)**, zero collisions, one timeout; Wilson 95% interval **71.7–98.9%**. Frozen planner-1.1 had the same paired outcomes | Separate neural ranges for braking preserve mapping context and fix retained false stops/contacts. No measured success-rate advantage over planner-1.1 on this suite. [Evidence](docs/evidence/planner-v65-development-results.md) |
 | `open`, `passages`, intermediate diagnostic profiles, and `maze` | Geometry is implemented; no broad reliable-navigation result is claimed | A generated map or passing geometry test does not mean a controller can navigate it |
 
 **Map structure matters more than size labels.** A long room with one wide gate can be easier than a smaller room with several narrow alternating passages. The gate result does not cover every small map, and the older dense result is not a result for the newer `open` profile.
 
-The early 0/64 final pool has been consumed. Later large-room corrections did not use another reserved final pool. V55's 16 new development rooms were fixed before its flights, with the controller frozen throughout. Their three failures were inspected afterward and cannot be fresh evidence for a future tuned version. Teacher flights, training practice, optimization maps, prospective development, and final tests remain separate in the [complete results](docs/RESULTS.md).
+The early 0/64 final pool has been consumed. Later large-room corrections did not use another reserved final pool. planner-1.0's 16 new development rooms were fixed before its flights, with the controller frozen throughout. Their three failures were inspected afterward and cannot be fresh evidence for a future tuned version. Teacher flights, training practice, optimization maps, prospective development, and final tests remain separate in the [complete results](docs/RESULTS.md).
 
 ## Map gallery
 
-These images come from the actual geometry code with preview seed 10. Blue marks the start, amber the goal, and transparent boxes expose openings. **They are room previews, not flown trajectories or performance measurements.** Controller revisions v34 and v55 use the same `large` geometry; their version numbers do not identify new map types.
+These images come from the actual geometry code with preview seed 10. Blue marks the start, amber the goal, and transparent boxes expose openings. **They are room previews, not flown trajectories or performance measurements.** Controller revisions v34 and planner-1.0 use the same `large` geometry; their version numbers do not identify new map types.
 
 ### Compact rooms and gate progression
 
@@ -75,11 +80,23 @@ Moving from `dense-v3` to `large` changed the task: five partitions require deto
 | Perception corrections | Full-body panorama, projection readouts, heading equivariance, learned opening references | Better coverage and fitting alone still produced **0/8** in several pilots |
 | Learned approach and crossing, v34 | Learn wall orientation, align before the opening, then aim beyond it | **3/8** reused optimization goals, one collision, four timeouts; best learned student in this batch |
 | Observed map, v43/v44 | Accumulate observed geometry and estimated motion, then search for routes | **5/8** each, no collisions, three timeouts. Stable motion readout alone did not remove every blockage |
-| Current operational solution, v55 | Escape local safety margins without opening solids; search the exact goal cell; advance past reached route points; brake along the requested 3D direction; retain vertical movement during turns | **8/8 optimization**, then **13/16 frozen prospective development**, no collisions, three timeouts. Explicit planning, not learned movement |
+| Current operational solution, planner-1.0 | Escape local safety margins without opening solids; search the exact goal cell; advance past reached route points; brake along the requested 3D direction; retain vertical movement during turns | **8/8 optimization**, then **13/16 frozen prospective development**, no collisions, three timeouts. Explicit planning, not learned movement |
 
-V55 reconstructs distance, goal, and motion from neural states. It estimates relative pose, builds an occupancy grid, runs bounded weighted search, and converts a nearby route reference into flight commands. It has no learned movement weights and receives no true poses, hidden boxes, seeds, or certified route. It knows the room contract and observes a synthetic goal beacon. All connectome states advance, although the engineered reader cancels recurrence in base channels and retains 5% in panoramic channels.
+planner-1.0 reconstructs distance, goal, and motion from neural states. It estimates relative pose, builds an occupancy grid, runs bounded weighted search, and converts a nearby route reference into flight commands. It has no learned movement weights and receives no true poses, hidden boxes, seeds, or certified route. It knows the room contract and observes a synthetic goal beacon. All connectome states advance, although the engineered reader cancels recurrence in base channels and retains 5% in panoramic channels.
 
-This is the **current operational solution**, not a definitive solution to learned navigation. Three prospective timeouts remain, route optimality is not guaranteed, and biological benefit is untested. The [resolution report](docs/NAVIGATION_RESOLUTION.md) retains twenty detailed sections covering attempts, formulas, budgets, per-room outcomes, and limitations.
+This is the **current operational solution**, not a definitive solution to learned navigation. Frozen planner-1.0 had three prospective timeouts; route optimality is not guaranteed and biological benefit is untested. The [resolution report](docs/NAVIGATION_RESOLUTION.md) retains the detailed attempts, formulas, budgets, per-room outcomes, and limitations.
+
+The planner-1.1 follow-up resolves those three inspected timeouts and reaches 14/16 on a separate frozen development comparison. Raising speed and relaxing margins indiscriminately caused a regression; planner-1.1 enables broader known-free margin traversal only after a search hits its cap. A distance-readout correction resolved the stationary known flight, but regressed a later paired suite: planner-1.2-exp.1 reached 13/16 versus planner-1.1’s 15/16, with more collisions. Two route/mapping alternatives also failed the retained detour room. These are retained failures, not a completed fix. [Readout diagnosis](docs/evidence/planner-readout-v61-v63.md). planner-1.0 stays the standard launcher's default, while planner-1.1 is available explicitly. [Correction history](docs/evidence/planner-followup-v57-v60.md) and [development protocol](docs/PLANNER_DEVELOPMENT.md) explain the tradeoff and uncertainty.
+
+planner-1.2 now keeps planner-1.1’s contextual mapping input and adds separate clean neural ranges for requested-direction and momentum braking. It resolved the retained stationary flight and four collision/control rooms, then matched planner-1.1 at 15/16 on a fresh paired suite without losing successes. One retained detour room and the new shared timeout remain unresolved. This is a targeted correction with a tied development rate, not proof of a general performance gain or a learned navigation solution. [Complete correction report](docs/evidence/planner-dual-v65-results.md).
+
+![Experimental planner-1.1 in the original large room](docs/images/planner-v60-scene.png)
+
+This is an actual 800-step rendered verification of planner-1.1, with finite activity and no collisions. It did not complete an episode and is not performance evidence. [Image provenance](docs/images/README.md).
+
+![Experimental planner-1.2 with separated mapping and safety ranges](docs/images/planner-v65-scene.png)
+
+The planner-1.2 image comes from a separate 200-step rendered verification. Activity, controls, and archive integrity passed; it did not complete a navigation episode. Both images use the same original large geometry, rather than new map versions.
 
 ## Install and run
 
@@ -100,6 +117,7 @@ Setup creates the local `.conda`, installs dependencies, and downloads/prepares 
 ```powershell
 .\launch-observed-map.cmd --speed 4 --seed 370001
 .\launch-observed-map.cmd --record-brain
+.\launch-observed-map.cmd --controller-version 1.2 --seed 10000005
 ```
 
 To see an untrained policy interface instead:
@@ -148,7 +166,7 @@ Each demo retains a unique archive in `runs/demo/`, with metadata, states, actio
 
 ## Next steps
 
-1. **Resolve the three v55 timeouts.** Diagnose search limits, route changes, detours, and odometry from existing traces. Preserve frozen v55 and test individual interventions before combining them.
+1. **Resolve the remaining detours.** planner-1.2 corrected retained false stopping and contacts, then matched planner-1.1 at 15/16 on fresh development. Known room 9500014 and shared timeout 13000013 still fail. Use their saved maps and routes to separate search/frontier decisions from route execution, preserving frozen reported versions. [Latest correction and remaining cases](docs/evidence/planner-dual-v65-results.md).
 2. **Measure a corrected planner on fresh rooms.** Declare selection rules and suites, freeze the candidate, and report goals, collisions, timeouts, confidence intervals, route length, flight time, and compute. Inspected failures become development cases.
 3. **Teach a student complete navigation.** Collect planner demonstrations under an explicit budget and include student-state recovery. Separate teacher arrivals from teacher-free student arrivals; preserve simpler-task references.
 4. **Increase difficulty through verified stages.** Separate extra walls, narrow openings, altitude changes, and clutter before combining them. Advance through two-gate, passage, and large tasks only after measured mastery. Check size/sensor contracts before `maze`.

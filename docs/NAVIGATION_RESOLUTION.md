@@ -1,5 +1,7 @@
 # Resolving navigation in large maps
 
+This history retains original experiment IDs and measured source snapshots. Current public names are listed in [Controller versions](CONTROLLER_VERSIONS.md): planner-1.0 is historical v55, planner-1.1 is v60, and planner-1.2 is v65. The naming migration does not change their recorded results. [Latest paired experiments](RESULTS.md#latest-planner-experiments).
+
 Date: October 5, 2026. Operational version: `observed-neuronal-map-v55`, integrated in commit `972ceb4`.
 
 This document reconstructs the problem, the hypotheses tested, the failed attempts, and the available solution. The working result is an explicit planner that consumes activity from the full connectome. The learned policy still does not reproduce that performance. The [v55 report](evidence/observed-map-v55-results.md) contains the figures, prospective protocol, and preservation hashes; the [attempt protocol](evidence/portal-feedback-protocol.md) records the experimental development.
@@ -585,3 +587,72 @@ This delivery's functional scope is to open a demo, observe autonomous flight co
 Next work should retain v55 as a reference, diagnose the three timeouts separately, freeze any correction before opening new maps, and study whether a student can learn complete planner routes. Comparing planning, learned perception, and PPO requires declared contracts and budgets, multiple initializations, and paired evaluation that does not select versions.
 
 Map memory is not presented as learned memory. Retaining all neurons does not establish that anatomy is necessary for the algorithm. The supported explanation is that the artificial readout became more usable, explicit spatial memory was added, and route execution was corrected. Actual arrivals and three new failures define the scope. There is still no evidence that PPO has learned this solution.
+
+## 21. Follow-up: diagnose the three planner timeouts
+
+On October 5, bounded three-instance full-graph checks reproduced all three known failures, then tested a separate v56 candidate. The goal in room 8500011 was observed as free but blocked by the inflated safety margin. V56 locally admits only observed-free margin cells near that goal at high traversal cost, retaining observed solids, unknown blocked cells, boundaries, physical collision checks, and deadlines. That room reached the goal at step 1,939 instead of timing out at step 3,345. The other two rooms still timed out; neither version collided.
+
+The checks used 21,204 physical transitions in total, zero training transitions, zero optimization updates, and no reserved-test access. All original aliases and the frozen v55 source retained their hashes. Maximum measured pose error remained below 0.003 units, which does not support odometry drift as the main cause in these flights. Room 8500012 still exhausted search capacity, whereas room 8500013 found routes throughout; a single goal-margin explanation does not cover both.
+
+The [detailed follow-up report](evidence/planner-timeouts-v56-results.md) records the diagnosis, local rule, regression checks, per-room outcomes, counter definitions, preservation hashes, and reproduction commands. This reused 1/3 result cannot be added to the original prospective 13/16 or presented as independent generalization. V55 remains the operational default; v56 is experimental. The next correction must investigate route execution and detour decisions in the two unresolved rooms before a fresh prospective assessment.
+
+## 22. Follow-up: isolate speed and margin recovery
+
+V57 increased clear-space cruising speed from 1.8 to 2.6 units/s while preserving requested-direction braking and the 0.8 margin speed. It reached two of the three known failures, including room 8500013, which had found routes throughout but exhausted its deadline. V58 separately admitted observed-free inflated cells at cost 8; this eliminated sampled search saturation in room 8500012, but original-speed flights still reached only one goal. Both changes together in v59 reached room 8500012 but regressed room 8500013. All checks retained actual collision detection and original deadlines, with zero recorded collisions.
+
+V60 retains v57's normal clearance until a failed search reaches the existing 12,000-expansion cap. Recovery then admits only observed-free margin cells in subsequent plans, preserving surfaces, unknown blocked cells, boundaries, and the search budget. It reached all three known failures: room 8500011 at step 1,628, room 8500012 at 3,171, and room 8500013 at 2,499. Only room 8500012 activated recovery. A controller reset clears that state.
+
+These four checks used 41,226 physical transitions without training or reserved-test access. Twenty-eight navigation regressions passed. The [attempt-by-attempt report](evidence/planner-followup-v57-v60.md) retains the unconditional regression and offline probes as well as the successful known-case correction. V60 is frozen for fresh development measurement; its tuned 3/3 cannot be added to historical prospective results or substituted for reliable learned navigation.
+
+## 23. Frozen paired development and experimental viewer
+
+The predeclared sixteen-room comparison on seeds 9500000–9500015 completed with both versions unchanged. V55 reached 12/16 goals (zero collisions, four timeouts), while v60 reached 14/16 (zero collisions, two timeouts). Twelve rooms succeeded in both arms, two only in v60, and two in neither. The v60 Wilson 95% interval is 64.0–96.5%, so this small development sample does not establish the independent-final target. Original aliases, frozen sources, initial layouts, and brain fingerprints passed the preservation and matching checks.
+
+Both arms used 55,680 physical transitions, below the separately declared 81,920-per-arm caps, with no optimization or reserved-final access. Distances now sum every scored physical displacement rather than sampled traces. Some successful v60 routes are longer than v55's; neither shortest paths nor optimal flight are established. [Protocol](PLANNER_DEVELOPMENT.md) and [per-room results](evidence/planner-v60-development-results.md) retain the counts and uncertainty.
+
+V60 can be selected explicitly in the viewer while v55 remains the launcher default. Its 800-step rendered verification had finite activity, zero collisions, working controls and brain-window checks, and a valid archive; it ended before completing an episode. Experimental archives retain all inherited controller source files, and inspection checks their hashes and specification. The full regression suite passed 326 tests. Viewing does not train, and the planner still has no learned movement weights.
+
+The two new failures are seeds 9500001 and 9500014. The first barely moved despite repeatedly finding a route; the second exhausted its deadline on detours. Once inspected, these become known correction cases and cannot be reused to claim fresh prospective results for a tuned successor. No further independent claim follows from the rendered check.
+
+## 24. Follow-up: physical ranges cannot contain arbitrary context
+
+Room 9500001 exposed a semantic mismatch between the panoramic readout and braking. The planner interpreted decoded coordinates as physical ranges, but those coordinates retained five percent projected recurrent drive. In a 128-transition full-graph audit, all 104 zero-speed samples had raw requested-direction clearance above the stopping threshold. Audit sensors were compared only after choosing actions. At one sample the decoded endpoint implied 0.048 units of clearance, while raw ranges implied about 10.05 units along the requested direction. The correction changes the range decoder rather than weakening collision checks or the braking tube.
+
+V61 cancels projected recurrence in all distance channels and retains five percent context in panoramic closing speeds. It inherits v60's flight and planning rules unchanged. Full previous/current neuron states and the known projection produce the features; raw observations are not appended or substituted during inference. All neurons and edges still advance. The separate readout fingerprint prevents old checkpoints from silently accepting the new feature semantics. The exact gain slices and interpretation are documented in [Mathematics](MATHEMATICS.md) and the [readout report](evidence/planner-readout-v61-v63.md).
+
+The previously stationary room reached its target at step 2,276 without colliding. Room 9500014 still timed out at 3,480 steps after substantial travel. Pose error stayed below 0.003 units, so this later detour failure is not supported as odometry drift or simple false stopping. It remains a separate navigation problem.
+
+V62 tried retaining a traversable eight-unit route prefix instead of replacing routes on every map update. V63 separately prevented interpolated surfaces from overriding current free-ray evidence while preserving directly measured hits. Both timed out in the same remaining room. Their shorter flown distances and component correctness are not successful arrivals; neither is selected as a navigation solution. Four known-case flights used 12,716 physical transitions, plus 128 separately counted audit transitions, with no optimizer updates or reserved-test access.
+
+V60 and v61 are frozen for a new paired development check on sixteen previously undeclared rooms, with the readout difference explicitly declared and matching graph/layout contracts. Results belong to that separate measurement only after both arms finish. The [development protocol](PLANNER_DEVELOPMENT.md) specifies source preservation, cutoff, physical budgets, and reporting rules.
+
+That comparison completed at 15/16 goals for v60 and 13/16 for v61. V61 had two collisions and one timeout; v60 had one collision. Two rooms succeeded only in v60, with no candidate-only success. The range correction therefore regressed this fresh development measurement and was not selected as the stronger general candidate. [All paired outcomes](evidence/planner-v61-development-results.md).
+
+## 25. Follow-up: steering direction differs from physical momentum
+
+The two v61 collisions occurred while waypoint direction and flight direction were changing. Requested-direction clearance did not cover every surface approached by inertia. Separately bounded batch-one prefixes failed to reproduce those collisions within 1,024 steps each; those incomplete audits remain in the record. A matched four-instance recheck reproduced the original contacts at steps 664 and 684, alongside two successful control rooms. This distinction prevents incomplete rechecks from erasing real failures.
+
+V64 keeps v61 mapping and route following, then checks reconstructed endpoints along measured body-frame velocity as well as the waypoint direction. If measured speed exceeds the existing stopping-distance limit along that motion, desired velocity becomes zero and the proportional controls request braking. Steering remains active. This is an additional approximate safety check, not a change to true collision detection or an avoidance guarantee. Debug fields distinguish requested speed before the guard from effective desired speed after it.
+
+V64 reached all four known rooms without collisions, preserving the two control arrival steps at 1,514 and 1,708. The formerly colliding rooms arrived at 1,582 and 2,415. The two arms used 16,492 physical transitions, zero optimization, and no reserved test. The [detailed report](evidence/planner-momentum-v64-results.md) includes formulas, sampling limits, and the diagnostic figure.
+
+A subsequent frozen sixteen-room comparison on new seeds 11000000–11000015 still regressed: v60 reached 15/16 with one timeout, whereas v64 reached 12/16 with four timeouts. Neither collided. Eleven rooms succeeded in both, four only in v60, and one only in v64. The 112,992 physical transitions remain separate development measurement. [Per-room evidence](evidence/planner-v64-development-results.md). Preventing known contacts did not establish improved overall goal attainment.
+
+## 26. Separate mapping context from physical safety ranges
+
+V61 changed both braking and occupancy integration by replacing every panoramic range with its recurrence-cancelled value. That broad interface change alters mapped surfaces, route selection, and subsequent observations. V65 instead emits two declared neural outputs from one graph update: the unchanged 3,869-coordinate v60 prefix, followed by 1,800 clean panoramic ranges. The occupancy integrator consumes the original contextual prefix. Requested-direction and momentum braking consume the separate clean ranges. Base target, altitude, and motion channels retain their original stable semantics.
+
+Both outputs derive from the same previous/current full-neuron states through the known projection. Neither reads raw world values during reconstruction. A component test confirms that the prefix matches the old decoder exactly, the appended ranges match clean reconstruction within measured numerical tolerance, state is not changed by reconstruction, and independent reset remains valid. A separate controller check confirms original mapping evidence while passing clean coordinates to flight control, with input arrays unchanged.
+
+The width change from 3,869 to 5,669 features is explicit. Viewer selection, checkpoint fingerprints, environment history, source manifests, and schema-three development protocols distinguish it from the unchanged 3,869-value sensor input. An old observation shape is rejected. This added engineered information does not establish biological vision or a benefit from the wiring.
+
+The four known rooms reached 4/4 goals without collisions, at steps 1,688, 2,202, 1,404, and 2,260 for seeds 10000005–10000008. This used 9,040 physical transitions under a declared 12,000 cap. These tuned outcomes do not establish generalization. V60/v65 are separately frozen on new seeds 13000000–13000015 with declared readout widths and source hashes before either arm runs. Their fresh conclusion is recorded only after completion and preservation checks.
+
+The v60/v65 prospective development measurement completed with identical paired outcomes: 15/16 goals, zero collisions, one timeout in room 13000013. Each arm used 55,984 physical transitions; declared widths, source/alias checks, initial layouts, graph data, and base projection/model matched. The Wilson interval is 71.7–98.9%. This is a targeted correction with a tied fresh rate, not a demonstrated general success-rate improvement or independent-final mastery. [All rooms](evidence/planner-v65-development-results.md).
+
+V65 also reached the formerly stationary known room at step 1,782, while retained detour room 9500014 still timed out at 3,480. Those two checks used 5,262 transitions without collisions. The 200-step rendered v65 flight and archive passed, and its temporary full-graph 128-transition/one-update PPO verification reloaded with identical actions. Weights were deleted after that pipeline check. The final full suite passed 359 tests. [Complete evidence and preserved hashes](evidence/planner-dual-v65-results.md).
+
+
+### Remaining timeout diagnosis after the v65 freeze
+
+Offline inspection of existing second-half traces found continuing motion, zero sampled momentum-guard activations, and estimated pose errors below 0.0011 room units. Routes were reported found in 86/87 and 87/88 sampled frames. This narrows the next investigation to route/search progress and physical execution, rather than treating every failure as a false sensor stop. It does not prove the causal explanation. [Sampled counts and limitations](evidence/planner-dual-v65-results.md#offline-inspection-of-the-remaining-timeouts).

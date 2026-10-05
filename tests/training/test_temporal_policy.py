@@ -29,6 +29,18 @@ def test_history_samples_previous_brain_features_and_resets_independently():
     e.reset();assert not e.feature_history.any() and not e.history_ticks.any()
 
 
+def test_projection_history_preserves_current_features_and_can_learn_memory():
+    from gymnasium import spaces
+    from fly_rl.training.temporal_policy import ResidualBrainHistory
+    extractor=ResidualBrainHistory(spaces.Box(-np.inf,np.inf,(9,3869),dtype=np.float32))
+    a=torch.zeros((1,9,3869));b=a.clone();b[:,0]=.5;b[:,-1]=a[:,-1]
+    torch.testing.assert_close(extractor(a),a[:,-1])
+    torch.testing.assert_close(extractor(b),b[:,-1])
+    with torch.no_grad():extractor.residual.weight.fill_(.01)
+    assert not torch.allclose(extractor(a),extractor(b))
+    assert extractor.features_dim==3869 and torch.isfinite(extractor(b)).all()
+
+
 def test_warm_upgrade_preserves_actions_values_and_optimizer_states():
     oldenv=env();source=make_policy(oldenv,smoke=True)
     source.learn(128)

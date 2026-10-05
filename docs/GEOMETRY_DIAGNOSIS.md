@@ -54,4 +54,4 @@ All 16 physical oracle examples passed, and a separate full-connectome CUDA smok
 
 ## Subsequent operational resolution
 
-The [October 5 report](NAVIGATION_RESOLUTION.md) preserves this distinction between tasks and documents subsequent corrections. Planner v55 reached 8/8 in optimization and 13/16 in prospective development, without collisions. The best learned student in the latest batch remained at 3/8. Planning-based navigation now has a working demonstration; reliable learning and the independent-test objective remain unresolved.
+The [October 5 report](NAVIGATION_RESOLUTION.md) preserves this distinction between tasks and documents subsequent corrections. Planner 1.0 reached 8/8 in optimization and 13/16 in prospective development, without collisions. The best learned student in the latest batch remained at 3/8. Planning-based navigation now has a working demonstration; reliable learning and the independent-test objective remain unresolved.

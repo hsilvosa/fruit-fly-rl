@@ -1,4 +1,5 @@
 """Bounded warm-start adaptation; the large target and final pool are fixed."""
+from fly_rl.atomic_io import replace_file
 import json
 import shutil
 import time
@@ -44,7 +45,7 @@ def run_large_adaptation(configuration,output,device='cuda'):
            'optimization_layouts':training,'practice_layouts':practice,'validation_minimum':.85,'final_success_target':.8}
     started=time.monotonic()
     def save():
-        temp=root/'status.tmp';temp.write_text(json.dumps(state,indent=2),encoding='utf8');temp.replace(root/'status.json')
+        temp=root/'status.tmp';temp.write_text(json.dumps(state,indent=2),encoding='utf8');replace_file(temp, root/'status.json')
     save()
     try:
         shutil.copy2(config,root/'configuration.json')

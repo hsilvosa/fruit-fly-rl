@@ -1,4 +1,5 @@
 """One bounded dense-room experiment; the final-test split stays unused."""
+from fly_rl.atomic_io import replace_file
 import json
 import shutil
 from pathlib import Path
@@ -36,7 +37,7 @@ def train_dense(data,device,suite_path,output,baseline,steps=131072,batch=16,dyn
         'final_test_evaluated':False,'stage':'baseline-validation'}
     shutil.copy2(suite_path,folder/'suite.json')
     def save():
-        tmp=folder/'experiment.tmp';tmp.write_text(json.dumps(state,indent=2));tmp.replace(folder/'experiment.json')
+        tmp=folder/'experiment.tmp';tmp.write_text(json.dumps(state,indent=2));replace_file(tmp, folder/'experiment.json')
     def validation(checkpoint):
         seeds=suite['splits']['validation']['seeds']
         if seeds!=list(range(seeds[0],seeds[0]+len(seeds))): raise ValueError('Noncontiguous validation suite')
@@ -110,8 +111,8 @@ def train_dense(data,device,suite_path,output,baseline,steps=131072,batch=16,dyn
             metadata=json.loads(selected.with_suffix('.json').read_text())
             metadata['selection']={'suite':str(Path(suite_path).resolve()),'split':'validation',
                 'evaluation':state['validation'],'source':str(best_path.resolve()),'final_test_evaluated':False}
-            tmp=destination.with_suffix('.zip.tmp');shutil.copy2(selected,tmp);tmp.replace(destination)
-            tmp=destination.with_suffix('.json.tmp');tmp.write_text(json.dumps(metadata,indent=2));tmp.replace(destination.with_suffix('.json'))
+            tmp=destination.with_suffix('.zip.tmp');shutil.copy2(selected,tmp);replace_file(tmp, destination)
+            tmp=destination.with_suffix('.json.tmp');tmp.write_text(json.dumps(metadata,indent=2));replace_file(tmp, destination.with_suffix('.json'))
             state['promoted_checkpoint']=str(destination.resolve())
         state['status']='completed';state['stage']='done'
     except BaseException as exc:
