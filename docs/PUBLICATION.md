@@ -37,4 +37,4 @@ git -c core.autocrlf=false archive --format=zip --output=dist/fly-rl-public.zip 
 .\.conda\python.exe -s scripts/verify_publication.py . --archive dist/fly-rl-public.zip --output reports/publication-archive-qa.json
 ```
 
-The archive audit compares its file list and bytes with committed Git blobs and rejects extra files or `.git` history. The ZIP deliberately omits local models and data; retain private backups separately. Auditing the current tree or archive does not sanitize unrelated historical branches.
+The archive audit compares its file list and content with committed Git blobs, accounting for the declared text-line conversion in `.gitattributes`. Windows launcher CRLF export is accepted; changed commands, modified binary content, extra files, and `.git` history are rejected. The ZIP deliberately omits local models and data; retain private backups separately. Auditing the current tree or archive does not sanitize unrelated historical branches.

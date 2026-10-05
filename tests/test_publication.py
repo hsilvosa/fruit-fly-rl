@@ -110,3 +110,22 @@ def test_release_archive_checks_committed_bytes_and_private_extras(publication):
     with zipfile.ZipFile(archive, 'a') as output:
         output.writestr('private/notes.md', 'Private note')
     assert module.audit_archive(root, archive)['status'] == 'failed'
+
+
+def test_release_archive_accepts_declared_crlf_but_rejects_changed_commands(publication):
+    module, root, git = publication
+    (root/'.gitattributes').write_text('*.cmd text eol=crlf\n', encoding='utf-8')
+    (root/'launch.cmd').write_bytes(b'@echo off\necho original\n')
+    git('add', '.gitattributes', 'launch.cmd')
+    git('-c', 'user.name=QA', '-c', 'user.email=qa@example.invalid', 'commit', '-qm', 'Line ending fixture')
+    archive = root/'release.zip'
+    git('-c', 'core.autocrlf=false', 'archive', '--format=zip', f'--output={archive}', 'HEAD')
+    with zipfile.ZipFile(archive) as source:
+        contents = {name: source.read(name) for name in source.namelist() if not name.endswith('/')}
+    assert b'\r\n' in contents['launch.cmd']
+    assert module.audit_archive(root, archive)['status'] == 'passed'
+    contents['launch.cmd'] = b'@echo off\r\necho changed\r\n'
+    with zipfile.ZipFile(archive, 'w') as changed:
+        for name, data in contents.items():
+            changed.writestr(name, data)
+    assert module.audit_archive(root, archive)['status'] == 'failed'
