@@ -389,4 +389,23 @@ The room-aware goal normalization, plane/ray intersection, portal clustering, ap
 
 Exp.18 returns to exp.11 surface selection, grid, speed, guards and stronger-support refinement. Let `C` be through-ray intersections belonging to an observed opening cluster, and `W` be observed endpoints on its fitted surface. Both are represented in the wall tangent/height plane. The new reference is `argmax(p in C) min(w in W) ||p - w||`, followed by the existing projection onto the fitted plane. This replaces the median of visible through-rays, which can be biased toward the visible edge of a partially observed opening. It uses no known aperture size or hidden mesh.
 
-The distance to sparse wall endpoints is a reference-selection heuristic, not a guaranteed continuous clearance radius. The actual fly body, collision model, range braking, momentum braking and episode deadlines remain unchanged. Three reference tests pass, including a fixture with the actual maze opening width 2.4 and height 2.8. The selected point lies inside that fixture with body clearance; this does not prove arbitrary sampled surfaces safe. The eight-layout retained full-connectome check is running. No optimizer or reserved final evaluation is involved.
+The distance to sparse wall endpoints is a reference-selection heuristic, not a guaranteed continuous clearance radius. The actual fly body, collision model, range braking, momentum braking and episode deadlines remain unchanged. Three reference tests pass, including a fixture with the actual maze opening width 2.4 and height 2.8. The selected point lies inside that fixture with body clearance; this does not prove arbitrary sampled surfaces safe. The eight-layout retained full-connectome check completed at five goals without collisions and was rejected because it missed the declared gate. No optimizer or reserved final evaluation was involved.
+
+## Repeatable full-connectome execution
+
+The experimental index-add and segmented readouts retain every matrix value, including its sign. For CSR row offsets `p`, column indices `c`, weights `w` and a dense batch of neuron states `H`, both compute row `i` as `sum(w[k] * H[c[k]] for k in range(p[i], p[i+1]))`. Empty rows sum to zero. The sensory projection uses the same sparse operation. The recurrence, leak, inverse-activation reconstruction, centering and dual feature formulas remain unchanged. Floating-point accumulation order changes, so these kernels have separate readout fingerprints. Short repeated-input probes establish repeatability on the tested runtime and device; they do not establish cross-hardware equality or improved navigation.
+
+## Clearance-aware goal handover
+
+Planner-1.3-exp.25 starts from exp.23 and excludes exp.24's rejected wall survey. Let the decoded local goal vector be `g`, its distance `D = ||g||` and its direction `u = g / D`. For each reconstructed range `r_i` and body-relative ray direction `d_i`, define its endpoint `q_i = r_i d_i`, longitudinal projection `a_i = q_i dot u`, and transverse distance `b_i = ||q_i - a_i u||`.
+
+A nonsaturated endpoint vetoes direct handover when all four conditions hold:
+
+- `r_i < R_i - 0.05`, where the maximum range `R_i` is 8 for short rays and 24 for panoramic rays;
+- `a_i > 0`;
+- `a_i < D + 0.3`;
+- `b_i < 0.25`.
+
+This uses the same endpoint corridor radius as requested-direction braking. Maximum-range returns mean no observed hit within range and are excluded as surfaces. The original four-nearest-panoramic-ray visibility test must also pass: `0.45 < D < 23`, each ray aligns with the goal by more than 0.98, and each projected range extends beyond `D + 0.3`. An active opening approach/crossing prevents goal handover until that reference completes or expires under its existing rule.
+
+This corrects an observed inconsistency: in an exp.23 retained failure, sparse panoramic goal visibility stayed true while near-body braking requested zero speed. It is still a sampled-ray heuristic. It does not prove that the entire continuous body corridor is obstacle-free, does not change collision geometry, and does not optimize learned policy weights. Its full-flight result remains pending.
