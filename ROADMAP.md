@@ -89,6 +89,19 @@ Predeclare ablations and use paired evaluation where appropriate. Report compute
 
 More realistic vision, synaptic plasticity, spiking dynamics, and wing aerodynamics require separate designs and validation. They are not implied by the current reservoir equations or anatomical visualization.
 
+## Future stage: Navigate simulations of real places
+
+After completing the maze experiment and its navigation and rendering checks, extend the task from procedural rooms to 3D reconstructions of real building interiors and streets. This stage is planned; it does not start a new experiment or training budget. A planner and a learned student remain separate experimental tracks.
+
+1. **Static building interiors.** Begin with one floor, corridors, doors and furniture; then add larger interiors, multiple floors and stairs or atria with sufficient flight clearance. Select openly licensed geometry, record source attribution and asset hashes, and verify units, traversable openings, watertight collision surfaces and feasible start/goal pairs. Visual detail alone is not a harder navigation benchmark.
+2. **Static outdoor streets.** Add building facades, street furniture, vegetation and intersections, then connected indoor/outdoor routes. Audit map bounds, sensor range, memory cost and physical episode deadlines for the new scale before comparing results.
+3. **Observation changes.** First keep the current range/beacon interface to isolate geometry transfer. Treat camera-based perception, removal or replacement of the goal beacon, sensor noise, localization drift and latency as separate task changes. A detailed scene viewed through range sensors is not evidence of visual recognition.
+4. **Dynamic conditions.** Once static navigation is reliable, introduce wind and moving pedestrians or vehicles separately, then combine them under declared protocols. Record collisions, near misses, clearance and recovery as well as arrival rate and flight efficiency.
+
+Split by entire building or geographic area, not just different starts within the same mesh. Keep test assets and routes out of training, tuning and demonstration collection; disclose any pretrained model exposure that cannot be ruled out. Freeze each suite before measurement and report uncertainty, timeouts, compute, and failures alongside successful flights. Do not compare success rates across different sensor contracts or deadlines as if they were the same task.
+
+Completion requires a verified asset-import and collision pipeline, documented licenses, reproducible frozen suites, and measured navigation on held-out places under a predeclared criterion. Maintain the full connectome and protected checkpoint references. Simulation success does not establish readiness for physical flight or biological realism.
+
 ## Supporting engineering work
 
 Anatomical replay should read recorded full-neuron snapshots with correct before/after-action phases and episode boundaries. Missing snapshots or soma coordinates must not be fabricated. Extend region summaries and selected-neuron exports while labeling gradient sensitivity according to its actual basis.
