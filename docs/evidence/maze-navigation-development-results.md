@@ -116,3 +116,30 @@ Exp.18 completed at five of eight retained goals, zero collisions and three time
 Exp.19 returns to exp.11 opening inference, grid and cruise. It uses the current decoded local beacon vector and clean neural panorama ranges to recognize a direct goal corridor. For distance `d` below 23, choose the four panorama directions with greatest alignment to the beacon unit vector. Each must have dot product above 0.98 and projected range `r * alignment > d + 0.3`. If these observations pass, the controller relinquishes the opening reference and steers toward the beacon using the existing range/momentum flight guards. Otherwise normal opening planning continues.
 
 This is sampled visibility, not a continuous swept-body clearance proof. No hidden geometry, true pose, certified route or seed enters the action controller. Two tests reject blocked and out-of-range handovers. The full retained eight-layout check is running with unchanged original deadlines and no optimizer or final reserved evaluation.
+
+
+### Stable distant goal visibility
+
+Exp.19 completed at six of eight retained goals, zero collisions and two timeouts. It corrected 16000006 and kept the other successes, but 16000001 and 16000004 still timed out. Source and protected hashes matched. It still fails the 7/8 rule, so no fresh suite or promotion followed.
+
+Exp.20 retains exp.19 rays, ranges and flight law. A visible beacon below 8 units can hand over immediately. Between 8 and 23 units, all four nearest rays must pass the same visibility check for 20 consecutive decisions (one simulated second). A blocked observation immediately resets that counter and cancels handover. This tests whether brief distant visibility causes premature opening-reference changes. It is not a claim that flicker was proven to be the cause of every failure. Two continuity, cancellation and reset-memory tests pass; the full retained check is running with original deadlines.
+
+
+## Completed handover checks and numerical repeatability
+
+Planner-1.3-exp.20 and exp.21 each completed at six of eight retained maze goals, zero collisions and two timeouts. Seeds 16000001 and 16000004 remained failures. Both runs preserved their frozen source hashes and protected checkpoint hashes. Neither meets the predeclared seven-of-eight development rule, so no fresh maze suite or promotion followed. The original episode deadlines and physical geometry were preserved.
+
+A separate numerical probe reset the full graph and replayed identical synthetic inputs twice, using eight slots and sixteen steps per replay. It advanced all 167,184 neurons and 25,583,622 directed edges. It performed zero environment transitions and zero optimizer updates. All outputs were finite, but feature values differed by up to 4.76837158203125e-7 and final neuron states by 1.1920928955078125e-7. A second probe with deterministic PyTorch algorithms and `CUBLAS_WORKSPACE_CONFIG=:4096:8` still differed, with maximum feature difference 5.364418029785156e-7. The installed runtime was PyTorch 2.7.1+cu128.
+
+These probes establish small numerical variation for this execution path, not that it causes every navigation failure. Earlier recorded trajectories also diverged before goal handover was possible. The next prepared diagnostic converts the same full matrices to COO storage and checks repeatability; it has not run and has no result. Automatic approval review could not execute it because the account usage limit was reached. This was an unavailable approval review, not a judgment that the operation was unsafe.
+
+Large navigation remains verified on six retained and eight fresh development rooms with planner-1.3-exp.9. Maze reliability remains unresolved. The demo continues to select exp.11, which reached both original retained maze cases and five of eight fresh development layouts. Later six-of-eight outcomes are on reused layouts and must not be presented as independent generalization. No training was initiated during these checks.
+
+
+## Repeatable full-connectome execution
+
+Execution became available again. The full COO probe still had numerical variation, so storage conversion alone was rejected as a repeatability solution. Ordered CSR accumulation using deterministic `index_add_` produced bit-identical features and final neuron states across both sixteen-step, eight-slot replays. The actual implemented `RepeatableDualActivityBrain` repeated that result on all 167,184 neurons and 25,583,622 edges: zero differing feature values, zero maximum feature/state difference, finite outputs, 32 full-graph steps, and zero environment transitions or optimizer updates. Its probe elapsed 6.477 seconds including initialization.
+
+Planner-1.3-exp.22 keeps exp.19 visible-goal control and selects this explicit experimental readout. Sparse multiplication retains every signed matrix value and edge; it forms weighted presynaptic contributions and accumulates them in deterministic row order. The sensory projection, centering, recurrence, leak, nonlinearity and dual reconstruction formulas remain the same. The discarded pooled output is not computed by the new step method; it never feeds recurrent state or dual reconstruction. Floating-point accumulation order changes and therefore receives a separate readout/fingerprint: `neural-projection-dual-repeatable-index-add-v1`. Historical readouts and checkpoints remain unchanged.
+
+Repeatability here is measured on this installed runtime and device, not guaranteed across hardware or library versions. It is also not a navigation-performance or biological-benefit claim. The eight retained maze layouts are under verification with the same 81,920 physical cap and original episode deadlines. A predeclared 30-minute wall-clock safety bound accommodates slower full-graph execution. All application source files and the runner are frozen by hash for this check. The development rule remains at least 7/8 goals with zero collisions before any new fresh suite. No training or reserved final evaluation is running.

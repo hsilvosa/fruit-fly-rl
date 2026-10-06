@@ -35,7 +35,10 @@ CONTROLLERS = dict(v55=('observed_map', 'ObservedMapController'),
        'portal-reference-exp14': ('portal_visit_pressure', 'VisitPressureController'),
        'portal-reference-exp15': ('portal_clean_axis', 'CleanAxisPortalController'),
        'portal-reference-exp16': ('portal_clearance_center', 'ClearancePortalController'),
-       'portal-reference-exp17': ('portal_visible_goal', 'VisibleGoalController')})
+       'portal-reference-exp17': ('portal_visible_goal', 'VisibleGoalController'),
+       'portal-reference-exp18': ('portal_stable_goal', 'StableVisibleGoalController'),
+       'portal-reference-exp19': ('portal_committed_goal', 'CommittedVisibleGoalController'),
+       'repeatable-goal-exp1': ('repeatable_goal', 'RepeatableGoalController')})
 
 
 class VersionedPlannerPolicy(ObservedMapPolicy):

@@ -131,3 +131,9 @@ Frozen controller and connectome source archives are checked by SHA-256 over the
 `planner-1.3-exp.18` follows exp.17 and tests an opening reference selected by distance from observed wall endpoints. It does not guarantee physical clearance.
 
 `planner-1.3-exp.19` follows exp.18 and tests direct goal handover through a corridor supported by current neural range rays. It remains experimental.
+
+`planner-1.3-exp.20` follows exp.19 and tests sustained distant goal visibility before handover. Nearby handover retains the same sampled-ray condition.
+
+`planner-1.3-exp.21` follows exp.20 and tests bounded persistence after visible-goal handover. Both completed at 6/8 retained goals and remain unselected. The COO numerical probe is not a registered controller revision or a measured navigation result.
+
+`planner-1.3-exp.22` follows exp.21 and pairs visible-goal control with an explicitly fingerprinted repeatable full-connectome readout. Numerical repeatability does not establish navigation improvement.
