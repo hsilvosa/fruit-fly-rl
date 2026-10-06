@@ -127,3 +127,7 @@ Frozen controller and connectome source archives are checked by SHA-256 over the
 `planner-1.3-exp.16` follows exp.15 and tests a bounded visit cost after weak beacon-distance progress. Higher numbering does not imply better navigation.
 
 `planner-1.3-exp.17` follows exp.16 and combines clean mapping with initial-beacon-aligned surface inference. Its corridor assumption and measured outcomes must accompany any result.
+
+`planner-1.3-exp.18` follows exp.17 and tests an opening reference selected by distance from observed wall endpoints. It does not guarantee physical clearance.
+
+`planner-1.3-exp.19` follows exp.18 and tests direct goal handover through a corridor supported by current neural range rays. It remains experimental.

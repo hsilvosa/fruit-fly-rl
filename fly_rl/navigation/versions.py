@@ -43,6 +43,8 @@ REVISIONS = (
     ControllerRevision('1.3-exp.15', 'portal-reference-exp13', 'bounded confined cruise and close goal handover'),
     ControllerRevision('1.3-exp.16', 'portal-reference-exp14', 'nonprogress visit pressure and close goal handover'),
     ControllerRevision('1.3-exp.17', 'portal-reference-exp15', 'clean initial-beacon surface alignment'),
+    ControllerRevision('1.3-exp.18', 'portal-reference-exp16', 'observed opening clearance reference'),
+    ControllerRevision('1.3-exp.19', 'portal-reference-exp17', 'neural ray visible-goal handover'),
 )
 DEFAULT_REVISION = 'planner-1.0'
 PUBLIC_VERSIONS = tuple(revision.name for revision in REVISIONS)

@@ -383,3 +383,10 @@ planner-1.2 separates these physical safety coordinates from occupancy input. Fr
 ## Experimental opening references and execution vetoes
 
 The room-aware goal normalization, plane/ray intersection, portal clustering, approach/crossing references, and temporary grid veto are explained with their constants in [maze navigation](MAZE_NAVIGATION.md#relevant-formulas). These are explicit planning rules, not an optimization objective or a learned movement policy. A temporary veto changes traversal cost while leaving observed occupancy evidence untouched.
+
+
+## Observed-clearance opening reference
+
+Exp.18 returns to exp.11 surface selection, grid, speed, guards and stronger-support refinement. Let `C` be through-ray intersections belonging to an observed opening cluster, and `W` be observed endpoints on its fitted surface. Both are represented in the wall tangent/height plane. The new reference is `argmax(p in C) min(w in W) ||p - w||`, followed by the existing projection onto the fitted plane. This replaces the median of visible through-rays, which can be biased toward the visible edge of a partially observed opening. It uses no known aperture size or hidden mesh.
+
+The distance to sparse wall endpoints is a reference-selection heuristic, not a guaranteed continuous clearance radius. The actual fly body, collision model, range braking, momentum braking and episode deadlines remain unchanged. Three reference tests pass, including a fixture with the actual maze opening width 2.4 and height 2.8. The selected point lies inside that fixture with body clearance; this does not prove arbitrary sampled surfaces safe. The eight-layout retained full-connectome check is running. No optimizer or reserved final evaluation is involved.
