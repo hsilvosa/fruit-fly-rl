@@ -18,6 +18,6 @@ LICENSE text eol=lf
 *.pdf binary
 
 # Frozen controller archives use exact-byte source hashes.
-fly_rl/navigation/*.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol
+fly_rl/navigation/*.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
 fly_rl/connectome/*.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol
 scripts/check_planner_failures.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol

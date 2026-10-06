@@ -31,7 +31,9 @@ CONTROLLERS = dict(v55=('observed_map', 'ObservedMapController'),
        'portal-reference-exp10': ('portal_goal_priority', 'GoalPriorityPortalController'),
        'portal-reference-exp11': ('portal_fine_grid', 'FineGridPortalController'),
        'portal-reference-exp12': ('portal_surface_fallback', 'SurfaceFallbackController'),
-       'portal-reference-exp13': ('portal_confined_cruise', 'ConfinedCruiseController')})
+       'portal-reference-exp13': ('portal_confined_cruise', 'ConfinedCruiseController'),
+       'portal-reference-exp14': ('portal_visit_pressure', 'VisitPressureController'),
+       'portal-reference-exp15': ('portal_clean_axis', 'CleanAxisPortalController')})
 
 
 class VersionedPlannerPolicy(ObservedMapPolicy):

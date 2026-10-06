@@ -123,3 +123,7 @@ Frozen controller and connectome source archives are checked by SHA-256 over the
 `planner-1.3-exp.14` follows exp.13 and tests supported-surface fallback plus close beacon handover. Its higher revision number denotes implementation order, not a measured improvement.
 
 `planner-1.3-exp.15` follows exp.14 and tests bounded confined cruising with close goal handover. It remains experimental pending full-flight evidence.
+
+`planner-1.3-exp.16` follows exp.15 and tests a bounded visit cost after weak beacon-distance progress. Higher numbering does not imply better navigation.
+
+`planner-1.3-exp.17` follows exp.16 and combines clean mapping with initial-beacon-aligned surface inference. Its corridor assumption and measured outcomes must accompany any result.
