@@ -4,7 +4,7 @@ This development work began on October 6, 2026. The task is to preserve large-ro
 
 ## Current development status
 
-Large-room controller `planner-1.3-exp.9` reaches all six retained cases and all eight fresh development rooms, without collisions or timeouts. Maze controller `planner-1.3-exp.11` reaches both original retained cases but only five of eight fresh development rooms. Those eight rooms are now retained for correction work. Exp.12 reaches six of eight; exp.13 reaches zero of eight. Both fail the declared development selection rule. Exp.14 completed with zero goals and one collision and was rejected. Exp.15 reached four goals without collisions and was rejected. Exp.16 reached four goals and was rejected. Exp.17 reached five goals but lost a previous success and was rejected. Exp.18 also reached five goals with a regression and was rejected. Exp.19 reached six goals but still failed the selection rule. Exp.20 and exp.21 each reached six goals without collisions and failed the selection rule. Full-graph repeatability is corrected in an explicit experimental readout; exp.22 stopped at its wall limit with five goals and three unfinished flights; exp.23 completed at six goals and two timeouts without collisions. Exp.24 also completed at six goals, fixing both old failures but regressing two successes. Exp.25 isolates the goal-handover correction and is under verification.
+Large-room controller `planner-1.3-exp.9` reaches all six retained cases and all eight fresh development rooms, without collisions or timeouts. Maze candidate `planner-1.3-exp.25` reaches seven of eight retained correction maps, then five of eight fresh development maps, with no collisions and three fresh timeouts. It failed the fresh seven-of-eight criterion and is not promoted. Maze reliability remains unresolved. Work is paused at the user's request; no training or navigation process from this verification remains active.
 
 These are explicit-planning results using full-connectome activity, with no new optimization updates. They do not establish learned autonomous navigation or independent final-test generalization. The sections below retain the implementation history, including failed hypotheses.
 
@@ -248,3 +248,32 @@ These are post-flight plots of the existing saved layouts and trajectories, samp
 Planner-1.3-exp.24 completed at six retained goals, zero collisions and two timeouts. It reached seeds 16000007/06/02/05/01/04 in 4,452/4,492/4,580/4,855/5,588/5,652 decisions. Both previous failures were fixed, but 16000003 and 16000000 regressed to timeouts at 6,535 and 6,885 decisions, ending 24.49 and 36.79 units from the goal. It used 55,080 physical transitions, took 1,321.94 seconds, and peaked at 1.952 GiB allocated VRAM. All source and protected checkpoint hashes matched; no optimization or reserved evaluation occurred. It failed the existing gate and was not selected. Surveying was helpful on several layouts but did not preserve prior successful behavior.
 
 Planner-1.3-exp.25 isolates the visibility/braking correction on exp.23, without the rejected wall survey. It requires no nonsaturated short or panoramic endpoint inside the same 0.25-unit corridor used by braking before direct goal handover. Saturated maximum-range values are not treated as wall hits. An active opening approach/crossing must complete before goal handover. Sensor, connectome, geometry, speed, collision and episode-deadline contracts remain unchanged. Thirteen focused geometry/visibility/version tests passed. The eight retained maps are running with original episode deadlines, the 81,920-transition cap and a separately declared 45-minute wall limit. All 118 runtime source files are frozen and archived. No flight improvement is claimed until the check completes, and no fresh suite or promotion has occurred.
+
+## Clearance-aware handover: retained gate passed
+
+Planner-1.3-exp.25 completed the eight retained maze flights at seven goals, zero collisions and one timeout. Arrival decisions were 4,710 (16000003), 5,051 (16000005), 5,200 (16000000), 5,544 (16000002), 5,614 (16000007), 5,909 (16000001) and 6,357 (16000006). The remaining seed 16000004 timed out at its original 7,006-decision limit, 24.24 units from its goal. The visibility/braking deadlock in 16000001 was corrected, and all six exp.23 successes were preserved.
+
+The check used 56,048 physical transitions and zero optimizer updates, took 1,273.43 seconds, and peaked at 1.952 GiB allocated VRAM. The full 167,184-neuron, 25,583,622-edge graph was retained. All frozen source and protected checkpoint hashes matched. This passes the predeclared seven-of-eight retained gate. It is tuned development evidence, not an independent success-rate estimate or a biological advantage claim.
+
+A separate frozen prospective development suite is now running on seeds 17000000–17000007. An integer-bounded audit of 1,769 archived JSON/Markdown records found no previous occurrences before its seed declaration; undocumented use cannot be ruled out by that audit. No candidate-room geometry was generated or inspected before launch. The fresh run uses exactly the same 118 runtime source hashes as the completed retained run, with an 81,920-transition cap, original physical episode deadlines and a predeclared 45-minute wall limit. At least seven fresh goals and zero collisions are required. The source bytes are archived separately. There is no tuning, optimization, reserved-test access, checkpoint modification or demo promotion during this check. Its outcomes are pending.
+
+## Completed fresh maze check and requested pause
+
+Planner-1.3-exp.25 finished its frozen prospective maze check at **5/8 goals (62.5%)**, zero collisions and three timeouts. The Wilson 95% interval is **30.6–86.3%**. This is a small development sample, not the reserved final test and not an independent paired comparison with exp.11. Its earlier 7/8 retained outcome is tuned correction evidence and must remain separate.
+
+| Fresh seed | Outcome | Decisions | Final goal distance |
+| --- | --- | ---: | ---: |
+| 17000000 | Goal | 5,916 | 0.439 |
+| 17000001 | Goal | 4,090 | 0.443 |
+| 17000002 | Timeout | 6,752 | 22.160 |
+| 17000003 | Goal | 4,905 | 0.405 |
+| 17000004 | Goal | 5,434 | 0.422 |
+| 17000005 | Timeout | 6,534 | 20.371 |
+| 17000006 | Goal | 5,473 | 0.417 |
+| 17000007 | Timeout | 6,666 | 13.211 |
+
+The run completed all eight original episode deadlines with no incomplete flights. It used 54,016 physical transitions, took 1,234.24 seconds and peaked at 1.952 GiB allocated VRAM. Every transition used the full 167,184-neuron, 25,583,622-edge graph. All 118 frozen runtime sources and every protected checkpoint alias matched their before/after hashes. There were zero optimizer updates and no reserved-test access. The process exited normally.
+
+The fresh seven-of-eight criterion was not met, so exp.25 is not promoted. The large launcher remains exp.9, with its six retained and eight fresh goals. The maze launcher remains exp.11. Large-room development criteria are met; reliable maze navigation remains unresolved. The three new timeouts require search/reference diagnosis when work resumes. These newly inspected maps are now correction data for future changes, not reusable fresh evidence.
+
+Navigation, connectome and visualization integration checks passed: 212 passed and one expected failure for a rejected historical candidate. Repository checks passed for 79 documents, 378 links, module imports and CLI help; the public-file audit had no errors. No additional training or navigation experiments followed this check. At the user's request, work pauses after saving and pushing these results; a selected-candidate rendered demo check is deferred until the navigation criterion is met.

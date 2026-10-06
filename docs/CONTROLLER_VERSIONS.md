@@ -72,17 +72,21 @@ Planner-1.3-exp.1 corrects room decoding and commits local references; exp.2 inc
 | `planner-1.3-exp.19` | `portal-reference-exp17` | Neural-ray visible-goal handover | Rejected: 6/8 goals, 0 collisions |
 | `planner-1.3-exp.20` | `portal-reference-exp18` | Sustained distant goal visibility | Rejected: 6/8 goals, 0 collisions |
 | `planner-1.3-exp.21` | `portal-reference-exp19` | Committed visible-goal handover | Rejected: 6/8 goals, 0 collisions |
-| `planner-1.3-exp.22` | `repeatable-goal-exp1` | Repeatable full-graph visible-goal execution | Neural replay verified; maze flights pending |
-| `planner-1.3-exp.23` | `segmented-goal-exp1` | Repeatable segmented full-graph visible-goal execution | Neural replay verified; maze flights pending |
+| `planner-1.3-exp.22` | `repeatable-goal-exp1` | Repeatable full-graph visible-goal execution | Replay verified; incomplete at wall limit (five goals, three unfinished) |
+| `planner-1.3-exp.23` | `segmented-goal-exp1` | Repeatable segmented full-graph visible-goal execution | Replay verified; 6/8 retained goals, zero collisions; not selected |
 
 Exp.23 completed at 6/8 retained goals, zero collisions and two timeouts and was not selected.
 
 | Candidate | Artifact alias | Change | Status |
 | --- | --- | --- | --- |
-| planner-1.3-exp.24 | wall-survey-exp1 | Observed blocking-wall opening survey | Geometry tests passed; retained flights running |
+| planner-1.3-exp.24 | wall-survey-exp1 | Observed blocking-wall opening survey | 6/8 retained goals with two regressions; not selected |
 
 Exp.24 completed at 6/8 retained goals, zero collisions and two regressed timeouts; it was not selected.
 
 | Candidate | Artifact alias | Change | Status |
 | --- | --- | --- | --- |
-| planner-1.3-exp.25 | clearance-goal-exp1 | Clearance- and crossing-aware goal handover on exp.23 | Thirteen focused tests passed; retained flights running |
+| planner-1.3-exp.25 | clearance-goal-exp1 | Clearance- and crossing-aware goal handover on exp.23 | 7/8 retained, then 5/8 fresh goals; fresh gate failed |
+
+Exp.25 completed at 7/8 retained goals with zero collisions and one timeout, preserving all six exp.23 successes. It passed the retained gate; the same source hashes are frozen for a fresh eight-map check. It is not promoted yet.
+
+Exp.25 completed its fresh suite at 5/8 goals, zero collisions and three timeouts. It failed the 7/8 criterion and is not promoted; work is paused. Its 7/8 retained correction outcome remains separate. No controller or checkpoint alias was replaced.

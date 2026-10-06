@@ -1,6 +1,6 @@
 # Roadmap
 
-Current as of October 5, 2026. This is proposed work, not an active training schedule. New collection, optimization, or evaluation needs a declared budget and protocol. Preserve historical results, frozen controllers, and original checkpoint aliases.
+Current as of October 6, 2026. This is proposed work, not an active training schedule. New collection, optimization, or evaluation needs a declared budget and protocol. Preserve historical results, frozen controllers, and original checkpoint aliases.
 
 ## Starting point
 
@@ -14,7 +14,9 @@ Current as of October 5, 2026. This is proposed work, not an active training sch
 | Experimental large-room planner-1.1 | 3/3 corrected known failures; separate frozen paired development 14/16, zero collisions, two timeouts; interval 64.0–96.5%. planner-1.0 reached 12/16 on the same new rooms | Available explicitly; two new failures remain |
 | Distance-stable planner-1.2-exp.1 | Stationary known case corrected; new paired development 13/16 with two collisions and one timeout versus planner-1.1’s 15/16 with one collision | Regressed; not selected as the stronger candidate |
 | Dual mapping/safety planner-1.2 | Four known collision/control goals, stationary known goal; new frozen development 15/16 with zero collisions and one timeout, identical to planner-1.1’s paired outcomes | Available explicitly; retained detours and independent final objective remain open |
-| `maze`, noise, wind, moving obstacles | Geometry or proposed capabilities without verified navigation results | Future work |
+| Latest large-room planner-1.3-exp.9 | Six retained goals and eight fresh development goals, zero collisions or timeouts | Development gate passed; large launcher available |
+| Experimental maze planner-1.3-exp.25 | Seven of eight retained goals, then five of eight fresh goals, zero collisions and three fresh timeouts | Fresh criterion failed; not promoted; work paused |
+| Noise, wind, moving obstacles | Proposed capabilities without verified navigation results | Future work |
 
 The planner is the operational solution today. It has explicit map memory, bounded search, and proportional flight control, not learned movement weights. Its result does not fulfill the learned-policy objective or prove biological benefit. [Results](docs/RESULTS.md) and [resolution history](docs/NAVIGATION_RESOLUTION.md) retain the full evidence.
 
@@ -115,10 +117,15 @@ The room-size normalization and maze grid correction are implemented. Planner-1.
 
 The exp.11 fresh maze check ended at 5/8 goals, zero collisions, three timeouts; its 7/8 development rule was not met. Exp.12 reached 6/8 retained goals; exp.13 reached 0/8. Neither was selected. Supported-surface fallback failed with one collision; bounded confined speed reached 4/8. Visit pressure also reached 4/8. Clean initial-beacon alignment and observed opening clearance each reached 5/8 with regressions. Visible-goal, stable and committed handover checks each reached 6/8 retained goals without collisions. None passed the rule. Investigate full-graph numerical repeatability and remaining wall search before any new fresh suite. Maze reliability remains an active objective.
 
-Exp.12 reached 6/8 retained goals, failing its gate. Exp.13 is checking a finer map and smaller one-voxel planning buffer, while preserving original physical geometry and collision/braking rules. It is not yet selected.
+Exp.12 reached 6/8 retained goals, failing its gate. Exp.13 tested a finer map and smaller one-voxel planning buffer, while preserving original physical geometry and collision/braking rules. It finished at 0/8 goals and was rejected.
 
 The repeatable full-graph exp.22 check ended incomplete at its wall limit. Exp.23 tests faster segmented sums on the eight retained maze maps before any fresh suite. A systematic observed-wall survey is prepared separately to address the long first-partition search seen in a retained failure trace; it needs complete flight evidence before selection.
 
-Exp.23 completed at 6/8 retained goals with no collisions and failed its gate. Exp.24 observed-wall surveying is under full-flight verification. Next: require the retained gate, then a new frozen development suite, then verify the selected demo and document the remaining statistical limits.
+Exp.23 completed at 6/8 retained goals with no collisions and failed its gate. Exp.24 observed-wall surveying finished at 6/8 goals with two regressions and was rejected. Next: require the retained gate, then a new frozen development suite, then verify the selected demo and document the remaining statistical limits.
 
-Exp.24 finished at 6/8 retained goals, fixing both prior failures but regressing two successes, and was rejected. Exp.25 excludes that survey and isolates the confirmed visibility/braking handover inconsistency. Its full-flight check is running. No new fresh suite has been consumed.
+Exp.24 finished at 6/8 retained goals, fixing both prior failures but regressing two successes, and was rejected. Exp.25 excludes that survey and isolates the confirmed visibility/braking handover inconsistency. Its retained check reached 7/8 goals; the subsequent fresh suite reached 5/8 and failed its gate. The reserved final test remains untouched.
+
+Exp.25 passed the retained gate at 7/8 goals without collisions. Its unchanged eight-map fresh development check finished at 5/8 and failed its gate. Retain the newly inspected maps as correction data and diagnose before another fresh suite. Preserve every historical checkpoint alias.
+
+The latest exp.25 fresh result is 5/8, not promoted; work is paused. The preceding paragraphs retain chronological development history.
+On resumption, diagnose the three new fresh timeouts as retained correction data, preserve the successful flights, and declare the next bounded protocol. Do not reuse these eight maps as fresh evidence or change the demo default until navigation and rendering checks pass.
