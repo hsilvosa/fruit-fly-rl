@@ -8,6 +8,8 @@ The [repository map](../README.md#repository-map) identifies runtime modules and
 
 Original project code and documentation use [MIT](../LICENSE). Downloaded MaleCNS data is separately attributed under CC BY 4.0; the project license does not change its license or the licenses of dependencies. The original creators, modifications, and citation are listed in [references](REFERENCES.md). Preserve these notices when redistributing derived data.
 
+The deliberately published [architectural drafts](ARCHITECTURAL_SCENES.md) live under `assets/architecture/draft-0.1`, including original OBJ/MTL geometry, collision/scenario JSON and previews. They use MIT and contain no third-party scans. Asset manifests record exact hashes; generated text uses LF, including on Windows. Future imported real-place assets need their own license and source review before publication.
+
 `.gitignore` excludes local artifacts, environments, caches, logs, model binaries, and common credential files. It does not remove already tracked files or history. `.gitattributes` normalizes text and keeps image files binary; Python/documentation use LF, Windows launchers use CRLF.
 
 ## Check the tracked tree

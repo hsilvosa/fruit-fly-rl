@@ -10,6 +10,7 @@ Start with the root [README](../README.md) for installation, demos and controls.
 | Recurrent activity, flight, rewards and optimization formulas | [Mathematics](MATHEMATICS.md) |
 | Launchers and CLI commands | [Commands](COMMANDS.md) |
 | Cameras, neural colors and activity traces | [Flight and neuron inspection](FLIGHT_AND_NEURONS.md) |
+| Original building and street drafts, mesh export and future real-place integration | [Architectural scenes](ARCHITECTURAL_SCENES.md) |
 | Progressive map generation and geometry curriculum | [Progressive maps](GEOMETRY_CURRICULUM.md) |
 | Independent suites, selection and route measurements | [Generalization and routes](GENERALIZATION_AND_ROUTES.md) |
 | Controller revision numbers, descriptions, and historical aliases | [Controller versions](CONTROLLER_VERSIONS.md) |

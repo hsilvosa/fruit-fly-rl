@@ -1,0 +1,616 @@
+{
+  "schema": "architecture-0.1",
+  "units": "meters",
+  "origin": "southwest ground corner",
+  "axes": "x east, y north, z up",
+  "license": "MIT",
+  "provenance": "Original project design; not a reconstruction of a real location",
+  "name": "apartment",
+  "size": [
+    18.0,
+    14.0,
+    3.2
+  ],
+  "solids": [
+    {
+      "name": "south-wall",
+      "low": [
+        0,
+        0,
+        0
+      ],
+      "high": [
+        18.0,
+        0.2,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "north-wall",
+      "low": [
+        0,
+        13.8,
+        0
+      ],
+      "high": [
+        18.0,
+        14.0,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "west-wall",
+      "low": [
+        0,
+        0.2,
+        0
+      ],
+      "high": [
+        0.2,
+        13.8,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "east-wall",
+      "low": [
+        17.8,
+        0.2,
+        0
+      ],
+      "high": [
+        18.0,
+        13.8,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-0-0-door-left",
+      "low": [
+        0.2,
+        5.8,
+        0
+      ],
+      "high": [
+        2.55,
+        6.0,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-0-0-door-right",
+      "low": [
+        3.45,
+        5.8,
+        0
+      ],
+      "high": [
+        5.8,
+        6.0,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-0-0-door-lintel",
+      "low": [
+        2.55,
+        5.8,
+        2.1
+      ],
+      "high": [
+        3.45,
+        6.0,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-0-1-door-left",
+      "low": [
+        6.2,
+        5.8,
+        0
+      ],
+      "high": [
+        8.55,
+        6.0,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-0-1-door-right",
+      "low": [
+        9.45,
+        5.8,
+        0
+      ],
+      "high": [
+        11.8,
+        6.0,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-0-1-door-lintel",
+      "low": [
+        8.55,
+        5.8,
+        2.1
+      ],
+      "high": [
+        9.45,
+        6.0,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-0-2-door-left",
+      "low": [
+        12.2,
+        5.8,
+        0
+      ],
+      "high": [
+        14.55,
+        6.0,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-0-2-door-right",
+      "low": [
+        15.45,
+        5.8,
+        0
+      ],
+      "high": [
+        17.8,
+        6.0,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-0-2-door-lintel",
+      "low": [
+        14.55,
+        5.8,
+        2.1
+      ],
+      "high": [
+        15.45,
+        6.0,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-1-0-door-left",
+      "low": [
+        0.2,
+        8.0,
+        0
+      ],
+      "high": [
+        2.55,
+        8.2,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-1-0-door-right",
+      "low": [
+        3.45,
+        8.0,
+        0
+      ],
+      "high": [
+        5.8,
+        8.2,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-1-0-door-lintel",
+      "low": [
+        2.55,
+        8.0,
+        2.1
+      ],
+      "high": [
+        3.45,
+        8.2,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-1-1-door-left",
+      "low": [
+        6.2,
+        8.0,
+        0
+      ],
+      "high": [
+        8.55,
+        8.2,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-1-1-door-right",
+      "low": [
+        9.45,
+        8.0,
+        0
+      ],
+      "high": [
+        11.8,
+        8.2,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-1-1-door-lintel",
+      "low": [
+        8.55,
+        8.0,
+        2.1
+      ],
+      "high": [
+        9.45,
+        8.2,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-1-2-door-left",
+      "low": [
+        12.2,
+        8.0,
+        0
+      ],
+      "high": [
+        14.55,
+        8.2,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-1-2-door-right",
+      "low": [
+        15.45,
+        8.0,
+        0
+      ],
+      "high": [
+        17.8,
+        8.2,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "apartment-1-2-door-lintel",
+      "low": [
+        14.55,
+        8.0,
+        2.1
+      ],
+      "high": [
+        15.45,
+        8.2,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "partition-5.8-0.2",
+      "low": [
+        5.8,
+        0.2,
+        0
+      ],
+      "high": [
+        6.0,
+        5.8,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "partition-5.8-8.2",
+      "low": [
+        5.8,
+        8.2,
+        0
+      ],
+      "high": [
+        6.0,
+        13.8,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "partition-11.8-0.2",
+      "low": [
+        11.8,
+        0.2,
+        0
+      ],
+      "high": [
+        12.0,
+        5.8,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "partition-11.8-8.2",
+      "low": [
+        11.8,
+        8.2,
+        0
+      ],
+      "high": [
+        12.0,
+        13.8,
+        3.2
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "bed-0",
+      "low": [
+        0.6,
+        0.8,
+        0
+      ],
+      "high": [
+        2.3,
+        3.0,
+        0.65
+      ],
+      "material": "furniture"
+    },
+    {
+      "name": "wardrobe-0",
+      "low": [
+        4.4,
+        0.5,
+        0
+      ],
+      "high": [
+        5.5,
+        2.0,
+        2.3
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "table-0",
+      "low": [
+        0.8,
+        10.5,
+        0
+      ],
+      "high": [
+        2.4,
+        12.0,
+        0.9
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "sofa-0",
+      "low": [
+        4.2,
+        10.0,
+        0
+      ],
+      "high": [
+        5.5,
+        13.0,
+        1.0
+      ],
+      "material": "furniture"
+    },
+    {
+      "name": "bed-1",
+      "low": [
+        6.6,
+        0.8,
+        0
+      ],
+      "high": [
+        8.3,
+        3.0,
+        0.65
+      ],
+      "material": "furniture"
+    },
+    {
+      "name": "wardrobe-1",
+      "low": [
+        10.4,
+        0.5,
+        0
+      ],
+      "high": [
+        11.5,
+        2.0,
+        2.3
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "table-1",
+      "low": [
+        6.8,
+        10.5,
+        0
+      ],
+      "high": [
+        8.4,
+        12.0,
+        0.9
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "sofa-1",
+      "low": [
+        10.2,
+        10.0,
+        0
+      ],
+      "high": [
+        11.5,
+        13.0,
+        1.0
+      ],
+      "material": "furniture"
+    },
+    {
+      "name": "bed-2",
+      "low": [
+        12.6,
+        0.8,
+        0
+      ],
+      "high": [
+        14.3,
+        3.0,
+        0.65
+      ],
+      "material": "furniture"
+    },
+    {
+      "name": "wardrobe-2",
+      "low": [
+        16.4,
+        0.5,
+        0
+      ],
+      "high": [
+        17.5,
+        2.0,
+        2.3
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "table-2",
+      "low": [
+        12.8,
+        10.5,
+        0
+      ],
+      "high": [
+        14.4,
+        12.0,
+        0.9
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "sofa-2",
+      "low": [
+        16.2,
+        10.0,
+        0
+      ],
+      "high": [
+        17.5,
+        13.0,
+        1.0
+      ],
+      "material": "furniture"
+    }
+  ],
+  "situations": [
+    {
+      "name": "bedroom-to-living-room",
+      "route": [
+        [
+          3.0,
+          3.0,
+          1.3
+        ],
+        [
+          3.0,
+          7.0,
+          1.3
+        ],
+        [
+          15.0,
+          7.0,
+          1.3
+        ],
+        [
+          15.0,
+          11.0,
+          1.3
+        ]
+      ],
+      "description": "Cross two narrow residential doorways and a hallway."
+    },
+    {
+      "name": "low-to-high",
+      "route": [
+        [
+          9.0,
+          3.0,
+          0.6
+        ],
+        [
+          9.0,
+          7.0,
+          1.3
+        ],
+        [
+          9.0,
+          10.0,
+          1.8
+        ]
+      ],
+      "description": "Change altitude while moving between furnished rooms."
+    }
+  ],
+  "description": "A residential interior with six rooms, 0.9 m doors and low furniture.",
+  "validation": {
+    "passed": true,
+    "geometry_sha256": "4eb7bf980be0135aaf0cedf06bf4cedb5645f329233f9c7752cda8c5e30fedb5",
+    "collision_boxes": 38,
+    "body_radius_m": 0.16,
+    "extra_clearance_m": 0.2,
+    "situations": [
+      {
+        "name": "bedroom-to-living-room",
+        "route_length_m": 20.0
+      },
+      {
+        "name": "low-to-high",
+        "route_length_m": 7.102169365998501
+      }
+    ],
+    "claim": "Static geometric feasibility only; not a dynamically executable flight certificate"
+  }
+}
