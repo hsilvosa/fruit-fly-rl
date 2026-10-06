@@ -164,9 +164,14 @@ def main():
     if args.command=='demo' and args.controller=='observed-map':
         from fly_rl.simulation.sensors import SENSOR_V6
         if args.checkpoint: parser.error('Observed-map planning does not load a policy checkpoint')
-        if args.map_profile and args.map_profile!='large': parser.error('Observed-map planning currently supports the original large profile only')
+        from fly_rl.navigation.registry import VersionedPlannerPolicy
+        profile=args.map_profile or 'large'
+        try:
+            VersionedPlannerPolicy(args.planner_version,profile)
+        except ValueError as error:
+            parser.error(str(error))
         if args.sensor_version and args.sensor_version!=SENSOR_V6: parser.error('Observed-map planning requires the panoramic v6 sensory contract')
-        args.map_profile='large';args.room_mode='dense';args.dynamics='coordinated';args.sensor_version=SENSOR_V6
+        args.map_profile=profile;args.room_mode='dense';args.dynamics='coordinated';args.sensor_version=SENSOR_V6
     if getattr(args,'map_profile',None):
         if args.command=='demo':args.room_mode='dense'
         elif args.command in ['train','evaluate']:args.mode='dense'

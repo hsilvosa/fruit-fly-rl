@@ -55,3 +55,8 @@ Project package/release versions remain separate. Experiment directories should 
 ## Migration verification
 
 The migration passed 389 regression tests and the 54-test focused compatibility subset. A short full-graph rendered launch displayed planner-1.2 and recorded twenty finite steps; its archive integrity passed, with no completed episode or optimization. Existing frozen results were also reported offline using the public version arguments, reproducing the 15/16 tie. Original protected files retained their hashes. [Verification details](VERIFICATION.md#numbered-controller-naming-migration).
+
+
+## Room-aware experimental branch
+
+Planner-1.3-exp.1 corrects room decoding and commits local references; exp.2 increases unknown-cell costs and regressed retained large cases; exp.3 adds observed opening references; exp.4 adds sample-aware clustering and completed-plane memory, reaching both retained large failures. Exp.5 considers multiple partially visible wall candidates. Exp.5 subsequently regressed both maze flights and has a recorded diagonal-fit geometry failure. Exp.6 adds a beacon-aligned surface constraint but also regressed both retained flights. Exp.7 returns to strongest-surface selection with a distance-aware vertical span. All seven support `large` and `maze`; frozen earlier revisions remain large-only. Maze success is not yet established. None changes the default or trains movement weights. [Development evidence](MAZE_NAVIGATION.md) records outcomes and limits.

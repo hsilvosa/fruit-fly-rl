@@ -217,3 +217,8 @@ The two arms used 105,488 physical transitions in total, zero training transitio
 The momentum-only planner-1.2-exp.4 candidate corrected two known collisions but regressed its subsequent development suite: 12/16 goals versus planner-1.1’s 15/16, with no collisions in either arm. planner-1.2 then retained the original contextual mapping features and appended clean neural ranges for braking. On the next frozen suite, both arms reached the same fifteen goals and timed out in room 13000013. There were no lost or added paired successes. The 111,968 physical transitions added no optimization or reserved-test access.
 
 Separate known planner-1.2 checks reached four collision/control goals and resolved the previously stationary room at 1,782; the retained detour room still timed out. Two new-reader optimizer smokes each used 128 transitions and one update, with temporary weights deleted. Those pipeline checks do not train or establish a navigation policy. Original aliases and frozen references were preserved. [Contracts, hashes, limitations, and viewing](evidence/planner-dual-v65-results.md).
+
+
+## Room-aware large and maze development, October 6
+
+Planner-1.3-exp.4 reached both retained large failures (9500014 at step 3,343; 13000013 at step 2,056), without collisions and within the original deadlines. This is 2/2 reused-case correction, not an independent success-rate estimate. Both maze retries still timed out without collisions. Planner-1.3-exp.5 regressed both retained maze failures; exp.6 also regressed those flights. Exp.7 tests a distance-aware surface-span requirement. The full graph, geometry, deadlines, checkpoint aliases, and reserved-test separation are preserved. See [the detailed development record](MAZE_NAVIGATION.md).

@@ -75,7 +75,7 @@ Separate geometry factors before combining them:
 
 The original `dense-v3` task remains a retained reference, not an equivalent stage of the new profiled generator. Define mastery criteria before running each experiment. The existing practice protocol uses two distinct withheld training-practice batches and retains easier reset examples; its success does not establish independent generalization. The previous curriculum did not outperform baseline on single-gate validation, and one seed never advanced, so a curriculum benefit must be measured rather than assumed.
 
-Do not advance solely because a step budget expired. Record stage exposure and both practice batches, preserve easier skills, and measure new layouts separately. Before running the planner on `maze`, verify grid bounds, goal/altitude normalization, range, deadlines, checkpoint/readout contracts, and reset memory. The current observed-map launcher intentionally supports `large` only.
+Do not advance solely because a step budget expired. Record stage exposure and both practice batches, preserve easier skills, and measure new layouts separately. Before running the planner on `maze`, verify grid bounds, goal/altitude normalization, range, deadlines, checkpoint/readout contracts, and reset memory. Frozen planner-1.0 through planner-1.2 support `large` only. Experimental planner-1.3 candidates also support the declared `maze` contract. The normalization and grid checks pass, but both retained maze flights still time out. See [maze development](docs/MAZE_NAVIGATION.md).
 
 Completion requires demonstrated navigation at each declared stage and explicit disclosure of any changed task or interface. Add moving obstacles, wind, sensor noise, and delay only after static navigation is reliable.
 

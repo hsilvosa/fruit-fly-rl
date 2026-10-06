@@ -72,8 +72,8 @@ def run(args):
                 if self.is_planner:
                     from fly_rl.connectome.innovation import MOTION_STABLE_READOUT
                     from fly_rl.navigation.registry import VersionedPlannerPolicy
-                    self.policy=VersionedPlannerPolicy(getattr(args,'planner_version','planner-1.0'))
-                    self.env=BrainEnv(args.data,1,args.device,args.seed,mode='dense',dynamics='coordinated',sensor_version=SENSOR_V6,map_profile='large',readout_version=self.policy.specification['readout'],sensor_backend='torch-cuda' if args.device=='cuda' else 'numpy',history_frames=8,history_stride=8)
+                    self.policy=VersionedPlannerPolicy(getattr(args,'planner_version','planner-1.0'),profile or 'large')
+                    self.env=BrainEnv(args.data,1,args.device,args.seed,mode='dense',dynamics='coordinated',sensor_version=SENSOR_V6,map_profile=profile or 'large',readout_version=self.policy.specification['readout'],sensor_backend='torch-cuda' if args.device=='cuda' else 'numpy',history_frames=8,history_stride=8)
                 else:
                     self.env=BrainEnv(args.data,1,args.device,args.seed,mode=getattr(args,'room_mode','obstacles'),dynamics=getattr(args,'dynamics','legacy'),sensor_version=sensors,map_profile=profile,readout_version=json.loads(Path(args.checkpoint).with_suffix('.json').read_text()).get('readout_version','random-pool-256-v1') if args.checkpoint else 'random-pool-256-v1',sensor_backend='torch-cuda' if sensors==SENSOR_V6 and args.device=='cuda' else 'numpy',**checkpoint_history(args.checkpoint))
                     self.policy=load_model(args.checkpoint,self.env.brain,self.env,getattr(args,'transfer',False)) if args.checkpoint else make_policy(self.env)

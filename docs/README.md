@@ -40,3 +40,5 @@ Public result summaries distinguish validation selection from final assessment a
 Use the [contribution workflow](../CONTRIBUTING.md) for changes and the [roadmap](../ROADMAP.md) for proposed work. Public guides retain useful formulas, protocols and measured limits without including the detailed journal.
 
 [Guided navigation](GUIDED_NAVIGATION.md) explains privileged training supervision, teacher-free inference and the bounded correction protocol.
+
+[Large-room corrections and maze navigation](MAZE_NAVIGATION.md) records the room-contract correction, opening-search attempts, retained outcomes, and remaining verification.

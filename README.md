@@ -12,7 +12,7 @@ Controller revisions now use numbered names: **planner-1.0** is the frozen defau
 
 ## What works today
 
-These are recorded measurements, current as of October 5, 2026. A **goal** means reaching the target before the deadline without colliding. Collision and timeout are failures.
+These are recorded measurements, current as of October 6, 2026. A **goal** means reaching the target before the deadline without colliding. Collision and timeout are failures.
 
 | Task | Controller and outcome | What the result establishes |
 | --- | --- | --- |
@@ -29,6 +29,8 @@ These are recorded measurements, current as of October 5, 2026. A **goal** means
 **Map structure matters more than size labels.** A long room with one wide gate can be easier than a smaller room with several narrow alternating passages. The gate result does not cover every small map, and the older dense result is not a result for the newer `open` profile.
 
 The early 0/64 final pool has been consumed. Later large-room corrections did not use another reserved final pool. planner-1.0's 16 new development rooms were fixed before its flights, with the controller frozen throughout. Their three failures were inspected afterward and cannot be fresh evidence for a future tuned version. Teacher flights, training practice, optimization maps, prospective development, and final tests remain separate in the [complete results](docs/RESULTS.md).
+
+The October 6 follow-up corrects both retained large-room timeouts with planner-1.3-exp.4 (2/2 goals, zero collisions). The same candidate still times out in both retained maze rooms. Maze navigation remains unresolved; ongoing opening-search changes are documented in [maze development](docs/MAZE_NAVIGATION.md). These retained corrections do not replace the earlier fresh comparison.
 
 ## Map gallery
 

@@ -16,20 +16,37 @@ CONTROLLERS = dict(v55=('observed_map', 'ObservedMapController'),
     v62=('persistent_route', 'PersistentRouteController'),
     v63=('ray_consistent', 'RayConsistentController'),
     v64=('momentum_guard', 'MomentumGuardController'),
-    v65=('dual_safety', 'DualSafetyController'))
+    v65=('dual_safety', 'DualSafetyController'),
+    **{'room-aware-exp1': ('room_aware', 'RoomAwareController'),
+       'frontier-cost-exp1': ('frontier_cost', 'FrontierCostController'),
+       'portal-reference-exp1': ('portal_reference', 'PortalReferenceController'),
+       'portal-reference-exp2': ('portal_reference_refined', 'RefinedPortalController'),
+       'portal-reference-exp3': ('portal_multi_plane', 'MultiPlanePortalController'),
+       'portal-reference-exp4': ('portal_axis', 'AxisPortalController'),
+       'portal-reference-exp5': ('portal_near_wall', 'NearWallPortalController')})
 
 
 class VersionedPlannerPolicy(ObservedMapPolicy):
     """Viewer adapter; selecting a version does not train or promote it."""
 
-    def __init__(self, version):
+    def __init__(self, version, map_profile='large'):
         self.revision = revision(version)
         self.version = self.revision.legacy
+        self.map_profile = map_profile
         self.reset()
 
     def reset(self):
         module, name = CONTROLLERS[self.version]
-        self.controller = getattr(importlib.import_module(f'fly_rl.navigation.{module}'), name)()
+        implementation = importlib.import_module(f'fly_rl.navigation.{module}')
+        supported = getattr(implementation, 'SUPPORTED_PROFILES', ('large',))
+        if self.map_profile not in supported:
+            raise ValueError('Controller does not support the selected room profile')
+        constructor = getattr(implementation, name)
+        if hasattr(implementation, 'SUPPORTED_PROFILES'):
+            from fly_rl.simulation.map_profiles import resolve_profile
+            self.controller = constructor(resolve_profile(self.map_profile).room_size)
+        else:
+            self.controller = constructor()
 
     def predict(self, features, deterministic=True):
         features = np.asarray(features)
@@ -66,6 +83,8 @@ class VersionedPlannerPolicy(ObservedMapPolicy):
             readout=getattr(module, 'READOUT_VERSION', spec['readout']),
             experimental=self.version != 'v55',
             feature_count=getattr(module, 'FEATURE_COUNT', 3869),
+            room_size=list(getattr(self.controller, 'room_size', [48,48,16])),
+            map_profile=self.map_profile,
             source_sha256=hashlib.sha256(primary.read_bytes()).hexdigest(),
             sources=[dict(module='.'.join(p.resolve().relative_to(root).with_suffix('').parts),
                 archive_file=f'controller-{p.stem}.py',
