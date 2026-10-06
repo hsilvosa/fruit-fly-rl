@@ -233,3 +233,15 @@ Exp.11 reached both retained maze goals (6,630/6,736 and 6,028/6,352 decisions),
 The exp.11 fresh maze suite completed at 5/8 goals, zero collisions and three timeouts, failing its 7/8 threshold. Failures: 16000001, 16000004, 16000006. Exp.12 checks goal-relative portal priority on all eight now-retained cases; no successor may reuse them as fresh evidence.
 
 Exp.12 completed at 6/8 retained goals, zero collisions, two timeouts; the 7/8 gate failed. Exp.13 tests a 0.4-unit occupancy grid and associated one-voxel planning buffer on all retained layouts. No fresh successor result is claimed.
+
+
+### Maze follow-up: rejected fine grid and surface fallback
+
+The retained check for `planner-1.3-exp.12` reached six of eight goals with no collisions. It corrected one previous failure but regressed another layout, so it was not selected. `planner-1.3-exp.13` then returned to the opening-refinement controller and changed the grid from 0.6 to 0.4 units. All eight retained flights timed out without collisions. The change also reduced the physical thickness of the one-cell planning buffer; it is not an isolated resolution ablation. This candidate was rejected.
+
+`planner-1.3-exp.14` keeps the 0.6 unit grid and the existing flight guards. It checks other strongly supported surfaces when the highest-scoring surface has no observed through-rays, and hands over to global goal planning only within three units of the beacon. Its eight-layout retained check is running. It has no verified outcome yet. No optimizer update or reserved final evaluation was performed. Large-room development verification remains eight of eight fresh goals with `planner-1.3-exp.9`.
+
+
+### Rejected surface fallback and confined-speed check
+
+Exp.14 completed with zero of eight goals, one collision and seven timeouts. Its source and protected-checkpoint hashes remained unchanged. Broadening surface selection did not solve wall search and introduced a collision. It is rejected. Exp.15 returns to the exp.11 surface detector and0.6unit grid, increases the requested confined speed from 1.0 to 1.3 under unchanged range/momentum limits, and restricts goal handover to beacon distances below 3 units. Its retained eight-room check is running; no success claim is made. Four candidate contract tests pass. The previous full focused suite passed 145 tests with one expected failure.

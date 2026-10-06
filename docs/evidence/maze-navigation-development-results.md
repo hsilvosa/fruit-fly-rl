@@ -72,3 +72,15 @@ Physical counts include inactive vector slots. Fresh large: 25,160 physical tran
 Full regression after center refinement: 420 passed, one strict expected failure for the discarded false-plane detector. Goal-priority navigation checks: 141 passed, one expected failure. Short rendered large and maze checks produced finite full-graph activity; the maze launcher opened the separate anatomical soma window and its 20-step archive passed integrity inspection. These rendering checks contain no completed episodes and are not success measurements.
 
 The [detailed report](../MAZE_NAVIGATION.md) records mechanisms, formulas, failed attempts, and limitations. Detailed evidence remains in local runs/diagnostics and private. Checkpoints, data, generated telemetry, and environments remain excluded from Git.
+
+
+### Maze follow-up: rejected fine grid and surface fallback
+
+The retained check for `planner-1.3-exp.12` reached six of eight goals with no collisions. It corrected one previous failure but regressed another layout, so it was not selected. `planner-1.3-exp.13` then returned to the opening-refinement controller and changed the grid from 0.6 to 0.4 units. All eight retained flights timed out without collisions. The change also reduced the physical thickness of the one-cell planning buffer; it is not an isolated resolution ablation. This candidate was rejected.
+
+`planner-1.3-exp.14` keeps the 0.6 unit grid and the existing flight guards. It checks other strongly supported surfaces when the highest-scoring surface has no observed through-rays, and hands over to global goal planning only within three units of the beacon. Its eight-layout retained check is running. It has no verified outcome yet. No optimizer update or reserved final evaluation was performed. Large-room development verification remains eight of eight fresh goals with `planner-1.3-exp.9`.
+
+
+### Rejected surface fallback and confined-speed check
+
+Exp.14 completed with zero of eight goals, one collision and seven timeouts. Its source and protected-checkpoint hashes remained unchanged. Broadening surface selection did not solve wall search and introduced a collision. It is rejected. Exp.15 returns to the exp.11 surface detector and0.6unit grid, increases the requested confined speed from 1.0 to 1.3 under unchanged range/momentum limits, and restricts goal handover to beacon distances below 3 units. Its retained eight-room check is running; no success claim is made. Four candidate contract tests pass. The previous full focused suite passed 145 tests with one expected failure.

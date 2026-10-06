@@ -119,3 +119,7 @@ The prefixed name `planner-1.2` also works. Old arguments such as `--planner-ver
 ## Exact source bytes
 
 Frozen controller and connectome source archives are checked by SHA-256 over their exact bytes. Git preserves their original line endings through path-specific attributes, rather than converting them during staging or checkout. The bounded diagnostic runner follows the same rule. This makes the committed source match the measured source and archived hash; Python supports these preserved line endings. Other source and documentation keep the repository's normal line-ending rules. Do not reformat a measured implementation to normalize its endings or EOF: create a new revision when changing its bytes.
+
+`planner-1.3-exp.14` follows exp.13 and tests supported-surface fallback plus close beacon handover. Its higher revision number denotes implementation order, not a measured improvement.
+
+`planner-1.3-exp.15` follows exp.14 and tests bounded confined cruising with close goal handover. It remains experimental pending full-flight evidence.

@@ -2,6 +2,12 @@
 
 This development work began on October 6, 2026. The task is to preserve large-room navigation while extending the explicit planner to the existing maze. A generated feasible maze is not a navigation result. The learned-policy objective remains separate.
 
+## Current development status
+
+Large-room controller `planner-1.3-exp.9` reaches all six retained cases and all eight fresh development rooms, without collisions or timeouts. Maze controller `planner-1.3-exp.11` reaches both original retained cases but only five of eight fresh development rooms. Those eight rooms are now retained for correction work. Exp.12 reaches six of eight; exp.13 reaches zero of eight. Both fail the declared development selection rule. Exp.14 completed with zero goals and one collision and was rejected. Exp.15 is checking bounded confined speed and close-goal handover.
+
+These are explicit-planning results using full-connectome activity, with no new optimization updates. They do not establish learned autonomous navigation or independent final-test generalization. The sections below retain the implementation history, including failed hypotheses.
+
 ## Room contract correction
 
 Earlier planners assumed a 48 x 48 x 16 room when decoding the normalized goal distance and altitude. The maze is 64 x 64 x 20. Its altitude exceeded the original occupancy grid. Planner-1.3-exp.1 uses the declared room dimensions for both normalization and grid bounds, and commits to a local route reference until it is reached, blocked, or six seconds old. Existing measured planners remain unchanged and reject the maze contract.
@@ -133,3 +139,15 @@ Exp.12 reached 6/8 retained goals, with zero collisions and two timeouts. It cor
 Exp.13 returns to exp.11 opening refinement and changes occupancy resolution from 0.6 to 0.4 units. The one-voxel dilation remains one voxel, so its physical planning buffer also shrinks from 0.6 to 0.4. This is not an isolated precision-only ablation. The actual fly radius, room geometry, sensors, decision interval, speed cap, braking guards, and collision checks remain unchanged. The finer maze grid has 454 x 454 x 51 cells and covers the complete rotated-room envelope and 20-unit height.
 
 The full graph is unchanged. Exp.13 is frozen on all eight retained layouts under the same development gate, original episode deadlines, and 81,920-transition cap. It must pass before another fresh suite. Results are pending.
+
+
+### Maze follow-up: rejected fine grid and surface fallback
+
+The retained check for `planner-1.3-exp.12` reached six of eight goals with no collisions. It corrected one previous failure but regressed another layout, so it was not selected. `planner-1.3-exp.13` then returned to the opening-refinement controller and changed the grid from 0.6 to 0.4 units. All eight retained flights timed out without collisions. The change also reduced the physical thickness of the one-cell planning buffer; it is not an isolated resolution ablation. This candidate was rejected.
+
+`planner-1.3-exp.14` keeps the 0.6 unit grid and the existing flight guards. It checks other strongly supported surfaces when the highest-scoring surface has no observed through-rays, and hands over to global goal planning only within three units of the beacon. Its eight-layout retained check is running. It has no verified outcome yet. No optimizer update or reserved final evaluation was performed. Large-room development verification remains eight of eight fresh goals with `planner-1.3-exp.9`.
+
+
+### Rejected surface fallback and confined-speed check
+
+Exp.14 completed with zero of eight goals, one collision and seven timeouts. Its source and protected-checkpoint hashes remained unchanged. Broadening surface selection did not solve wall search and introduced a collision. It is rejected. Exp.15 returns to the exp.11 surface detector and0.6unit grid, increases the requested confined speed from 1.0 to 1.3 under unchanged range/momentum limits, and restricts goal handover to beacon distances below 3 units. Its retained eight-room check is running; no success claim is made. Four candidate contract tests pass. The previous full focused suite passed 145 tests with one expected failure.
