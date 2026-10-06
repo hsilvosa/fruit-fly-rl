@@ -73,3 +73,4 @@ Planner-1.3-exp.1 corrects room decoding and commits local references; exp.2 inc
 | `planner-1.3-exp.20` | `portal-reference-exp18` | Sustained distant goal visibility | Rejected: 6/8 goals, 0 collisions |
 | `planner-1.3-exp.21` | `portal-reference-exp19` | Committed visible-goal handover | Rejected: 6/8 goals, 0 collisions |
 | `planner-1.3-exp.22` | `repeatable-goal-exp1` | Repeatable full-graph visible-goal execution | Neural replay verified; maze flights pending |
+| `planner-1.3-exp.23` | `segmented-goal-exp1` | Repeatable segmented full-graph visible-goal execution | Neural replay verified; maze flights pending |

@@ -58,7 +58,9 @@ class NeuralInspector:
         gradient=gradient.to(brain.device)
         if hasattr(brain,'projection_transpose'):
             from fly_rl.connectome.dual_readout import DUAL_READOUT, DUAL_FEATURES
-            if getattr(brain,'readout_version',None)==DUAL_READOUT:
+            from fly_rl.connectome.repeatable_readout import REPEATABLE_DUAL_READOUT
+            from fly_rl.connectome.segmented_readout import SEGMENTED_DUAL_READOUT
+            if getattr(brain,'readout_version',None) in (DUAL_READOUT, REPEATABLE_DUAL_READOUT, SEGMENTED_DUAL_READOUT):
                 if gradient.shape!=(DUAL_FEATURES,):
                     raise ValueError('Dual readout sensitivity requires its declared feature width')
                 # Both outputs depend on the same reconstructed current drive.
