@@ -23,14 +23,16 @@ These are recorded measurements, current as of October 6, 2026. A **goal** means
 | The same `large` profile, planner-1.0 | **8/8** reused optimization goals; frozen prospective development: **13/16 (81.25%)**, zero collisions, three timeouts; Wilson 95% interval **57.0–93.4%** | A working autonomous planner demo, not a PPO learning result. The small sample does not establish a guaranteed 80% rate. [Evidence](docs/evidence/observed-map-v55-results.md) |
 | The same `large` profile, experimental planner-1.1 | **3/3** corrected known failures; new frozen paired development: **14/16 (87.5%)**, zero collisions, two timeouts; Wilson 95% interval **64.0–96.5%**. planner-1.0 reached 12/16 on these same new rooms | Conditional clearance recovery and higher cruising speed. Two added successes, no lost baseline successes on this suite; not a reserved final result. [Paired evidence](docs/evidence/planner-v60-development-results.md) |
 | Experimental distance-stable reader, planner-1.2-exp.1 | Known stationary room corrected; a separate frozen comparison reached **13/16**, two collisions, one timeout, versus **15/16** and one collision for planner-1.1 | The readout fix regressed this fresh development suite and is not selected as the stronger candidate. [Paired outcomes](docs/evidence/planner-v61-development-results.md) |
-| Latest experimental planner-1.2, the same `large` profile | **15/16 (93.75%)**, zero collisions, one timeout; Wilson 95% interval **71.7–98.9%**. Frozen planner-1.1 had the same paired outcomes | Separate neural ranges for braking preserve mapping context and fix retained false stops/contacts. No measured success-rate advantage over planner-1.1 on this suite. [Evidence](docs/evidence/planner-v65-development-results.md) |
-| `open`, `passages`, intermediate diagnostic profiles, and `maze` | Geometry is implemented; no broad reliable-navigation result is claimed | A generated map or passing geometry test does not mean a controller can navigate it |
+| Latest measured paired planner-1.2 comparison, the same `large` profile | **15/16 (93.75%)**, zero collisions, one timeout; Wilson 95% interval **71.7–98.9%**. Frozen planner-1.1 had the same paired outcomes | Separate neural ranges for braking preserve mapping context and fix retained false stops/contacts. No measured success-rate advantage over planner-1.1 on this suite. [Evidence](docs/evidence/planner-v65-development-results.md) |
+| `large`, experimental planner-1.3-exp.9 | **6/6 retained goals, then 8/8 fresh development goals**, no collisions or timeouts; Wilson 95% interval **67.6–100%** for the fresh eight | Meets its predeclared development rule. Small-sample uncertainty remains; no reserved final assessment or paired superiority claim. [Evidence](docs/MAZE_NAVIGATION.md#verified-large-room-development-checkpoint) |
+| `maze`, experimental planner-1.3-exp.11 | **2/2 retained goals**, then **5/8 fresh development goals**, no collisions, three timeouts | Clean occupancy, stalled-reference recovery, and stronger opening-center support. The fresh result misses the declared 7/8 development threshold; goal-priority correction is being checked on these now-retained rooms. [Development record](docs/MAZE_NAVIGATION.md) |
+| `open`, `passages`, and intermediate diagnostic profiles | Geometry is implemented; no broad reliable-navigation result is claimed | A generated map or passing geometry test does not mean a controller can navigate it |
 
 **Map structure matters more than size labels.** A long room with one wide gate can be easier than a smaller room with several narrow alternating passages. The gate result does not cover every small map, and the older dense result is not a result for the newer `open` profile.
 
 The early 0/64 final pool has been consumed. Later large-room corrections did not use another reserved final pool. planner-1.0's 16 new development rooms were fixed before its flights, with the controller frozen throughout. Their three failures were inspected afterward and cannot be fresh evidence for a future tuned version. Teacher flights, training practice, optimization maps, prospective development, and final tests remain separate in the [complete results](docs/RESULTS.md).
 
-The October 6 follow-up corrects both retained large-room timeouts with planner-1.3-exp.4 (2/2 goals, zero collisions). The same candidate still times out in both retained maze rooms. Maze navigation remains unresolved; ongoing opening-search changes are documented in [maze development](docs/MAZE_NAVIGATION.md). These retained corrections do not replace the earlier fresh comparison.
+The October 6 follow-up corrects both retained large-room timeouts with planner-1.3-exp.4 (2/2 goals, zero collisions). That candidate still times out in both retained maze rooms. Clean-range occupancy in planner-1.3-exp.8 then reached one maze goal (5,441 steps) and timed out in the second. Reliable maze navigation remains unresolved; ongoing opening-search changes are documented in [maze development](docs/MAZE_NAVIGATION.md). These retained corrections do not replace the earlier fresh comparison.
 
 ## Map gallery
 
@@ -67,7 +69,7 @@ These images come from the actual geometry code with preview seed 10. Blue marks
 | `large-wide` | 48 x 48 x 16 | 20 | Five partitions with wide openings; diagnostic isolation |
 | `large-narrow` | 48 x 48 x 16 | 20 | Five 3.2 x 3.2 openings, without extra clutter |
 | `large` | 48 x 48 x 16 | 112 | Five narrow alternating openings plus clutter; current demo |
-| `maze` | 64 x 64 x 20 | 192 | Eight partitions and four dead-end branches; navigation unverified |
+| `maze` | 64 x 64 x 20 | 192 | Eight partitions and four dead-end branches; both retained goals reached; fresh verification pending |
 
 Profiled maps have a hidden clearance certificate and route-dependent deadline. The controller receives neither the certificate nor the obstacle map. Feasible geometry is not proof of an optimal or dynamically executable flight. See [map generation](docs/GEOMETRY_CURRICULUM.md) and [image provenance](docs/images/README.md).
 
@@ -207,3 +209,13 @@ The MaleCNS reconstruction, annotations, and soma coordinates were produced by t
 Cite Berg, S., Beckett, I. R., Costa, M., et al. (2026), *Sexual dimorphism in the complete Drosophila male central nervous system connectome*, Cell, 189(18), 5504–5526.e15. [DOI](https://doi.org/10.1016/j.cell.2026.08.015). The source license is linked on the [official download page](https://male-cns.janelia.org/download/).
 
 Fly RL filters and transforms those tables; the original researchers did not produce this controller or its results. [Credits and references](docs/REFERENCES.md) describes modifications and reusable citations. Use the [documentation index](docs/README.md) for the remaining guides.
+
+
+### Large and maze development demos
+
+```powershell
+.\launch-large.cmd
+.\launch-maze.cmd
+```
+
+The large launcher selects frozen planner-1.3-exp.9, verified on six retained and eight fresh large rooms. The maze launcher selects planner-1.3-exp.11, which reaches both retained maze goals; its completed fresh development check reached 5/8 and missed its threshold; a successor is under verification. Both execute autonomous flight live, show neural activity in a separate brain window, and save telemetry. They do not train or replay a saved flight. Use `--speed 4` to speed up simulated time; hold Shift for the existing 10x boost. Seeds can be changed with `--seed`.

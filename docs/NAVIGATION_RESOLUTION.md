@@ -656,3 +656,8 @@ V65 also reached the formerly stationary known room at step 1,782, while retaine
 ### Remaining timeout diagnosis after the v65 freeze
 
 Offline inspection of existing second-half traces found continuing motion, zero sampled momentum-guard activations, and estimated pose errors below 0.0011 room units. Routes were reported found in 86/87 and 87/88 sampled frames. This narrows the next investigation to route/search progress and physical execution, rather than treating every failure as a false sensor stop. It does not prove the causal explanation. [Sampled counts and limitations](evidence/planner-dual-v65-results.md#offline-inspection-of-the-remaining-timeouts).
+
+
+## October 6 follow-up: room-aware openings and maze navigation
+
+The [maze navigation report](MAZE_NAVIGATION.md) continues this investigation with room-size decoding, grid coverage, observed openings, clean occupancy channels, and execution deadlocks. It records each failed candidate, the two retained large corrections, six retained large goals with the faster candidate, and the first actual maze arrival with the clean-map candidate. Broad maze reliability remains unresolved. These outcomes are planning development; no new learning experiment or final reserved assessment was run.

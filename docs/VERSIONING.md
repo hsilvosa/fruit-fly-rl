@@ -69,6 +69,12 @@ This is the order of the currently registered planner implementations. The histo
 | 16 | planner-1.3-exp.5 | Multiple partially observed wall candidates | portal-reference-exp3 |
 | 17 | planner-1.3-exp.6 | Beacon-aligned surface candidates | portal-reference-exp4 |
 | 18 | planner-1.3-exp.7 | Distance-aware wall span | portal-reference-exp5 |
+| 19 | planner-1.3-exp.8 | Clean-range occupancy | portal-reference-exp6 |
+| 20 | planner-1.3-exp.9 | Bounded faster opening flight | portal-reference-exp7 |
+| 21 | planner-1.3-exp.10 | Stalled-reference recovery | portal-reference-exp8 |
+| 22 | planner-1.3-exp.11 | Same-opening center refinement | portal-reference-exp9 |
+| 23 | planner-1.3-exp.12 | Goal-priority opening planning | portal-reference-exp10 |
+| 24 | planner-1.3-exp.13 | Finer occupancy and voxel buffer | portal-reference-exp11 |
 
 The [controller catalog](CONTROLLER_VERSIONS.md#complete-mapping) describes the status and evidence of each revision. The [results](RESULTS.md#latest-planner-experiments) explain why several intermediate candidates regressed and why the latest 15/16 result is a tie with its paired baseline, not proof of improvement.
 
@@ -108,3 +114,8 @@ These numbers do not advance together. Updating camera controls does not necessa
 ```
 
 The prefixed name `planner-1.2` also works. Old arguments such as `--planner-version v65` remain accepted aliases. Historical run directories, checkpoint fingerprints, evidence filenames, and frozen source snapshots keep their original identifiers; new archives record the public revision alongside them. See [controller compatibility](CONTROLLER_VERSIONS.md#what-remains-unchanged).
+
+
+## Exact source bytes
+
+Frozen controller and connectome source archives are checked by SHA-256 over their exact bytes. Git preserves their original line endings through path-specific attributes, rather than converting them during staging or checkout. The bounded diagnostic runner follows the same rule. This makes the committed source match the measured source and archived hash; Python supports these preserved line endings. Other source and documentation keep the repository's normal line-ending rules. Do not reformat a measured implementation to normalize its endings or EOF: create a new revision when changing its bytes.

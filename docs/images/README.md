@@ -50,3 +50,6 @@ The named public image is copied from that output after visual inspection. Its f
 ```
 
 The local input trace SHA-256 is `8229f67bea1d3a10e7b1301c4a5e57da6be8e3e0a4d5274e179d92e52f5c1c54`. Its every-twenty-step sampling does not show all intervening actions. The public figures were copied from the generated output; the underlying trace and maps remain ignored local records. [Interpretation and limits](../evidence/planner-dual-v65-results.md#offline-inspection-of-the-remaining-timeouts).
+
+
+`maze-first-arrival.png` shows completed planner-1.3-exp.8 diagnostic traces in retained maze rooms 14000000 and 14000001. The left flight reached the goal; the right timed out. It samples every twentieth position, shows true geometry only as an offline audit, and is not a geometry preview or independent test. Original layouts, telemetry, figure hashes, and plotting provenance remain in private/maze-first-arrival-figure.json.

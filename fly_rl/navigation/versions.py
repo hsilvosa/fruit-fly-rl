@@ -33,6 +33,12 @@ REVISIONS = (
     ControllerRevision('1.3-exp.5', 'portal-reference-exp3', 'multiple observed wall candidates'),
     ControllerRevision('1.3-exp.6', 'portal-reference-exp4', 'beacon-aligned observed surfaces'),
     ControllerRevision('1.3-exp.7', 'portal-reference-exp5', 'distance-aware wall span'),
+    ControllerRevision('1.3-exp.8', 'portal-reference-exp6', 'clean-range opening map'),
+    ControllerRevision('1.3-exp.9', 'portal-reference-exp7', 'bounded faster opening flight'),
+    ControllerRevision('1.3-exp.10', 'portal-reference-exp8', 'stalled-reference recovery'),
+    ControllerRevision('1.3-exp.11', 'portal-reference-exp9', 'opening-center refinement'),
+    ControllerRevision('1.3-exp.12', 'portal-reference-exp10', 'goal-priority opening planning'),
+    ControllerRevision('1.3-exp.13', 'portal-reference-exp11', 'finer occupancy grid'),
 )
 DEFAULT_REVISION = 'planner-1.0'
 PUBLIC_VERSIONS = tuple(revision.name for revision in REVISIONS)

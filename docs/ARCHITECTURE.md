@@ -60,3 +60,8 @@ Every live recording gets a unique directory. The latest preview and summary may
 Versioned map configurations and geometry descriptors live in `simulation/map_profiles.py`. The original world generator remains the default, while profiled suites serialize their complete target and training variants. `training/geometry_curriculum.py` changes only the training reset distribution; `training/geometry_comparison.py` freezes the source, paired initialization, budgets and shared target evaluation. Checkpoint metadata distinguishes the evaluation target from the currently active training profile. Explicit map transfer is required when those contracts differ. Viewer archives and saved-state replay retain the actual room profile and episode allowance. See [progressive maps](GEOMETRY_CURRICULUM.md).
 
 See [Mathematical model and optimization](MATHEMATICS.md) for the exact recurrent, sensory, flight, reward, PPO/GAE, optimizer, and metric formulas, including source links and current parameter values.
+
+
+## Experimental room-aware planning
+
+The planner-1.3 branch declares large or maze dimensions before loading the graph. It reconstructs goal distance and altitude with that contract, expands occupancy bounds for the maze, and infers opening references from neural panoramic ranges. Exp.8 maps clean neural ranges and produces the first retained maze arrival. Exp.9 adds faster requested cruise and passes six retained large rooms but regresses maze flights. Exp.10 tests temporary blocked-reference vetoes without rewriting occupancy evidence or weakening braking. Existing measured controllers and defaults remain unchanged. See [the development record](MAZE_NAVIGATION.md) for evidence and current limits.

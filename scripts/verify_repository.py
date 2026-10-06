@@ -29,6 +29,8 @@ def verify(root):
         "fly_rl.navigation.speed_margin", "fly_rl.navigation.adaptive_margin",
         "fly_rl.navigation.room_aware", "fly_rl.navigation.frontier_cost",
         "fly_rl.navigation.portal_reference", "fly_rl.navigation.portal_reference_refined",
+        "fly_rl.navigation.portal_fine_grid", "fly_rl.navigation.portal_goal_priority", "fly_rl.navigation.portal_recovery", "fly_rl.navigation.portal_center_refinement",
+        "fly_rl.navigation.portal_near_wall", "fly_rl.navigation.portal_clean_map", "fly_rl.navigation.portal_fast",
         "fly_rl.navigation.portal_multi_plane", "fly_rl.navigation.portal_axis",
         "fly_rl.navigation.registry", "fly_rl.navigation.versions", "fly_rl.navigation.distance_stable",
         "fly_rl.navigation.persistent_route", "fly_rl.navigation.ray_consistent",

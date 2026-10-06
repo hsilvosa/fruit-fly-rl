@@ -23,7 +23,13 @@ CONTROLLERS = dict(v55=('observed_map', 'ObservedMapController'),
        'portal-reference-exp2': ('portal_reference_refined', 'RefinedPortalController'),
        'portal-reference-exp3': ('portal_multi_plane', 'MultiPlanePortalController'),
        'portal-reference-exp4': ('portal_axis', 'AxisPortalController'),
-       'portal-reference-exp5': ('portal_near_wall', 'NearWallPortalController')})
+       'portal-reference-exp5': ('portal_near_wall', 'NearWallPortalController'),
+       'portal-reference-exp6': ('portal_clean_map', 'CleanMapPortalController'),
+       'portal-reference-exp7': ('portal_fast', 'FastPortalController'),
+       'portal-reference-exp8': ('portal_recovery', 'RecoveryPortalController'),
+       'portal-reference-exp9': ('portal_center_refinement', 'RefiningPortalController'),
+       'portal-reference-exp10': ('portal_goal_priority', 'GoalPriorityPortalController'),
+       'portal-reference-exp11': ('portal_fine_grid', 'FineGridPortalController')})
 
 
 class VersionedPlannerPolicy(ObservedMapPolicy):

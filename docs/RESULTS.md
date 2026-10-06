@@ -221,4 +221,15 @@ Separate known planner-1.2 checks reached four collision/control goals and resol
 
 ## Room-aware large and maze development, October 6
 
-Planner-1.3-exp.4 reached both retained large failures (9500014 at step 3,343; 13000013 at step 2,056), without collisions and within the original deadlines. This is 2/2 reused-case correction, not an independent success-rate estimate. Both maze retries still timed out without collisions. Planner-1.3-exp.5 regressed both retained maze failures; exp.6 also regressed those flights. Exp.7 tests a distance-aware surface-span requirement. The full graph, geometry, deadlines, checkpoint aliases, and reserved-test separation are preserved. See [the detailed development record](MAZE_NAVIGATION.md).
+Planner-1.3-exp.4 reached both retained large failures (9500014 at step 3,343; 13000013 at step 2,056), without collisions and within the original deadlines. This is 2/2 reused-case correction, not an independent success-rate estimate. Both maze retries still timed out without collisions. Planner-1.3-exp.5 regressed both retained maze failures; exp.6 also regressed those flights. Exp.7 also timed out. Exp.8 is checking clean-range occupancy; the exp.4 large controller is undergoing retained collision-control checks. The full graph, geometry, deadlines, checkpoint aliases, and reserved-test separation are preserved. See [the detailed development record](MAZE_NAVIGATION.md).
+
+Planner-1.3-exp.8 reached the first retained maze goal: 14000000 at 5,441 steps, no collision. Room 14000001 timed out at 6,352 steps, 11.54 units from the goal. Exp.4 retained large collision controls yielded 3/4 goals and no collisions, so the earlier 2/2 correction alone is insufficient for promotion. The faster clean-map candidate exp.9 is under bounded verification on both profiles.
+
+
+The frozen exp.9 large-room candidate completed 6/6 retained cases and 8/8 predeclared fresh development cases with zero collisions and timeouts. Its fresh Wilson 95% interval is 67.6–100%; all protected hashes match, with 25, 160 physical transitions and zero optimization. It fails both retained maze cases. Exp.10 recovers the stationary maze case (goal 5,215) but the second times out; exp.11 is under retained verification.
+
+Exp.11 reached both retained maze goals (6,630/6,736 and 6,028/6,352 decisions), without collisions; an eight-layout fresh development check is now frozen and running. Full regression 420 passed, one expected false-fit failure.
+
+The exp.11 fresh maze suite completed at 5/8 goals, zero collisions and three timeouts, failing its 7/8 threshold. Failures: 16000001, 16000004, 16000006. Exp.12 checks goal-relative portal priority on all eight now-retained cases; no successor may reuse them as fresh evidence.
+
+Exp.12 completed at 6/8 retained goals, zero collisions, two timeouts; the 7/8 gate failed. Exp.13 tests a 0.4-unit occupancy grid and associated one-voxel planning buffer on all retained layouts. No fresh successor result is claimed.
