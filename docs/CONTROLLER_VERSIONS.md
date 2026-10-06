@@ -80,3 +80,9 @@ Exp.23 completed at 6/8 retained goals, zero collisions and two timeouts and was
 | Candidate | Artifact alias | Change | Status |
 | --- | --- | --- | --- |
 | planner-1.3-exp.24 | wall-survey-exp1 | Observed blocking-wall opening survey | Geometry tests passed; retained flights running |
+
+Exp.24 completed at 6/8 retained goals, zero collisions and two regressed timeouts; it was not selected.
+
+| Candidate | Artifact alias | Change | Status |
+| --- | --- | --- | --- |
+| planner-1.3-exp.25 | clearance-goal-exp1 | Clearance- and crossing-aware goal handover on exp.23 | Thirteen focused tests passed; retained flights running |

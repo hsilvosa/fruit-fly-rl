@@ -141,3 +141,5 @@ Frozen controller and connectome source archives are checked by SHA-256 over the
 planner-1.3-exp.23 follows exp.22 and uses segmented CSR sums with a separate readout fingerprint. Exp.22 ended incomplete at its declared wall limit. Higher numbering does not imply better navigation; exp.23 requires completed flight evidence.
 
 planner-1.3-exp.24 follows exp.23 and adds systematic observed-wall search. Exp.23 completed at 6/8 and was not selected; its higher number does not make it a navigation milestone.
+
+planner-1.3-exp.25 follows exp.24 and isolates near-body clearance and active-crossing checks before goal handover. It starts from exp.23 rather than inheriting the rejected wall survey. Revision order records experiments; it is not a chain of guaranteed improvements.

@@ -40,7 +40,8 @@ CONTROLLERS = dict(v55=('observed_map', 'ObservedMapController'),
        'portal-reference-exp19': ('portal_committed_goal', 'CommittedVisibleGoalController'),
        'repeatable-goal-exp1': ('repeatable_goal', 'RepeatableGoalController'),
        'segmented-goal-exp1': ('segmented_goal', 'SegmentedGoalController'),
-       'wall-survey-exp1': ('wall_survey', 'WallSurveyController')})
+       'wall-survey-exp1': ('wall_survey', 'WallSurveyController'),
+       'clearance-goal-exp1': ('clearance_goal', 'ClearanceGoalController')})
 
 
 class VersionedPlannerPolicy(ObservedMapPolicy):

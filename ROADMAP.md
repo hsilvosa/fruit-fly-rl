@@ -120,3 +120,5 @@ Exp.12 reached 6/8 retained goals, failing its gate. Exp.13 is checking a finer 
 The repeatable full-graph exp.22 check ended incomplete at its wall limit. Exp.23 tests faster segmented sums on the eight retained maze maps before any fresh suite. A systematic observed-wall survey is prepared separately to address the long first-partition search seen in a retained failure trace; it needs complete flight evidence before selection.
 
 Exp.23 completed at 6/8 retained goals with no collisions and failed its gate. Exp.24 observed-wall surveying is under full-flight verification. Next: require the retained gate, then a new frozen development suite, then verify the selected demo and document the remaining statistical limits.
+
+Exp.24 finished at 6/8 retained goals, fixing both prior failures but regressing two successes, and was rejected. Exp.25 excludes that survey and isolates the confirmed visibility/braking handover inconsistency. Its full-flight check is running. No new fresh suite has been consumed.
