@@ -57,3 +57,7 @@ Real building scans, reconstructed streets, moving obstacles, wind, sensor noise
 ## Immediate next action
 
 Recover the historical successful learned checkpoints and create the reference manifest. Do not launch the pending mixed experiment merely because its runner is ready. First agree the reference-preserving transfer experiment and its additional budget.
+
+## Status update, October 7, 2026
+
+Step 1 is complete for evaluation. The historical winners are recovered, hash-verified and replayed with exact per-episode agreement on their recorded validation pools. See [HISTORICAL_REFERENCE.md](HISTORICAL_REFERENCE.md). Frozen historical policies succeed on medium dense rooms and fail on partitioned `passages` and `large` rooms in a 16-episode development ladder. Step 2 (failure classification from trajectories, regression suite, transfer adaptation) is open. No training has been launched.
