@@ -276,3 +276,8 @@ Work is paused at the user's request. Next: review task scheduling and original-
 The second architectural curriculum completed 131,072 fresh PPO transitions. It reached 2 metre lessons after two complete passing 1 metre rounds, but achieved 0/6 original-goal validation successes, with six collisions and no timeouts. The previous curriculum achieved 1/6 on the same development situations. Lesson progress therefore does not resolve complete-route navigation. No planner actions, reserved test access or checkpoint promotion occurred; protected aliases and sources retained their hashes. See [the detailed result](docs/evidence/autonomous-architecture-curriculum-2-results.md).
 
 Next: preserve original-goal training exposure alongside lessons, support reproducible continuation with curriculum state, and verify route transfer before any independent final test. Compare matched learned controllers with and without connectome activity after a working autonomous baseline exists.
+
+
+### Mixed curriculum implementation
+
+The next runner alternates original training goals and nearby lessons, continuing PPO and validated curriculum state from the previous checkpoint. Eight CPU tests and a full-connectome 128-transition smoke passed; no navigation improvement is claimed. Substantial training awaits an agreed additional budget. See [the protocol](docs/MIXED_AUTONOMOUS_CURRICULUM.md).
