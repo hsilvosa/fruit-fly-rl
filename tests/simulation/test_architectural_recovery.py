@@ -32,3 +32,16 @@ def test_escape_respects_ceiling_and_candidate_is_separate():
     policy.controller.escape_count=2
     policy.reset()
     assert policy.controller.escape_count==0
+
+
+def test_portal_escape_excludes_unresolved_route_search():
+    from fly_rl.navigation.architectural_portal_recovery import PortalEscapeArchitecturalController
+    c=PortalEscapeArchitecturalController((16.,12.,2.8))
+    c.position=np.array([0.,0.,1.4]);c.initial_goal=np.array([3.,0.,1.4])
+    c.current_values=np.ones(5669);c.cost=np.ones(c.shape)
+    c.portal_phase='cross';c.debug={'found':False}
+    assert c.choose_escape() is None
+    c.debug['found']=True;c.portal_phase='approach'
+    assert c.choose_escape() is None
+    c.portal_phase='cross'
+    assert c.choose_escape() is not None

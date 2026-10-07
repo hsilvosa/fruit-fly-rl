@@ -20,7 +20,7 @@ def save(path,value):
 
 
 def check(output,cap=32768,seconds=600,controller_version="planner-1.4-exp.1"):
-    if controller_version not in ("planner-1.4-exp.1", "planner-1.4-exp.2"):
+    if controller_version not in ("planner-1.4-exp.1", "planner-1.4-exp.2", "planner-1.4-exp.3"):
         raise ValueError("Unsupported architectural verification controller")
     if type(cap) is not int or not 1<=cap<=32768 or not np.isfinite(seconds) or not 1<=seconds<=600:
         raise ValueError('Use at most 32768 transitions and 600 seconds after initialization')
@@ -48,7 +48,8 @@ def check(output,cap=32768,seconds=600,controller_version="planner-1.4-exp.1"):
         from fly_rl.simulation.architectural_env import ArchitecturalBrainEnv
         from fly_rl.navigation.architectural import ArchitecturalPlannerPolicy
         from fly_rl.navigation.architectural_recovery import EscapeArchitecturalPolicy
-        policy_type = EscapeArchitecturalPolicy if controller_version == "planner-1.4-exp.2" else ArchitecturalPlannerPolicy
+        from fly_rl.navigation.architectural_portal_recovery import PortalEscapeArchitecturalPolicy
+        policy_type = {"planner-1.4-exp.1": ArchitecturalPlannerPolicy, "planner-1.4-exp.2": EscapeArchitecturalPolicy, "planner-1.4-exp.3": PortalEscapeArchitecturalPolicy}[controller_version]
         env=ArchitecturalBrainEnv(cases[0]['scene'],device='cuda',seed=42)
         assert env.brain.n==167184 and env.brain.audit['edges']==25583622
         status.update(status='running',neurons=env.brain.n,edges=env.brain.audit['edges'],
@@ -101,7 +102,7 @@ def check(output,cap=32768,seconds=600,controller_version="planner-1.4-exp.1"):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('output',type=Path)
-    parser.add_argument('--controller-version', choices=['planner-1.4-exp.1','planner-1.4-exp.2'], default='planner-1.4-exp.1')
+    parser.add_argument('--controller-version', choices=['planner-1.4-exp.1','planner-1.4-exp.2','planner-1.4-exp.3'], default='planner-1.4-exp.1')
     parser.add_argument('--max-transitions',type=int,default=32768)
     parser.add_argument('--max-seconds',type=float,default=600)
     args=parser.parse_args()

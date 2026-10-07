@@ -59,3 +59,7 @@ Two focused tests pass for observed-range support, blocked-grid rejection, ceili
 ## Escape candidate flight result
 
 The exp.2 full-connectome check completed at 18/21 goals with zero collisions. It fixes warehouse aisle-run (523 steps) but regresses apartment sofa-to-bedroom to a timeout. The bathroom and atrium failures remain. It is not promoted; exp.1 remains the demo default. [Complete paired retained results](evidence/architectural-escape-candidate-results.md). The candidate selector is available only in the explicit verification runner through --controller-version; it does not change demo behavior.
+
+## October 7 closing checkpoint
+
+Architectural planner-1.4-exp.3 reached **19/21 original goals, zero collisions and two timeouts**, preserving every exp.1 success and fixing the warehouse aisle route. Bathroom and atrium climb remain unresolved. These are inspected development scenes, not independent real-world evidence. The demo stays on exp.1 pending further verification. Work pauses at the user's request; no experiment remains running. [Closing results and resume requirements](evidence/architectural-closing-results.md).

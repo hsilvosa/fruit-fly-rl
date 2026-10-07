@@ -112,3 +112,5 @@ Planner-1.3-exp.32 adds terminal-distance gating to exp.31, whose retained check
 ## Architectural controller family
 
 Planner-1.4-exp.1 is the separate architectural adapter, receiving the selected scene dimensions and nine-frame segmented dual neural features. It is available through ArchitecturalPlannerPolicy and the demo architecture-scene selector, separately from the procedural version registry. Its finer grid does not change frozen maze/large contracts. Short CUDA integration and viewer controls are verified; the initial full-route development check reached 18/21 goals with zero collisions and three timeouts. It is not promoted as an independently verified real-world navigator.
+
+Architectural exp.2 adds broad observed-clear escape recovery; its 18/21 check traded an apartment success for a warehouse fix and it was not promoted. Exp.3 restricts escape to planned portal crossings; it reached 19/21 original goals without collisions and preserved all exp.1 successes. Both are explicit verification-runner candidates, not procedural registry entries or new demo defaults. Further candidate verification is deferred at the requested pause.

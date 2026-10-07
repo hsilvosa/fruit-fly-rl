@@ -160,3 +160,7 @@ The initial original-objective check completed at **18/21 goals, zero collisions
 Next: diagnose the three retained timeouts, preserve successful flights, and declare a bounded correction check. Maze experiments remain closed for this iteration.
 
 Architectural exp.2 also reached 18/21 goals without collisions: it fixes the warehouse aisle route but regresses an apartment success, so it is not promoted. The original objectives and deadlines were unchanged. [Candidate results](docs/evidence/architectural-escape-candidate-results.md). Next: constrain recovery using the regression trace before another correction check.
+
+## October 7 closing checkpoint
+
+Architectural planner-1.4-exp.3 reached **19/21 original goals, zero collisions and two timeouts**, preserving every exp.1 success and fixing the warehouse aisle route. Bathroom and atrium climb remain unresolved. These are inspected development scenes, not independent real-world evidence. The demo stays on exp.1 pending further verification. Work pauses at the user's request; no experiment remains running. [Closing results and resume requirements](docs/evidence/architectural-closing-results.md).
