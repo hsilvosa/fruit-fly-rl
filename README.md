@@ -230,3 +230,7 @@ Fly RL filters and transforms those tables; the original researchers did not pro
 ```
 
 The large launcher selects frozen planner-1.3-exp.9, verified on six retained and eight fresh large rooms. The maze launcher selects planner-1.3-exp.11, which reaches both retained maze goals; its completed fresh development check reached 5/8 and missed its threshold; the latest successor reached 7/8 retained goals but 5/8 fresh goals and was not promoted. Both execute autonomous flight live, show neural activity in a separate brain window, and save telemetry. They do not train or replay a saved flight. Use `--speed 4` to speed up simulated time; hold Shift for the existing 10x boost. Seeds can be changed with `--seed`.
+
+### Architectural runtime status
+
+The revised six-scene collection now has public simulation and full-connectome environment adapters. A 48-transition CUDA smoke passed across all six scenes; 49 focused tests passed. These short flights do not establish target arrival. The architectural viewer and full-route checks are the next implementation work. [Evidence and limitations](docs/evidence/architectural-fullgraph-integration.md).

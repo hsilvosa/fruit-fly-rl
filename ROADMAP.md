@@ -148,3 +148,5 @@ On resumption, diagnose the three new fresh timeouts as retained correction data
 ## Maze wrap-up decision
 
 New maze candidates and the fresh suite are deferred at the user's request. The earlier-map regression completed at 7/8 without collisions and preserved all seven prior successes. Preserve aliases and report the remaining timeouts. Exp.32 has passed both retained checks; do not mark independent maze reliability achieved or promote the launcher. The next implementation stage is the revised architectural simulation. See [closing evidence](docs/evidence/maze-wrap-up.md).
+
+Architectural runtime milestone: public world/environment/known-dimension planner adapters are implemented, with 49 focused tests and 48 full-graph CUDA smoke transitions across six scenes. Next: integrate materials and scene/situation selection into the viewer, verify controls and brain display, then declare bounded original-route development checks. No navigation-performance claim from the smoke.

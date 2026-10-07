@@ -108,3 +108,7 @@ Planner-1.3-exp.30 adds bounded release of unreachable crossing references to ex
 Planner-1.3-exp.31 tests completed-surface normal consensus on top of exp.29. It excludes the rejected exp.30 crossing release. It is experimental and has no promotion evidence yet.
 
 Planner-1.3-exp.32 adds terminal-distance gating to exp.31, whose retained check reached 6/8 with a regression and was not promoted. The new candidate has no completed flight evidence yet.
+
+## Architectural controller family
+
+Planner-1.4-exp.1 is the separate architectural adapter, receiving the selected scene dimensions and nine-frame segmented dual neural features. It is available through ArchitecturalPlannerPolicy, not the procedural version registry or demo selector yet. Its finer grid does not change frozen maze/large contracts. Only short CUDA integration is verified; full-route navigation and viewer integration remain pending.

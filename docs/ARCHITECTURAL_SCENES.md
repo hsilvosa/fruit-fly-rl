@@ -82,3 +82,7 @@ Once maze verification is complete, declare experiments for geometry transfer wi
 ## Runtime adapter preparation
 
 The private world adapter passed isolated sensor and swept-collision checks for 1,342 solids across the six revision-0.2 scenes, plus 36 physical room-boundary checks and independent resets. These are CPU geometry fixtures, not CPU training or autonomous flight results. Full-connectome GPU flights and the architectural launcher remain pending. See [scope and fixture limitations](evidence/architectural-adapter-contract-checks.md).
+
+## Full-connectome runtime integration
+
+Public architectural world, neural environment and known-dimension planner adapters are implemented. Forty-nine focused tests passed; a 48-transition CUDA smoke moved the fly in all six scenes using every annotated neuron and connection. This is short integration evidence, not navigation success. The viewer and complete routes remain pending. See [measured integration scope](evidence/architectural-fullgraph-integration.md).
