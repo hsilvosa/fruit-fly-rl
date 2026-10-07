@@ -95,3 +95,9 @@ The audit can be regenerated without a policy:
 ```
 
 Detailed sampled endpoints are preserved locally in private/architectural-curriculum-availability. Mastery-controlled progression still needs integration and a full-connectome smoke after pilot 2 finishes.
+
+## Prepared mastery progression
+
+ArchitecturalMastery provides a separate training-only gate for the common stage order 0, 1, 2, 4 (1 m, 2 m, 4 m, original task). Its proposed default requires two consecutive, disjoint rounds, each containing eight completed episodes from every declared training task, with at least six goals per task. A failed round resets the consecutive-round count. Extra episodes from faster tasks do not fill a second round before slower tasks finish the first. Original-task stage is terminal; reaching it is not a claim that navigation is solved.
+
+Three focused tests pass for complete task coverage, disjoint rounds, failure resets, stage order and invalid outcomes. This gate is not yet wired to PPO or validated with neural execution. Its rounds adapt training and therefore cannot be reported as independent validation. Pilot 2 continues unchanged; no curriculum training has started.
