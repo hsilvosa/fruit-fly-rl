@@ -1,5 +1,7 @@
 # Fly RL
 
+The current route to completion is [documented here](docs/PROJECT_COMPLETION.md): recover the successful learned baseline, adapt it with regression checks, train complete routes, independently evaluate a frozen candidate and prepare the release. The latest nearby-goal curriculum did not solve architectural navigation; a prepared runner is not evidence of success.
+
 Fly RL is a **connectome-based 3D navigation project exploring reinforcement learning, imitation learning, and explicit planning**. It places a virtual fruit fly in procedural rooms and uses the full annotated **MaleCNS v1.0 fruit-fly connectome** as a fixed recurrent model that transforms simulated sensor readings into neural activity. Controllers use that activity to choose flight actions, learning from rewards, imitating guided trajectories, or building an observed map and planning a route. The goal is to navigate around obstacles, cross openings, and reach a target in rooms the controller has not seen before.
 
 There are two controller families: learned policies and an explicit observed-map planner. **Learned navigation works well on a single wide opening and moderately well in older dense rooms. The current large-room demo works through explicit planning; a reliable learned policy for those rooms remains unresolved.**

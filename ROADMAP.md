@@ -2,6 +2,22 @@
 
 Current as of October 7, 2026. This is proposed work, not an active training schedule. New collection, optimization, or evaluation needs a declared budget and protocol. Preserve historical results, frozen controllers, and original checkpoint aliases.
 
+## Current route to completion
+
+The [project completion plan](docs/PROJECT_COMPLETION.md) is the authoritative next-step sequence. Recover the successful learned reference first; then audit transfer, learn complete routes, run a frozen independent assessment and prepare the release. The mixed curriculum is implemented but awaits review against that reference and an agreed training budget. No training is currently launched by this plan.
+
+1. Recover and trace the learned checkpoints behind the historical 70–80% medium-room results.
+2. Preserve that reference, audit interface/dynamics differences and establish a regression suite before adaptation.
+3. Train complete routes with retained simpler tasks and explicit budgets; lessons and teacher results stay separate from autonomous validation.
+4. Freeze the candidate and protocol. Proposed gate: at least 52/64 successes and at most 3/64 collisions separately in medium, large, maze and architectural families, with confidence intervals and pool provenance.
+5. Verify installation, demos, logs, anatomy viewer, attribution, reproducibility and public repository organization, then prepare the numbered release.
+
+Real building/street reconstructions and environmental disturbances follow this release. A working planner or a passed learning smoke does not fulfill the autonomous learned-navigation goal.
+
+## Historical plans and experiment chronology
+
+The sections below preserve earlier plans and their evidence. Their next-step instructions are superseded by the current completion plan.
+
 ## Agreed next sequence
 
 Updated October 7 at the user's request. First close the current experiments; then move to autonomous learning. Work is paused, and this roadmap update does not authorize or launch a training run. This sequence supersedes the older immediate-follow-up order below.
