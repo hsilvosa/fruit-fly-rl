@@ -1,4 +1,4 @@
-"""Bounded fresh PPO curriculum; original-goal validation and no planner actions."""
+"""Bounded PPO continuation mixing lessons and original goals; no planner actions."""
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -11,7 +11,7 @@ from fly_rl.simulation.architectural_scenes import BUILDERS
 from fly_rl.simulation.architectural_curriculum_env import ArchitecturalCurriculumEnv
 from fly_rl.training.architectural_mastery import ArchitecturalMastery
 from fly_rl.training.architectural_mixed_schedule import MixedTaskScheduler, restore_mastery
-from fly_rl.training.autonomous_architecture import make_autonomous_policy, save_autonomous_policy, load_autonomous_policy
+from fly_rl.training.autonomous_architecture import save_autonomous_policy, load_autonomous_policy
 
 
 def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -84,10 +84,8 @@ class Telemetry(BaseCallback):
 def train(output, transitions, source, version='learned-architecture-1.0-exp.2', verification=False):
     if type(verification) is not bool or type(transitions) is not int or (transitions != 128 if verification else transitions not in (65536,131072)):
         raise ValueError('Use 65536 or 131072 additional transitions, or a 128-transition verification')
-    chunk_steps=128 if verification else 4096
     rollout_steps=128 if verification else 512
     epochs=1 if verification else 5
-    chunks=transitions//chunk_steps
     output=Path(output)
     if output.exists():raise ValueError('Never overwrite or restart a prior experiment')
     source=Path(source)
