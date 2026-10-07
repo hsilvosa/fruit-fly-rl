@@ -25,6 +25,7 @@ def check(output,cap=32768,seconds=600):
     output=Path(output)
     if output.exists():raise ValueError('Never overwrite or restart an existing architectural check')
     from fly_rl.simulation.architectural_scenes import BUILDERS
+    from fly_rl.navigation.architectural_diagnostics import recovery_snapshot
     sources={str(p.resolve()):digest(p) for p in list(Path('fly_rl').rglob('*.py'))+[Path(__file__)]}
     protected={str(Path('runs')/name):digest(Path('runs')/name) for name in
         ['dense-flight-policy.json','dense-flight-policy.zip','dense-policy.json','dense-policy.zip','navigation-policy.json','navigation-policy.zip']}
@@ -70,7 +71,8 @@ def check(output,cap=32768,seconds=600):
                 if step%20==0 or dones[0]:
                     trace.append(dict(scene=case['scene'],situation=case['situation'],step=step+1,
                                       position=info['transition_state']['position'],distance=info['distance'],
-                                      action=action[0],controller=policy.controller.debug.copy()))
+                                      action=action[0],controller=policy.controller.debug.copy(),
+                                      recovery=recovery_snapshot(policy.controller)))
                 if status['physical_transitions']%100==0:
                     status['elapsed_seconds']=time.monotonic()-began;save(output/'status.json',status)
                 if dones[0]:
