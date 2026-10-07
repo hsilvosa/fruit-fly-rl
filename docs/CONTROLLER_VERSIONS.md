@@ -99,3 +99,6 @@ Exp.26 completed at 6/8 retained goals with zero collisions and two timeouts; no
 
 
 Exp.27 completed at 4/8 retained goals, zero collisions and four timeouts; it was rejected after three prior-success regressions. Planner-1.3-exp.28 (`revisit-wall-scan-exp1`) gates the same bounded recovery on sustained revisits rather than longitudinal progress alone; its retained check is running and it is not promoted.
+
+
+Exp.28 completed at 6/8 retained goals with zero collisions, preserving all six exp.26 arrivals but not fixing the remaining two timeouts. Exp.29 (`coverage-wall-scan-exp1`) tests visit-coverage direction selection within the unchanged bounded recovery; its retained check is running. Neither has been promoted.

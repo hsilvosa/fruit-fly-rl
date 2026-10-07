@@ -152,3 +152,6 @@ planner-1.3-exp.27 follows exp.26 and adds bounded progress-gated observed-wall 
 
 
 planner-1.3-exp.28 follows exp.27 and tests revisit-gated scan initiation. Exp.27 regressed to four retained goals and is rejected; later numbering does not establish improvement.
+
+
+planner-1.3-exp.29 follows exp.28 and changes eligible wall-scan direction selection using past estimated-position coverage. Exp.28 preserved six retained goals but still failed its gate.
