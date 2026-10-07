@@ -81,3 +81,17 @@ ArchitecturalCurriculumWorld now applies the sampled training goal only in expli
 Twenty-three CPU geometry tests pass: stage-one tasks on all 15 training situations, original geometry/start preservation, valid distances, reproducibility, sampling failure and restoration of the original goal/deadline. These are simulation contract tests, not training or navigation-performance evidence. The separate ArchitecturalCurriculumEnv adapter is implemented for full-connectome use, but its actual neural reset/learning smoke is pending until the active pilot has finished. It is not used by pilot 2.
 
 Longer clear displacements may be unavailable in constrained interiors; the sampler reports failure. A future curriculum protocol must handle and log that availability explicitly, rather than remove obstacles, silently shorten requested stages or change evaluation goals. Mastery progression, per-stage accounting, checkpoint curriculum compatibility and original-task validation still need integration before launching a curriculum experiment.
+
+## Curriculum availability audit
+
+A CPU-only audit sampled each of the 15 training situations at three declared seeds (310001-310003), with at most 256 direction attempts per sample. It found body-clear endpoints at 1, 2 and 4 m in all 45 samples per distance. At 8 m it found 39/45; both apartment training starts failed on all three seeds. The audit did not load the connectome, a movement policy, train weights or run evaluation. Original targets remained unchanged. Sampling success on these seeds does not guarantee universal availability or dynamic navigability.
+
+This evidence changes the proposed common progression to stages 0, 1, 2 and 4: 1 m, 2 m, 4 m and then the original task. Stage 3 (8 m) stays an optional explicit lesson where available; it must not be forced globally or silently shortened in apartments. A future runner must declare this stage order before training and record any sampling failures. Geometry and original-route validation stay unchanged. The active pilot has not adopted the curriculum.
+
+The audit can be regenerated without a policy:
+
+```powershell
+.\.conda\python.exe -s scripts/audit_architectural_curriculum_goals.py reports/architectural-curriculum-availability-new.json
+```
+
+Detailed sampled endpoints are preserved locally in private/architectural-curriculum-availability. Mastery-controlled progression still needs integration and a full-connectome smoke after pilot 2 finishes.
