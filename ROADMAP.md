@@ -6,7 +6,7 @@ Current as of October 7, 2026. This is proposed work, not an active training sch
 
 The [project completion plan](docs/PROJECT_COMPLETION.md) is the authoritative next-step sequence. Recover the successful learned reference first; then audit transfer, learn complete routes, run a frozen independent assessment and prepare the release. The mixed curriculum is implemented but awaits review against that reference and an agreed training budget. No training is currently launched by this plan.
 
-1. Recover and trace the learned checkpoints behind the historical 70–80% medium-room results.
+1. Recover and trace the learned checkpoints behind the historical 70â€“80% medium-room results.
 2. Preserve that reference, audit interface/dynamics differences and establish a regression suite before adaptation.
 3. Train complete routes with retained simpler tasks and explicit budgets; lessons and teacher results stay separate from autonomous validation.
 4. Freeze the candidate and protocol. Proposed gate: at least 52/64 successes and at most 3/64 collisions separately in medium, large, maze and architectural families, with confidence intervals and pool provenance.
