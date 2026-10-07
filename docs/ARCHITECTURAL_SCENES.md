@@ -1,24 +1,34 @@
 # Architectural scene drafts
 
-This CPU-only preparation runs alongside the paused maze work. It creates original 3D layouts inspired by building interiors and streets, portable meshes, collision records, and inspection previews. It does not load the connectome, train a policy, or run a navigation experiment. These scenes are not reconstructions of specific real places and do not yet have measured fly results.
+This CPU-only preparation runs alongside the resumed maze correction work. It creates original 3D layouts inspired by building interiors and streets, portable meshes, collision records, and inspection previews. It does not load the connectome, train a policy, or run a navigation experiment. These scenes are not reconstructions of specific real places and do not yet have measured fly results.
 
-## First asset revision
+## Revision 0.2
 
-`architecture-0.1` identifies the asset schema and initial design revision, independently of planner versions. The checked-in collection is in [assets/architecture/draft-0.1](../assets/architecture/draft-0.1/README.md).
+`architecture-0.2` replaces the three box-room drafts of 0.1 (still in git history) with more detailed redesigns and adds three scene types. The checked-in collection is in [assets/architecture/draft-0.2](../assets/architecture/draft-0.2/README.md).
 
-| Scene | Dimensions, meters | Collision boxes | Situations |
-| --- | --- | --- | --- |
-| Office floor | 24 x 18 x 3.6 | 38 | Furnished room to room; corridor to office |
-| Apartment | 18 x 14 x 3.2 | 38 | Bedroom to living room; low-to-high altitude transition |
-| Street block | 60 x 40 x 12 | 25 | Street traverse; intersection turn; clearance above a parked delivery van |
+| Scene | Kind | Dimensions, m | Collision boxes | Situations |
+| --- | --- | --- | --- | --- |
+| Office floor | interior | 30 x 20 x 3.4 | 404 | Reception to a glass meeting room; open plan to a private office; over a desk cluster |
+| Apartment | interior | 16 x 12 x 2.8 | 137 | Sofa to bedroom; study to bathroom; low-to-high over the kitchen island |
+| Street block | outdoor | 70 x 50 x 18 | 224 | Street traverse; intersection turn; under a skybridge; through a covered passage; over a parked bus |
+| Atrium | interior | 30 x 24 x 14 | 188 | Lobby to first gallery; void climb to top gallery; bridge crossing |
+| Warehouse | interior | 40 x 26 x 10 | 395 | Aisle run; aisle switch; over the racks; under the mezzanine and up |
+| Courtyard | mixed | 40 x 34 x 12 | 101 | Gate over the fountain; arcade walk; courtyard into a lobby |
 
-The office has six rooms, a 2.2 m corridor and 1.2 m doorways. The apartment uses 0.9 m doors with 2.1 m lintels. Both have furniture at different heights. The street includes eight solid building envelopes, a perpendicular intersection, parked cars, a delivery van, planters, vegetation proxies and light poles. Buildings on the street have no enterable interiors in this revision. Pedestrians, moving vehicles and wind are not simulated.
+What changed from 0.1:
 
-![Architectural scene gallery](../assets/architecture/draft-0.1/gallery.png)
+- **Furniture and fittings are built from parts.** Tables have tops and legs, so there is open space underneath. Chairs, sofas and beds have backs, arms and headboards. Shelves are open frames. Lamps hang on cords from the ceiling, and a ceiling fan has blades. These parts create overhead obstacles and thin features that a range sensor must resolve.
+- **Glass.** Exterior windows are real openings filled with thin glass panes. Meeting rooms, railings, a shower screen and a skybridge are glass. Glass is solid for collision; its translucency is only a rendering choice.
+- **Multi-level space.** The atrium has three floors with slabs, glass balustrades, a solid stair inside the void, a second stair through a slab opening, a bridge across the void and a hanging sculpture. The warehouse has a mezzanine with an office, a railing and a stair.
+- **Streets with depth.** Buildings have set-back upper storeys, cornices, parapets, rooftop plant, balconies and shop awnings. The street adds a 4 m covered passage, a skybridge, a bus shelter, traffic signals with mast arms, lamp posts with arms, an overhead tram wire, trees with crowns, bollards, a kiosk, cars with cabins and wheels, a bus and a van.
+- **Indoor/outdoor connection.** The courtyard joins a gate passage, an arcade and a glass-fronted lobby that the fly can enter.
+- **Route metadata.** Each situation carries tags (for example `doorway`, `overhang`, `multi-level`, `narrow-aisle`). The validation report records route length, altitude range and the tightest sampled clearance.
 
 ## Inspect and regenerate
 
-Open [the self-contained preview](../assets/architecture/draft-0.1/index.html) in a local browser. Choose a scene and situation, drag to orbit, Shift-drag or right-drag to pan, and use the wheel to zoom. Top view exposes the layout. Reference lines can be hidden. The preview uses Canvas2D projections, needs no external libraries or server, and performs no neural computation. A browser may use its own graphics acceleration; the asset-building pipeline needs no CUDA or GPU compute.
+Open [the self-contained preview](../assets/architecture/draft-0.2/index.html) in a local browser. Choose a scene and situation, drag to orbit, Shift-drag or right-drag to pan, and use the wheel to zoom. The **cutaway** slider hides everything above a height, which exposes lower floors of the atrium and warehouse. **See-through walls** toggles wall and building transparency. Other situations of the same scene are drawn faintly. Faces are shaded by orientation and back faces are culled. The preview follows the system light/dark setting. It uses Canvas2D, needs no external libraries or server, and performs no neural computation.
+
+[gallery.png](../assets/architecture/draft-0.2/gallery.png) shows an oblique 3D view of each scene with all references. [plans.png](../assets/architecture/draft-0.2/plans.png) shows floor plans cut at 2 m: solids below the cut are filled and shaded by height, and anything overhead (slabs, lamps, crowns, awnings, bridges) is a dashed outline.
 
 From the repository root:
 
@@ -26,28 +36,45 @@ From the repository root:
 .\.conda\python.exe -s scripts/build_architectural_scenes.py
 ```
 
-This replaces the named draft assets and previews in `assets/architecture/draft-0.1`. Use `--output reports/architecture-preview` for a separate local build. Generation is deterministic for the scene JSON and mesh geometry. PNG bytes can depend on Matplotlib and font versions; the manifest records the actual output hashes.
+This replaces the named draft assets and previews in `assets/architecture/draft-0.2`. Use `--output reports/architecture-preview` for a separate local build. Scene JSON and mesh geometry are generated deterministically. PNG bytes can depend on Matplotlib and font versions; the manifest records the actual output hashes.
+
+## Code layout
+
+- `fly_rl/simulation/architectural_parts.py`: dataclasses (`Solid`, `Situation`, `ArchitecturalScene`, `Opening`) and a `Builder` with reusable parts. It covers walls with door and window openings and glass fills, furniture, stairs, railings, pendants, trees, vehicles, signals, balconies and awnings. Every part is made of named axis-aligned boxes.
+- `fly_rl/simulation/architectural_layouts.py`: the six layouts and `BUILDERS`.
+- `fly_rl/simulation/architectural_scenes.py`: the material palette, `validate`, `route_clearance` and OBJ/MTL/JSON export.
+- `fly_rl/visualization/architecture_preview.py`: the interactive preview, gallery and plan sheets.
 
 ## Files and coordinate contract
 
-Each scene has a Wavefront OBJ mesh, MTL colors and JSON collision/scenario record. All dimensions are meters. X points east, Y north and Z up; the origin is the southwest ground corner. Every collision solid is an axis-aligned closed box with a stable name and material. Doorways contain real gaps plus solid lintels. Mesh faces have outward winding. Ground is a visual-only OBJ plane; a flight environment must enforce ground and ceiling bounds separately. Interior ceilings are intentionally omitted from the inspection mesh so rooms remain visible.
+Each scene has a Wavefront OBJ mesh, MTL colors and a JSON collision/scenario record. All dimensions are meters. X points east, Y north and Z up; the origin is the southwest ground corner. Every collision solid is an axis-aligned closed box with a stable name and one of 23 named materials. Doorways and windows contain real gaps plus solid lintels and sills. Mesh faces have outward winding; glass is marked translucent (`d 0.35`) in the MTL. Ground is a visual-only OBJ plane; a flight environment must enforce ground, ceiling and side bounds separately. Interior ceilings are intentionally omitted from the mesh so rooms remain visible; the scene height is the ceiling bound. On the street, the scene edges are open and must be enforced as bounds.
 
-The JSON is the authoritative collision representation. Do not infer physics from transparent preview colors. Furniture and vehicles are solid box proxies, not detailed surface models. Each situation includes a start, goal and a reference polyline. That reference is privileged asset-validation metadata: it must not enter an autonomous controller's observations or action selection.
+The JSON is the authoritative collision representation. Do not infer physics from preview colors or transparency. Parts are simplified box proxies, not detailed surface models. Boxes may overlap where parts meet. Each situation includes a start, goal, tags and a reference polyline. That reference is privileged asset-validation metadata: it must not enter an autonomous controller's observations or action selection.
 
-The [manifest](../assets/architecture/draft-0.1/manifest.json) records geometry fingerprints, file SHA-256 hashes, body radius, clearance and reference lengths. The scene fingerprint covers dimensions, solids, situations, descriptions and provenance, excluding its own validation report. Hashing detects changes; it does not prove safe navigation.
+The [manifest](../assets/architecture/draft-0.2/manifest.json) records geometry fingerprints, file SHA-256 hashes, material counts, body radius, clearance, and route length, climb and clearance. The scene fingerprint covers kind, dimensions, solids, situations, tags, descriptions and provenance, excluding its own validation report. Hashing detects changes; it does not prove safe navigation.
 
 ## Verification and limits
 
-All seven reference polylines pass exact segment-versus-box checks with boxes expanded by the existing 0.16 m fly body radius plus 0.20 m extra clearance. Routes also remain inside those expanded scene bounds. This proves static geometric feasibility under conservative box expansion. It does not prove that the fly can execute the turns with its acceleration, inertia, sensors or current controller, and it is not independent generalization evidence.
+All 21 reference polylines pass exact segment-versus-box checks with boxes expanded by the existing 0.16 m fly body radius plus 0.20 m extra clearance. Routes also stay inside those expanded scene bounds. The tightest sampled body-centre clearance is 0.425 m, in the atrium void climb past the sculpture; the hallway and door routes in the apartment sit at 0.45 m. Five routes change altitude by 0.9 to 9.6 m. This proves static geometric feasibility under conservative box expansion. It does not prove that the fly can execute the climbs and turns with its acceleration, inertia, sensors or current controller, and it is not independent generalization evidence.
 
-Eight focused tests passed: reference clearance and deterministic fingerprints for all three scenes; doorway/lintel ray geometry; rejection of blocked and out-of-bounds routes; mesh index and outward-face integrity; and self-contained preview construction. Together with the existing map-profile regression tests, 25 tests passed. Node's syntax check passed for the generated preview script. The static gallery was visually inspected. Interactive browser QA could not be completed because the available browser tool blocks local `file:` URLs; no alternative browser route was used. Orbit, pan and scene-selection behavior remain to be checked interactively by the user or in an authorized browser setup.
+Sixteen focused tests pass. They cover:
 
-No current `FlightWorld` profile, launcher, frozen controller, checkpoint or benchmark pool was changed. Importing these assets into a future environment still requires an explicit scene adapter, reset and recording contracts, sensor checks, declared physical deadlines and dynamic flight verification. An OBJ that opens in a modeling application is not yet a supported benchmark.
+- reference clearance, tags and deterministic fingerprints for all six scenes, and coverage of interior, outdoor and mixed kinds;
+- door, lintel and glass-pane ray geometry;
+- the open void beneath the atrium bridge;
+- rejection of misfitting openings, duplicate names, blocked routes, out-of-bounds solids and routes, and unknown materials;
+- exact sampled clearance in a warehouse aisle;
+- mesh index, outward-face and material integrity;
+- self-contained preview construction.
+
+All 79 simulation tests pass. The interactive preview was checked in a browser served from `127.0.0.1`: scene and situation switching, the cutaway slider, orbit drag and statistics panel worked, with no console errors. The gallery and plans were visually inspected.
+
+No current `FlightWorld` profile, launcher, frozen controller, checkpoint or benchmark pool was changed. Importing these assets into a future environment still requires an explicit scene adapter, reset and recording contracts, sensor checks, declared physical deadlines and dynamic flight verification. Thin parts such as table legs (6 cm), cords (2 cm) and the tram wire (4 cm) are deliberate sensor stress cases. A range-sensor environment must confirm that its ray spacing resolves them, or must declare them invisible, before any flight results are compared. An OBJ that opens in a modeling application is not yet a supported benchmark.
 
 ## From drafts to actual places
 
 Next prepare a licensed source collection for real building interiors and street reconstructions. Record the original publisher, source URL, license, conversion steps and source hashes before importing. Avoid claiming an invented layout depicts an actual building. Check units and axes, mesh holes, collision simplification, opening widths and valid start/goal pairs before any flights.
 
-Add architectural variety next: asymmetric offices, homes with different room adjacency, an atrium with connected floors, a courtyard, and streets with bends and partial occlusion. Keep decorative geometry separate from physics, and retain inspectable collision proxies. Dynamic scenarios need time-dependent collision and sensor semantics, rather than labels attached to stationary boxes.
+Remaining design gaps are streets with bends or non-orthogonal blocks (all solids are axis-aligned boxes), sloped ramps, curved surfaces and enterable street-level interiors on the street block. Keep decorative geometry separate from physics, and retain inspectable collision proxies. Dynamic scenarios need time-dependent collision and sensor semantics, rather than labels attached to stationary boxes.
 
 Once maze verification is complete, declare experiments for geometry transfer with the current range/beacon interface first. Camera perception and replacement of the goal beacon are separate tasks. Split by entire building or neighborhood, not only by route. These public, inspected draft assets are development material and can never be an untouched test set. See the [roadmap](../ROADMAP.md#future-stage-navigate-simulations-of-real-places) for the experimental sequence.

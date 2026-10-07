@@ -90,3 +90,9 @@ Exp.24 completed at 6/8 retained goals, zero collisions and two regressed timeou
 Exp.25 completed at 7/8 retained goals with zero collisions and one timeout, preserving all six exp.23 successes. It passed the retained gate; the same source hashes are frozen for a fresh eight-map check. It is not promoted yet.
 
 Exp.25 completed its fresh suite at 5/8 goals, zero collisions and three timeouts. It failed the 7/8 criterion and is not promoted; work is paused. Its 7/8 retained correction outcome remains separate. No controller or checkpoint alias was replaced.
+
+
+planner-1.3-exp.26 (`distant-opening-exp1`) follows exp.25. It preserves nearby opening choices and tests a 12-unit fallback detection window when the 6-unit detector finds none. A retained full-connectome check is running; it is not promoted.
+
+
+Exp.26 completed at 6/8 retained goals with zero collisions and two timeouts; no promotion. Planner-1.3-exp.27 (`progress-wall-scan-exp1`) tests bounded observed-wall recovery after longitudinal nonprogress, preserving the exp.26 range correction. It remains experimental.

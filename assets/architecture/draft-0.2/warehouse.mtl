@@ -1,0 +1,27 @@
+newmtl cargo
+Kd 0.8 0.64 0.4
+
+newmtl concrete
+Kd 0.66 0.66 0.64
+
+newmtl glass
+Kd 0.55 0.76 0.84
+d 0.35
+
+newmtl ground
+Kd 0.86 0.86 0.83
+
+newmtl lamp
+Kd 0.98 0.86 0.52
+
+newmtl metal
+Kd 0.38 0.41 0.45
+
+newmtl rack
+Kd 0.24 0.42 0.7
+
+newmtl vehicle
+Kd 0.72 0.3 0.24
+
+newmtl wall
+Kd 0.8 0.8 0.77

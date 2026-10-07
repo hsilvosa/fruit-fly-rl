@@ -178,13 +178,13 @@ Each demo retains a unique archive in `runs/demo/`, with metadata, states, actio
 5. **Measure the connectome's contribution.** Compare real wiring, altered/disconnected recurrence and a conventional controller with matched sensors, budgets, seeds and selection. Extend neural replay and exact resumption alongside this work.
 6. **Move to simulations of real places after the maze experiment.** Start with static interiors reconstructed from real buildings, then outdoor streets and connected indoor/outdoor routes. Import licensed 3D geometry, verify scale and collision meshes, and keep complete buildings or neighborhoods separate between development and final evaluation. Begin with the existing sensor interface; introduce cameras, noise, wind and moving people or vehicles in separate experiments. These are simulated flights, not physical deployment.
 
-Work is paused at the user's request. The verification finished, and no new training or experiment is running; these items describe the next session. The [roadmap](ROADMAP.md) defines order and acceptance criteria. Reliable learned large-room navigation and the independent 80% target remain open.
+Maze correction work resumed on October 7. The range-only candidate reached 6/8 goals on the inspected eight-map suite with no collisions; a bounded progress-gated wall-search check is running. No new training or reserved-test evaluation has started. The [roadmap](ROADMAP.md) defines order and acceptance criteria. Reliable learned large-room navigation and the independent 80% target remain open.
 
 ### Architectural scene preparation
 
-CPU-only preparation has started for the next environment stage: an office floor, an apartment and a street intersection, with seven draft navigation situations. They include portable 3D meshes, collision boxes, CPU-checked geometric references and an offline interactive preview. These are original architectural designs, not scans of real places; no controller has flown them yet. [Inspect the scenes and integration limits](docs/ARCHITECTURAL_SCENES.md).
+CPU-only preparation has started for the next environment stage. Revision 0.2 has six scenes: an office floor, an apartment, a street block, a three-storey atrium, a high-bay warehouse and a courtyard with an enterable lobby. Together they contain 21 tagged navigation situations. They include portable 3D meshes, collision boxes (glass, stairs, overhangs and multi-level floors), CPU-checked geometric references, floor plans and an offline interactive preview with a cutaway slider. These are original architectural designs, not scans of real places; no controller has flown them yet. [Inspect the scenes and integration limits](docs/ARCHITECTURAL_SCENES.md).
 
-![Office, apartment and street drafts](assets/architecture/draft-0.1/gallery.png)
+![Office, apartment, street, atrium, warehouse and courtyard drafts](assets/architecture/draft-0.2/gallery.png)
 
 ## Repository map
 

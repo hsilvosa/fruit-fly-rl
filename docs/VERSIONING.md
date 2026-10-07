@@ -143,3 +143,9 @@ planner-1.3-exp.23 follows exp.22 and uses segmented CSR sums with a separate re
 planner-1.3-exp.24 follows exp.23 and adds systematic observed-wall search. Exp.23 completed at 6/8 and was not selected; its higher number does not make it a navigation milestone.
 
 planner-1.3-exp.25 follows exp.24 and isolates near-body clearance and active-crossing checks before goal handover. It starts from exp.23 rather than inheriting the rejected wall survey. Revision order records experiments; it is not a chain of guaranteed improvements.
+
+
+planner-1.3-exp.26 follows exp.25 and tests a farther opening-detection fallback while preserving nearby choices. Numerical order does not imply successful navigation or promotion.
+
+
+planner-1.3-exp.27 follows exp.26 and adds bounded progress-gated observed-wall search. Its corridor assumption and measured regressions must accompany any comparison; tests alone cannot justify promotion.

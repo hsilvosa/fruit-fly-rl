@@ -51,6 +51,8 @@ REVISIONS = (
     ControllerRevision('1.3-exp.23', 'segmented-goal-exp1', 'repeatable segmented full-graph visible-goal execution'),
     ControllerRevision('1.3-exp.24', 'wall-survey-exp1', 'observed blocking-wall opening survey'),
     ControllerRevision('1.3-exp.25', 'clearance-goal-exp1', 'near-body clearance and crossing-aware goal handover'),
+    ControllerRevision('1.3-exp.26', 'distant-opening-exp1', 'extended observable opening range with near-choice preservation'),
+    ControllerRevision('1.3-exp.27', 'progress-wall-scan-exp1', 'bounded observed-wall scan after longitudinal nonprogress'),
 )
 DEFAULT_REVISION = 'planner-1.0'
 PUBLIC_VERSIONS = tuple(revision.name for revision in REVISIONS)

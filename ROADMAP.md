@@ -1,6 +1,6 @@
 # Roadmap
 
-Current as of October 6, 2026. This is proposed work, not an active training schedule. New collection, optimization, or evaluation needs a declared budget and protocol. Preserve historical results, frozen controllers, and original checkpoint aliases.
+Current as of October 7, 2026. This is proposed work, not an active training schedule. New collection, optimization, or evaluation needs a declared budget and protocol. Preserve historical results, frozen controllers, and original checkpoint aliases.
 
 ## Starting point
 
@@ -15,7 +15,7 @@ Current as of October 6, 2026. This is proposed work, not an active training sch
 | Distance-stable planner-1.2-exp.1 | Stationary known case corrected; new paired development 13/16 with two collisions and one timeout versus planner-1.1’s 15/16 with one collision | Regressed; not selected as the stronger candidate |
 | Dual mapping/safety planner-1.2 | Four known collision/control goals, stationary known goal; new frozen development 15/16 with zero collisions and one timeout, identical to planner-1.1’s paired outcomes | Available explicitly; retained detours and independent final objective remain open |
 | Latest large-room planner-1.3-exp.9 | Six retained goals and eight fresh development goals, zero collisions or timeouts | Development gate passed; large launcher available |
-| Experimental maze planner-1.3-exp.25 | Seven of eight retained goals, then five of eight fresh goals, zero collisions and three fresh timeouts | Fresh criterion failed; not promoted; work paused |
+| Experimental maze planner-1.3-exp.25 | Seven of eight retained goals, then five of eight fresh goals, zero collisions and three fresh timeouts | Fresh criterion failed; not promoted; follow-up corrections active |
 | Noise, wind, moving obstacles | Proposed capabilities without verified navigation results | Future work |
 
 The planner is the operational solution today. It has explicit map memory, bounded search, and proportional flight control, not learned movement weights. Its result does not fulfill the learned-policy objective or prove biological benefit. [Results](docs/RESULTS.md) and [resolution history](docs/NAVIGATION_RESOLUTION.md) retain the full evidence.
@@ -93,7 +93,7 @@ More realistic vision, synaptic plasticity, spiking dynamics, and wing aerodynam
 
 After completing the maze experiment and its navigation and rendering checks, extend the task from procedural rooms to 3D reconstructions of real building interiors and streets. This stage is planned; it does not start a new experiment or training budget. A planner and a learned student remain separate experimental tracks.
 
-CPU-only asset preparation is now available: three original architectural drafts (office, apartment, street), seven geometrically checked situations, OBJ/MTL meshes, collision JSON, hashes and inspection previews. This is development preparation, not a completed real-place reconstruction or navigation experiment. No GPU training or maze run was started. [Assets, checks and remaining integration](docs/ARCHITECTURAL_SCENES.md).
+CPU-only asset preparation is now available: six original architectural drafts (revision 0.2: office, apartment, street, atrium, warehouse, courtyard), 21 geometrically checked situations, OBJ/MTL meshes, collision JSON, hashes, floor plans and inspection previews. This is development preparation, not a completed real-place reconstruction or navigation experiment. No GPU training or maze run was started. [Assets, checks and remaining integration](docs/ARCHITECTURAL_SCENES.md).
 
 1. **Static building interiors.** Begin with one floor, corridors, doors and furniture; then add larger interiors, multiple floors and stairs or atria with sufficient flight clearance. Select openly licensed geometry, record source attribution and asset hashes, and verify units, traversable openings, watertight collision surfaces and feasible start/goal pairs. Visual detail alone is not a harder navigation benchmark.
 2. **Static outdoor streets.** Add building facades, street furniture, vegetation and intersections, then connected indoor/outdoor routes. Audit map bounds, sensor range, memory cost and physical episode deadlines for the new scale before comparing results.
@@ -142,5 +142,5 @@ Exp.24 finished at 6/8 retained goals, fixing both prior failures but regressing
 
 Exp.25 passed the retained gate at 7/8 goals without collisions. Its unchanged eight-map fresh development check finished at 5/8 and failed its gate. Retain the newly inspected maps as correction data and diagnose before another fresh suite. Preserve every historical checkpoint alias.
 
-The latest exp.25 fresh result is 5/8, not promoted; work is paused. The preceding paragraphs retain chronological development history.
+The exp.25 fresh result is 5/8 and is not promoted. Work resumed on October 7; exp.26 reached 6/8 on those now-retained maps, and exp.27 is testing progress-gated wall search. The preceding paragraphs retain chronological development history.
 On resumption, diagnose the three new fresh timeouts as retained correction data, preserve the successful flights, and declare the next bounded protocol. Do not reuse these eight maps as fresh evidence or change the demo default until navigation and rendering checks pass.

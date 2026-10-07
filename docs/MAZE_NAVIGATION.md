@@ -277,3 +277,23 @@ The run completed all eight original episode deadlines with no incomplete flight
 The fresh seven-of-eight criterion was not met, so exp.25 is not promoted. The large launcher remains exp.9, with its six retained and eight fresh goals. The maze launcher remains exp.11. Large-room development criteria are met; reliable maze navigation remains unresolved. The three new timeouts require search/reference diagnosis when work resumes. These newly inspected maps are now correction data for future changes, not reusable fresh evidence.
 
 Navigation, connectome and visualization integration checks passed: 212 passed and one expected failure for a rejected historical candidate. Repository checks passed for 79 documents, 378 links, module imports and CLI help; the public-file audit had no errors. No additional training or navigation experiments followed this check. At the user's request, work pauses after saving and pushing these results; a selected-candidate rendered demo check is deferred until the navigation criterion is met.
+
+
+## October 7: Opening-range diagnosis
+
+Work resumed on the maze before integration of the revised architectural scenes. The three exp.25 fresh timeouts are now retained correction cases. Their archived sampled traces show active motion rather than a stationary brake lock, with small estimated pose errors. Seed 17000005 ends with a crossing reference and a 12,000-expansion search that has not reached it; its inferred plane count must not be confused with actual partition crossings. Seeds 17000002 and 17000007 continue searching without an active opening at the end.
+
+Planner-1.3-exp.26 preserves exp.25 and its near-opening detector. Only when that detector finds no opening does a fallback extend the fitted-plane distance window from 6 to 12 units, within the unchanged 24-unit panoramic range. It uses the same observed rays, support, completed-plane memory and approach/crossing logic. Seven focused range/handover tests pass. This is a hypothesis about earlier discovery, not a proven navigation correction.
+
+A bounded check is running on the already inspected eight seeds 17000000–17000007, with the full 167,184-neuron, 25,583,622-edge connectome, frozen sources, unchanged physical deadlines, at most 81,920 transitions and a 45-minute wall limit. There are no optimizer updates, hidden geometry inputs or reserved tests. A passing retained check is necessary but not sufficient: preserve the earlier retained suite, declare a new unused frozen development suite, and inspect the selected demo before promotion. Current launchers are unchanged.
+
+An additional offline inspection cast synthetic rays at archived true poses to examine detector opportunities. That inspection is privileged diagnosis only, omits replay of completed-plane memory, is not a flight result and supplies no inputs to the live full-connectome check. It found one extra candidate among the sampled failure frames, so range extension alone may not address the remaining search failures. Detailed trace hashes and diagnosis records remain in private/.
+
+
+### Range correction outcome and bounded search recovery
+
+Exp.26 completed all eight retained flights: **6/8 goals, zero collisions and two timeouts**. It fixes 17000005 at 4,205 decisions and preserves all five exp.25 successes. Seed 17000000 arrives at 6,720 decisions, slower than before; the other preserved arrivals retain their previous times. Seeds 17000002 and 17000007 time out at the same final distances, 22.16 and 13.21 units. All source and protected hashes match. The check used 54,016 physical transitions with no optimization or reserved-test access; it did not meet the retained gate and is not promoted.
+
+Exp.27 keeps the range correction and tests bounded observed-wall recovery after 320 ticks without at least one unit of longitudinal progress along the initial beacon direction. This is an explicit corridor-oriented search assumption, not a hidden partition list. A detected broad blocking wall seeds a local tangent scan. Targets require finite mapped corridor costs and current panoramic-ray clearance; stalled or unreached references are marked in separate search memory rather than rewriting occupancy. Each scan expires after 400 ticks, and a detected opening or clear direct-goal corridor cancels it. Unlike the rejected early survey, it does not intervene while longitudinal progress continues and does not keep an unreachable target indefinitely.
+
+Eleven focused opening/handover/search tests pass. A frozen bounded retained check on 17000000–17000007 is the next measurement; no stronger navigation claim follows from these implementation checks. Preserve original room deadlines, collision checks, full-connectome activity and checkpoint hashes.
