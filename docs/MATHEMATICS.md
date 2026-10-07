@@ -420,3 +420,14 @@ Exp.29 retains that gate. It chooses between two tangent directions along an obs
 The candidate penalty is `coverage + 20 * failed_or_reached_target_visits`. The lower penalty wins; the original goalward direction breaks a tie. A candidate still needs mapped reference clearance and the existing current-ray clearance checks. Targets are three units along the tangent, at half the room height. A target expires after 100 decisions without the required distance improvement; the complete recovery expires after 400 decisions. These limits do not extend the physical episode deadline.
 
 Visit history and wall fits use estimated position and observations. Hidden wall geometry and certified routes are not controller inputs. The recovery rules perform explicit planning and do not update neural or policy weights. Full-flight results and the promotion gates are recorded in [maze navigation](MAZE_NAVIGATION.md).
+
+
+## Completed-crossing normal consensus
+
+Planner-1.3-exp.31 uses exp.29 and excludes exp.30's rejected unreachable-reference release. For recorded completed crossing normals `n_i`, define `A_ij = 1(abs(dot(n_i, n_j)) > 0.98)` and `a_i = sum_j A_ij`. Choose the observed normal with the largest `a_i` as the consensus candidate. It is eligible only with at least three recorded crossings, `a_i >= 3`, and `a_i >= 0.75 * N`, where `N` is the number of recorded crossings. The absolute dot product makes the test independent of the normal sign.
+
+Let `u` be the normalized horizontal direction from estimated position to the initial decoded goal. The consensus filter applies only if `abs(dot(n_i, u)) >= 0.8`. While eligible, a proposed opening normal `m` is rejected when `abs(dot(m, n_i)) < 0.98`. Otherwise the inherited detector and reference execution remain unchanged. Completed crossing observations, estimated pose and the decoded goal are the only inputs to this additional rule. World yaw, hidden boxes and route metadata are unavailable to it.
+
+The rule is a retained-data hypothesis about repeated observed surfaces. It can suppress a differently oriented opening that is actually necessary; the goal-alignment condition does not prove this cannot happen. It is not a general architectural-navigation contract. Focused tests verify the declared conditions, but full retained flights, regression checks and a separately frozen fresh suite determine acceptance. No optimization formula is added: this controller performs explicit planning and does not train weights.
+
+The preceding exp.30 rule released a cross-phase reference after 100 sustained decisions with no observed-map route and temporarily rejected a nearby aligned estimate for 600 decisions. Its full-flight check regressed to 5/8 retained goals and it was rejected. An unavailable route alone is insufficient evidence that an opening is invalid.
