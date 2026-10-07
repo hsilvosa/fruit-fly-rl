@@ -47,3 +47,7 @@ These six validation tasks share the inspected scene geometry with training, so 
 ```
 
 This command explicitly trains; opening the demo still does not. The pilot's outcome is pending and no successful navigation is claimed in advance.
+
+## First autonomous PPO pilot completed
+
+The 131,072-transition pilot reached 0 goals in 457 training episodes and 0/6 validation goals both before and after; final validation had five collisions and one timeout. The learning pipeline and checkpoint reload passed, but navigation did not. No model was promoted. A structured neural panorama/goal-state encoder is implemented as the next representation candidate; its focused gradient test passes, while full-connectome learning verification and training remain pending. [Results and diagnosis](evidence/autonomous-architecture-pilot-1-results.md).

@@ -186,3 +186,7 @@ Architectural planner-1.4-exp.3 reached **19/21 original goals, zero collisions 
 ## Autonomous learning restart
 
 The planner iteration is closed with defaults retained and unresolved failures recorded. The first planner-free architectural PPO policy passed a 128-transition, one-update CUDA smoke with the complete connectome, finite losses, changed parameters and checkpoint reload. This verifies the learning pipeline, not navigation performance. Substantial training awaits an agreed budget. [Implementation, limits and next experiment](docs/AUTONOMOUS_LEARNING.md).
+
+## First autonomous PPO pilot completed
+
+The 131,072-transition pilot reached 0 goals in 457 training episodes and 0/6 validation goals both before and after; final validation had five collisions and one timeout. The learning pipeline and checkpoint reload passed, but navigation did not. No model was promoted. A structured neural panorama/goal-state encoder is implemented as the next representation candidate; its focused gradient test passes, while full-connectome learning verification and training remain pending. [Results and diagnosis](docs/evidence/autonomous-architecture-pilot-1-results.md).
