@@ -341,3 +341,12 @@ Coverage changed seed 17000002's initial recovery direction and exposed a useful
 Planner-1.3-exp.30 keeps exp.29 and releases a crossing reference after 100 sustained controller decisions with no observed-map route. A successful route resets the timer; approach references do not qualify. The rejected center is suppressed within three units and aligned normal above 0.9 for 600 decisions, without marking a plane completed or changing occupancy. Rejection is local, directional and temporary. It prevents repeated commitment to the same unreachable estimate while allowing different openings on that surface.
 
 Fifteen focused recovery tests pass, including timer reset, new-reference independence, local rejection expiry and earlier coverage/revisit behavior. The declared retained flight check uses the same eight inspected seeds, full connectome, original physical deadlines, 81,920-transition ceiling and 45-minute wall limit. Promotion still requires at least seven goals without collisions, preservation of prior successful flights, earlier retained regression checks, a separately frozen fresh suite and rendering verification. Test fixtures do not establish navigation success.
+
+
+### Unreachable crossing release: rejected after regression
+
+Planner-1.3-exp.30 completed at five of eight retained goals, zero collisions and three timeouts. It used 54,024 physical transitions in 674.07 seconds, with 1.952 GiB peak allocated VRAM and the complete connectome. Source and protected-alias hashes are unchanged. No training or reserved evaluation occurred.
+
+Goals: seed 17000005 at 4,205 steps; 17000001 at 4,314; 17000003 at 4,905; 17000004 at 5,434; 17000006 at 5,473. Seed 17000000 regressed from a goal to timeout at 16.482 units remaining. Seeds 17000002 and 17000007 still timed out, at 12.222 and 12.918 units respectively. The seven-of-eight gate and preservation requirement failed, so exp.30 is rejected.
+
+The completed traces show that a sustained missing route is insufficient to justify rejecting an opening estimate: releasing one reference changed seed 17000000's later flight enough to lose its previously successful arrival. Seed 17000007 released a blocked crossing but still followed an unhelpful wall direction. Further correction must distinguish an invalid surface/opening estimate from temporary map-planning failure. Neither timeout distance nor static geometry checks count as reaching a goal. The selected maze launcher remains exp.11; architectural GPU flight integration remains pending.
