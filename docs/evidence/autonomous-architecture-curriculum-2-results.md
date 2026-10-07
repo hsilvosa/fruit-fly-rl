@@ -8,9 +8,9 @@ The previous curriculum spent 4,096 transitions per task in a fixed cycle. This 
 
 ## Training evidence
 
-At 1 metre(s): 1595 completed episodes, 1384 goals, 133 collisions and 78 timeouts.
+At 1 metre: 1,595 completed episodes, 1,384 goals, 133 collisions and 78 timeouts.
 
-At 2 metre(s): 494 completed episodes, 467 goals, 25 collisions and 2 timeouts.
+At 2 metres: 494 completed episodes, 467 goals, 25 collisions and 2 timeouts.
 
 The six complete 1 metre rounds had 28, 72, 109, 111, 120 and 119 goals out of 120. Rounds 5 and 6 passed consecutively, allowing progression to 2 metres. The first complete 2 metre round had 112/120 goals, but warehouse situation 0 scored 5/8, below the per-task minimum of 6/8. The next round remained incomplete at the budget limit. Neither 4 metre lessons nor original-goal training were reached. These lesson goals use unobstructed straight segments from the original starts; their success does not establish obstacle detours, longer routes or independent generalization.
 
@@ -36,3 +36,10 @@ Training took 3,589.469 seconds, excluding validation. Peak allocated VRAM was 0
 The observed limitation is that short, unobstructed lessons do not yet transfer to complete routes. The next implementation should preserve exposure to original goals during curriculum learning, retain practice progress when resuming, and verify obstacle-route behavior separately. Keep the planner as a reference or teacher only; student evaluation must remain learned and autonomous. Do not lower acceptance criteria to make this completed run appear successful.
 
 Local evidence is in `runs/training/autonomous-architecture-curriculum-2/`; detailed logs and exact source bytes are archived in `private/autonomous-architecture-curriculum-2-evidence/`.
+
+
+## Recorded transfer gap
+
+![Completed lesson rounds and original-goal validation](../images/autonomous-curriculum-2-transfer.png)
+
+Reproduce this figure from existing logs with `scripts/plot_architectural_curriculum.py`. The plot does not load a policy or run evaluations.

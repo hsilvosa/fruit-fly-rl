@@ -281,3 +281,8 @@ Next: preserve original-goal training exposure alongside lessons, support reprod
 ### Mixed curriculum implementation
 
 The next runner alternates original training goals and nearby lessons, continuing PPO and validated curriculum state from the previous checkpoint. Eight CPU tests and a full-connectome 128-transition smoke passed; no navigation improvement is claimed. Substantial training awaits an agreed additional budget. See [the protocol](docs/MIXED_AUTONOMOUS_CURRICULUM.md).
+
+
+![Nearby lesson learning versus complete-route validation](docs/images/autonomous-curriculum-2-transfer.png)
+
+The complete rounds above show short-goal practice, not complete-map navigation. The original-goal validation still had zero successes.
