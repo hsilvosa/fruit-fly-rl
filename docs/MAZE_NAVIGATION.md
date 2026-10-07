@@ -368,3 +368,12 @@ Exp.31 completed at 6/8 goals, zero collisions and two timeouts. Seed 17000007 r
 Planner-1.3-exp.32 restricts exp.31's consensus filter to distances no greater than one quarter of the initially decoded goal distance. Initial distance is captured once from the sensor contract and resets per episode. Parent consensus requirements still apply. Outside that region it uses exp.29 opening selection. This is a retained-data hypothesis to preserve intermediate search while applying the correction during the final approach; it does not use seed identity, hidden partition count or world geometry. A quarter-distance threshold is not independently justified by these inspected flights. Eight focused terminal/consensus tests and two version checks pass.
 
 The follow-up uses the same eight inspected maps, full graph, original physical deadlines, 81,920-transition cap and 45-minute wall limit. It must meet the unchanged retained gate and preserve earlier successes before earlier-map regressions, a new frozen fresh suite or promotion. Architectural full-connectome flights remain pending.
+
+
+### Terminal consensus: retained gate passed
+
+Exp.32 completed at seven of eight goals, zero collisions and one timeout. All six exp.29 successes retained their arrival steps: seeds 17000001 (4,090), 17000005 (4,205), 17000003 (4,905), 17000004 (5,434), 17000006 (5,473) and 17000000 (6,720). Seed 17000007 reached the goal at 6,018, retaining the exp.31 correction without its regression. Seed 17000002 still timed out at 6,752 steps, with 12.222 units remaining.
+
+The complete graph executed 54,016 physical transitions in 654.92 seconds. Runtime sources and protected aliases match their before-run hashes; no training or reserved test was used. This passes the inspected retained gate, not independent generalization or final promotion.
+
+The earlier eight-map regression check (16000000 through 16000007) is now running with the same frozen controller, original physical deadlines, an 81,920-transition cap and a 45-minute wall limit. It must preserve all seven prior exp.25 successes without collisions before a new frozen fresh suite. Its first preflight invocation rejected an unsupported diagnostic label before creating a run or executing flights; the private runner now uses the existing retained-development label. Runtime code was not changed. The public maze launcher remains exp.11 pending regressions, fresh verification and rendering checks.
