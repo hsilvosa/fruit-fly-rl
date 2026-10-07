@@ -157,3 +157,5 @@ planner-1.3-exp.28 follows exp.27 and tests revisit-gated scan initiation. Exp.2
 planner-1.3-exp.29 follows exp.28 and changes eligible wall-scan direction selection using past estimated-position coverage. Exp.28 preserved six retained goals but still failed its gate.
 
 Planner-1.3-exp.30 adds bounded release of unreachable crossing references to exp.29. Exp.29 completed at 6/8 retained goals without collisions and was not promoted. A higher experimental number does not imply better results.
+
+Planner-1.3-exp.31 tests completed-surface normal consensus on top of exp.29. It excludes the rejected exp.30 crossing release. It is experimental and has no promotion evidence yet.
