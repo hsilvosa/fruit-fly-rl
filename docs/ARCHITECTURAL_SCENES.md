@@ -112,6 +112,6 @@ A short full-graph offscreen office demo passed the automated camera, pause, res
 
 ![Separate full-connectome activity window](images/architecture-live-brain.png)
 
-The viewer is now usable; complete original-route development checks remain the next work. No architecture training or maze experiment is running.
+The viewer is usable and the initial original-route development check has completed. No architecture training or maze experiment is running.
 
-The bounded check of all 21 original navigation objectives is now running. Its [protocol](ARCHITECTURAL_NAVIGATION.md) fixes the starts, goals, physical deadlines, full graph and overall verification budget. No navigation summary is inferred from the initial smoke.
+The initial original-objective check completed at **18/21 goals, zero collisions and three timeouts**, with all cases measured. It used 11,829 full-connectome physical transitions, no training and no reserved test. Protected aliases and frozen sources matched. These inspected synthetic scenes are development evidence, not independent real-world generalization. [Completed results](evidence/architectural-initial-navigation-results.md). Its [protocol](ARCHITECTURAL_NAVIGATION.md) fixes the starts, goals, physical deadlines, full graph and overall verification budget. No navigation summary is inferred from the initial smoke.

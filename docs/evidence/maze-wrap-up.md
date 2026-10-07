@@ -36,6 +36,6 @@ This selects the candidate for live autonomous execution on a known successful d
 
 ## Next work
 
-Keep the completed maze evidence frozen. Resume fresh maze verification only with new authorization. The architectural stage has six revised original designs and 21 situations with geometry and input-contract checks; complete full-connectome GPU flights and a usable architectural launcher remain to be implemented. These designs are not reconstructions of actual buildings or streets.
+Keep the completed maze evidence frozen. Resume fresh maze verification only with new authorization. The architectural stage has six revised original designs and 21 situations with geometry and input-contract checks; the architectural launcher and initial full-connectome flights are now implemented. The [architectural check](architectural-initial-navigation-results.md) reached 18/21 original goals. These designs are not reconstructions of actual buildings or streets.
 
 The [detailed development history](../MAZE_NAVIGATION.md) contains the hypotheses, regressions and acceptance criteria.

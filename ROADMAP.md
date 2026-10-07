@@ -149,6 +149,12 @@ On resumption, diagnose the three new fresh timeouts as retained correction data
 
 New maze candidates and the fresh suite are deferred at the user's request. The earlier-map regression completed at 7/8 without collisions and preserved all seven prior successes. Preserve aliases and report the remaining timeouts. Exp.32 has passed both retained checks; do not mark independent maze reliability achieved or promote the launcher. The next implementation stage is the revised architectural simulation. See [closing evidence](docs/evidence/maze-wrap-up.md).
 
-Architectural runtime milestone: public world/environment/known-dimension planner adapters are implemented, with 49 focused tests and 48 full-graph CUDA smoke transitions across six scenes. Next: integrate materials and scene/situation selection into the viewer, verify controls and brain display, then declare bounded original-route development checks. No navigation-performance claim from the smoke.
+Architectural runtime milestone: public world/environment/known-dimension planner adapters are implemented, with 49 focused tests and 48 full-graph CUDA smoke transitions across six scenes. The viewer integration and initial original-route checks have since completed; see the milestones below. No navigation-performance claim from the smoke.
 
-Architectural viewer milestone: launch-architecture.cmd selects the revised scenes with a live full-connectome planner and separate brain window. Camera, reset, situation/scene switching, pause and speed checks passed in a short rendered office demo. A 20-transition flight archive passed integrity checks. Next: bounded complete original-route development checks; no target-arrival or generalization claim from the short demo.
+Architectural viewer milestone: launch-architecture.cmd selects the revised scenes with a live full-connectome planner and separate brain window. Camera, reset, situation/scene switching, pause and speed checks passed in a short rendered office demo. A 20-transition flight archive passed integrity checks. The subsequent original-route check completed at 18/21 goals; the short demo alone remains controls evidence. Next: diagnose the three route timeouts.
+
+## Completed architectural development check
+
+The initial original-objective check completed at **18/21 goals, zero collisions and three timeouts**, with all cases measured. It used 11,829 full-connectome physical transitions, no training and no reserved test. Protected aliases and frozen sources matched. These inspected synthetic scenes are development evidence, not independent real-world generalization. [Detailed results](docs/evidence/architectural-initial-navigation-results.md).
+
+Next: diagnose the three retained timeouts, preserve successful flights, and declare a bounded correction check. Maze experiments remain closed for this iteration.
