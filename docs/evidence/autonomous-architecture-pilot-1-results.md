@@ -31,3 +31,17 @@ The absence of training goals means the failure cannot be attributed only to hel
 The first encoder mixed 5,669 coordinates through one dense compression and layer normalization. A representation problem is a hypothesis, not a proven root cause. The next candidate preserves panorama neighborhoods with learned circular convolutions, separately encodes near-body ranges and keeps the 13 neural goal/state coordinates directly available to the action/value network. It applies no hand-written action rule. A gradient/input-contract test passes; the candidate still requires a full-connectome PPO smoke and bounded training before any performance claim.
 
 Next also inspect learning on short training objectives or a declared curriculum and mixed-task rollout sampling. Any easier training task must be labeled as curriculum, while evaluation keeps original endpoints, geometry and deadlines. Do not silently replace the architectural task with easier acceptance cases or return to a planner choosing student actions.
+
+## Training curves
+
+![Pilot 1 episode returns and outcomes by scene](../images/autonomous-pilot-1-learning.png)
+
+Each row separates a scene; points are completed training episode returns and lines count goals, collisions and timeouts. Different situations within a scene have different difficulty. Gaps show training on other scenes, not unrecorded evaluation. A positive return can reflect physical progress without arrival; all goal curves remain zero. There were 427 collisions and 30 timeouts among the 457 completed episodes. Partial episodes at scheduled task switches are not counted as completed flights.
+
+Regenerate this figure from existing logs without running a policy:
+
+```powershell
+.\.conda\python.exe -s scripts/plot_autonomous_training.py runs/training/autonomous-architecture-pilot-1 reports/autonomous-pilot-1-learning.png
+```
+
+The same command can plot a live run into reports; it ignores only an incomplete final append line and raises on earlier malformed records. It does not load checkpoints, train, evaluate or modify experiment logs.
