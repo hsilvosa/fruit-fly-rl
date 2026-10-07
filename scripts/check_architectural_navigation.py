@@ -19,7 +19,9 @@ def save(path,value):
     temporary.replace(path)
 
 
-def check(output,cap=32768,seconds=600):
+def check(output,cap=32768,seconds=600,controller_version="planner-1.4-exp.1"):
+    if controller_version not in ("planner-1.4-exp.1", "planner-1.4-exp.2"):
+        raise ValueError("Unsupported architectural verification controller")
     if type(cap) is not int or not 1<=cap<=32768 or not np.isfinite(seconds) or not 1<=seconds<=600:
         raise ValueError('Use at most 32768 transitions and 600 seconds after initialization')
     output=Path(output)
@@ -31,7 +33,7 @@ def check(output,cap=32768,seconds=600):
         ['dense-flight-policy.json','dense-flight-policy.zip','dense-policy.json','dense-policy.zip','navigation-policy.json','navigation-policy.zip']}
     cases=[dict(scene=name,situation=index,situation_name=situation.name,scene_sha256=builder().fingerprint(),seed=42)
            for name,builder in BUILDERS.items() for index,situation in enumerate(builder().situations)]
-    plan=dict(kind='inspected-architectural-development',controller='planner-1.4-exp.1',cases=cases,
+    plan=dict(kind='inspected-architectural-development',controller=controller_version,cases=cases,
               transition_cap=cap,seconds_cap_after_initialization=seconds,sources=sources,
               acceptance='Report every original objective with its existing physical deadline. No scene edits, shortened objectives, training, reserved tests or generalization claim. Incomplete cases are not timeouts.',
               training_transitions=0,optimizer_updates=0,reserved_test_access=False)
@@ -45,6 +47,8 @@ def check(output,cap=32768,seconds=600):
         import torch
         from fly_rl.simulation.architectural_env import ArchitecturalBrainEnv
         from fly_rl.navigation.architectural import ArchitecturalPlannerPolicy
+        from fly_rl.navigation.architectural_recovery import EscapeArchitecturalPolicy
+        policy_type = EscapeArchitecturalPolicy if controller_version == "planner-1.4-exp.2" else ArchitecturalPlannerPolicy
         env=ArchitecturalBrainEnv(cases[0]['scene'],device='cuda',seed=42)
         assert env.brain.n==167184 and env.brain.audit['edges']==25583622
         status.update(status='running',neurons=env.brain.n,edges=env.brain.audit['edges'],
@@ -55,7 +59,7 @@ def check(output,cap=32768,seconds=600):
             if stop or status['physical_transitions']>=cap or time.monotonic()-began>=seconds:break
             assert all(digest(name)==sha for name,sha in sources.items()), 'Frozen runtime changed'
             features=env.select_situation(case['scene'],case['situation'],case['seed'])
-            world=env.worlds[0];policy=ArchitecturalPlannerPolicy(world.room)
+            world=env.worlds[0];policy=policy_type(world.room)
             entry=dict(case,episode_limit=world.episode_limit,start=world.position.copy(),goal=world.target.copy(),
                        steps=0,success=False,collision=False,timeout=False,incomplete=True,distance_end=world.distance)
             status['cases'].append(entry)
@@ -97,8 +101,9 @@ def check(output,cap=32768,seconds=600):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('output',type=Path)
+    parser.add_argument('--controller-version', choices=['planner-1.4-exp.1','planner-1.4-exp.2'], default='planner-1.4-exp.1')
     parser.add_argument('--max-transitions',type=int,default=32768)
     parser.add_argument('--max-seconds',type=float,default=600)
     args=parser.parse_args()
-    result=check(args.output,args.max_transitions,args.max_seconds)
+    result=check(args.output,args.max_transitions,args.max_seconds,args.controller_version)
     print(json.dumps({k:v for k,v in result.items() if k not in ['cases','protected_before','protected_after']},indent=2))

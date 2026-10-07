@@ -55,3 +55,7 @@ Detailed immutable run artifacts are preserved locally in private/architecture-r
 Planner-1.4-exp.2 is implemented separately as EscapeArchitecturalPolicy; the demo still selects exp.1. After 25 stationary blocked decisions, the candidate searches nearby directions for a 0.8 m escape reference with measured neural-range support, at least 0.3 m extra forward clearance, a clear observed grid segment and valid altitude. It commits for at most 80 decisions and retains inherited braking and collision behavior. It does not accept true pose, hidden scene geometry or reference routes.
 
 Two focused tests pass for observed-range support, blocked-grid rejection, ceiling bounds and independent reset. This is implementation evidence only: no full-connectome exp.2 flight has run, so none of the three timeouts is marked fixed. Next: a frozen bounded check on the original situations, keeping exp.1 as the control and preserving original physical deadlines.
+
+## Escape candidate flight result
+
+The exp.2 full-connectome check completed at 18/21 goals with zero collisions. It fixes warehouse aisle-run (523 steps) but regresses apartment sofa-to-bedroom to a timeout. The bathroom and atrium failures remain. It is not promoted; exp.1 remains the demo default. [Complete paired retained results](evidence/architectural-escape-candidate-results.md). The candidate selector is available only in the explicit verification runner through --controller-version; it does not change demo behavior.

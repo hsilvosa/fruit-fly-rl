@@ -76,7 +76,10 @@ class EscapeArchitecturalPolicy(ArchitecturalPlannerPolicy):
     @property
     def specification(self):
         result = dict(super().specification)
-        result.update(controller_version='planner-1.4-exp.2',
+        import hashlib
+        from pathlib import Path
+        result.update(source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                      controller_version='planner-1.4-exp.2',
                       version='observed-neuronal-map-architecture-escape-exp1')
         return result
 

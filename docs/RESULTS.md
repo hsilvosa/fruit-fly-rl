@@ -361,3 +361,5 @@ Navigation, connectome and visualization integration checks passed: 212 passed a
 The initial original-objective check completed at **18/21 goals, zero collisions and three timeouts**, with all cases measured. It used 11,829 full-connectome physical transitions, no training and no reserved test. Protected aliases and frozen sources matched. These inspected synthetic scenes are development evidence, not independent real-world generalization. [Detailed results](evidence/architectural-initial-navigation-results.md).
 
 Next: diagnose the three retained timeouts, preserve successful flights, and declare a bounded correction check. Maze experiments remain closed for this iteration.
+
+Architectural exp.2 also reached 18/21 goals without collisions: it fixes the warehouse aisle route but regresses an apartment success, so it is not promoted. The original objectives and deadlines were unchanged. [Candidate results](evidence/architectural-escape-candidate-results.md). Next: constrain recovery using the regression trace before another correction check.
