@@ -121,3 +121,10 @@ The runner now rejects validation unless stage 4 restores original goals. Checkp
 The complete curriculum runner smoke finished on October 7, 2026: 128 learning transitions, one PPO rollout and one optimizer epoch pass, finite losses and a matching checkpoint reload. It exercised original-goal validation before and after the lesson update; both had zero goals out of six, which is not a learning-performance result. Training itself took 5.890 seconds after initialization and initial validation. The full 167,184-neuron, 25,583,622-edge graph was used on CUDA. Frozen sources and protected policy aliases were unchanged. No reserved test or promotion occurred. Evidence is stored locally in `runs/verification/architectural-curriculum-runner-smoke/status.json` and `protocol.json`.
 
 The runner is now ready for a bounded curriculum pilot, keeping training practice separate from original-goal validation. Its smoke does not establish stage advancement in learned behavior; the stage-boundary tests exercise that accounting separately.
+
+
+## Autonomous curriculum closing result (October 7, 2026)
+
+The 131,072-transition curriculum pilot completed but remained at 1 metre: one mastery round failed, one passed, and the required second consecutive passing round was incomplete. Lesson training recorded 2,429 goals in 2,776 episodes. Original-goal validation achieved 1/6 goals (apartment), five collisions and no timeouts. This did not improve the previous structured pilot's 1/6 goal count and did not preserve its office success. Lesson successes are adaptive training evidence; the reused six-situation validation is not independent generalization. Finite losses, reload, source hashes and protected aliases passed; no promotion or reserved test occurred.
+
+Work is paused at the user's request. Next: review task scheduling and original-goal exposure before agreeing any new bounded training comparison. See [the curriculum closing evidence](evidence/autonomous-architecture-curriculum-1-results.md).

@@ -262,3 +262,10 @@ The 131,072-transition pilot reached 0 goals in 457 training episodes and 0/6 va
 The second autonomous PPO pilot completed 131,072 transitions. Deterministic validation improved from 0/6 to 1/6 goals: the office succeeded, the courtyard collided, and apartment, street, atrium and warehouse timed out. This is incomplete navigation, not a successful general solution. Validation shares scene geometry with training; no independent reserved test was used. Losses were finite, reload matched, and protected aliases were unchanged. See docs/evidence/autonomous-architecture-pilot-2-results.md for the recorded outcomes.
 
 The training-only goal curriculum passed a full-connectome verification: one reset probe transition plus 128 PPO learning transitions and one optimizer update. Seeded reset observations matched after intervening activity, the original target was restored at the final stage, learned parameters changed, losses were finite and checkpoint reload matched. The smoke is separate from the pilot budget and makes no navigation-performance claim. The next step is a bounded curriculum experiment with declared stage advancement, task coverage and unchanged original-goal validation.
+
+
+## Autonomous curriculum closing result (October 7, 2026)
+
+The 131,072-transition curriculum pilot completed but remained at 1 metre: one mastery round failed, one passed, and the required second consecutive passing round was incomplete. Lesson training recorded 2,429 goals in 2,776 episodes. Original-goal validation achieved 1/6 goals (apartment), five collisions and no timeouts. This did not improve the previous structured pilot's 1/6 goal count and did not preserve its office success. Lesson successes are adaptive training evidence; the reused six-situation validation is not independent generalization. Finite losses, reload, source hashes and protected aliases passed; no promotion or reserved test occurred.
+
+Work is paused at the user's request. Next: review task scheduling and original-goal exposure before agreeing any new bounded training comparison. See [the curriculum closing evidence](docs/evidence/autonomous-architecture-curriculum-1-results.md).
