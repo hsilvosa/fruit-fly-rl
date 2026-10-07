@@ -14,7 +14,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def verify(output):
+def verify(output, version='learned-architecture-1.0-exp.1'):
     output=Path(output)
     if output.exists():
         raise ValueError('Never overwrite prior verification')
@@ -22,13 +22,13 @@ def verify(output):
             'dense-policy.json','dense-policy.zip','navigation-policy.json','navigation-policy.zip')]
     protected={str(p):digest(p) for p in aliases if p.exists()}
     output.mkdir(parents=True)
-    result=dict(status='initializing',verification_only=True,transition_cap=128,
+    result=dict(status='initializing',verification_only=True,transition_cap=128,policy_version=version,
                 planner_assistance=False,reserved_test_access=False,protected_before=protected)
     env=None
     try:
         env=ArchitecturalBrainEnv('office-floor', device='cuda', seed=42)
         assert env.brain.n==167184 and env.brain.audit['edges']==25583622
-        model=make_autonomous_policy(env)
+        model=make_autonomous_policy(env,version=version)
         before={name:p.detach().clone() for name,p in model.policy.named_parameters()}
         started=time.monotonic()
         model.learn(total_timesteps=128)
@@ -63,5 +63,6 @@ def verify(output):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('output',type=Path)
+    parser.add_argument('--policy-version',choices=['learned-architecture-1.0-exp.1','learned-architecture-1.0-exp.2'],default='learned-architecture-1.0-exp.1')
     args=parser.parse_args()
-    print(json.dumps(verify(args.output),indent=2))
+    print(json.dumps(verify(args.output,args.policy_version),indent=2))

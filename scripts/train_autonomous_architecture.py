@@ -62,7 +62,7 @@ class Telemetry(BaseCallback):
         return True
 
 
-def train(output, transitions):
+def train(output, transitions, version='learned-architecture-1.0-exp.1'):
     if type(transitions) is not int or transitions!=131072:
         raise ValueError('This pilot protocol allows exactly 131072 training transitions')
     output=Path(output)
@@ -74,7 +74,7 @@ def train(output, transitions):
         validation.append(dict(scene=scene,situation=count-1,seed=200001))
     protected={str(p):digest(p) for p in Path('runs').glob('*policy.*') if p.suffix in ('.json','.zip')}
     sources={str(p):digest(p) for p in list(Path('fly_rl').rglob('*.py'))+[Path(__file__)]}
-    protocol=dict(version='autonomous-architecture-pilot-1',algorithm='PPO',fresh_initialization=True,
+    protocol=dict(version='autonomous-architecture-pilot-1',algorithm='PPO',fresh_initialization=True,policy_version=version,
         planner_assistance=False,imitation_updates=0,training_transitions=transitions,
         rollout_steps=512,epochs=5,batch_size=128,seed=42,
         training_cases=training,validation_cases=validation,
@@ -91,7 +91,7 @@ def train(output, transitions):
         import torch
         env=ArchitecturalBrainEnv(training[0]['scene'],device='cuda',seed=42)
         assert env.brain.n==167184 and env.brain.audit['edges']==25583622
-        model=make_autonomous_policy(env,seed=42,rollout_steps=512,epochs=5)
+        model=make_autonomous_policy(env,seed=42,rollout_steps=512,epochs=5,version=version)
         state.update(status='validation-before',neurons=env.brain.n,edges=env.brain.audit['edges'],
                      policy_device=str(model.device),brain_fingerprint=env.brain.fingerprint)
         save(output/'status.json',state)
@@ -140,7 +140,8 @@ def train(output, transitions):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('output',type=Path)
+    parser.add_argument('--policy-version',choices=['learned-architecture-1.0-exp.1','learned-architecture-1.0-exp.2'],default='learned-architecture-1.0-exp.1')
     parser.add_argument('--transitions',type=int,required=True)
     args=parser.parse_args()
-    result=train(args.output,args.transitions)
+    result=train(args.output,args.transitions,args.policy_version)
     print(json.dumps(result,indent=2))

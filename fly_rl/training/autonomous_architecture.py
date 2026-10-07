@@ -8,6 +8,15 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
 VERSION = 'learned-architecture-1.0-exp.1'
+STRUCTURED_VERSION = 'learned-architecture-1.0-exp.2'
+
+
+def encoder_type(version):
+    if version == VERSION: return ArchitecturalHistoryEncoder
+    if version == STRUCTURED_VERSION:
+        from fly_rl.training.structured_architecture import StructuredArchitecturalHistory
+        return StructuredArchitecturalHistory
+    raise ValueError('Unknown autonomous policy version')
 
 
 class ArchitecturalHistoryEncoder(BaseFeaturesExtractor):
@@ -23,21 +32,24 @@ class ArchitecturalHistoryEncoder(BaseFeaturesExtractor):
         return sequence[:, -1]
 
 
-def make_autonomous_policy(env, seed=42, rollout_steps=128, epochs=1):
+def make_autonomous_policy(env, seed=42, rollout_steps=128, epochs=1, version=VERSION):
     if type(rollout_steps) is not int or rollout_steps < 2 or rollout_steps % 128:
         raise ValueError('Use rollout steps in multiples of 128')
     if type(epochs) is not int or epochs < 1:
         raise ValueError('Invalid PPO epochs')
-    return PPO('MlpPolicy', env, device=env.brain.device, seed=seed,
+    model = PPO('MlpPolicy', env, device=env.brain.device, seed=seed,
                n_steps=rollout_steps, batch_size=128, n_epochs=epochs,
                learning_rate=3e-4, gamma=.995, gae_lambda=.95, clip_range=.2,
-               policy_kwargs=dict(features_extractor_class=ArchitecturalHistoryEncoder,
+               policy_kwargs=dict(features_extractor_class=encoder_type(version),
                                   net_arch=dict(pi=[128], vf=[128]), ortho_init=False),
                verbose=0)
+    model.autonomous_version = version
+    return model
 
 
-def contract(env):
-    return dict(version=VERSION, algorithm='PPO', planner_assistance=False,
+def contract(env, version=VERSION):
+    encoder_type(version)
+    return dict(version=version, algorithm='PPO', planner_assistance=False,
                 observation_shape=list(env.observation_space.shape),
                 brain_fingerprint=env.brain.fingerprint,
                 readout_version=env.brain.readout_version,
@@ -56,7 +68,7 @@ def save_autonomous_policy(model, path, env):
         raise ValueError('Do not overwrite an existing checkpoint')
     path.parent.mkdir(parents=True, exist_ok=True)
     model.save(str(path))
-    metadata=contract(env)
+    metadata=contract(env, getattr(model,"autonomous_version",VERSION))
     metadata.update(training_transitions=model.num_timesteps, optimizer_updates=model._n_updates)
     path.with_suffix('.json').write_text(json.dumps(metadata, indent=2)+'\n', encoding='utf-8')
 
@@ -64,9 +76,13 @@ def save_autonomous_policy(model, path, env):
 def load_autonomous_policy(path, env):
     path=Path(path)
     metadata=json.loads(path.with_suffix('.json').read_text())
-    expected=contract(env)
+    expected=contract(env, metadata.get("version"))
     for key in ('version','algorithm','planner_assistance','brain_fingerprint','readout_version',
                 'observation_shape','history_frames','history_stride','sensor_version','dynamics'):
         if metadata.get(key) != expected[key]:
             raise ValueError('Autonomous checkpoint contract mismatch: '+key)
-    return PPO.load(str(path), env=env, device=env.brain.device)
+    model = PPO.load(str(path), env=env, device=env.brain.device)
+    if type(model.policy.features_extractor) is not encoder_type(metadata['version']):
+        raise ValueError('Checkpoint encoder and version disagree')
+    model.autonomous_version = metadata['version']
+    return model

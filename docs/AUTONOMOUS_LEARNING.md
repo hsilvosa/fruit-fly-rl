@@ -51,3 +51,17 @@ This command explicitly trains; opening the demo still does not. The pilot's out
 ## First autonomous PPO pilot completed
 
 The 131,072-transition pilot reached 0 goals in 457 training episodes and 0/6 validation goals both before and after; final validation had five collisions and one timeout. The learning pipeline and checkpoint reload passed, but navigation did not. No model was promoted. A structured neural panorama/goal-state encoder is implemented as the next representation candidate; its focused gradient test passes, while full-connectome learning verification and training remain pending. [Results and diagnosis](evidence/autonomous-architecture-pilot-1-results.md).
+
+## Structured PPO iteration
+
+learned-architecture-1.0-exp.2 is integrated into the explicit smoke and training runners through --policy-version. It uses learned circular convolutions over the three neural panorama channels, a separate near-body encoder, recurrent history and direct access to the existing 13 neural goal/state coordinates. It applies no goal-to-action formula, planner, teacher or hand-written recovery.
+
+The first CUDA smoke collected 128 verification transitions but failed during its update because adaptive pooling backward was incompatible with deterministic CUDA algorithms. Fixed-size average pooling preserves the mode rather than relaxing determinism. A separate repaired smoke completed 128 transitions and one update, finite losses, changed parameters and matching checkpoint reload in 4.31 seconds after initialization. Both attempts are verification, not substantial training or evidence of navigation. Original aliases matched. Version/encoder consistency is checked on checkpoint load; original exp.1 checkpoints remain supported.
+
+The second pilot uses 131,072 fresh training transitions, the same 15 training tasks, six withheld validation tasks, seed, physical geometry, original endpoints, deadlines, reward and PPO settings as pilot 1. Only the representation changes. The same validation pool is now reused development evidence; it cannot be presented as independent confirmation. There is no imitation, planner assistance, curriculum or reserved-test access. The final-budget checkpoint is assessed without automatic promotion. The first pilot's exact runtime sources were archived and hash-checked before integration changes.
+
+```powershell
+.\.conda\python.exe -s scripts/train_autonomous_architecture.py runs/training/autonomous-architecture-pilot-2 --transitions 131072 --policy-version learned-architecture-1.0-exp.2
+```
+
+Pilot 2 results are pending. A single training seed is insufficient to establish a robust improvement even if its development outcome rises.

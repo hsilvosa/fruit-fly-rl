@@ -15,7 +15,7 @@ class StructuredArchitecturalHistory(BaseFeaturesExtractor):
         super().__init__(observation_space,features_dim=141)
         self.visual=nn.Sequential(CircularConv(3,8,2),nn.Tanh(),
                                  CircularConv(8,16,2),nn.Tanh(),
-                                 nn.AdaptiveAvgPool2d((3,9)),nn.Flatten(),
+                                 nn.AvgPool2d(2),nn.Flatten(),
                                  nn.Linear(16*3*9,96),nn.Tanh())
         self.near=nn.Sequential(nn.Linear(256,32),nn.Tanh())
         self.memory=nn.GRU(141,128,batch_first=True)
