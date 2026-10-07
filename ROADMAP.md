@@ -2,6 +2,24 @@
 
 Current as of October 7, 2026. This is proposed work, not an active training schedule. New collection, optimization, or evaluation needs a declared budget and protocol. Preserve historical results, frozen controllers, and original checkpoint aliases.
 
+## Agreed next sequence
+
+Updated October 7 at the user's request. First close the current experiments; then move to autonomous learning. Work is paused, and this roadmap update does not authorize or launch a training run. This sequence supersedes the older immediate-follow-up order below.
+
+### 1. Close planner development
+
+Preserve the maze closing evidence and architectural exp.1/exp.2/exp.3 results, exact source versions, protected checkpoint hashes and unresolved failures. The architectural candidate has 19/21 retained goals without collisions; bathroom and atrium navigation remain unresolved. Decide explicitly whether to retain the existing demo default or promote a candidate using bounded required verification. Freeze the iteration rather than continuing an open-ended sequence of hand-coded recovery variants. Experiment closure is not a claim that arbitrary navigation is solved.
+
+### 2. Autonomous learned navigation
+
+Define a learned policy that chooses flight actions without explicit route planning, portal detection or recovery logic choosing its evaluation actions. Use the current planner as a reference and, if useful, as an imitation-learning teacher; then refine the student with reinforcement learning. Keep guided teacher flights distinct from autonomous student flights. Preserve physical collision checks and the original task difficulty.
+
+Before execution, declare a bounded training budget, seeds, observation interfaces, checkpoint-selection rule and separate training/validation/held-out pools. Opening a demo must still never train. A later explicit training invocation starts the experiment; this documentation change does not resume work.
+
+### 3. Controlled comparison
+
+Compare the autonomous learned policy against the explicit planner and a matched learned policy without the connectome. Match task distributions, observation information and learning budgets, documenting any unavoidable differences. Evaluate the student without planner assistance and report success, collisions, timeouts, sample counts and uncertainty. Independent generalization requires untouched held-out maps; current inspected architectural scenes are development data. Do not claim that the connectome is necessary or beneficial without that comparison.
+
 ## Starting point
 
 | Capability | Current evidence | Status |

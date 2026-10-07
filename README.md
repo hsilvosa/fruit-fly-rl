@@ -174,6 +174,14 @@ Each demo retains a unique archive in `runs/demo/`, with metadata, states, actio
 
 ## Next steps
 
+The agreed sequence is to close the current planner experiments, then study autonomous learning. Work remains paused; documenting this sequence does not start training.
+
+1. **Close the current experiments.** Freeze the maze and architectural results, preserve controller sources and checkpoint hashes, record unresolved failures and make an explicit retain/promote decision. Use bounded checks only where needed for closure; do not keep adding planner variants indefinitely. Closure may document remaining failures rather than claim they are solved.
+2. **Learn navigation without the explicit planner at inference.** Train a policy that selects movement actions from the observation history or connectome features. Planner demonstrations can support imitation learning, followed by reinforcement learning. The planner remains a reference controller and possible training teacher, not the mechanism choosing the student's evaluation actions.
+3. **Measure what the learned policy and connectome contribute.** Compare autonomous learned navigation with the explicit planner and a matched learned policy without the connectome. Declare training budgets and held-out maps before running; separate training, validation and final evaluation, and report goals, collisions, timeouts and uncertainty. Current planner results do not establish a biological advantage or learned navigation.
+
+The following earlier items describe the development history and longer-term work; the sequence above takes precedence for the next iteration.
+
 1. **Finish maze verification and inspect the selected demo.** The large-room correction has passed its retained and fresh development checks. The latest maze candidate reaches 7/8 retained goals; its unchanged fresh suite finished at 5/8 and failed the gate. Diagnose the remaining cases before another declared check; inspect rendering and controls before changing the maze launcher's default.
 2. **Diagnose remaining maze search failures.** Use completed trajectories and observed maps to separate opening discovery, reference execution and goal handover. Preserve measured controllers, require retained success before a new suite, and treat inspected fresh failures as future correction data.
 3. **Teach a student complete navigation.** Collect planner demonstrations under an explicit budget and include student-state recovery. Separate teacher arrivals from teacher-free student arrivals; preserve simpler-task references.
