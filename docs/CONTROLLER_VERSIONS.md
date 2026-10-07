@@ -111,4 +111,4 @@ Planner-1.3-exp.32 adds terminal-distance gating to exp.31, whose retained check
 
 ## Architectural controller family
 
-Planner-1.4-exp.1 is the separate architectural adapter, receiving the selected scene dimensions and nine-frame segmented dual neural features. It is available through ArchitecturalPlannerPolicy, not the procedural version registry or demo selector yet. Its finer grid does not change frozen maze/large contracts. Only short CUDA integration is verified; full-route navigation and viewer integration remain pending.
+Planner-1.4-exp.1 is the separate architectural adapter, receiving the selected scene dimensions and nine-frame segmented dual neural features. It is available through ArchitecturalPlannerPolicy and the demo architecture-scene selector, separately from the procedural version registry. Its finer grid does not change frozen maze/large contracts. Short CUDA integration and viewer controls are verified; full-route navigation remains pending.

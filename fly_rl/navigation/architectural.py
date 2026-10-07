@@ -36,8 +36,32 @@ class ArchitecturalPlannerPolicy:
 
     @property
     def specification(self):
-        return dict(controller_version='planner-1.4-exp.1',version=CONTROLLER_VERSION,
+        import hashlib
+        from pathlib import Path
+        return dict(source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                    sources=[dict(archive_file='controller-'+path.name,sha256=hashlib.sha256(path.read_bytes()).hexdigest()) for path in self.source_files()],
+                    controller_version='planner-1.4-exp.1',version=CONTROLLER_VERSION,
+                    controller_label='architectural observed-map planner',
                     kind='explicit_geometry_planner',learned=False,training_invoked=False,
                     readout=READOUT_VERSION,input='reconstructed_full_connectome_activity',
                     room_size=self.room_size.tolist(),grid_resolution=self.controller.res,
                     experimental=True,hidden_geometry_input=False,reference_route_input=False)
+
+    def source_files(self):
+        import inspect
+        from pathlib import Path
+        paths={Path(__file__)}
+        for kind in ArchitecturalController.__mro__ + READOUT_CLASS.__mro__:
+            if kind is not object:paths.add(Path(inspect.getfile(kind)))
+        return sorted(paths)
+
+    def archive_sources(self, directory):
+        import hashlib,json
+        from pathlib import Path
+        directory=Path(directory)
+        spec=dict(self.specification)
+        for path in self.source_files():
+            name='controller-'+path.name
+            (directory/name).write_bytes(path.read_bytes())
+        (directory/'controller.py').write_bytes(Path(__file__).read_bytes())
+        (directory/'controller.json').write_text(json.dumps(spec,indent=2)+'\n',encoding='utf-8')

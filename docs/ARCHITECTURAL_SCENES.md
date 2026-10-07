@@ -86,3 +86,30 @@ The private world adapter passed isolated sensor and swept-collision checks for 
 ## Full-connectome runtime integration
 
 Public architectural world, neural environment and known-dimension planner adapters are implemented. Forty-nine focused tests passed; a 48-transition CUDA smoke moved the fly in all six scenes using every annotated neuron and connection. This is short integration evidence, not navigation success. The viewer and complete routes remain pending. See [measured integration scope](evidence/architectural-fullgraph-integration.md).
+
+
+## Interactive architectural demo
+
+Run from the repository directory:
+
+```powershell
+.\launch-architecture.cmd
+```
+
+It opens the office scene and a separate full-connectome brain window. Choose another scene or situation at launch:
+
+```powershell
+.\launch-architecture.cmd --architecture-scene street-block --situation 0
+```
+
+Available scenes are office-floor, apartment, street-block, atrium, warehouse and courtyard. Situation indices start at zero; invalid indices are rejected before loading the brain. The architecture adapter uses experimental planner-1.4-exp.1 and its own room contract. Procedural map profiles and movement checkpoints cannot be combined with this selector.
+
+N advances to the next situation within the current scene; G advances to the next scene. R resets the current situation. C cycles orbit, chase and free cameras; mouse dragging, wheel zoom, WASD and Q/E control the view. F focuses the fly, V toggles sensor rays, Space pauses, Shift increases simulation speed tenfold and Escape closes the demo. Scene switching clears neural state, controller memory and flight history. Geometry and original situation endpoints are preserved.
+
+A short full-graph offscreen office demo passed the automated camera, pause, reset, next-situation, next-scene and speed checks. Both the office view and separate soma-activity window were visually inspected. A recorded one-second flight passed archive integrity with 20 valid transitions and no errors or warnings; controller source files and hashes are archived with it. These short demos reached no goal and are not complete-route navigation evidence.
+
+![Live architectural office](images/architecture-live-office.png)
+
+![Separate full-connectome activity window](images/architecture-live-brain.png)
+
+The viewer is now usable; complete original-route development checks remain the next work. No architecture training or maze experiment is running.

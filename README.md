@@ -233,4 +233,4 @@ The large launcher selects frozen planner-1.3-exp.9, verified on six retained an
 
 ### Architectural runtime status
 
-The revised six-scene collection now has public simulation and full-connectome environment adapters. A 48-transition CUDA smoke passed across all six scenes; 49 focused tests passed. These short flights do not establish target arrival. The architectural viewer and full-route checks are the next implementation work. [Evidence and limitations](docs/evidence/architectural-fullgraph-integration.md).
+The revised six-scene collection now has public simulation and full-connectome environment adapters. A 48-transition CUDA smoke passed across all six scenes; 49 focused tests passed. These short flights do not establish target arrival. Launch the live viewer with `.\launch-architecture.cmd`; N changes situation and G changes scene. The separate brain window, controls and short flight recording were verified. Complete-route checks remain next. [Launcher and controls](docs/ARCHITECTURAL_SCENES.md#interactive-architectural-demo). [Evidence and limitations](docs/evidence/architectural-fullgraph-integration.md).

@@ -52,6 +52,9 @@ def main():
     demo.add_argument('--record-brain',action='store_true',help='Save full neuron activity once per simulated second')
     demo.add_argument('--room-mode',choices=['obstacles','dense'],default='obstacles')
     demo.add_argument('--map-profile',help='dense-v3, open, passages, large, maze, or a profile JSON file')
+    from fly_rl.simulation.architectural_scenes import BUILDERS
+    demo.add_argument('--architecture-scene',choices=tuple(BUILDERS),help='Use a revised architectural scene and its explicit planner')
+    demo.add_argument('--situation',type=int,default=0,help='Architectural situation index (zero based)')
     demo.add_argument('--dynamics',choices=['legacy','coordinated'],default='legacy')
     from fly_rl.simulation.sensors import SENSOR_VERSIONS
     demo.add_argument('--sensor-version',choices=SENSOR_VERSIONS,help='Explicit sensory interface for untrained viewing or matching checkpoint')
@@ -307,6 +310,15 @@ def main():
         from fly_rl.training.guided_learning import run_guided
         write_report('last-guided-training.json',run_guided(args.plan,args.device))
     elif args.command in ['demo','replay']:
+        if args.command=='demo' and args.architecture_scene:
+            from fly_rl.simulation.sensors import SENSOR_V6
+            if args.sensor_version and args.sensor_version!=SENSOR_V6:
+                parser.error('Architectural demo requires the v6 sensor contract')
+            if args.checkpoint or args.map_profile:
+                parser.error('Architectural demo requires its own scene contract; omit checkpoint and map-profile')
+            if not 0 <= args.situation < len(BUILDERS[args.architecture_scene]().situations):
+                parser.error('Unknown architectural situation index')
+            args.controller='observed-map'
         if not np.isfinite(args.speed) or args.speed<=0:
             parser.error('Simulation speed must be finite and positive')
         from fly_rl.visualization.viewer import run
