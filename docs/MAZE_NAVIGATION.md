@@ -297,3 +297,25 @@ Exp.26 completed all eight retained flights: **6/8 goals, zero collisions and tw
 Exp.27 keeps the range correction and tests bounded observed-wall recovery after 320 ticks without at least one unit of longitudinal progress along the initial beacon direction. This is an explicit corridor-oriented search assumption, not a hidden partition list. A detected broad blocking wall seeds a local tangent scan. Targets require finite mapped corridor costs and current panoramic-ray clearance; stalled or unreached references are marked in separate search memory rather than rewriting occupancy. Each scan expires after 400 ticks, and a detected opening or clear direct-goal corridor cancels it. Unlike the rejected early survey, it does not intervene while longitudinal progress continues and does not keep an unreachable target indefinitely.
 
 Eleven focused opening/handover/search tests pass. A frozen bounded retained check on 17000000–17000007 is the next measurement; no stronger navigation claim follows from these implementation checks. Preserve original room deadlines, collision checks, full-connectome activity and checkpoint hashes.
+
+
+### Progress-only recovery regresses; revisit gating
+
+Exp.27 completed at **4/8 retained goals, zero collisions and four timeouts**. It reaches 17000007, which exp.26 missed, but regresses 17000000, 17000003 and 17000006. It is rejected. The full graph and all protected/frozen hashes match; there are no optimizer updates or reserved tests.
+
+| Seed | Outcome | Decisions | Final goal distance |
+| --- | --- | --- | --- |
+| 17000000 | Timeout | 6753 | 25.697 |
+| 17000001 | Goal | 5541 | 0.419 |
+| 17000002 | Timeout | 6752 | 5.504 |
+| 17000003 | Timeout | 6462 | 23.755 |
+| 17000004 | Goal | 4771 | 0.390 |
+| 17000005 | Goal | 5340 | 0.446 |
+| 17000006 | Timeout | 6644 | 10.621 |
+| 17000007 | Goal | 5659 | 0.415 |
+
+The check used 54,024 physical transitions, took 753.51 seconds and peaked at 1.952 GiB allocated VRAM. Slow longitudinal progress alone does not distinguish necessary lateral/vertical exploration from an unproductive loop.
+
+Exp.28 changes the scan-initiation gate: estimate position-cell novelty every 20 decisions, retain a 16-sample window, and require fewer than four newly visited 2-unit cells for three consecutive samples without an active opening. A scan already in progress keeps its original expiry and target-recovery rules. Original opening detection, normal exploration, clearance handover, full graph, physical deadlines, speed and collisions are unchanged. This threshold is a tuned development hypothesis derived from retained controller-pose traces; it is not independent evidence.
+
+Seventeen focused opening/handover/scan tests pass, including independent visit histories, delayed initiation and preserving active-scan expiry. A frozen eight-map retained check is running with the same transition and wall limits; no promotion or fresh evaluation follows until its gate and earlier regressions pass.

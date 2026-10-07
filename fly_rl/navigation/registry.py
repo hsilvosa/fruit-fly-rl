@@ -43,7 +43,8 @@ CONTROLLERS = dict(v55=('observed_map', 'ObservedMapController'),
        'wall-survey-exp1': ('wall_survey', 'WallSurveyController'),
        'clearance-goal-exp1': ('clearance_goal', 'ClearanceGoalController'),
        'distant-opening-exp1': ('distant_opening', 'DistantOpeningController'),
-       'progress-wall-scan-exp1': ('progress_wall_scan', 'ProgressWallScanController')})
+       'progress-wall-scan-exp1': ('progress_wall_scan', 'ProgressWallScanController'),
+       'revisit-wall-scan-exp1': ('revisit_wall_scan', 'RevisitWallScanController')})
 
 
 class VersionedPlannerPolicy(ObservedMapPolicy):

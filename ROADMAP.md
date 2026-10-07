@@ -142,5 +142,5 @@ Exp.24 finished at 6/8 retained goals, fixing both prior failures but regressing
 
 Exp.25 passed the retained gate at 7/8 goals without collisions. Its unchanged eight-map fresh development check finished at 5/8 and failed its gate. Retain the newly inspected maps as correction data and diagnose before another fresh suite. Preserve every historical checkpoint alias.
 
-The exp.25 fresh result is 5/8 and is not promoted. Work resumed on October 7; exp.26 reached 6/8 on those now-retained maps, and exp.27 is testing progress-gated wall search. The preceding paragraphs retain chronological development history.
+The exp.25 fresh result is 5/8 and is not promoted. Work resumed on October 7; exp.26 reached 6/8 on those now-retained maps, and exp.27 regressed to 4/8 and was rejected; exp.28 is testing revisit-gated recovery. The preceding paragraphs retain chronological development history.
 On resumption, diagnose the three new fresh timeouts as retained correction data, preserve the successful flights, and declare the next bounded protocol. Do not reuse these eight maps as fresh evidence or change the demo default until navigation and rendering checks pass.

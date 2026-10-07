@@ -96,3 +96,6 @@ planner-1.3-exp.26 (`distant-opening-exp1`) follows exp.25. It preserves nearby 
 
 
 Exp.26 completed at 6/8 retained goals with zero collisions and two timeouts; no promotion. Planner-1.3-exp.27 (`progress-wall-scan-exp1`) tests bounded observed-wall recovery after longitudinal nonprogress, preserving the exp.26 range correction. It remains experimental.
+
+
+Exp.27 completed at 4/8 retained goals, zero collisions and four timeouts; it was rejected after three prior-success regressions. Planner-1.3-exp.28 (`revisit-wall-scan-exp1`) gates the same bounded recovery on sustained revisits rather than longitudinal progress alone; its retained check is running and it is not promoted.

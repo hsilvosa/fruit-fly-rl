@@ -149,3 +149,6 @@ planner-1.3-exp.26 follows exp.25 and tests a farther opening-detection fallback
 
 
 planner-1.3-exp.27 follows exp.26 and adds bounded progress-gated observed-wall search. Its corridor assumption and measured regressions must accompany any comparison; tests alone cannot justify promotion.
+
+
+planner-1.3-exp.28 follows exp.27 and tests revisit-gated scan initiation. Exp.27 regressed to four retained goals and is rejected; later numbering does not establish improvement.
