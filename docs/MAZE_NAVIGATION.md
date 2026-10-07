@@ -377,3 +377,10 @@ Exp.32 completed at seven of eight goals, zero collisions and one timeout. All s
 The complete graph executed 54,016 physical transitions in 654.92 seconds. Runtime sources and protected aliases match their before-run hashes; no training or reserved test was used. This passes the inspected retained gate, not independent generalization or final promotion.
 
 The earlier eight-map regression check (16000000 through 16000007) is now running with the same frozen controller, original physical deadlines, an 81,920-transition cap and a 45-minute wall limit. It must preserve all seven prior exp.25 successes without collisions before a new frozen fresh suite. Its first preflight invocation rejected an unsupported diagnostic label before creating a run or executing flights; the private runner now uses the existing retained-development label. Runtime code was not changed. The public maze launcher remains exp.11 pending regressions, fresh verification and rendering checks.
+
+
+## Maze experiment closure
+
+The earlier-map regression check completed at **7/8 goals, zero collisions and one timeout**, preserving all seven prior exp.25 successes. Seed 16000004 remains a timeout. The complete graph executed 56,048 physical transitions in 742.18 seconds; frozen sources and protected aliases match. No training or reserved test was performed.
+
+At the user's request, no further maze candidates or fresh suite will be started in this iteration. The prepared fresh runner is disabled pending new explicit authorization. Exp.32 has passed both retained checks, but it has not been freshly verified or inspected in the renderer. It is not promoted; the default maze launcher stays exp.11. No maze experiment is left running. See [closing summary](evidence/maze-wrap-up.md).
