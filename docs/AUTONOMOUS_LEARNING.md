@@ -35,3 +35,15 @@ A substantial training budget is awaiting the user's choice. No extended run has
 Use a freshly initialized learner without a planner at inference. If demonstrations are later added, report imitation updates and teacher-assisted rollouts separately from autonomous PPO rollouts. Evaluate the resulting student separately from the planner. A matched no-connectome learner must receive the same sensory information and history, task distribution and training budget; document representation and parameter-count differences. No advantage or necessity of the connectome can be asserted from the current smoke.
 
 The [mathematics guide](MATHEMATICS.md) describes PPO rewards, advantage estimation and optimization. The [roadmap](../ROADMAP.md) records the agreed ordering: close planner experiments, autonomous learning, then controlled comparisons. Navigation is not marked solved until actual student flights support that claim.
+
+## Authorized first PPO pilot
+
+On October 7 the user requested starting training. The first pilot is bounded at 131,072 fresh PPO transitions, excluding the prior 128-transition verification and pre/post validation flights. It uses seed 42, 512-step rollouts, five PPO epochs and 128-sample minibatches. The 32 fixed chunks of 4,096 transitions cycle through the 15 training situations across all six scenes. Each scene's last situation is withheld from training and checked before and after at seed 200001. All original geometry, endpoints, rewards and deadlines are preserved.
+
+These six validation tasks share the inspected scene geometry with training, so they measure withheld-task performance rather than independent building generalization. Final-budget checkpoint selection is fixed before execution; there is no validation-driven retry, teacher assistance, imitation update or reserved-test access. Checkpoints are saved every 32,768 training transitions and at the final budget, under a new experiment directory. Per-episode and PPO-update metrics distinguish training from validation. Source and original-alias hashes are checked. No checkpoint is automatically promoted.
+
+```powershell
+.\.conda\python.exe -s scripts/train_autonomous_architecture.py runs/training/autonomous-architecture-pilot-1 --transitions 131072
+```
+
+This command explicitly trains; opening the demo still does not. The pilot's outcome is pending and no successful navigation is claimed in advance.
