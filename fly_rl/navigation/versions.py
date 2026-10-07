@@ -55,6 +55,7 @@ REVISIONS = (
     ControllerRevision('1.3-exp.27', 'progress-wall-scan-exp1', 'bounded observed-wall scan after longitudinal nonprogress'),
     ControllerRevision('1.3-exp.28', 'revisit-wall-scan-exp1', 'revisit-gated bounded observed-wall search'),
     ControllerRevision('1.3-exp.29', 'coverage-wall-scan-exp1', 'coverage-directed revisit recovery'),
+    ControllerRevision('1.3-exp.30', 'unreachable-crossing-exp1', 'bounded release of unreachable crossing references'),
 )
 DEFAULT_REVISION = 'planner-1.0'
 PUBLIC_VERSIONS = tuple(revision.name for revision in REVISIONS)
