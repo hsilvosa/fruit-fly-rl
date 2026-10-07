@@ -78,3 +78,7 @@ Next prepare a licensed source collection for real building interiors and street
 Remaining design gaps are streets with bends or non-orthogonal blocks (all solids are axis-aligned boxes), sloped ramps, curved surfaces and enterable street-level interiors on the street block. Keep decorative geometry separate from physics, and retain inspectable collision proxies. Dynamic scenarios need time-dependent collision and sensor semantics, rather than labels attached to stationary boxes.
 
 Once maze verification is complete, declare experiments for geometry transfer with the current range/beacon interface first. Camera perception and replacement of the goal beacon are separate tasks. Split by entire building or neighborhood, not only by route. These public, inspected draft assets are development material and can never be an untouched test set. See the [roadmap](../ROADMAP.md#future-stage-navigate-simulations-of-real-places) for the experimental sequence.
+
+## Runtime adapter preparation
+
+The private world adapter passed isolated sensor and swept-collision checks for 1,342 solids across the six revision-0.2 scenes, plus 36 physical room-boundary checks and independent resets. These are CPU geometry fixtures, not CPU training or autonomous flight results. Full-connectome GPU flights and the architectural launcher remain pending. See [scope and fixture limitations](evidence/architectural-adapter-contract-checks.md).
