@@ -269,3 +269,10 @@ The training-only goal curriculum passed a full-connectome verification: one res
 The 131,072-transition curriculum pilot completed but remained at 1 metre: one mastery round failed, one passed, and the required second consecutive passing round was incomplete. Lesson training recorded 2,429 goals in 2,776 episodes. Original-goal validation achieved 1/6 goals (apartment), five collisions and no timeouts. This did not improve the previous structured pilot's 1/6 goal count and did not preserve its office success. Lesson successes are adaptive training evidence; the reused six-situation validation is not independent generalization. Finite losses, reload, source hashes and protected aliases passed; no promotion or reserved test occurred.
 
 Work is paused at the user's request. Next: review task scheduling and original-goal exposure before agreeing any new bounded training comparison. See [the curriculum closing evidence](docs/evidence/autonomous-architecture-curriculum-1-results.md).
+
+
+## Balanced autonomous curriculum result (October 7, 2026)
+
+The second architectural curriculum completed 131,072 fresh PPO transitions. It reached 2 metre lessons after two complete passing 1 metre rounds, but achieved 0/6 original-goal validation successes, with six collisions and no timeouts. The previous curriculum achieved 1/6 on the same development situations. Lesson progress therefore does not resolve complete-route navigation. No planner actions, reserved test access or checkpoint promotion occurred; protected aliases and sources retained their hashes. See [the detailed result](docs/evidence/autonomous-architecture-curriculum-2-results.md).
+
+Next: preserve original-goal training exposure alongside lessons, support reproducible continuation with curriculum state, and verify route transfer before any independent final test. Compare matched learned controllers with and without connectome activity after a working autonomous baseline exists.

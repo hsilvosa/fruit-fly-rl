@@ -134,3 +134,10 @@ Work is paused at the user's request. Next: review task scheduling and original-
 After resuming work, the second curriculum runner changes task scheduling while keeping fresh initialization, the structured encoder, PPO settings, lesson distances and the two-round mastery criterion. It selects tasks with incomplete mastery windows in round-robin order. Lesson blocks use 1,024 transitions; original-goal blocks use up to 4,096 transitions. The total remains exactly 131,072 learning transitions. Every selection is recorded in schedule.jsonl. Original-goal validation remains separate and uses the same six development situations; it is not an independent generalization test.
 
 Five scheduler and mastery tests passed. The complete 128-transition runner smoke passed with finite losses, one optimizer epoch pass, matching reload and unchanged protected aliases and sources. No performance improvement is established by this verification. The planned run is stored separately as autonomous-architecture-curriculum-2 and does not resume or overwrite curriculum 1.
+
+
+## Balanced autonomous curriculum result (October 7, 2026)
+
+The second architectural curriculum completed 131,072 fresh PPO transitions. It reached 2 metre lessons after two complete passing 1 metre rounds, but achieved 0/6 original-goal validation successes, with six collisions and no timeouts. The previous curriculum achieved 1/6 on the same development situations. Lesson progress therefore does not resolve complete-route navigation. No planner actions, reserved test access or checkpoint promotion occurred; protected aliases and sources retained their hashes. See [the detailed result](evidence/autonomous-architecture-curriculum-2-results.md).
+
+Next: preserve original-goal training exposure alongside lessons, support reproducible continuation with curriculum state, and verify route transfer before any independent final test. Compare matched learned controllers with and without connectome activity after a working autonomous baseline exists.
