@@ -159,3 +159,5 @@ planner-1.3-exp.29 follows exp.28 and changes eligible wall-scan direction selec
 Planner-1.3-exp.30 adds bounded release of unreachable crossing references to exp.29. Exp.29 completed at 6/8 retained goals without collisions and was not promoted. A higher experimental number does not imply better results.
 
 Planner-1.3-exp.31 tests completed-surface normal consensus on top of exp.29. It excludes the rejected exp.30 crossing release. It is experimental and has no promotion evidence yet.
+
+Planner-1.3-exp.32 adds terminal-distance gating to exp.31, whose retained check reached 6/8 with a regression and was not promoted. The new candidate has no completed flight evidence yet.

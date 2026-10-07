@@ -47,7 +47,8 @@ CONTROLLERS = dict(v55=('observed_map', 'ObservedMapController'),
        'revisit-wall-scan-exp1': ('revisit_wall_scan', 'RevisitWallScanController'),
        'coverage-wall-scan-exp1': ('coverage_wall_scan', 'CoverageWallScanController'),
        'unreachable-crossing-exp1': ('unreachable_crossing', 'UnreachableCrossingController'),
-       'consistent-opening-exp1': ('consistent_opening', 'ConsistentOpeningController')})
+       'consistent-opening-exp1': ('consistent_opening', 'ConsistentOpeningController'),
+       'terminal-consensus-exp1': ('terminal_consensus', 'TerminalConsensusController')})
 
 
 class VersionedPlannerPolicy(ObservedMapPolicy):
