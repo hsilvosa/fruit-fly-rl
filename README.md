@@ -248,3 +248,7 @@ Architectural exp.2 also reached 18/21 goals without collisions: it fixes the wa
 ## October 7 closing checkpoint
 
 Architectural planner-1.4-exp.3 reached **19/21 original goals, zero collisions and two timeouts**, preserving every exp.1 success and fixing the warehouse aisle route. Bathroom and atrium climb remain unresolved. These are inspected development scenes, not independent real-world evidence. The demo stays on exp.1 pending further verification. Work pauses at the user's request; no experiment remains running. [Closing results and resume requirements](docs/evidence/architectural-closing-results.md).
+
+## Autonomous learning restart
+
+The planner iteration is closed with defaults retained and unresolved failures recorded. The first planner-free architectural PPO policy passed a 128-transition, one-update CUDA smoke with the complete connectome, finite losses, changed parameters and checkpoint reload. This verifies the learning pipeline, not navigation performance. Substantial training awaits an agreed budget. [Implementation, limits and next experiment](docs/AUTONOMOUS_LEARNING.md).

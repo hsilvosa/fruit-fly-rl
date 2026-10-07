@@ -43,3 +43,5 @@ Use the [contribution workflow](../CONTRIBUTING.md) for changes and the [roadmap
 [Guided navigation](GUIDED_NAVIGATION.md) explains privileged training supervision, teacher-free inference and the bounded correction protocol.
 
 [Large-room corrections and maze navigation](MAZE_NAVIGATION.md) records the room-contract correction, opening-search attempts, retained outcomes, and remaining verification.
+
+[Autonomous learning](AUTONOMOUS_LEARNING.md) records the return to planner-free learned actions, closure of planner development and the bounded PPO smoke.

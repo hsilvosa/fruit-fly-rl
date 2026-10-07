@@ -1,0 +1,37 @@
+# Autonomous architectural learning
+
+## Objective and closed planner stage
+
+The primary objective is a policy that learns navigation through reinforcement learning and chooses its own flight actions. The explicit planner is a reference or a possible imitation-learning teacher. It must not choose the student's evaluation actions.
+
+The maze and architectural planner iteration is closed using its existing evidence. Maze exp.32 reached 7/8 goals in two retained pools; fresh verification is deferred. Architectural exp.3 reached 19/21 inspected original objectives with no collisions and preserved all exp.1 successes. Apartment bathroom and atrium climb remain unresolved. These are explicit-planner results, not learned navigation. Existing demo defaults are retained; no promotion or further planner variants are part of this transition. See the [architectural closing report](evidence/architectural-closing-results.md) and [maze closure](evidence/maze-wrap-up.md).
+
+## Implemented first learned controller
+
+learned-architecture-1.0-exp.1 is a freshly initialized PPO actor/critic. It consumes nine frames of 5,669 segmented neural features produced by the complete 167,184-neuron, 25,583,622-edge MaleCNS graph. A learned 128-coordinate frame encoder and GRU provide a temporal representation; the actor outputs the existing four coordinated flight actions. No portal detection, map search, hand-written braking or escape recovery chooses these actions. Physical collision handling remains part of the environment.
+
+The frozen graph is not optimized. PPO updates the policy's frame encoder, memory, actor and critic from environment rewards. The input features reconstruct simulated sensory signals from neural activity; this engineered readout is not evidence of biological perception. The student initially uses the existing synthetic goal direction/distance signal rather than discovering an unknown goal from vision.
+
+Policy and full-connectome execution use CUDA. GPU utilization alone is not a success metric; this small PPO policy and CPU world physics may not saturate the GPU. The first implementation is a single selected architectural situation, not yet a complete multi-scene training experiment. It does not include a planner teacher, imitation stage, raw-sensor baseline, independent evaluation suite or learned-policy viewer integration yet.
+
+## Verified learning pipeline
+
+The explicit smoke command is:
+
+```powershell
+.\.conda\python.exe -s scripts/verify_autonomous_architecture.py runs/verification/autonomous-architecture-ppo-smoke-new
+```
+
+Use a new output directory. This command performs exactly 128 environment transitions and one PPO update, then saves and reloads a temporary learned-policy checkpoint. It never starts extended training or consumes a reserved test. Opening existing demos does not call it.
+
+The completed initial smoke passed: 128 transitions, one update, finite logged losses, changed trainable parameters and matching deterministic actions after checkpoint reload. Execution took 4.44 seconds after initialization on CUDA. All six original checkpoint aliases retained their hashes. No planner supplied actions, no reserved test was accessed and no navigation-performance claim follows from this short check. Three focused tests also cover the encoder gradient/shape, absence of planner imports and rejection of planner-assisted checkpoint metadata. The detailed status is local under runs/verification/autonomous-architecture-ppo-smoke and private/autonomous-learning-start.
+
+The checkpoint contract records graph fingerprint, readout, sensor version, history dimensions, flight dynamics and planner_assistance=false. Load rejects mismatched contracts. It permits different architectural scenes with the same input contract for later declared evaluation; compatibility is not generalization evidence. Checkpoints use explicit .zip paths and cannot overwrite an existing model or metadata file.
+
+## Next bounded experiment
+
+A substantial training budget is awaiting the user's choice. No extended run has started. Before execution, declare training situations, validation selection, seeds and an untouched held-out collection. The six existing inspected designs are development data; varying headings within them does not make their geometry independent.
+
+Use a freshly initialized learner without a planner at inference. If demonstrations are later added, report imitation updates and teacher-assisted rollouts separately from autonomous PPO rollouts. Evaluate the resulting student separately from the planner. A matched no-connectome learner must receive the same sensory information and history, task distribution and training budget; document representation and parameter-count differences. No advantage or necessity of the connectome can be asserted from the current smoke.
+
+The [mathematics guide](MATHEMATICS.md) describes PPO rewards, advantage estimation and optimization. The [roadmap](../ROADMAP.md) records the agreed ordering: close planner experiments, autonomous learning, then controlled comparisons. Navigation is not marked solved until actual student flights support that claim.
