@@ -65,3 +65,11 @@ The second pilot uses 131,072 fresh training transitions, the same 15 training t
 ```
 
 Pilot 2 results are pending. A single training seed is insufficient to establish a robust improvement even if its development outcome rises.
+
+## Prepared training-goal curriculum tool
+
+While pilot 2 runs unchanged, architectural_training_goals.py provides an isolated sampler for future short training objectives. It samples a requested displacement between 0.5 and 12 m, rejects out-of-room endpoints and checks the complete swept body segment against solids with an additional 0.1 m clearance margin. Geometry is used only to construct valid training tasks; it is not an observation or an action policy. Sampling never reads the connecting reference route or modifies a world's target, pose or deadline. Failure to find a sample is explicit rather than silently changing the task.
+
+Seven CPU geometry tests pass across all six scenes, including deterministic sampling, body clearance, unchanged original tasks and impossible-sample rejection. These checks are not CPU training or learned navigation evidence. The tool is not yet wired into an environment reset, mastery schedule or PPO run. Pilot 2's frozen sources still match and its objectives remain unchanged.
+
+If pilot 2 still cannot reach training goals, the next declared experiment can introduce short tasks as a curriculum, with a separate environment adapter and explicit progression/episode accounting. Original evaluation endpoints, geometry and deadlines must stay unchanged. Curriculum success must be reported separately from original-route performance, with no planner choosing student actions.
