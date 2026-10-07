@@ -49,3 +49,9 @@ The apartment hypothesis is now directly confirmed: its terminal current and ref
 The warehouse terminal reference is in a different cell, with only 0.0488 m forward braking clearance and 0.0996 m along its momentum. The controller therefore requests zero speed while reporting a route. This is an execution-clearance conflict, not evidence that the physical goal is unreachable. The atrium terminal reference is also in a different cell and is not classified as stalled; it is still approaching at the deadline. A common same-cell patch alone cannot be claimed to fix all three failures.
 
 Detailed immutable run artifacts are preserved locally in private/architecture-recovery-diagnostics. The protocol SHA-256 is ed662c335bcf551658bc3d2fe7fb35f4b4ac0d1db811576d213f0b97691391dc. No process remains running after this completed check. Next: implement a separately versioned architecture recovery candidate with observed-clear local escape and verify each failure without changing objectives or collision margins.
+
+## Architectural escape candidate
+
+Planner-1.4-exp.2 is implemented separately as EscapeArchitecturalPolicy; the demo still selects exp.1. After 25 stationary blocked decisions, the candidate searches nearby directions for a 0.8 m escape reference with measured neural-range support, at least 0.3 m extra forward clearance, a clear observed grid segment and valid altitude. It commits for at most 80 decisions and retains inherited braking and collision behavior. It does not accept true pose, hidden scene geometry or reference routes.
+
+Two focused tests pass for observed-range support, blocked-grid rejection, ceiling bounds and independent reset. This is implementation evidence only: no full-connectome exp.2 flight has run, so none of the three timeouts is marked fixed. Next: a frozen bounded check on the original situations, keeping exp.1 as the control and preserving original physical deadlines.
