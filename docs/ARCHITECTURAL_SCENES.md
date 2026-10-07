@@ -113,3 +113,5 @@ A short full-graph offscreen office demo passed the automated camera, pause, res
 ![Separate full-connectome activity window](images/architecture-live-brain.png)
 
 The viewer is now usable; complete original-route development checks remain the next work. No architecture training or maze experiment is running.
+
+The bounded check of all 21 original navigation objectives is now running. Its [protocol](ARCHITECTURAL_NAVIGATION.md) fixes the starts, goals, physical deadlines, full graph and overall verification budget. No navigation summary is inferred from the initial smoke.
