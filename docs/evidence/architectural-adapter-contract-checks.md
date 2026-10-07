@@ -16,3 +16,9 @@ Each isolated fixture places the fly outside one solid, checks the ray distance 
 All six scenes also passed six physical room-boundary checks each, including floor and ceiling. Full-scene initial observations contain 3,869 finite sensor values. Reset restores position, heading, zero velocity, action memory and episode counters reproducibly. Snapshot scene fingerprints match the source geometry; reference polylines are absent from controller-facing snapshots and world reference routes.
 
 No brain flights, training or policy optimization were performed by this check. GPU full-connectome integration, complete autonomous routes, rendering and launch controls remain unverified. Detailed named-solid checks, geometry fingerprints and the private runner are retained in private/architectural-collision-contract-checks.json and private/check_architectural_collision_contract.py.
+
+## All 21 situation input contracts
+
+The private room-dimension controller draft was checked at the original start and goal of every situation. All 21 sensor vectors are finite and have 3,869 coordinates. Decoded altitude and goal distance/direction match the world sensor contract: the largest goal-vector error is 0.000003864 meters and the largest altitude error is 0.000000239 meters. Both estimated start and goal lie inside the declared draft grid. Each seed reset reproduces the original pose, target and observation. The world exposes no reference polyline to the controller.
+
+The draft uses a separate 0.25-meter architectural grid; this does not alter frozen maze or large-room controllers. These initial-state checks do not prove grid performance, continuous pose estimation, doorway traversal or neural reconstruction accuracy during a flight. The situation evidence records each source-scene hash, start, goal and physical deadline in private/architectural-situation-contract-checks.json. No brain flight, optimizer update or training transition occurred.
