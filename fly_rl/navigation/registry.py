@@ -16,20 +16,62 @@ CONTROLLERS = dict(v55=('observed_map', 'ObservedMapController'),
     v62=('persistent_route', 'PersistentRouteController'),
     v63=('ray_consistent', 'RayConsistentController'),
     v64=('momentum_guard', 'MomentumGuardController'),
-    v65=('dual_safety', 'DualSafetyController'))
+    v65=('dual_safety', 'DualSafetyController'),
+    **{'room-aware-exp1': ('room_aware', 'RoomAwareController'),
+       'frontier-cost-exp1': ('frontier_cost', 'FrontierCostController'),
+       'portal-reference-exp1': ('portal_reference', 'PortalReferenceController'),
+       'portal-reference-exp2': ('portal_reference_refined', 'RefinedPortalController'),
+       'portal-reference-exp3': ('portal_multi_plane', 'MultiPlanePortalController'),
+       'portal-reference-exp4': ('portal_axis', 'AxisPortalController'),
+       'portal-reference-exp5': ('portal_near_wall', 'NearWallPortalController'),
+       'portal-reference-exp6': ('portal_clean_map', 'CleanMapPortalController'),
+       'portal-reference-exp7': ('portal_fast', 'FastPortalController'),
+       'portal-reference-exp8': ('portal_recovery', 'RecoveryPortalController'),
+       'portal-reference-exp9': ('portal_center_refinement', 'RefiningPortalController'),
+       'portal-reference-exp10': ('portal_goal_priority', 'GoalPriorityPortalController'),
+       'portal-reference-exp11': ('portal_fine_grid', 'FineGridPortalController'),
+       'portal-reference-exp12': ('portal_surface_fallback', 'SurfaceFallbackController'),
+       'portal-reference-exp13': ('portal_confined_cruise', 'ConfinedCruiseController'),
+       'portal-reference-exp14': ('portal_visit_pressure', 'VisitPressureController'),
+       'portal-reference-exp15': ('portal_clean_axis', 'CleanAxisPortalController'),
+       'portal-reference-exp16': ('portal_clearance_center', 'ClearancePortalController'),
+       'portal-reference-exp17': ('portal_visible_goal', 'VisibleGoalController'),
+       'portal-reference-exp18': ('portal_stable_goal', 'StableVisibleGoalController'),
+       'portal-reference-exp19': ('portal_committed_goal', 'CommittedVisibleGoalController'),
+       'repeatable-goal-exp1': ('repeatable_goal', 'RepeatableGoalController'),
+       'segmented-goal-exp1': ('segmented_goal', 'SegmentedGoalController'),
+       'wall-survey-exp1': ('wall_survey', 'WallSurveyController'),
+       'clearance-goal-exp1': ('clearance_goal', 'ClearanceGoalController'),
+       'distant-opening-exp1': ('distant_opening', 'DistantOpeningController'),
+       'progress-wall-scan-exp1': ('progress_wall_scan', 'ProgressWallScanController'),
+       'revisit-wall-scan-exp1': ('revisit_wall_scan', 'RevisitWallScanController'),
+       'coverage-wall-scan-exp1': ('coverage_wall_scan', 'CoverageWallScanController'),
+       'unreachable-crossing-exp1': ('unreachable_crossing', 'UnreachableCrossingController'),
+       'consistent-opening-exp1': ('consistent_opening', 'ConsistentOpeningController'),
+       'terminal-consensus-exp1': ('terminal_consensus', 'TerminalConsensusController')})
 
 
 class VersionedPlannerPolicy(ObservedMapPolicy):
     """Viewer adapter; selecting a version does not train or promote it."""
 
-    def __init__(self, version):
+    def __init__(self, version, map_profile='large'):
         self.revision = revision(version)
         self.version = self.revision.legacy
+        self.map_profile = map_profile
         self.reset()
 
     def reset(self):
         module, name = CONTROLLERS[self.version]
-        self.controller = getattr(importlib.import_module(f'fly_rl.navigation.{module}'), name)()
+        implementation = importlib.import_module(f'fly_rl.navigation.{module}')
+        supported = getattr(implementation, 'SUPPORTED_PROFILES', ('large',))
+        if self.map_profile not in supported:
+            raise ValueError('Controller does not support the selected room profile')
+        constructor = getattr(implementation, name)
+        if hasattr(implementation, 'SUPPORTED_PROFILES'):
+            from fly_rl.simulation.map_profiles import resolve_profile
+            self.controller = constructor(resolve_profile(self.map_profile).room_size)
+        else:
+            self.controller = constructor()
 
     def predict(self, features, deterministic=True):
         features = np.asarray(features)
@@ -66,6 +108,8 @@ class VersionedPlannerPolicy(ObservedMapPolicy):
             readout=getattr(module, 'READOUT_VERSION', spec['readout']),
             experimental=self.version != 'v55',
             feature_count=getattr(module, 'FEATURE_COUNT', 3869),
+            room_size=list(getattr(self.controller, 'room_size', [48,48,16])),
+            map_profile=self.map_profile,
             source_sha256=hashlib.sha256(primary.read_bytes()).hexdigest(),
             sources=[dict(module='.'.join(p.resolve().relative_to(root).with_suffix('').parts),
                 archive_file=f'controller-{p.stem}.py',

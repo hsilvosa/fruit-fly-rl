@@ -1,0 +1,402 @@
+{
+  "schema": "architecture-0.2",
+  "brain_loaded": false,
+  "training_invoked": false,
+  "policy_evaluated": false,
+  "gpu_required": false,
+  "scenes": [
+    {
+      "passed": true,
+      "name": "office-floor",
+      "kind": "interior",
+      "geometry_sha256": "480b44bb3ecf708ab25991b71a02bd9fbde29538037a3586a64ff1331203d425",
+      "collision_boxes": 404,
+      "materials": {
+        "concrete": 5,
+        "fabric": 104,
+        "furniture": 3,
+        "glass": 21,
+        "lamp": 9,
+        "metal": 130,
+        "screen": 26,
+        "stone": 6,
+        "vegetation": 4,
+        "wall": 57,
+        "wood": 39
+      },
+      "body_radius_m": 0.16,
+      "extra_clearance_m": 0.2,
+      "situations": [
+        {
+          "name": "reception-to-meeting-room",
+          "tags": [
+            "doorway",
+            "glass"
+          ],
+          "route_length_m": 11.4,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 0.5
+        },
+        {
+          "name": "open-plan-to-private-office",
+          "tags": [
+            "columns",
+            "clutter",
+            "doorway"
+          ],
+          "route_length_m": 24.15,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 0.472
+        },
+        {
+          "name": "over-the-desks",
+          "tags": [
+            "altitude-change",
+            "overhang",
+            "clutter"
+          ],
+          "route_length_m": 6.5,
+          "climb_m": 1.0,
+          "min_sampled_clearance_m": 0.6
+        }
+      ],
+      "claim": "Static geometric feasibility only; not a dynamically executable flight certificate"
+    },
+    {
+      "passed": true,
+      "name": "apartment",
+      "kind": "interior",
+      "geometry_sha256": "6baa57ca54820064433114a1987ca56e3ebbccf1ff0e1ac904380eca664edaa9",
+      "collision_boxes": 137,
+      "materials": {
+        "ceramic": 3,
+        "fabric": 20,
+        "furniture": 3,
+        "glass": 12,
+        "lamp": 4,
+        "metal": 18,
+        "screen": 1,
+        "stone": 4,
+        "vegetation": 2,
+        "wall": 49,
+        "wood": 21
+      },
+      "body_radius_m": 0.16,
+      "extra_clearance_m": 0.2,
+      "situations": [
+        {
+          "name": "sofa-to-bedroom",
+          "tags": [
+            "doorway",
+            "narrow-hall",
+            "clutter"
+          ],
+          "route_length_m": 14.15,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 0.45
+        },
+        {
+          "name": "study-to-bathroom",
+          "tags": [
+            "doorway",
+            "narrow-hall"
+          ],
+          "route_length_m": 12.1,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 0.45
+        },
+        {
+          "name": "kitchen-low-to-high",
+          "tags": [
+            "altitude-change",
+            "overhang"
+          ],
+          "route_length_m": 4.7235,
+          "climb_m": 0.9,
+          "min_sampled_clearance_m": 0.548
+        }
+      ],
+      "claim": "Static geometric feasibility only; not a dynamically executable flight certificate"
+    },
+    {
+      "passed": true,
+      "name": "street-block",
+      "kind": "outdoor",
+      "geometry_sha256": "a0b0b3bf81521d5e18b5f3a670a4059dc00fbb245230c48b1cbb6a86289cf44e",
+      "collision_boxes": 224,
+      "materials": {
+        "bark": 7,
+        "building": 12,
+        "bus": 1,
+        "canvas": 2,
+        "concrete": 17,
+        "glass": 30,
+        "lamp": 10,
+        "metal": 45,
+        "rubber": 38,
+        "signal": 6,
+        "stone": 28,
+        "vegetation": 14,
+        "vehicle": 11,
+        "wood": 3
+      },
+      "body_radius_m": 0.16,
+      "extra_clearance_m": 0.2,
+      "situations": [
+        {
+          "name": "street-traverse",
+          "tags": [
+            "long-range"
+          ],
+          "route_length_m": 66.0,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 2.0
+        },
+        {
+          "name": "intersection-turn",
+          "tags": [
+            "turn",
+            "overhang"
+          ],
+          "route_length_m": 55.7,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 1.5
+        },
+        {
+          "name": "under-the-skybridge",
+          "tags": [
+            "overhang",
+            "turn",
+            "long-range"
+          ],
+          "route_length_m": 50.0,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 1.5
+        },
+        {
+          "name": "through-the-passage",
+          "tags": [
+            "passage",
+            "turn"
+          ],
+          "route_length_m": 58.5,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 1.5
+        },
+        {
+          "name": "over-the-bus",
+          "tags": [
+            "altitude-change",
+            "overhang"
+          ],
+          "route_length_m": 19.7,
+          "climb_m": 2.5,
+          "min_sampled_clearance_m": 0.9
+        }
+      ],
+      "claim": "Static geometric feasibility only; not a dynamically executable flight certificate"
+    },
+    {
+      "passed": true,
+      "name": "atrium",
+      "kind": "interior",
+      "geometry_sha256": "0713cd4abaa7440b392a54e9a9a9f9a04c0d81bab0ab83f0e8bf4382b9eb1efe",
+      "collision_boxes": 188,
+      "materials": {
+        "art": 3,
+        "bark": 1,
+        "concrete": 71,
+        "fabric": 16,
+        "glass": 19,
+        "metal": 35,
+        "stone": 1,
+        "vegetation": 4,
+        "wall": 18,
+        "wood": 20
+      },
+      "body_radius_m": 0.16,
+      "extra_clearance_m": 0.2,
+      "situations": [
+        {
+          "name": "lobby-to-first-gallery",
+          "tags": [
+            "multi-level",
+            "altitude-change",
+            "glass"
+          ],
+          "route_length_m": 13.7,
+          "climb_m": 4.7,
+          "min_sampled_clearance_m": 0.6
+        },
+        {
+          "name": "void-climb-to-top-gallery",
+          "tags": [
+            "multi-level",
+            "altitude-change",
+            "overhang"
+          ],
+          "route_length_m": 24.6,
+          "climb_m": 9.6,
+          "min_sampled_clearance_m": 0.425
+        },
+        {
+          "name": "bridge-crossing",
+          "tags": [
+            "multi-level",
+            "narrow-passage"
+          ],
+          "route_length_m": 17.0,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 0.975
+        }
+      ],
+      "claim": "Static geometric feasibility only; not a dynamically executable flight certificate"
+    },
+    {
+      "passed": true,
+      "name": "warehouse",
+      "kind": "interior",
+      "geometry_sha256": "4e19bdd0ee3e935df9a65af796d08459bd08eb41420e0398f2a71e973459a898",
+      "collision_boxes": 395,
+      "materials": {
+        "cargo": 152,
+        "concrete": 18,
+        "glass": 10,
+        "lamp": 12,
+        "metal": 34,
+        "rack": 130,
+        "vehicle": 1,
+        "wall": 38
+      },
+      "body_radius_m": 0.16,
+      "extra_clearance_m": 0.2,
+      "situations": [
+        {
+          "name": "aisle-run",
+          "tags": [
+            "narrow-aisle",
+            "long-range"
+          ],
+          "route_length_m": 27.5,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 1.3
+        },
+        {
+          "name": "aisle-switch",
+          "tags": [
+            "narrow-aisle",
+            "turn"
+          ],
+          "route_length_m": 64.9,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 1.3
+        },
+        {
+          "name": "over-the-racks",
+          "tags": [
+            "altitude-change",
+            "overhang"
+          ],
+          "route_length_m": 35.6,
+          "climb_m": 6.3,
+          "min_sampled_clearance_m": 0.58
+        },
+        {
+          "name": "under-mezzanine-and-up",
+          "tags": [
+            "multi-level",
+            "overhang",
+            "columns"
+          ],
+          "route_length_m": 22.1,
+          "climb_m": 3.8,
+          "min_sampled_clearance_m": 0.5
+        }
+      ],
+      "claim": "Static geometric feasibility only; not a dynamically executable flight certificate"
+    },
+    {
+      "passed": true,
+      "name": "courtyard",
+      "kind": "mixed",
+      "geometry_sha256": "f296bbdfcb9738001ce210ac06f611fd9d9f4548cf7600fbaed7363e94bd9e4f",
+      "collision_boxes": 101,
+      "materials": {
+        "bark": 4,
+        "building": 6,
+        "canvas": 3,
+        "concrete": 3,
+        "fabric": 16,
+        "glass": 3,
+        "lamp": 2,
+        "metal": 29,
+        "stone": 18,
+        "vegetation": 9,
+        "wall": 1,
+        "water": 1,
+        "wood": 6
+      },
+      "body_radius_m": 0.16,
+      "extra_clearance_m": 0.2,
+      "situations": [
+        {
+          "name": "gate-over-fountain",
+          "tags": [
+            "passage",
+            "altitude-change"
+          ],
+          "route_length_m": 24.2,
+          "climb_m": 1.2,
+          "min_sampled_clearance_m": 0.6
+        },
+        {
+          "name": "arcade-walk",
+          "tags": [
+            "columns",
+            "overhang",
+            "narrow-passage"
+          ],
+          "route_length_m": 22.5,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 1.0
+        },
+        {
+          "name": "courtyard-to-lobby",
+          "tags": [
+            "indoor-outdoor",
+            "doorway",
+            "glass"
+          ],
+          "route_length_m": 30.5,
+          "climb_m": 0.0,
+          "min_sampled_clearance_m": 1.1
+        }
+      ],
+      "claim": "Static geometric feasibility only; not a dynamically executable flight certificate"
+    }
+  ],
+  "files": {
+    "apartment.json": "573bbc82d5db6d12845842b06d20ab9e132756a57eb901bc2c7baca29814acbb",
+    "apartment.mtl": "38bb61a126c0436a161519c63425b3ece470c0c5cfc48b0a5d638757cdeaacb7",
+    "apartment.obj": "aba3abf1dcd558df9d26ef4de327105f615c373a8ca6d310f4b483d2e65bd65c",
+    "atrium.json": "9e3364be9b74138a3ecd2303f5c762392e7ee958d540fc2fcea5087ac13da2b6",
+    "atrium.mtl": "85e0cc354546d7f8318640129c41710f56cf8a89f009949e1e54fcf2e0027eb7",
+    "atrium.obj": "85003d8a8cbe48b909e30d899e3cf929d893cba1856fc9cb7761ff607d5ca9d0",
+    "courtyard.json": "8043bca749e137fb54944c768422ed48a462919035ff7fefce17d927264b1392",
+    "courtyard.mtl": "950bc54d0cf3828a604fb4418ab4d503e89c948ada2adc62d5c069d4dd848048",
+    "courtyard.obj": "f282e3554585a8858838ea73249e9368d095e5e069f8b29d1318821b13b02680",
+    "gallery.png": "8aff26b58483aefd7ecbcb351488b8b97c7f7d74f0af58be2bcff14750e3a240",
+    "index.html": "ed7973755899a1e6ba7f3db339422633d1769d487aef05eaf970c685f62f2867",
+    "office-floor.json": "ea79c717071fa460e76e95daffb75e5101309a66dbf3c8d8e85d7fe260625a4a",
+    "office-floor.mtl": "f03f1cdd15bb32d3f5defc53a22c6c861748f38518d74d429ad75f5fcbebbc45",
+    "office-floor.obj": "52689eb1b1624dac138794e411590e0184de28f2b1a4532ea606fbdbcf41e5d7",
+    "plans.png": "acf4414141ad87ffc3dbac47cadea4c65164a5a784cfb27af1145907b5a83dbc",
+    "README.md": "a42fff2df8408ee47f5276fb5405ef9256abdaeab19557ad83836fe036bea6ed",
+    "street-block.json": "e7b1a667f159f09e2a79e1fc92c82130f0e23440f01abcf2c81d1455617d4e07",
+    "street-block.mtl": "9d5d32ccf8da24c8119a3b1e23d409551dc5625a6bdd2886142a5cd5387a9319",
+    "street-block.obj": "d535789e0f8041e012b614e1b015e125046af24b5230b23f0d1dba3455a3a911",
+    "warehouse.json": "106f62aab80f8fbb173890f5ba4591155d352a11a294eea6e2c5ccd8c75d4238",
+    "warehouse.mtl": "ace8481aafba38382ca209c9450e23cefac500e42881a1efbb6bbd49a9d93cca",
+    "warehouse.obj": "e4c40842e076802e74e5bed6d44e2dbe800c4d3e71f5fd97917fa50e22e0779c"
+  }
+}

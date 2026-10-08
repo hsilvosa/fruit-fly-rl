@@ -1,0 +1,3359 @@
+{
+  "schema": "architecture-0.2",
+  "units": "meters",
+  "origin": "southwest ground corner",
+  "axes": "x east, y north, z up",
+  "license": "MIT",
+  "provenance": "Original project design; not a reconstruction of a real location",
+  "name": "street-block",
+  "kind": "outdoor",
+  "size": [
+    70.0,
+    50.0,
+    18.0
+  ],
+  "solids": [
+    {
+      "name": "sw-corner-base",
+      "low": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "high": [
+        13.0,
+        17.0,
+        9.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "sw-corner-cornice",
+      "low": [
+        0.0,
+        2.8,
+        9.0
+      ],
+      "high": [
+        13.2,
+        17.2,
+        9.3
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "sw-corner-upper",
+      "low": [
+        1.5,
+        4.5,
+        9.3
+      ],
+      "high": [
+        11.5,
+        15.5,
+        12.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "sw-corner-parapet-s",
+      "low": [
+        1.5,
+        4.5,
+        12.0
+      ],
+      "high": [
+        11.5,
+        4.75,
+        12.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "sw-corner-parapet-n",
+      "low": [
+        1.5,
+        15.25,
+        12.0
+      ],
+      "high": [
+        11.5,
+        15.5,
+        12.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "sw-corner-parapet-w",
+      "low": [
+        1.5,
+        4.75,
+        12.0
+      ],
+      "high": [
+        1.75,
+        15.25,
+        12.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "sw-corner-parapet-e",
+      "low": [
+        11.25,
+        4.75,
+        12.0
+      ],
+      "high": [
+        11.5,
+        15.25,
+        12.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "sw-corner-roof-unit-0",
+      "low": [
+        4.0333,
+        9.4,
+        12.0
+      ],
+      "high": [
+        5.6333,
+        10.6,
+        13.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "sw-corner-roof-unit-1",
+      "low": [
+        7.3667,
+        9.4,
+        12.0
+      ],
+      "high": [
+        8.9667,
+        10.6,
+        13.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "sw-tower-mass",
+      "low": [
+        13.5,
+        4.0,
+        0.0
+      ],
+      "high": [
+        28.0,
+        17.0,
+        15.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "sw-tower-parapet-s",
+      "low": [
+        13.5,
+        4.0,
+        15.0
+      ],
+      "high": [
+        28.0,
+        4.25,
+        15.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "sw-tower-parapet-n",
+      "low": [
+        13.5,
+        16.75,
+        15.0
+      ],
+      "high": [
+        28.0,
+        17.0,
+        15.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "sw-tower-parapet-w",
+      "low": [
+        13.5,
+        4.25,
+        15.0
+      ],
+      "high": [
+        13.75,
+        16.75,
+        15.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "sw-tower-parapet-e",
+      "low": [
+        27.75,
+        4.25,
+        15.0
+      ],
+      "high": [
+        28.0,
+        16.75,
+        15.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "sw-tower-roof-unit-0",
+      "low": [
+        19.95,
+        9.9,
+        15.0
+      ],
+      "high": [
+        21.55,
+        11.1,
+        16.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "se-low-mass",
+      "low": [
+        42.0,
+        2.0,
+        0.0
+      ],
+      "high": [
+        55.0,
+        17.0,
+        10.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "se-low-parapet-s",
+      "low": [
+        42.0,
+        2.0,
+        10.0
+      ],
+      "high": [
+        55.0,
+        2.25,
+        10.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "se-low-parapet-n",
+      "low": [
+        42.0,
+        16.75,
+        10.0
+      ],
+      "high": [
+        55.0,
+        17.0,
+        10.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "se-low-parapet-w",
+      "low": [
+        42.0,
+        2.25,
+        10.0
+      ],
+      "high": [
+        42.25,
+        16.75,
+        10.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "se-low-parapet-e",
+      "low": [
+        54.75,
+        2.25,
+        10.0
+      ],
+      "high": [
+        55.0,
+        16.75,
+        10.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "se-tower-base",
+      "low": [
+        55.5,
+        0.0,
+        0.0
+      ],
+      "high": [
+        70.0,
+        17.0,
+        12.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "se-tower-cornice",
+      "low": [
+        55.3,
+        0.0,
+        12.0
+      ],
+      "high": [
+        70.0,
+        17.2,
+        12.3
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "se-tower-upper",
+      "low": [
+        57.5,
+        2.0,
+        12.3
+      ],
+      "high": [
+        68.0,
+        15.0,
+        16.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "se-tower-parapet-s",
+      "low": [
+        57.5,
+        2.0,
+        16.0
+      ],
+      "high": [
+        68.0,
+        2.25,
+        16.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "se-tower-parapet-n",
+      "low": [
+        57.5,
+        14.75,
+        16.0
+      ],
+      "high": [
+        68.0,
+        15.0,
+        16.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "se-tower-parapet-w",
+      "low": [
+        57.5,
+        2.25,
+        16.0
+      ],
+      "high": [
+        57.75,
+        14.75,
+        16.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "se-tower-parapet-e",
+      "low": [
+        67.75,
+        2.25,
+        16.0
+      ],
+      "high": [
+        68.0,
+        14.75,
+        16.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "se-tower-roof-unit-0",
+      "low": [
+        60.2,
+        7.9,
+        16.0
+      ],
+      "high": [
+        61.8,
+        9.1,
+        17.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "se-tower-roof-unit-1",
+      "low": [
+        63.7,
+        7.9,
+        16.0
+      ],
+      "high": [
+        65.3,
+        9.1,
+        17.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "nw-corner-base",
+      "low": [
+        0.0,
+        33.0,
+        0.0
+      ],
+      "high": [
+        14.0,
+        48.0,
+        10.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "nw-corner-cornice",
+      "low": [
+        0.0,
+        32.8,
+        10.0
+      ],
+      "high": [
+        14.2,
+        48.2,
+        10.3
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "nw-corner-upper",
+      "low": [
+        1.5,
+        34.5,
+        10.3
+      ],
+      "high": [
+        12.5,
+        46.5,
+        14.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "nw-corner-parapet-s",
+      "low": [
+        1.5,
+        34.5,
+        14.0
+      ],
+      "high": [
+        12.5,
+        34.75,
+        14.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "nw-corner-parapet-n",
+      "low": [
+        1.5,
+        46.25,
+        14.0
+      ],
+      "high": [
+        12.5,
+        46.5,
+        14.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "nw-corner-parapet-w",
+      "low": [
+        1.5,
+        34.75,
+        14.0
+      ],
+      "high": [
+        1.75,
+        46.25,
+        14.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "nw-corner-parapet-e",
+      "low": [
+        12.25,
+        34.75,
+        14.0
+      ],
+      "high": [
+        12.5,
+        46.25,
+        14.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "nw-corner-roof-unit-0",
+      "low": [
+        6.2,
+        39.9,
+        14.0
+      ],
+      "high": [
+        7.8,
+        41.1,
+        15.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "nw-low-mass",
+      "low": [
+        14.5,
+        33.0,
+        0.0
+      ],
+      "high": [
+        28.0,
+        50.0,
+        9.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "nw-low-parapet-s",
+      "low": [
+        14.5,
+        33.0,
+        9.0
+      ],
+      "high": [
+        28.0,
+        33.25,
+        9.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "nw-low-parapet-n",
+      "low": [
+        14.5,
+        49.75,
+        9.0
+      ],
+      "high": [
+        28.0,
+        50.0,
+        9.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "nw-low-parapet-w",
+      "low": [
+        14.5,
+        33.25,
+        9.0
+      ],
+      "high": [
+        14.75,
+        49.75,
+        9.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "nw-low-parapet-e",
+      "low": [
+        27.75,
+        33.25,
+        9.0
+      ],
+      "high": [
+        28.0,
+        49.75,
+        9.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "ne-west-mass",
+      "low": [
+        42.0,
+        33.0,
+        0.0
+      ],
+      "high": [
+        54.0,
+        47.0,
+        13.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "ne-east-mass",
+      "low": [
+        58.0,
+        33.0,
+        0.0
+      ],
+      "high": [
+        70.0,
+        47.0,
+        13.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "ne-passage-roof",
+      "low": [
+        54.0,
+        33.0,
+        4.5
+      ],
+      "high": [
+        58.0,
+        47.0,
+        13.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "ne-parapet",
+      "low": [
+        42.0,
+        33.0,
+        13.0
+      ],
+      "high": [
+        70.0,
+        33.25,
+        13.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "skybridge-deck",
+      "low": [
+        28.0,
+        8.0,
+        6.5
+      ],
+      "high": [
+        42.0,
+        10.5,
+        6.8
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "skybridge-south-glass",
+      "low": [
+        28.0,
+        8.0,
+        6.8
+      ],
+      "high": [
+        42.0,
+        8.05,
+        9.2
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "skybridge-north-glass",
+      "low": [
+        28.0,
+        10.45,
+        6.8
+      ],
+      "high": [
+        42.0,
+        10.5,
+        9.2
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "skybridge-roof",
+      "low": [
+        28.0,
+        8.0,
+        9.2
+      ],
+      "high": [
+        42.0,
+        10.5,
+        9.45
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "awning-sw-0",
+      "low": [
+        1.0,
+        17.0,
+        2.9
+      ],
+      "high": [
+        12.0,
+        18.6,
+        3.15
+      ],
+      "material": "canvas"
+    },
+    {
+      "name": "awning-sw-1",
+      "low": [
+        14.5,
+        17.0,
+        2.9
+      ],
+      "high": [
+        27.0,
+        18.6,
+        3.15
+      ],
+      "material": "canvas"
+    },
+    {
+      "name": "balcony-se-low-0-slab",
+      "low": [
+        43.2,
+        17.0,
+        3.6
+      ],
+      "high": [
+        45.8,
+        18.2,
+        3.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-low-0-rail",
+      "low": [
+        43.2,
+        18.15,
+        3.78
+      ],
+      "high": [
+        45.8,
+        18.2,
+        4.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-low-1-slab",
+      "low": [
+        47.2,
+        17.0,
+        3.6
+      ],
+      "high": [
+        49.8,
+        18.2,
+        3.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-low-1-rail",
+      "low": [
+        47.2,
+        18.15,
+        3.78
+      ],
+      "high": [
+        49.8,
+        18.2,
+        4.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-low-2-slab",
+      "low": [
+        51.2,
+        17.0,
+        3.6
+      ],
+      "high": [
+        53.8,
+        18.2,
+        3.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-low-2-rail",
+      "low": [
+        51.2,
+        18.15,
+        3.78
+      ],
+      "high": [
+        53.8,
+        18.2,
+        4.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-low-3-slab",
+      "low": [
+        43.2,
+        17.0,
+        6.6
+      ],
+      "high": [
+        45.8,
+        18.2,
+        6.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-low-3-rail",
+      "low": [
+        43.2,
+        18.15,
+        6.78
+      ],
+      "high": [
+        45.8,
+        18.2,
+        7.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-low-4-slab",
+      "low": [
+        47.2,
+        17.0,
+        6.6
+      ],
+      "high": [
+        49.8,
+        18.2,
+        6.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-low-4-rail",
+      "low": [
+        47.2,
+        18.15,
+        6.78
+      ],
+      "high": [
+        49.8,
+        18.2,
+        7.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-low-5-slab",
+      "low": [
+        51.2,
+        17.0,
+        6.6
+      ],
+      "high": [
+        53.8,
+        18.2,
+        6.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-low-5-rail",
+      "low": [
+        51.2,
+        18.15,
+        6.78
+      ],
+      "high": [
+        53.8,
+        18.2,
+        7.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-tower-0-slab",
+      "low": [
+        57.45,
+        17.0,
+        3.6
+      ],
+      "high": [
+        60.05,
+        18.2,
+        3.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-tower-0-rail",
+      "low": [
+        57.45,
+        18.15,
+        3.78
+      ],
+      "high": [
+        60.05,
+        18.2,
+        4.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-tower-1-slab",
+      "low": [
+        61.45,
+        17.0,
+        3.6
+      ],
+      "high": [
+        64.05,
+        18.2,
+        3.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-tower-1-rail",
+      "low": [
+        61.45,
+        18.15,
+        3.78
+      ],
+      "high": [
+        64.05,
+        18.2,
+        4.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-tower-2-slab",
+      "low": [
+        65.45,
+        17.0,
+        3.6
+      ],
+      "high": [
+        68.05,
+        18.2,
+        3.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-tower-2-rail",
+      "low": [
+        65.45,
+        18.15,
+        3.78
+      ],
+      "high": [
+        68.05,
+        18.2,
+        4.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-tower-3-slab",
+      "low": [
+        57.45,
+        17.0,
+        6.6
+      ],
+      "high": [
+        60.05,
+        18.2,
+        6.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-tower-3-rail",
+      "low": [
+        57.45,
+        18.15,
+        6.78
+      ],
+      "high": [
+        60.05,
+        18.2,
+        7.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-tower-4-slab",
+      "low": [
+        61.45,
+        17.0,
+        6.6
+      ],
+      "high": [
+        64.05,
+        18.2,
+        6.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-tower-4-rail",
+      "low": [
+        61.45,
+        18.15,
+        6.78
+      ],
+      "high": [
+        64.05,
+        18.2,
+        7.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-tower-5-slab",
+      "low": [
+        65.45,
+        17.0,
+        6.6
+      ],
+      "high": [
+        68.05,
+        18.2,
+        6.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-tower-5-rail",
+      "low": [
+        65.45,
+        18.15,
+        6.78
+      ],
+      "high": [
+        68.05,
+        18.2,
+        7.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-tower-6-slab",
+      "low": [
+        57.45,
+        17.0,
+        9.6
+      ],
+      "high": [
+        60.05,
+        18.2,
+        9.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-tower-6-rail",
+      "low": [
+        57.45,
+        18.15,
+        9.78
+      ],
+      "high": [
+        60.05,
+        18.2,
+        10.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-tower-7-slab",
+      "low": [
+        61.45,
+        17.0,
+        9.6
+      ],
+      "high": [
+        64.05,
+        18.2,
+        9.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-tower-7-rail",
+      "low": [
+        61.45,
+        18.15,
+        9.78
+      ],
+      "high": [
+        64.05,
+        18.2,
+        10.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "balcony-se-tower-8-slab",
+      "low": [
+        65.45,
+        17.0,
+        9.6
+      ],
+      "high": [
+        68.05,
+        18.2,
+        9.78
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "balcony-se-tower-8-rail",
+      "low": [
+        65.45,
+        18.15,
+        9.78
+      ],
+      "high": [
+        68.05,
+        18.2,
+        10.7
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "tree-0-trunk",
+      "low": [
+        3.825,
+        31.425,
+        0.0
+      ],
+      "high": [
+        4.175,
+        31.775,
+        2.8
+      ],
+      "material": "bark"
+    },
+    {
+      "name": "tree-0-crown",
+      "low": [
+        2.6,
+        30.2,
+        2.8
+      ],
+      "high": [
+        5.4,
+        33.0,
+        5.32
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-0-crown-top",
+      "low": [
+        3.104,
+        30.704,
+        5.32
+      ],
+      "high": [
+        4.896,
+        32.496,
+        6.4
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-1-trunk",
+      "low": [
+        10.825,
+        31.425,
+        0.0
+      ],
+      "high": [
+        11.175,
+        31.775,
+        2.8
+      ],
+      "material": "bark"
+    },
+    {
+      "name": "tree-1-crown",
+      "low": [
+        9.6,
+        30.2,
+        2.8
+      ],
+      "high": [
+        12.4,
+        33.0,
+        5.32
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-1-crown-top",
+      "low": [
+        10.104,
+        30.704,
+        5.32
+      ],
+      "high": [
+        11.896,
+        32.496,
+        6.4
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-2-trunk",
+      "low": [
+        17.825,
+        31.425,
+        0.0
+      ],
+      "high": [
+        18.175,
+        31.775,
+        2.8
+      ],
+      "material": "bark"
+    },
+    {
+      "name": "tree-2-crown",
+      "low": [
+        16.6,
+        30.2,
+        2.8
+      ],
+      "high": [
+        19.4,
+        33.0,
+        5.32
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-2-crown-top",
+      "low": [
+        17.104,
+        30.704,
+        5.32
+      ],
+      "high": [
+        18.896,
+        32.496,
+        6.4
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-3-trunk",
+      "low": [
+        24.825,
+        31.425,
+        0.0
+      ],
+      "high": [
+        25.175,
+        31.775,
+        2.8
+      ],
+      "material": "bark"
+    },
+    {
+      "name": "tree-3-crown",
+      "low": [
+        23.6,
+        30.2,
+        2.8
+      ],
+      "high": [
+        26.4,
+        33.0,
+        5.32
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-3-crown-top",
+      "low": [
+        24.104,
+        30.704,
+        5.32
+      ],
+      "high": [
+        25.896,
+        32.496,
+        6.4
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-4-trunk",
+      "low": [
+        44.825,
+        31.425,
+        0.0
+      ],
+      "high": [
+        45.175,
+        31.775,
+        2.8
+      ],
+      "material": "bark"
+    },
+    {
+      "name": "tree-4-crown",
+      "low": [
+        43.6,
+        30.2,
+        2.8
+      ],
+      "high": [
+        46.4,
+        33.0,
+        5.32
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-4-crown-top",
+      "low": [
+        44.104,
+        30.704,
+        5.32
+      ],
+      "high": [
+        45.896,
+        32.496,
+        6.4
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-5-trunk",
+      "low": [
+        49.825,
+        31.425,
+        0.0
+      ],
+      "high": [
+        50.175,
+        31.775,
+        2.8
+      ],
+      "material": "bark"
+    },
+    {
+      "name": "tree-5-crown",
+      "low": [
+        48.6,
+        30.2,
+        2.8
+      ],
+      "high": [
+        51.4,
+        33.0,
+        5.32
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-5-crown-top",
+      "low": [
+        49.104,
+        30.704,
+        5.32
+      ],
+      "high": [
+        50.896,
+        32.496,
+        6.4
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-6-trunk",
+      "low": [
+        65.825,
+        31.425,
+        0.0
+      ],
+      "high": [
+        66.175,
+        31.775,
+        2.8
+      ],
+      "material": "bark"
+    },
+    {
+      "name": "tree-6-crown",
+      "low": [
+        64.6,
+        30.2,
+        2.8
+      ],
+      "high": [
+        67.4,
+        33.0,
+        5.32
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-6-crown-top",
+      "low": [
+        65.104,
+        30.704,
+        5.32
+      ],
+      "high": [
+        66.896,
+        32.496,
+        6.4
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "lamp-s-0-pole",
+      "low": [
+        7.92,
+        19.52,
+        0.0
+      ],
+      "high": [
+        8.08,
+        19.68,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-s-0-arm",
+      "low": [
+        7.95,
+        19.55,
+        5.88
+      ],
+      "high": [
+        8.05,
+        21.05,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-s-0-head",
+      "low": [
+        7.75,
+        20.75,
+        5.65
+      ],
+      "high": [
+        8.25,
+        21.25,
+        5.88
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "lamp-s-1-pole",
+      "low": [
+        15.92,
+        19.52,
+        0.0
+      ],
+      "high": [
+        16.08,
+        19.68,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-s-1-arm",
+      "low": [
+        15.95,
+        19.55,
+        5.88
+      ],
+      "high": [
+        16.05,
+        21.05,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-s-1-head",
+      "low": [
+        15.75,
+        20.75,
+        5.65
+      ],
+      "high": [
+        16.25,
+        21.25,
+        5.88
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "lamp-s-2-pole",
+      "low": [
+        23.92,
+        19.52,
+        0.0
+      ],
+      "high": [
+        24.08,
+        19.68,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-s-2-arm",
+      "low": [
+        23.95,
+        19.55,
+        5.88
+      ],
+      "high": [
+        24.05,
+        21.05,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-s-2-head",
+      "low": [
+        23.75,
+        20.75,
+        5.65
+      ],
+      "high": [
+        24.25,
+        21.25,
+        5.88
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "lamp-s-3-pole",
+      "low": [
+        45.92,
+        19.52,
+        0.0
+      ],
+      "high": [
+        46.08,
+        19.68,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-s-3-arm",
+      "low": [
+        45.95,
+        19.55,
+        5.88
+      ],
+      "high": [
+        46.05,
+        21.05,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-s-3-head",
+      "low": [
+        45.75,
+        20.75,
+        5.65
+      ],
+      "high": [
+        46.25,
+        21.25,
+        5.88
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "lamp-s-4-pole",
+      "low": [
+        53.92,
+        19.52,
+        0.0
+      ],
+      "high": [
+        54.08,
+        19.68,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-s-4-arm",
+      "low": [
+        53.95,
+        19.55,
+        5.88
+      ],
+      "high": [
+        54.05,
+        21.05,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-s-4-head",
+      "low": [
+        53.75,
+        20.75,
+        5.65
+      ],
+      "high": [
+        54.25,
+        21.25,
+        5.88
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "lamp-s-5-pole",
+      "low": [
+        61.92,
+        19.52,
+        0.0
+      ],
+      "high": [
+        62.08,
+        19.68,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-s-5-arm",
+      "low": [
+        61.95,
+        19.55,
+        5.88
+      ],
+      "high": [
+        62.05,
+        21.05,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-s-5-head",
+      "low": [
+        61.75,
+        20.75,
+        5.65
+      ],
+      "high": [
+        62.25,
+        21.25,
+        5.88
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "lamp-n-0-pole",
+      "low": [
+        7.92,
+        30.32,
+        0.0
+      ],
+      "high": [
+        8.08,
+        30.48,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-n-0-arm",
+      "low": [
+        7.95,
+        28.95,
+        5.88
+      ],
+      "high": [
+        8.05,
+        30.45,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-n-0-head",
+      "low": [
+        7.75,
+        28.75,
+        5.65
+      ],
+      "high": [
+        8.25,
+        29.25,
+        5.88
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "lamp-n-1-pole",
+      "low": [
+        20.92,
+        30.32,
+        0.0
+      ],
+      "high": [
+        21.08,
+        30.48,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-n-1-arm",
+      "low": [
+        20.95,
+        28.95,
+        5.88
+      ],
+      "high": [
+        21.05,
+        30.45,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-n-1-head",
+      "low": [
+        20.75,
+        28.75,
+        5.65
+      ],
+      "high": [
+        21.25,
+        29.25,
+        5.88
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "lamp-n-2-pole",
+      "low": [
+        46.92,
+        30.32,
+        0.0
+      ],
+      "high": [
+        47.08,
+        30.48,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-n-2-arm",
+      "low": [
+        46.95,
+        28.95,
+        5.88
+      ],
+      "high": [
+        47.05,
+        30.45,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-n-2-head",
+      "low": [
+        46.75,
+        28.75,
+        5.65
+      ],
+      "high": [
+        47.25,
+        29.25,
+        5.88
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "lamp-n-3-pole",
+      "low": [
+        61.92,
+        30.32,
+        0.0
+      ],
+      "high": [
+        62.08,
+        30.48,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-n-3-arm",
+      "low": [
+        61.95,
+        28.95,
+        5.88
+      ],
+      "high": [
+        62.05,
+        30.45,
+        6.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-n-3-head",
+      "low": [
+        61.75,
+        28.75,
+        5.65
+      ],
+      "high": [
+        62.25,
+        29.25,
+        5.88
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "shelter-roof",
+      "low": [
+        44.0,
+        17.2,
+        2.5
+      ],
+      "high": [
+        48.5,
+        19.0,
+        2.65
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shelter-back",
+      "low": [
+        44.0,
+        17.2,
+        0.0
+      ],
+      "high": [
+        48.5,
+        17.3,
+        2.5
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shelter-side",
+      "low": [
+        44.0,
+        17.3,
+        0.0
+      ],
+      "high": [
+        44.1,
+        19.0,
+        2.5
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shelter-post",
+      "low": [
+        48.4,
+        18.9,
+        0.0
+      ],
+      "high": [
+        48.5,
+        19.0,
+        2.5
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "shelter-bench-seat",
+      "low": [
+        45.0,
+        17.4,
+        0.4
+      ],
+      "high": [
+        46.8,
+        17.9,
+        0.46
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "shelter-bench-leg-0",
+      "low": [
+        45.14,
+        17.4,
+        0.0
+      ],
+      "high": [
+        45.22,
+        17.9,
+        0.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "shelter-bench-leg-1",
+      "low": [
+        46.58,
+        17.4,
+        0.0
+      ],
+      "high": [
+        46.66,
+        17.9,
+        0.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "corner-bench-seat",
+      "low": [
+        20.0,
+        17.4,
+        0.4
+      ],
+      "high": [
+        21.8,
+        17.9,
+        0.46
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "corner-bench-leg-0",
+      "low": [
+        20.14,
+        17.4,
+        0.0
+      ],
+      "high": [
+        20.22,
+        17.9,
+        0.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "corner-bench-leg-1",
+      "low": [
+        21.58,
+        17.4,
+        0.0
+      ],
+      "high": [
+        21.66,
+        17.9,
+        0.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bollards-sw-0",
+      "low": [
+        28.3,
+        17.5,
+        0.0
+      ],
+      "high": [
+        28.5,
+        17.7,
+        0.9
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bollards-sw-1",
+      "low": [
+        28.3,
+        18.1667,
+        0.0
+      ],
+      "high": [
+        28.5,
+        18.3667,
+        0.9
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bollards-sw-2",
+      "low": [
+        28.3,
+        18.8333,
+        0.0
+      ],
+      "high": [
+        28.5,
+        19.0333,
+        0.9
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bollards-sw-3",
+      "low": [
+        28.3,
+        19.5,
+        0.0
+      ],
+      "high": [
+        28.5,
+        19.7,
+        0.9
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bollards-ne-0",
+      "low": [
+        41.5,
+        30.3,
+        0.0
+      ],
+      "high": [
+        41.7,
+        30.5,
+        0.9
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bollards-ne-1",
+      "low": [
+        41.5,
+        31.0333,
+        0.0
+      ],
+      "high": [
+        41.7,
+        31.2333,
+        0.9
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bollards-ne-2",
+      "low": [
+        41.5,
+        31.7667,
+        0.0
+      ],
+      "high": [
+        41.7,
+        31.9667,
+        0.9
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bollards-ne-3",
+      "low": [
+        41.5,
+        32.5,
+        0.0
+      ],
+      "high": [
+        41.7,
+        32.7,
+        0.9
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "kiosk",
+      "low": [
+        28.4,
+        35.0,
+        0.0
+      ],
+      "high": [
+        30.4,
+        37.0,
+        2.6
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "kiosk-roof",
+      "low": [
+        28.2,
+        34.8,
+        2.6
+      ],
+      "high": [
+        30.6,
+        37.2,
+        2.8
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "signal-sw-pole",
+      "low": [
+        30.48,
+        19.48,
+        0.0
+      ],
+      "high": [
+        30.72,
+        19.72,
+        5.8
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "signal-sw-arm",
+      "low": [
+        30.53,
+        19.53,
+        5.6
+      ],
+      "high": [
+        34.67,
+        19.67,
+        5.8
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "signal-sw-signal-0",
+      "low": [
+        32.62,
+        19.42,
+        4.55
+      ],
+      "high": [
+        32.98,
+        19.78,
+        5.6
+      ],
+      "material": "signal"
+    },
+    {
+      "name": "signal-sw-signal-1",
+      "low": [
+        34.42,
+        19.42,
+        4.55
+      ],
+      "high": [
+        34.78,
+        19.78,
+        5.6
+      ],
+      "material": "signal"
+    },
+    {
+      "name": "signal-sw-pedestrian",
+      "low": [
+        30.45,
+        19.45,
+        2.3
+      ],
+      "high": [
+        30.75,
+        19.75,
+        2.9
+      ],
+      "material": "signal"
+    },
+    {
+      "name": "signal-ne-pole",
+      "low": [
+        39.28,
+        30.28,
+        0.0
+      ],
+      "high": [
+        39.52,
+        30.52,
+        5.8
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "signal-ne-arm",
+      "low": [
+        35.33,
+        30.33,
+        5.6
+      ],
+      "high": [
+        39.47,
+        30.47,
+        5.8
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "signal-ne-signal-0",
+      "low": [
+        37.02,
+        30.22,
+        4.55
+      ],
+      "high": [
+        37.38,
+        30.58,
+        5.6
+      ],
+      "material": "signal"
+    },
+    {
+      "name": "signal-ne-signal-1",
+      "low": [
+        35.22,
+        30.22,
+        4.55
+      ],
+      "high": [
+        35.58,
+        30.58,
+        5.6
+      ],
+      "material": "signal"
+    },
+    {
+      "name": "signal-ne-pedestrian",
+      "low": [
+        39.25,
+        30.25,
+        2.3
+      ],
+      "high": [
+        39.55,
+        30.55,
+        2.9
+      ],
+      "material": "signal"
+    },
+    {
+      "name": "tram-wire",
+      "low": [
+        0.0,
+        24.98,
+        6.0
+      ],
+      "high": [
+        70.0,
+        25.02,
+        6.03
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "car-s-0-body",
+      "low": [
+        3.0,
+        20.2,
+        0.3
+      ],
+      "high": [
+        7.4,
+        22.0,
+        0.95
+      ],
+      "material": "vehicle"
+    },
+    {
+      "name": "car-s-0-cabin",
+      "low": [
+        4.1,
+        20.3,
+        0.95
+      ],
+      "high": [
+        6.432,
+        21.9,
+        1.45
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "car-s-0-wheel-0",
+      "low": [
+        3.5,
+        20.2,
+        0.0
+      ],
+      "high": [
+        4.14,
+        20.42,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-0-wheel-1",
+      "low": [
+        6.26,
+        20.2,
+        0.0
+      ],
+      "high": [
+        6.9,
+        20.42,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-0-wheel-2",
+      "low": [
+        3.5,
+        21.78,
+        0.0
+      ],
+      "high": [
+        4.14,
+        22.0,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-0-wheel-3",
+      "low": [
+        6.26,
+        21.78,
+        0.0
+      ],
+      "high": [
+        6.9,
+        22.0,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-1-body",
+      "low": [
+        9.0,
+        20.2,
+        0.3
+      ],
+      "high": [
+        13.4,
+        22.0,
+        0.95
+      ],
+      "material": "vehicle"
+    },
+    {
+      "name": "car-s-1-cabin",
+      "low": [
+        10.1,
+        20.3,
+        0.95
+      ],
+      "high": [
+        12.432,
+        21.9,
+        1.45
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "car-s-1-wheel-0",
+      "low": [
+        9.5,
+        20.2,
+        0.0
+      ],
+      "high": [
+        10.14,
+        20.42,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-1-wheel-1",
+      "low": [
+        12.26,
+        20.2,
+        0.0
+      ],
+      "high": [
+        12.9,
+        20.42,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-1-wheel-2",
+      "low": [
+        9.5,
+        21.78,
+        0.0
+      ],
+      "high": [
+        10.14,
+        22.0,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-1-wheel-3",
+      "low": [
+        12.26,
+        21.78,
+        0.0
+      ],
+      "high": [
+        12.9,
+        22.0,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-2-body",
+      "low": [
+        15.0,
+        20.2,
+        0.3
+      ],
+      "high": [
+        19.4,
+        22.0,
+        0.95
+      ],
+      "material": "vehicle"
+    },
+    {
+      "name": "car-s-2-cabin",
+      "low": [
+        16.1,
+        20.3,
+        0.95
+      ],
+      "high": [
+        18.432,
+        21.9,
+        1.45
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "car-s-2-wheel-0",
+      "low": [
+        15.5,
+        20.2,
+        0.0
+      ],
+      "high": [
+        16.14,
+        20.42,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-2-wheel-1",
+      "low": [
+        18.26,
+        20.2,
+        0.0
+      ],
+      "high": [
+        18.9,
+        20.42,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-2-wheel-2",
+      "low": [
+        15.5,
+        21.78,
+        0.0
+      ],
+      "high": [
+        16.14,
+        22.0,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-2-wheel-3",
+      "low": [
+        18.26,
+        21.78,
+        0.0
+      ],
+      "high": [
+        18.9,
+        22.0,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-3-body",
+      "low": [
+        21.5,
+        20.2,
+        0.3
+      ],
+      "high": [
+        25.9,
+        22.0,
+        0.95
+      ],
+      "material": "vehicle"
+    },
+    {
+      "name": "car-s-3-cabin",
+      "low": [
+        22.6,
+        20.3,
+        0.95
+      ],
+      "high": [
+        24.932,
+        21.9,
+        1.45
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "car-s-3-wheel-0",
+      "low": [
+        22.0,
+        20.2,
+        0.0
+      ],
+      "high": [
+        22.64,
+        20.42,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-3-wheel-1",
+      "low": [
+        24.76,
+        20.2,
+        0.0
+      ],
+      "high": [
+        25.4,
+        20.42,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-3-wheel-2",
+      "low": [
+        22.0,
+        21.78,
+        0.0
+      ],
+      "high": [
+        22.64,
+        22.0,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-s-3-wheel-3",
+      "low": [
+        24.76,
+        21.78,
+        0.0
+      ],
+      "high": [
+        25.4,
+        22.0,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-0-body",
+      "low": [
+        5.0,
+        28.0,
+        0.3
+      ],
+      "high": [
+        9.4,
+        29.8,
+        0.95
+      ],
+      "material": "vehicle"
+    },
+    {
+      "name": "car-n-0-cabin",
+      "low": [
+        6.1,
+        28.1,
+        0.95
+      ],
+      "high": [
+        8.432,
+        29.7,
+        1.45
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "car-n-0-wheel-0",
+      "low": [
+        5.5,
+        28.0,
+        0.0
+      ],
+      "high": [
+        6.14,
+        28.22,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-0-wheel-1",
+      "low": [
+        8.26,
+        28.0,
+        0.0
+      ],
+      "high": [
+        8.9,
+        28.22,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-0-wheel-2",
+      "low": [
+        5.5,
+        29.58,
+        0.0
+      ],
+      "high": [
+        6.14,
+        29.8,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-0-wheel-3",
+      "low": [
+        8.26,
+        29.58,
+        0.0
+      ],
+      "high": [
+        8.9,
+        29.8,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-1-body",
+      "low": [
+        12.0,
+        28.0,
+        0.3
+      ],
+      "high": [
+        16.4,
+        29.8,
+        0.95
+      ],
+      "material": "vehicle"
+    },
+    {
+      "name": "car-n-1-cabin",
+      "low": [
+        13.1,
+        28.1,
+        0.95
+      ],
+      "high": [
+        15.432,
+        29.7,
+        1.45
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "car-n-1-wheel-0",
+      "low": [
+        12.5,
+        28.0,
+        0.0
+      ],
+      "high": [
+        13.14,
+        28.22,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-1-wheel-1",
+      "low": [
+        15.26,
+        28.0,
+        0.0
+      ],
+      "high": [
+        15.9,
+        28.22,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-1-wheel-2",
+      "low": [
+        12.5,
+        29.58,
+        0.0
+      ],
+      "high": [
+        13.14,
+        29.8,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-1-wheel-3",
+      "low": [
+        15.26,
+        29.58,
+        0.0
+      ],
+      "high": [
+        15.9,
+        29.8,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-2-body",
+      "low": [
+        50.0,
+        28.0,
+        0.3
+      ],
+      "high": [
+        54.4,
+        29.8,
+        0.95
+      ],
+      "material": "vehicle"
+    },
+    {
+      "name": "car-n-2-cabin",
+      "low": [
+        51.1,
+        28.1,
+        0.95
+      ],
+      "high": [
+        53.432,
+        29.7,
+        1.45
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "car-n-2-wheel-0",
+      "low": [
+        50.5,
+        28.0,
+        0.0
+      ],
+      "high": [
+        51.14,
+        28.22,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-2-wheel-1",
+      "low": [
+        53.26,
+        28.0,
+        0.0
+      ],
+      "high": [
+        53.9,
+        28.22,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-2-wheel-2",
+      "low": [
+        50.5,
+        29.58,
+        0.0
+      ],
+      "high": [
+        51.14,
+        29.8,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-2-wheel-3",
+      "low": [
+        53.26,
+        29.58,
+        0.0
+      ],
+      "high": [
+        53.9,
+        29.8,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-3-body",
+      "low": [
+        58.0,
+        28.0,
+        0.3
+      ],
+      "high": [
+        62.4,
+        29.8,
+        0.95
+      ],
+      "material": "vehicle"
+    },
+    {
+      "name": "car-n-3-cabin",
+      "low": [
+        59.1,
+        28.1,
+        0.95
+      ],
+      "high": [
+        61.432,
+        29.7,
+        1.45
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "car-n-3-wheel-0",
+      "low": [
+        58.5,
+        28.0,
+        0.0
+      ],
+      "high": [
+        59.14,
+        28.22,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-3-wheel-1",
+      "low": [
+        61.26,
+        28.0,
+        0.0
+      ],
+      "high": [
+        61.9,
+        28.22,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-3-wheel-2",
+      "low": [
+        58.5,
+        29.58,
+        0.0
+      ],
+      "high": [
+        59.14,
+        29.8,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-3-wheel-3",
+      "low": [
+        61.26,
+        29.58,
+        0.0
+      ],
+      "high": [
+        61.9,
+        29.8,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-4-body",
+      "low": [
+        64.5,
+        28.0,
+        0.3
+      ],
+      "high": [
+        68.9,
+        29.8,
+        0.95
+      ],
+      "material": "vehicle"
+    },
+    {
+      "name": "car-n-4-cabin",
+      "low": [
+        65.6,
+        28.1,
+        0.95
+      ],
+      "high": [
+        67.932,
+        29.7,
+        1.45
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "car-n-4-wheel-0",
+      "low": [
+        65.0,
+        28.0,
+        0.0
+      ],
+      "high": [
+        65.64,
+        28.22,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-4-wheel-1",
+      "low": [
+        67.76,
+        28.0,
+        0.0
+      ],
+      "high": [
+        68.4,
+        28.22,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-4-wheel-2",
+      "low": [
+        65.0,
+        29.58,
+        0.0
+      ],
+      "high": [
+        65.64,
+        29.8,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "car-n-4-wheel-3",
+      "low": [
+        67.76,
+        29.58,
+        0.0
+      ],
+      "high": [
+        68.4,
+        29.8,
+        0.62
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "bus-body",
+      "low": [
+        44.0,
+        20.3,
+        0.35
+      ],
+      "high": [
+        56.0,
+        22.8,
+        3.1
+      ],
+      "material": "bus"
+    },
+    {
+      "name": "bus-windows",
+      "low": [
+        44.4,
+        20.25,
+        1.4
+      ],
+      "high": [
+        55.6,
+        22.85,
+        2.5
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "bus-chassis",
+      "low": [
+        44.6,
+        20.5,
+        0.0
+      ],
+      "high": [
+        55.4,
+        22.6,
+        0.35
+      ],
+      "material": "rubber"
+    },
+    {
+      "name": "delivery-van-cargo",
+      "low": [
+        36.8,
+        36.0,
+        0.35
+      ],
+      "high": [
+        38.9,
+        40.032,
+        2.7
+      ],
+      "material": "vehicle"
+    },
+    {
+      "name": "delivery-van-cab",
+      "low": [
+        36.8,
+        40.032,
+        0.35
+      ],
+      "high": [
+        38.9,
+        41.6,
+        2.106
+      ],
+      "material": "vehicle"
+    },
+    {
+      "name": "delivery-van-chassis",
+      "low": [
+        36.8,
+        36.3,
+        0.0
+      ],
+      "high": [
+        38.9,
+        41.3,
+        0.35
+      ],
+      "material": "rubber"
+    }
+  ],
+  "situations": [
+    {
+      "name": "street-traverse",
+      "route": [
+        [
+          2.0,
+          25.8,
+          2.0
+        ],
+        [
+          68.0,
+          25.8,
+          2.0
+        ]
+      ],
+      "description": "Fly the length of the street between parked cars, a bus and lamp heads.",
+      "tags": [
+        "long-range"
+      ]
+    },
+    {
+      "name": "intersection-turn",
+      "route": [
+        [
+          2.0,
+          25.8,
+          2.0
+        ],
+        [
+          35.0,
+          25.8,
+          2.0
+        ],
+        [
+          35.0,
+          48.5,
+          2.0
+        ]
+      ],
+      "description": "Turn north at the intersection under a signal mast arm and pass a delivery van.",
+      "tags": [
+        "turn",
+        "overhang"
+      ]
+    },
+    {
+      "name": "under-the-skybridge",
+      "route": [
+        [
+          35.0,
+          1.5,
+          3.0
+        ],
+        [
+          35.0,
+          24.5,
+          3.0
+        ],
+        [
+          8.0,
+          24.5,
+          3.0
+        ]
+      ],
+      "description": "Follow the north-south road under a glass skybridge, then turn west along the street.",
+      "tags": [
+        "overhang",
+        "turn",
+        "long-range"
+      ]
+    },
+    {
+      "name": "through-the-passage",
+      "route": [
+        [
+          20.0,
+          26.0,
+          2.5
+        ],
+        [
+          56.0,
+          26.0,
+          2.5
+        ],
+        [
+          56.0,
+          48.5,
+          2.5
+        ]
+      ],
+      "description": "Leave the street through a 4 m covered passage into the back lane.",
+      "tags": [
+        "passage",
+        "turn"
+      ]
+    },
+    {
+      "name": "over-the-bus",
+      "route": [
+        [
+          42.8,
+          21.5,
+          1.5
+        ],
+        [
+          42.8,
+          21.5,
+          4.0
+        ],
+        [
+          57.5,
+          21.5,
+          4.0
+        ],
+        [
+          57.5,
+          21.5,
+          1.5
+        ]
+      ],
+      "description": "Climb over a parked bus beneath lamp heads and the tram wire, then descend.",
+      "tags": [
+        "altitude-change",
+        "overhang"
+      ]
+    }
+  ],
+  "description": "Crossroads with set-back buildings, a covered passage, skybridge, bus stop, trees, signals and parked vehicles.",
+  "validation": {
+    "passed": true,
+    "name": "street-block",
+    "kind": "outdoor",
+    "geometry_sha256": "a0b0b3bf81521d5e18b5f3a670a4059dc00fbb245230c48b1cbb6a86289cf44e",
+    "collision_boxes": 224,
+    "materials": {
+      "bark": 7,
+      "building": 12,
+      "bus": 1,
+      "canvas": 2,
+      "concrete": 17,
+      "glass": 30,
+      "lamp": 10,
+      "metal": 45,
+      "rubber": 38,
+      "signal": 6,
+      "stone": 28,
+      "vegetation": 14,
+      "vehicle": 11,
+      "wood": 3
+    },
+    "body_radius_m": 0.16,
+    "extra_clearance_m": 0.2,
+    "situations": [
+      {
+        "name": "street-traverse",
+        "tags": [
+          "long-range"
+        ],
+        "route_length_m": 66.0,
+        "climb_m": 0.0,
+        "min_sampled_clearance_m": 2.0
+      },
+      {
+        "name": "intersection-turn",
+        "tags": [
+          "turn",
+          "overhang"
+        ],
+        "route_length_m": 55.7,
+        "climb_m": 0.0,
+        "min_sampled_clearance_m": 1.5
+      },
+      {
+        "name": "under-the-skybridge",
+        "tags": [
+          "overhang",
+          "turn",
+          "long-range"
+        ],
+        "route_length_m": 50.0,
+        "climb_m": 0.0,
+        "min_sampled_clearance_m": 1.5
+      },
+      {
+        "name": "through-the-passage",
+        "tags": [
+          "passage",
+          "turn"
+        ],
+        "route_length_m": 58.5,
+        "climb_m": 0.0,
+        "min_sampled_clearance_m": 1.5
+      },
+      {
+        "name": "over-the-bus",
+        "tags": [
+          "altitude-change",
+          "overhang"
+        ],
+        "route_length_m": 19.7,
+        "climb_m": 2.5,
+        "min_sampled_clearance_m": 0.9
+      }
+    ],
+    "claim": "Static geometric feasibility only; not a dynamically executable flight certificate"
+  }
+}

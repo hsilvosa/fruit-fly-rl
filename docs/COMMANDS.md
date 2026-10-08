@@ -147,3 +147,14 @@ Saved planner traces can be inspected without a brain, controller execution, tra
 ```
 
 The local trace is not shipped in a fresh clone. Supply an existing diagnostic trace and a new output path. The report preserves its SHA-256 and counts sampled route availability, search-cap hits, momentum braking, and reference-direction reversals greater than 90 degrees. It records missing fields separately from observed zero counts and rejects nonfinite vectors or nonincreasing room steps. These indicators do not establish causality or behavior between samples. [Interpretation](evidence/planner-dual-v65-results.md#offline-inspection-of-the-remaining-timeouts).
+
+
+## Room-aware maze development
+
+Only planner-1.3 experimental candidates support the maze contract. For example, `launch-observed-map.cmd --controller-version 1.3-exp.4 --map-profile maze --seed 14000000`. This is a live autonomous development demo; it currently has two recorded maze timeouts and is not a verified maze solution. See [maze navigation](MAZE_NAVIGATION.md). Older controllers reject this profile before graph initialization.
+
+
+The latest verified large development candidate is `launch-observed-map.cmd --controller-version 1.3-exp.9 --map-profile large` (6/6 retained and 8/8 fresh goals, zero collisions). It fails both retained maze flights. For the first recorded maze-arrival controller, use `--controller-version 1.3-exp.8 --map-profile maze --seed 14000000`; that is a retained-case demonstration, not reliable maze navigation.
+
+
+`launch-large.cmd` selects the verified large development candidate and a recorded successful development seed. `launch-maze.cmd` selects the opening-refinement candidate and a retained successful maze seed, with fresh verification pending. Both open live flight and the separate brain window, save telemetry, and never start training. Extra arguments are forwarded to the demo CLI.

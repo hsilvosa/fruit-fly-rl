@@ -60,6 +60,7 @@ def run(args):
             light=AmbientLight('ambient');light.setColor((.65,.68,.75,1));self.render.setLight(self.render.attachNewNode(light))
             sun=DirectionalLight('sun');sun.setColor((.65,.75,.9,1));node=self.render.attachNewNode(sun);node.setHpr(-35,-55,0);self.render.setLight(node)
             self.is_replay=bool(getattr(args,'archive',None))
+            self.is_architecture=bool(getattr(args,'architecture_scene',None))
             self.comparison_cache={}
             self.is_planner=not self.is_replay and getattr(args,'controller','policy')=='observed-map'
             if self.is_replay:
@@ -69,11 +70,16 @@ def run(args):
                 from fly_rl.simulation.sensors import SENSOR_V3
                 profile=getattr(args,'map_profile',None)
                 sensors=getattr(args,'sensor_version',None) or (checkpoint_sensor_version(args.checkpoint) if args.checkpoint else (SENSOR_V3 if profile else SENSOR_VERSION))
-                if self.is_planner:
+                if self.is_architecture:
+                    from fly_rl.simulation.architectural_env import ArchitecturalBrainEnv
+                    from fly_rl.navigation.architectural import ArchitecturalPlannerPolicy
+                    self.env=ArchitecturalBrainEnv(args.architecture_scene,args.situation,args.data,1,args.device,args.seed)
+                    self.policy=ArchitecturalPlannerPolicy(self.env.worlds[0].room)
+                elif self.is_planner:
                     from fly_rl.connectome.innovation import MOTION_STABLE_READOUT
                     from fly_rl.navigation.registry import VersionedPlannerPolicy
-                    self.policy=VersionedPlannerPolicy(getattr(args,'planner_version','planner-1.0'))
-                    self.env=BrainEnv(args.data,1,args.device,args.seed,mode='dense',dynamics='coordinated',sensor_version=SENSOR_V6,map_profile='large',readout_version=self.policy.specification['readout'],sensor_backend='torch-cuda' if args.device=='cuda' else 'numpy',history_frames=8,history_stride=8)
+                    self.policy=VersionedPlannerPolicy(getattr(args,'planner_version','planner-1.0'),profile or 'large')
+                    self.env=BrainEnv(args.data,1,args.device,args.seed,mode='dense',dynamics='coordinated',sensor_version=SENSOR_V6,map_profile=profile or 'large',readout_version=self.policy.specification['readout'],sensor_backend='torch-cuda' if args.device=='cuda' else 'numpy',history_frames=8,history_stride=8)
                 else:
                     self.env=BrainEnv(args.data,1,args.device,args.seed,mode=getattr(args,'room_mode','obstacles'),dynamics=getattr(args,'dynamics','legacy'),sensor_version=sensors,map_profile=profile,readout_version=json.loads(Path(args.checkpoint).with_suffix('.json').read_text()).get('readout_version','random-pool-256-v1') if args.checkpoint else 'random-pool-256-v1',sensor_backend='torch-cuda' if sensors==SENSOR_V6 and args.device=='cuda' else 'numpy',**checkpoint_history(args.checkpoint))
                     self.policy=load_model(args.checkpoint,self.env.brain,self.env,getattr(args,'transfer',False)) if args.checkpoint else make_policy(self.env)
@@ -120,11 +126,13 @@ def run(args):
             if self.is_planner:
                 spec=self.policy.specification
                 label=('EXPERIMENTAL ' if spec.get('experimental') else '')+spec['controller_version'].upper()+' / '+spec['controller_label'].upper()+' / NO TRAINING RUNNING'
+            if self.is_architecture:self.controls.setText(self.controls.getText().replace('N new room','N next situation / G next scene'))
             self.label=OnscreenText(text=label,pos=(1.52,.89),scale=.029,fg=(1,.72,.32,1),align=TextNode.ARight)
             if self.is_replay:
                 self.controls.setText('Mouse + C: camera / WASD + Q/E: free move / F: focus\nSPACE pause / R rewind / N next episode / PageUp-Down seek / V sensors / ESC exit')
                 self.accept('page_up',self.seek_replay,[100]);self.accept('page_down',self.seek_replay,[-100])
             self.accept('space',self.toggle_pause);self.accept('r',self.reset_room);self.accept('n',self.new_room)
+            if self.is_architecture:self.accept('g',self.new_scene)
             self.accept('c',self.toggle_camera);self.accept('s',self.toggle_sensors);self.accept('escape',self.userExit)
             self.accept('arrow_left',self.orbit,[-.15]);self.accept('arrow_right',self.orbit,[.15])
             self.accept('arrow_up',self.tilt,[.1]);self.accept('arrow_down',self.tilt,[-.1])
@@ -165,7 +173,7 @@ def run(args):
                     'device':args.device,'flight':{'room_size':self.env.worlds[0].room.tolist(),'body_radius':.16,'max_speed':3.,
                         'acceleration_scale':3.,'drag':.6,'yaw_scale':2.1,'episode_steps':self.env.worlds[0].episode_limit,
                         'mode':self.env.worlds[0].mode,'dynamics':self.env.worlds[0].dynamics,
-                        'world_version':'rooms-v4-profiled-passages' if self.env.map_profile else 'rooms-v3-dense-random-goals',
+                        'world_version':self.env.worlds[0].scene.to_dict()['schema'] if self.is_architecture else 'rooms-v4-profiled-passages' if self.env.map_profile else 'rooms-v3-dense-random-goals',
                         'map_profile':self.env.map_profile.to_dict() if self.env.map_profile else None}})
                 from fly_rl.training.learning import save_model
                 if self.is_planner:
@@ -184,6 +192,8 @@ def run(args):
 
         def verify_controls(self):
             original_seed=self.seed
+            original_situation=self.env.architectural_situation if self.is_architecture else None
+            original_scene=self.env.architectural_scene if self.is_architecture else None
             if self.brain_map:
                 from panda3d.core import Point3,Point2
                 brain_map=self.brain_map;brain_map.clear_filters()
@@ -238,6 +248,13 @@ def run(args):
             self.reset_room();assert np.allclose(position,self.env.worlds[0].position)
             self.new_room();assert self.seed==original_seed+1
             assert not np.allclose(position,self.env.worlds[0].position)
+            if self.is_architecture:
+                self.new_scene();assert self.env.architectural_scene!=original_scene
+                self.env.select_situation(original_scene,original_situation,original_seed)
+                from fly_rl.navigation.architectural import ArchitecturalPlannerPolicy
+                self.policy=ArchitecturalPlannerPolicy(self.env.worlds[0].room)
+                self.rig.target=self.env.worlds[0].room*.5
+                self.rig.distance=float(np.linalg.norm(self.env.worlds[0].room)*1.05)
             self.seed=original_seed;self.reset_room()
             self.controls_checked=True
 
@@ -341,7 +358,27 @@ def run(args):
             if self.is_replay:
                 self.features=self.env.next_episode();self.room_id=self.env.current_room_id
                 self.trail=[];self.draw_room();self.paused=False
+            elif self.is_architecture:
+                self.seed+=1
+                index=(self.env.architectural_situation+1)%len(self.env.worlds[0].scene.situations)
+                self.features=self.env.select_situation(self.env.architectural_scene,index,self.seed)
+                self.policy.reset()
+                if self.neural:self.neural.reset()
+                self.trail=[];self.draw_room();self.room_id+=1;self.record_room('next-situation')
             else: self.seed+=1;self.reset_room()
+        def new_scene(self):
+            from fly_rl.simulation.architectural_scenes import BUILDERS
+            from fly_rl.navigation.architectural import ArchitecturalPlannerPolicy
+            scenes=list(BUILDERS)
+            scene=scenes[(scenes.index(self.env.architectural_scene)+1)%len(scenes)]
+            self.seed+=1
+            self.features=self.env.select_situation(scene,0,self.seed)
+            self.policy=ArchitecturalPlannerPolicy(self.env.worlds[0].room)
+            if self.neural:self.neural.reset()
+            self.rig.target=self.env.worlds[0].room*.5
+            self.rig.distance=float(np.linalg.norm(self.env.worlds[0].room)*1.05)
+            self.trail=[];self.draw_room();self.room_id+=1;self.record_room('next-scene')
+
         def draw_room(self):
             self.room.removeNode();self.room=self.render.attachNewNode('room')
             size=self.env.worlds[0].room;sx,sy,sz=size
@@ -360,7 +397,12 @@ def run(args):
             partition_boxes=4*(w.map_profile.wall_count+w.map_profile.branch_count) if w.map_profile else 0
             for index,(low,high) in enumerate(w.obstacles):
                 # See the fly and openings through tall partitions; collision geometry stays solid.
-                box(self.room,low,high,(.2,.35,.45,.24 if index<partition_boxes else 1.))
+                if self.is_architecture:
+                    from fly_rl.simulation.architectural_scenes import MATERIALS
+                    material=w.scene.solids[index].material
+                    color=(*MATERIALS[material],.3 if material=='glass' else 1.)
+                else:color=(.2,.35,.45,.24 if index<partition_boxes else 1.)
+                box(self.room,low,high,color)
             target=ellipsoid(self.room,(.27,.27,.27),(.2,.95,.7,1));target.setPos(*w.target)
 
         def update(self,task):
@@ -451,7 +493,7 @@ def run(args):
                     lines.moveTo(*(w.position+d*.4));lines.drawTo(*(w.position+d*max(length,.4)))
             self.dynamic.attachNewNode(lines.create())
             activity=float(self.env.brain.state.abs().mean().item())
-            self.hud.setText(f"MaleCNS v1.0\n{self.env.brain.n:,} neurons | {self.env.brain.audit['edges']:,} directed edges\nDevice: {args.device.upper()} | room {self.seed}\nMap: {w.map_profile.name if w.map_profile else 'dense-v3' if w.mode=='dense' else w.mode} | {len(w.obstacles)} boxes\nSensors: {ray_count(getattr(w,'sensor_version',SENSOR_VERSION))} rays + approach speeds\nSimulation: {self.effective_speed:g}x / hold SHIFT: 10x boost\nCamera: {self.rig.mode.upper()} | recording: {'ON' if self.flight_record else 'OFF'}\n\nSpeed: {np.linalg.norm(w.velocity):.2f} units/s\nTarget: {w.distance:.2f} units\nMean brain activity: {activity:.3f}\nSteps: {self.steps} | collisions: {self.collisions}\nTargets reached: {self.successes}\n"+('PAUSED' if self.paused else 'RUNNING'))
+            self.hud.setText(f"MaleCNS v1.0\n{self.env.brain.n:,} neurons | {self.env.brain.audit['edges']:,} directed edges\nDevice: {args.device.upper()} | room {self.seed}\nMap: {w.scene.name+' / '+w.scene.situations[w.situation_index].name if self.is_architecture else w.map_profile.name if w.map_profile else 'dense-v3' if w.mode=='dense' else w.mode} | {len(w.obstacles)} boxes\nSensors: {ray_count(getattr(w,'sensor_version',SENSOR_VERSION))} rays + approach speeds\nSimulation: {self.effective_speed:g}x / hold SHIFT: 10x boost\nCamera: {self.rig.mode.upper()} | recording: {'ON' if self.flight_record else 'OFF'}\n\nSpeed: {np.linalg.norm(w.velocity):.2f} units/s\nTarget: {w.distance:.2f} units\nMean brain activity: {activity:.3f}\nSteps: {self.steps} | collisions: {self.collisions}\nTargets reached: {self.successes}\n"+('PAUSED' if self.paused else 'RUNNING'))
             if self.is_replay:
                 overlay=(' / comparison: magenta' if other else ' / no matching comparison room') if getattr(args,'compare',None) else ''
                 self.hud.setText(f"SAVED FLIGHT / no brain or policy execution\nFrame: {self.env.cursor}/{self.env.total} | room {self.room_id}\nCamera: {self.rig.mode.upper()} | speed {self.effective_speed:g}x{overlay}\n\nSpeed: {np.linalg.norm(w.velocity):.2f} units/s\nTarget: {w.distance:.2f} units\nSaved feature magnitude: {activity:.3f}\nAction: {np.array2string(w.last_action,precision=2)}\nNearest sensed obstacle: {float(np.min(self.env.sensor_state[:128]))*8.:.2f}\n"+('END OF RECORDING' if self.env.finished else ('PAUSED' if self.paused else 'PLAYING')))

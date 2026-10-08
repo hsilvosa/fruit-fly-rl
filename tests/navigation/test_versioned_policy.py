@@ -59,12 +59,13 @@ def test_cli_help_lists_every_registered_planner(monkeypatch, capsys):
     import sys
     from fly_rl.cli import main
     from fly_rl.navigation.registry import CONTROLLERS
+    from fly_rl.navigation.versions import public_version
     monkeypatch.setattr(sys, 'argv', ['fly-rl', 'demo', '--help'])
     with pytest.raises(SystemExit) as stopped:
         main()
     assert stopped.value.code == 0
     help_text = capsys.readouterr().out
-    assert all(version in help_text for version in CONTROLLERS)
+    assert all(public_version(version) in help_text for version in CONTROLLERS)
 
 
 @pytest.mark.parametrize('corruption', ['dependency', 'primary', 'specification', 'missing'])

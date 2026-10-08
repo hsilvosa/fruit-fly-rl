@@ -378,3 +378,56 @@ The anatomical window can display actual modeled activity and change for this pl
 The experimental planner-1.2-exp.4 momentum guard applies the same endpoint tube to measured velocity direction, not only the desired waypoint. With measured speed s and nearest forward motion clearance L_motion, the guard activates when s > 0.1 and s > sqrt(2.4 max(L_motion - 0.27, 0)). Desired horizontal and vertical velocity then become zero; existing proportional control and steering remain. This approximate braking rule does not guarantee safety under sparse rays or turning inertia. The trace records pre-guard requested speed and post-guard effective desired speed separately.
 
 planner-1.2 separates these physical safety coordinates from occupancy input. From the same decoded clean signal c = A^+(z - W h_previous) and context r = A^+ W h_previous, its feature vector is concatenate(c + D r, c[269:2069]), where D is planner-1.1's original motion-stable diagonal. Mapping uses the original 3,869-coordinate prefix; requested-direction and momentum braking substitute the appended 1,800 clean ranges. The graph advances once and world sensor count remains 3,869, while feature width becomes 5,669. Its distinct readout fingerprint and declared feature width prevent silent interface transfer. Numerical stabilization and inverse-activation clipping still apply; this is an engineered information construction, not biological vision.
+
+
+## Experimental opening references and execution vetoes
+
+The room-aware goal normalization, plane/ray intersection, portal clustering, approach/crossing references, and temporary grid veto are explained with their constants in [maze navigation](MAZE_NAVIGATION.md#relevant-formulas). These are explicit planning rules, not an optimization objective or a learned movement policy. A temporary veto changes traversal cost while leaving observed occupancy evidence untouched.
+
+
+## Observed-clearance opening reference
+
+Exp.18 returns to exp.11 surface selection, grid, speed, guards and stronger-support refinement. Let `C` be through-ray intersections belonging to an observed opening cluster, and `W` be observed endpoints on its fitted surface. Both are represented in the wall tangent/height plane. The new reference is `argmax(p in C) min(w in W) ||p - w||`, followed by the existing projection onto the fitted plane. This replaces the median of visible through-rays, which can be biased toward the visible edge of a partially observed opening. It uses no known aperture size or hidden mesh.
+
+The distance to sparse wall endpoints is a reference-selection heuristic, not a guaranteed continuous clearance radius. The actual fly body, collision model, range braking, momentum braking and episode deadlines remain unchanged. Three reference tests pass, including a fixture with the actual maze opening width 2.4 and height 2.8. The selected point lies inside that fixture with body clearance; this does not prove arbitrary sampled surfaces safe. The eight-layout retained full-connectome check completed at five goals without collisions and was rejected because it missed the declared gate. No optimizer or reserved final evaluation was involved.
+
+## Repeatable full-connectome execution
+
+The experimental index-add and segmented readouts retain every matrix value, including its sign. For CSR row offsets `p`, column indices `c`, weights `w` and a dense batch of neuron states `H`, both compute row `i` as `sum(w[k] * H[c[k]] for k in range(p[i], p[i+1]))`. Empty rows sum to zero. The sensory projection uses the same sparse operation. The recurrence, leak, inverse-activation reconstruction, centering and dual feature formulas remain unchanged. Floating-point accumulation order changes, so these kernels have separate readout fingerprints. Short repeated-input probes establish repeatability on the tested runtime and device; they do not establish cross-hardware equality or improved navigation.
+
+## Clearance-aware goal handover
+
+Planner-1.3-exp.25 starts from exp.23 and excludes exp.24's rejected wall survey. Let the decoded local goal vector be `g`, its distance `D = ||g||` and its direction `u = g / D`. For each reconstructed range `r_i` and body-relative ray direction `d_i`, define its endpoint `q_i = r_i d_i`, longitudinal projection `a_i = q_i dot u`, and transverse distance `b_i = ||q_i - a_i u||`.
+
+A nonsaturated endpoint vetoes direct handover when all four conditions hold:
+
+- `r_i < R_i - 0.05`, where the maximum range `R_i` is 8 for short rays and 24 for panoramic rays;
+- `a_i > 0`;
+- `a_i < D + 0.3`;
+- `b_i < 0.25`.
+
+This uses the same endpoint corridor radius as requested-direction braking. Maximum-range returns mean no observed hit within range and are excluded as surfaces. The original four-nearest-panoramic-ray visibility test must also pass: `0.45 < D < 23`, each ray aligns with the goal by more than 0.98, and each projected range extends beyond `D + 0.3`. An active opening approach/crossing prevents goal handover until that reference completes or expires under its existing rule.
+
+This corrects an observed inconsistency: in an exp.23 retained failure, sparse panoramic goal visibility stayed true while near-body braking requested zero speed. It is still a sampled-ray heuristic. It does not prove that the entire continuous body corridor is obstacle-free, does not change collision geometry, and does not optimize learned policy weights. Its full-flight checks reached 7/8 retained goals, then 5/8 fresh development goals with no collisions and three timeouts. It failed the fresh criterion and is not promoted.
+
+
+## Experimental maze recovery and visit coverage
+
+Exp.28 samples its estimated position every 20 controller decisions. A visit cell is `floor(position / 2)`, with a two-unit cell width. A sample is novel if its cell has not appeared earlier in the episode. Recovery becomes eligible after three consecutive samples whose complete 16-sample window contains fewer than four novel cells, provided no opening reference is active. The parent recovery also requires 320 decisions without more than one unit of additional progress along the initial horizontal goal direction. This is a development heuristic fitted to inspected failures, not an independent generalization result.
+
+Exp.29 retains that gate. It chooses between two tangent directions along an observed wall. Let `q` be the projected near-side position, `n` the fitted horizontal wall normal, `t` its horizontal tangent, and `c_j = 2 * (cell_j + 0.5)` the centers of previously visited cells. For direction `d` in {-1, +1}, coverage is the number of centers satisfying both `abs(dot(c_j - q, n)) < 3` and `2 < d * dot(c_j - q, t) < 18`. All heights contribute to this horizontal coverage count.
+
+The candidate penalty is `coverage + 20 * failed_or_reached_target_visits`. The lower penalty wins; the original goalward direction breaks a tie. A candidate still needs mapped reference clearance and the existing current-ray clearance checks. Targets are three units along the tangent, at half the room height. A target expires after 100 decisions without the required distance improvement; the complete recovery expires after 400 decisions. These limits do not extend the physical episode deadline.
+
+Visit history and wall fits use estimated position and observations. Hidden wall geometry and certified routes are not controller inputs. The recovery rules perform explicit planning and do not update neural or policy weights. Full-flight results and the promotion gates are recorded in [maze navigation](MAZE_NAVIGATION.md).
+
+
+## Completed-crossing normal consensus
+
+Planner-1.3-exp.31 uses exp.29 and excludes exp.30's rejected unreachable-reference release. For recorded completed crossing normals `n_i`, define `A_ij = 1(abs(dot(n_i, n_j)) > 0.98)` and `a_i = sum_j A_ij`. Choose the observed normal with the largest `a_i` as the consensus candidate. It is eligible only with at least three recorded crossings, `a_i >= 3`, and `a_i >= 0.75 * N`, where `N` is the number of recorded crossings. The absolute dot product makes the test independent of the normal sign.
+
+Let `u` be the normalized horizontal direction from estimated position to the initial decoded goal. The consensus filter applies only if `abs(dot(n_i, u)) >= 0.8`. While eligible, a proposed opening normal `m` is rejected when `abs(dot(m, n_i)) < 0.98`. Otherwise the inherited detector and reference execution remain unchanged. Completed crossing observations, estimated pose and the decoded goal are the only inputs to this additional rule. World yaw, hidden boxes and route metadata are unavailable to it.
+
+The rule is a retained-data hypothesis about repeated observed surfaces. It can suppress a differently oriented opening that is actually necessary; the goal-alignment condition does not prove this cannot happen. It is not a general architectural-navigation contract. Focused tests verify the declared conditions, but full retained flights, regression checks and a separately frozen fresh suite determine acceptance. No optimization formula is added: this controller performs explicit planning and does not train weights.
+
+The preceding exp.30 rule released a cross-phase reference after 100 sustained decisions with no observed-map route and temporarily rejected a nearby aligned estimate for 600 decisions. Its full-flight check regressed to 5/8 retained goals and it was rejected. An unavailable route alone is insufficient evidence that an opening is invalid.

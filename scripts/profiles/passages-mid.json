@@ -1,0 +1,11 @@
+{
+  "name": "passages-mid",
+  "room_size": [32, 32, 12],
+  "obstacle_count": 36,
+  "wall_count": 3,
+  "aperture_width": 6.0,
+  "aperture_height": 4.4,
+  "route_clearance": 0.25,
+  "minimum_separation": 14.0,
+  "version": "rooms-v4-profiled-passages"
+}

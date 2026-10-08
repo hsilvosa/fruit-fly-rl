@@ -1,0 +1,1580 @@
+{
+  "schema": "architecture-0.2",
+  "units": "meters",
+  "origin": "southwest ground corner",
+  "axes": "x east, y north, z up",
+  "license": "MIT",
+  "provenance": "Original project design; not a reconstruction of a real location",
+  "name": "courtyard",
+  "kind": "mixed",
+  "size": [
+    40.0,
+    34.0,
+    12.0
+  ],
+  "solids": [
+    {
+      "name": "south-west-mass",
+      "low": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "high": [
+        18.0,
+        8.0,
+        10.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "south-east-mass",
+      "low": [
+        22.0,
+        0.0,
+        0.0
+      ],
+      "high": [
+        40.0,
+        8.0,
+        10.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "gate-roof",
+      "low": [
+        18.0,
+        0.0,
+        4.2
+      ],
+      "high": [
+        22.0,
+        8.0,
+        10.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "west-wing",
+      "low": [
+        0.0,
+        8.0,
+        0.0
+      ],
+      "high": [
+        8.0,
+        34.0,
+        10.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "east-wing",
+      "low": [
+        32.0,
+        8.0,
+        0.0
+      ],
+      "high": [
+        40.0,
+        34.0,
+        10.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "parapet-south",
+      "low": [
+        0.0,
+        7.75,
+        10.0
+      ],
+      "high": [
+        40.0,
+        8.0,
+        10.8
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "parapet-west",
+      "low": [
+        7.75,
+        8.0,
+        10.0
+      ],
+      "high": [
+        8.0,
+        34.0,
+        10.8
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "parapet-east",
+      "low": [
+        32.0,
+        8.0,
+        10.0
+      ],
+      "high": [
+        32.25,
+        34.0,
+        10.8
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "lobby-facade-pier-0",
+      "low": [
+        8.0,
+        26.0,
+        0.0
+      ],
+      "high": [
+        18.9,
+        26.2,
+        4.0
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "lobby-facade-lintel-0",
+      "low": [
+        18.9,
+        26.0,
+        2.8
+      ],
+      "high": [
+        21.1,
+        26.2,
+        4.0
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "lobby-facade-end",
+      "low": [
+        21.1,
+        26.0,
+        0.0
+      ],
+      "high": [
+        32.0,
+        26.2,
+        4.0
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "lobby-back-wall",
+      "low": [
+        8.0,
+        33.8,
+        0.0
+      ],
+      "high": [
+        32.0,
+        34.0,
+        4.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "north-upper",
+      "low": [
+        8.0,
+        26.0,
+        4.0
+      ],
+      "high": [
+        32.0,
+        34.0,
+        10.0
+      ],
+      "material": "building"
+    },
+    {
+      "name": "lobby-canopy",
+      "low": [
+        17.0,
+        24.6,
+        3.0
+      ],
+      "high": [
+        23.0,
+        26.0,
+        3.25
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "reception-desk",
+      "low": [
+        18.0,
+        31.5,
+        0.0
+      ],
+      "high": [
+        22.0,
+        32.3,
+        1.1
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "lobby-column-0",
+      "low": [
+        13.75,
+        29.75,
+        0.0
+      ],
+      "high": [
+        14.25,
+        30.25,
+        4.0
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "lobby-column-1",
+      "low": [
+        25.75,
+        29.75,
+        0.0
+      ],
+      "high": [
+        26.25,
+        30.25,
+        4.0
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "lobby-sofa-seat",
+      "low": [
+        10.0,
+        29.0,
+        0.0
+      ],
+      "high": [
+        12.2,
+        29.9,
+        0.42
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "lobby-sofa-back",
+      "low": [
+        10.0,
+        29.0,
+        0.42
+      ],
+      "high": [
+        12.2,
+        29.22,
+        0.85
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "lobby-sofa-arm-0",
+      "low": [
+        10.0,
+        29.0,
+        0.42
+      ],
+      "high": [
+        10.22,
+        29.9,
+        0.62
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "lobby-sofa-arm-1",
+      "low": [
+        11.98,
+        29.0,
+        0.42
+      ],
+      "high": [
+        12.2,
+        29.9,
+        0.62
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "lift-core",
+      "low": [
+        27.0,
+        31.0,
+        0.0
+      ],
+      "high": [
+        30.0,
+        33.8,
+        4.0
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "lobby-plant-pot",
+      "low": [
+        31.0,
+        26.8,
+        0.0
+      ],
+      "high": [
+        31.45,
+        27.25,
+        0.45
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "lobby-plant-leaves",
+      "low": [
+        30.8875,
+        26.6875,
+        0.45
+      ],
+      "high": [
+        31.5625,
+        27.3625,
+        1.5
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "arcade-roof",
+      "low": [
+        8.0,
+        8.0,
+        3.6
+      ],
+      "high": [
+        11.0,
+        26.0,
+        4.0
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "arcade-column-0",
+      "low": [
+        10.4,
+        9.8,
+        0.0
+      ],
+      "high": [
+        10.8,
+        10.2,
+        3.6
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "arcade-column-1",
+      "low": [
+        10.4,
+        13.8,
+        0.0
+      ],
+      "high": [
+        10.8,
+        14.2,
+        3.6
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "arcade-column-2",
+      "low": [
+        10.4,
+        17.8,
+        0.0
+      ],
+      "high": [
+        10.8,
+        18.2,
+        3.6
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "arcade-column-3",
+      "low": [
+        10.4,
+        21.8,
+        0.0
+      ],
+      "high": [
+        10.8,
+        22.2,
+        3.6
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "fountain-wall-s",
+      "low": [
+        17.0,
+        14.0,
+        0.0
+      ],
+      "high": [
+        23.0,
+        14.3,
+        0.6
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "fountain-wall-n",
+      "low": [
+        17.0,
+        19.7,
+        0.0
+      ],
+      "high": [
+        23.0,
+        20.0,
+        0.6
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "fountain-wall-w",
+      "low": [
+        17.0,
+        14.3,
+        0.0
+      ],
+      "high": [
+        17.3,
+        19.7,
+        0.6
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "fountain-wall-e",
+      "low": [
+        22.7,
+        14.3,
+        0.0
+      ],
+      "high": [
+        23.0,
+        19.7,
+        0.6
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "fountain-water",
+      "low": [
+        17.3,
+        14.3,
+        0.0
+      ],
+      "high": [
+        22.7,
+        19.7,
+        0.35
+      ],
+      "material": "water"
+    },
+    {
+      "name": "fountain-column",
+      "low": [
+        19.6,
+        16.6,
+        0.35
+      ],
+      "high": [
+        20.4,
+        17.4,
+        2.2
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "fountain-bowl",
+      "low": [
+        19.0,
+        16.0,
+        2.2
+      ],
+      "high": [
+        21.0,
+        18.0,
+        2.45
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "tree-0-trunk",
+      "low": [
+        13.825,
+        11.825,
+        0.0
+      ],
+      "high": [
+        14.175,
+        12.175,
+        2.8
+      ],
+      "material": "bark"
+    },
+    {
+      "name": "tree-0-crown",
+      "low": [
+        12.4,
+        10.4,
+        2.8
+      ],
+      "high": [
+        15.6,
+        13.6,
+        5.32
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-0-crown-top",
+      "low": [
+        12.976,
+        10.976,
+        5.32
+      ],
+      "high": [
+        15.024,
+        13.024,
+        6.4
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-1-trunk",
+      "low": [
+        25.825,
+        11.825,
+        0.0
+      ],
+      "high": [
+        26.175,
+        12.175,
+        2.8
+      ],
+      "material": "bark"
+    },
+    {
+      "name": "tree-1-crown",
+      "low": [
+        24.4,
+        10.4,
+        2.8
+      ],
+      "high": [
+        27.6,
+        13.6,
+        5.32
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-1-crown-top",
+      "low": [
+        24.976,
+        10.976,
+        5.32
+      ],
+      "high": [
+        27.024,
+        13.024,
+        6.4
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-2-trunk",
+      "low": [
+        13.825,
+        21.825,
+        0.0
+      ],
+      "high": [
+        14.175,
+        22.175,
+        2.8
+      ],
+      "material": "bark"
+    },
+    {
+      "name": "tree-2-crown",
+      "low": [
+        12.4,
+        20.4,
+        2.8
+      ],
+      "high": [
+        15.6,
+        23.6,
+        5.32
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-2-crown-top",
+      "low": [
+        12.976,
+        20.976,
+        5.32
+      ],
+      "high": [
+        15.024,
+        23.024,
+        6.4
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-3-trunk",
+      "low": [
+        25.825,
+        21.825,
+        0.0
+      ],
+      "high": [
+        26.175,
+        22.175,
+        2.8
+      ],
+      "material": "bark"
+    },
+    {
+      "name": "tree-3-crown",
+      "low": [
+        24.4,
+        20.4,
+        2.8
+      ],
+      "high": [
+        27.6,
+        23.6,
+        5.32
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "tree-3-crown-top",
+      "low": [
+        24.976,
+        20.976,
+        5.32
+      ],
+      "high": [
+        27.024,
+        23.024,
+        6.4
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "bench-s-seat",
+      "low": [
+        18.1,
+        12.8,
+        0.4
+      ],
+      "high": [
+        19.9,
+        13.3,
+        0.46
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "bench-s-leg-0",
+      "low": [
+        18.24,
+        12.8,
+        0.0
+      ],
+      "high": [
+        18.32,
+        13.3,
+        0.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bench-s-leg-1",
+      "low": [
+        19.68,
+        12.8,
+        0.0
+      ],
+      "high": [
+        19.76,
+        13.3,
+        0.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bench-n-seat",
+      "low": [
+        18.1,
+        20.7,
+        0.4
+      ],
+      "high": [
+        19.9,
+        21.2,
+        0.46
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "bench-n-leg-0",
+      "low": [
+        18.24,
+        20.7,
+        0.0
+      ],
+      "high": [
+        18.32,
+        21.2,
+        0.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bench-n-leg-1",
+      "low": [
+        19.68,
+        20.7,
+        0.0
+      ],
+      "high": [
+        19.76,
+        21.2,
+        0.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "umbrella-0-pole",
+      "low": [
+        27.97,
+        10.97,
+        0.0
+      ],
+      "high": [
+        28.03,
+        11.03,
+        2.5
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "umbrella-0-canopy",
+      "low": [
+        26.8,
+        9.8,
+        2.25
+      ],
+      "high": [
+        29.2,
+        12.2,
+        2.5
+      ],
+      "material": "canvas"
+    },
+    {
+      "name": "umbrella-0-base",
+      "low": [
+        27.75,
+        10.75,
+        0.0
+      ],
+      "high": [
+        28.25,
+        11.25,
+        0.12
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "cafe-table-0-top",
+      "low": [
+        27.6,
+        10.6,
+        0.71
+      ],
+      "high": [
+        28.4,
+        11.4,
+        0.75
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "cafe-table-0-leg-0",
+      "low": [
+        27.6,
+        10.6,
+        0.0
+      ],
+      "high": [
+        27.66,
+        10.66,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "cafe-table-0-leg-1",
+      "low": [
+        28.34,
+        10.6,
+        0.0
+      ],
+      "high": [
+        28.4,
+        10.66,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "cafe-table-0-leg-2",
+      "low": [
+        27.6,
+        11.34,
+        0.0
+      ],
+      "high": [
+        27.66,
+        11.4,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "cafe-table-0-leg-3",
+      "low": [
+        28.34,
+        11.34,
+        0.0
+      ],
+      "high": [
+        28.4,
+        11.4,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "cafe-chair-0-w-seat",
+      "low": [
+        26.95,
+        10.78,
+        0.0
+      ],
+      "high": [
+        27.4,
+        11.23,
+        0.46
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "cafe-chair-0-w-back",
+      "low": [
+        26.95,
+        10.78,
+        0.46
+      ],
+      "high": [
+        27.02,
+        11.23,
+        0.9
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "cafe-chair-0-e-seat",
+      "low": [
+        28.6,
+        10.78,
+        0.0
+      ],
+      "high": [
+        29.05,
+        11.23,
+        0.46
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "cafe-chair-0-e-back",
+      "low": [
+        28.98,
+        10.78,
+        0.46
+      ],
+      "high": [
+        29.05,
+        11.23,
+        0.9
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "umbrella-1-pole",
+      "low": [
+        27.97,
+        14.97,
+        0.0
+      ],
+      "high": [
+        28.03,
+        15.03,
+        2.5
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "umbrella-1-canopy",
+      "low": [
+        26.8,
+        13.8,
+        2.25
+      ],
+      "high": [
+        29.2,
+        16.2,
+        2.5
+      ],
+      "material": "canvas"
+    },
+    {
+      "name": "umbrella-1-base",
+      "low": [
+        27.75,
+        14.75,
+        0.0
+      ],
+      "high": [
+        28.25,
+        15.25,
+        0.12
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "cafe-table-1-top",
+      "low": [
+        27.6,
+        14.6,
+        0.71
+      ],
+      "high": [
+        28.4,
+        15.4,
+        0.75
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "cafe-table-1-leg-0",
+      "low": [
+        27.6,
+        14.6,
+        0.0
+      ],
+      "high": [
+        27.66,
+        14.66,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "cafe-table-1-leg-1",
+      "low": [
+        28.34,
+        14.6,
+        0.0
+      ],
+      "high": [
+        28.4,
+        14.66,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "cafe-table-1-leg-2",
+      "low": [
+        27.6,
+        15.34,
+        0.0
+      ],
+      "high": [
+        27.66,
+        15.4,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "cafe-table-1-leg-3",
+      "low": [
+        28.34,
+        15.34,
+        0.0
+      ],
+      "high": [
+        28.4,
+        15.4,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "cafe-chair-1-w-seat",
+      "low": [
+        26.95,
+        14.78,
+        0.0
+      ],
+      "high": [
+        27.4,
+        15.23,
+        0.46
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "cafe-chair-1-w-back",
+      "low": [
+        26.95,
+        14.78,
+        0.46
+      ],
+      "high": [
+        27.02,
+        15.23,
+        0.9
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "cafe-chair-1-e-seat",
+      "low": [
+        28.6,
+        14.78,
+        0.0
+      ],
+      "high": [
+        29.05,
+        15.23,
+        0.46
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "cafe-chair-1-e-back",
+      "low": [
+        28.98,
+        14.78,
+        0.46
+      ],
+      "high": [
+        29.05,
+        15.23,
+        0.9
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "umbrella-2-pole",
+      "low": [
+        27.97,
+        18.97,
+        0.0
+      ],
+      "high": [
+        28.03,
+        19.03,
+        2.5
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "umbrella-2-canopy",
+      "low": [
+        26.8,
+        17.8,
+        2.25
+      ],
+      "high": [
+        29.2,
+        20.2,
+        2.5
+      ],
+      "material": "canvas"
+    },
+    {
+      "name": "umbrella-2-base",
+      "low": [
+        27.75,
+        18.75,
+        0.0
+      ],
+      "high": [
+        28.25,
+        19.25,
+        0.12
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "cafe-table-2-top",
+      "low": [
+        27.6,
+        18.6,
+        0.71
+      ],
+      "high": [
+        28.4,
+        19.4,
+        0.75
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "cafe-table-2-leg-0",
+      "low": [
+        27.6,
+        18.6,
+        0.0
+      ],
+      "high": [
+        27.66,
+        18.66,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "cafe-table-2-leg-1",
+      "low": [
+        28.34,
+        18.6,
+        0.0
+      ],
+      "high": [
+        28.4,
+        18.66,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "cafe-table-2-leg-2",
+      "low": [
+        27.6,
+        19.34,
+        0.0
+      ],
+      "high": [
+        27.66,
+        19.4,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "cafe-table-2-leg-3",
+      "low": [
+        28.34,
+        19.34,
+        0.0
+      ],
+      "high": [
+        28.4,
+        19.4,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "cafe-chair-2-w-seat",
+      "low": [
+        26.95,
+        18.78,
+        0.0
+      ],
+      "high": [
+        27.4,
+        19.23,
+        0.46
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "cafe-chair-2-w-back",
+      "low": [
+        26.95,
+        18.78,
+        0.46
+      ],
+      "high": [
+        27.02,
+        19.23,
+        0.9
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "cafe-chair-2-e-seat",
+      "low": [
+        28.6,
+        18.78,
+        0.0
+      ],
+      "high": [
+        29.05,
+        19.23,
+        0.46
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "cafe-chair-2-e-back",
+      "low": [
+        28.98,
+        18.78,
+        0.46
+      ],
+      "high": [
+        29.05,
+        19.23,
+        0.9
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "bike-rack-0",
+      "low": [
+        23.2,
+        8.6,
+        0.0
+      ],
+      "high": [
+        23.25,
+        9.2,
+        0.85
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bike-rack-1",
+      "low": [
+        23.8,
+        8.6,
+        0.0
+      ],
+      "high": [
+        23.85,
+        9.2,
+        0.85
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bike-rack-2",
+      "low": [
+        24.4,
+        8.6,
+        0.0
+      ],
+      "high": [
+        24.45,
+        9.2,
+        0.85
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bike-rack-3",
+      "low": [
+        25.0,
+        8.6,
+        0.0
+      ],
+      "high": [
+        25.05,
+        9.2,
+        0.85
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "bike-rack-4",
+      "low": [
+        25.6,
+        8.6,
+        0.0
+      ],
+      "high": [
+        25.65,
+        9.2,
+        0.85
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-0-pole",
+      "low": [
+        12.42,
+        16.92,
+        0.0
+      ],
+      "high": [
+        12.58,
+        17.08,
+        4.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-0-arm",
+      "low": [
+        12.45,
+        16.95,
+        3.88
+      ],
+      "high": [
+        13.15,
+        17.05,
+        4.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-0-head",
+      "low": [
+        12.85,
+        16.75,
+        3.65
+      ],
+      "high": [
+        13.35,
+        17.25,
+        3.88
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "lamp-1-pole",
+      "low": [
+        24.42,
+        16.92,
+        0.0
+      ],
+      "high": [
+        24.58,
+        17.08,
+        4.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-1-arm",
+      "low": [
+        23.85,
+        16.95,
+        3.88
+      ],
+      "high": [
+        24.55,
+        17.05,
+        4.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "lamp-1-head",
+      "low": [
+        23.65,
+        16.75,
+        3.65
+      ],
+      "high": [
+        24.15,
+        17.25,
+        3.88
+      ],
+      "material": "lamp"
+    }
+  ],
+  "situations": [
+    {
+      "name": "gate-over-fountain",
+      "route": [
+        [
+          20.0,
+          1.0,
+          2.0
+        ],
+        [
+          20.0,
+          12.6,
+          2.0
+        ],
+        [
+          20.0,
+          12.6,
+          3.2
+        ],
+        [
+          20.0,
+          24.0,
+          3.2
+        ]
+      ],
+      "description": "Enter through the gate passage, climb and cross over the fountain bowl.",
+      "tags": [
+        "passage",
+        "altitude-change"
+      ]
+    },
+    {
+      "name": "arcade-walk",
+      "route": [
+        [
+          9.2,
+          9.0,
+          1.6
+        ],
+        [
+          9.2,
+          24.2,
+          1.6
+        ],
+        [
+          16.5,
+          24.2,
+          1.6
+        ]
+      ],
+      "description": "Fly the length of the covered arcade between wall and columns, then exit under the trees.",
+      "tags": [
+        "columns",
+        "overhang",
+        "narrow-passage"
+      ]
+    },
+    {
+      "name": "courtyard-to-lobby",
+      "route": [
+        [
+          30.5,
+          9.5,
+          1.5
+        ],
+        [
+          30.5,
+          24.5,
+          1.5
+        ],
+        [
+          20.0,
+          24.5,
+          1.5
+        ],
+        [
+          20.0,
+          29.5,
+          1.5
+        ]
+      ],
+      "description": "Pass the caf\u00e9, cross the courtyard and enter the lobby through its glass doorway.",
+      "tags": [
+        "indoor-outdoor",
+        "doorway",
+        "glass"
+      ]
+    }
+  ],
+  "description": "Enclosed courtyard with a gate passage, arcade, fountain, caf\u00e9 umbrellas and an enterable lobby.",
+  "validation": {
+    "passed": true,
+    "name": "courtyard",
+    "kind": "mixed",
+    "geometry_sha256": "f296bbdfcb9738001ce210ac06f611fd9d9f4548cf7600fbaed7363e94bd9e4f",
+    "collision_boxes": 101,
+    "materials": {
+      "bark": 4,
+      "building": 6,
+      "canvas": 3,
+      "concrete": 3,
+      "fabric": 16,
+      "glass": 3,
+      "lamp": 2,
+      "metal": 29,
+      "stone": 18,
+      "vegetation": 9,
+      "wall": 1,
+      "water": 1,
+      "wood": 6
+    },
+    "body_radius_m": 0.16,
+    "extra_clearance_m": 0.2,
+    "situations": [
+      {
+        "name": "gate-over-fountain",
+        "tags": [
+          "passage",
+          "altitude-change"
+        ],
+        "route_length_m": 24.2,
+        "climb_m": 1.2,
+        "min_sampled_clearance_m": 0.6
+      },
+      {
+        "name": "arcade-walk",
+        "tags": [
+          "columns",
+          "overhang",
+          "narrow-passage"
+        ],
+        "route_length_m": 22.5,
+        "climb_m": 0.0,
+        "min_sampled_clearance_m": 1.0
+      },
+      {
+        "name": "courtyard-to-lobby",
+        "tags": [
+          "indoor-outdoor",
+          "doorway",
+          "glass"
+        ],
+        "route_length_m": 30.5,
+        "climb_m": 0.0,
+        "min_sampled_clearance_m": 1.1
+      }
+    ],
+    "claim": "Static geometric feasibility only; not a dynamically executable flight certificate"
+  }
+}

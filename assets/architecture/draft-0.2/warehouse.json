@@ -1,0 +1,5729 @@
+{
+  "schema": "architecture-0.2",
+  "units": "meters",
+  "origin": "southwest ground corner",
+  "axes": "x east, y north, z up",
+  "license": "MIT",
+  "provenance": "Original project design; not a reconstruction of a real location",
+  "name": "warehouse",
+  "kind": "interior",
+  "size": [
+    40.0,
+    26.0,
+    10.0
+  ],
+  "solids": [
+    {
+      "name": "wall-south-pier-0",
+      "low": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "high": [
+        6.25,
+        0.2,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-south-lintel-0",
+      "low": [
+        6.25,
+        0.0,
+        4.2
+      ],
+      "high": [
+        9.75,
+        0.2,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-south-pane-0",
+      "low": [
+        6.25,
+        0.08,
+        0.0
+      ],
+      "high": [
+        9.75,
+        0.12,
+        4.2
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "wall-south-pier-1",
+      "low": [
+        9.75,
+        0.0,
+        0.0
+      ],
+      "high": [
+        14.25,
+        0.2,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-south-lintel-1",
+      "low": [
+        14.25,
+        0.0,
+        4.2
+      ],
+      "high": [
+        17.75,
+        0.2,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-south-pane-1",
+      "low": [
+        14.25,
+        0.08,
+        0.0
+      ],
+      "high": [
+        17.75,
+        0.12,
+        4.2
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "wall-south-pier-2",
+      "low": [
+        17.75,
+        0.0,
+        0.0
+      ],
+      "high": [
+        22.25,
+        0.2,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-south-lintel-2",
+      "low": [
+        22.25,
+        0.0,
+        4.2
+      ],
+      "high": [
+        25.75,
+        0.2,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-south-pane-2",
+      "low": [
+        22.25,
+        0.08,
+        0.0
+      ],
+      "high": [
+        25.75,
+        0.12,
+        4.2
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "wall-south-end",
+      "low": [
+        25.75,
+        0.0,
+        0.0
+      ],
+      "high": [
+        40.0,
+        0.2,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-pier-0",
+      "low": [
+        0.0,
+        25.8,
+        0.0
+      ],
+      "high": [
+        2.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-sill-0",
+      "low": [
+        2.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        5.5,
+        26.0,
+        7.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-lintel-0",
+      "low": [
+        2.5,
+        25.8,
+        8.5
+      ],
+      "high": [
+        5.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-pane-0",
+      "low": [
+        2.5,
+        25.88,
+        7.0
+      ],
+      "high": [
+        5.5,
+        25.92,
+        8.5
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "wall-north-pier-1",
+      "low": [
+        5.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        6.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-sill-1",
+      "low": [
+        6.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        9.5,
+        26.0,
+        7.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-lintel-1",
+      "low": [
+        6.5,
+        25.8,
+        8.5
+      ],
+      "high": [
+        9.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-pane-1",
+      "low": [
+        6.5,
+        25.88,
+        7.0
+      ],
+      "high": [
+        9.5,
+        25.92,
+        8.5
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "wall-north-pier-2",
+      "low": [
+        9.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        10.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-sill-2",
+      "low": [
+        10.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        13.5,
+        26.0,
+        7.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-lintel-2",
+      "low": [
+        10.5,
+        25.8,
+        8.5
+      ],
+      "high": [
+        13.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-pane-2",
+      "low": [
+        10.5,
+        25.88,
+        7.0
+      ],
+      "high": [
+        13.5,
+        25.92,
+        8.5
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "wall-north-pier-3",
+      "low": [
+        13.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        14.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-sill-3",
+      "low": [
+        14.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        17.5,
+        26.0,
+        7.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-lintel-3",
+      "low": [
+        14.5,
+        25.8,
+        8.5
+      ],
+      "high": [
+        17.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-pane-3",
+      "low": [
+        14.5,
+        25.88,
+        7.0
+      ],
+      "high": [
+        17.5,
+        25.92,
+        8.5
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "wall-north-pier-4",
+      "low": [
+        17.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        18.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-sill-4",
+      "low": [
+        18.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        21.5,
+        26.0,
+        7.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-lintel-4",
+      "low": [
+        18.5,
+        25.8,
+        8.5
+      ],
+      "high": [
+        21.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-pane-4",
+      "low": [
+        18.5,
+        25.88,
+        7.0
+      ],
+      "high": [
+        21.5,
+        25.92,
+        8.5
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "wall-north-pier-5",
+      "low": [
+        21.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        22.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-sill-5",
+      "low": [
+        22.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        25.5,
+        26.0,
+        7.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-lintel-5",
+      "low": [
+        22.5,
+        25.8,
+        8.5
+      ],
+      "high": [
+        25.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-pane-5",
+      "low": [
+        22.5,
+        25.88,
+        7.0
+      ],
+      "high": [
+        25.5,
+        25.92,
+        8.5
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "wall-north-pier-6",
+      "low": [
+        25.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        26.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-sill-6",
+      "low": [
+        26.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        29.5,
+        26.0,
+        7.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-lintel-6",
+      "low": [
+        26.5,
+        25.8,
+        8.5
+      ],
+      "high": [
+        29.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-pane-6",
+      "low": [
+        26.5,
+        25.88,
+        7.0
+      ],
+      "high": [
+        29.5,
+        25.92,
+        8.5
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "wall-north-pier-7",
+      "low": [
+        29.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        30.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-sill-7",
+      "low": [
+        30.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        33.5,
+        26.0,
+        7.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-lintel-7",
+      "low": [
+        30.5,
+        25.8,
+        8.5
+      ],
+      "high": [
+        33.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-pane-7",
+      "low": [
+        30.5,
+        25.88,
+        7.0
+      ],
+      "high": [
+        33.5,
+        25.92,
+        8.5
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "wall-north-pier-8",
+      "low": [
+        33.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        34.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-sill-8",
+      "low": [
+        34.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        37.5,
+        26.0,
+        7.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-lintel-8",
+      "low": [
+        34.5,
+        25.8,
+        8.5
+      ],
+      "high": [
+        37.5,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-north-pane-8",
+      "low": [
+        34.5,
+        25.88,
+        7.0
+      ],
+      "high": [
+        37.5,
+        25.92,
+        8.5
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "wall-north-end",
+      "low": [
+        37.5,
+        25.8,
+        0.0
+      ],
+      "high": [
+        40.0,
+        26.0,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-west-end",
+      "low": [
+        0.0,
+        0.2,
+        0.0
+      ],
+      "high": [
+        0.2,
+        25.8,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "wall-east-end",
+      "low": [
+        39.8,
+        0.2,
+        0.0
+      ],
+      "high": [
+        40.0,
+        25.8,
+        10.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "truss-0",
+      "low": [
+        4.85,
+        0.2,
+        8.6
+      ],
+      "high": [
+        5.15,
+        25.8,
+        9.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-0-0-cord",
+      "low": [
+        4.99,
+        6.49,
+        7.85
+      ],
+      "high": [
+        5.01,
+        6.51,
+        8.6
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-0-0-shade",
+      "low": [
+        4.75,
+        6.25,
+        7.6
+      ],
+      "high": [
+        5.25,
+        6.75,
+        7.85
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "high-bay-0-1-cord",
+      "low": [
+        4.99,
+        19.49,
+        7.85
+      ],
+      "high": [
+        5.01,
+        19.51,
+        8.6
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-0-1-shade",
+      "low": [
+        4.75,
+        19.25,
+        7.6
+      ],
+      "high": [
+        5.25,
+        19.75,
+        7.85
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "truss-1",
+      "low": [
+        10.85,
+        0.2,
+        8.6
+      ],
+      "high": [
+        11.15,
+        25.8,
+        9.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-1-0-cord",
+      "low": [
+        10.99,
+        6.49,
+        7.85
+      ],
+      "high": [
+        11.01,
+        6.51,
+        8.6
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-1-0-shade",
+      "low": [
+        10.75,
+        6.25,
+        7.6
+      ],
+      "high": [
+        11.25,
+        6.75,
+        7.85
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "high-bay-1-1-cord",
+      "low": [
+        10.99,
+        19.49,
+        7.85
+      ],
+      "high": [
+        11.01,
+        19.51,
+        8.6
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-1-1-shade",
+      "low": [
+        10.75,
+        19.25,
+        7.6
+      ],
+      "high": [
+        11.25,
+        19.75,
+        7.85
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "truss-2",
+      "low": [
+        16.85,
+        0.2,
+        8.6
+      ],
+      "high": [
+        17.15,
+        25.8,
+        9.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-2-0-cord",
+      "low": [
+        16.99,
+        6.49,
+        7.85
+      ],
+      "high": [
+        17.01,
+        6.51,
+        8.6
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-2-0-shade",
+      "low": [
+        16.75,
+        6.25,
+        7.6
+      ],
+      "high": [
+        17.25,
+        6.75,
+        7.85
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "high-bay-2-1-cord",
+      "low": [
+        16.99,
+        19.49,
+        7.85
+      ],
+      "high": [
+        17.01,
+        19.51,
+        8.6
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-2-1-shade",
+      "low": [
+        16.75,
+        19.25,
+        7.6
+      ],
+      "high": [
+        17.25,
+        19.75,
+        7.85
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "truss-3",
+      "low": [
+        22.85,
+        0.2,
+        8.6
+      ],
+      "high": [
+        23.15,
+        25.8,
+        9.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-3-0-cord",
+      "low": [
+        22.99,
+        6.49,
+        7.85
+      ],
+      "high": [
+        23.01,
+        6.51,
+        8.6
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-3-0-shade",
+      "low": [
+        22.75,
+        6.25,
+        7.6
+      ],
+      "high": [
+        23.25,
+        6.75,
+        7.85
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "high-bay-3-1-cord",
+      "low": [
+        22.99,
+        19.49,
+        7.85
+      ],
+      "high": [
+        23.01,
+        19.51,
+        8.6
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-3-1-shade",
+      "low": [
+        22.75,
+        19.25,
+        7.6
+      ],
+      "high": [
+        23.25,
+        19.75,
+        7.85
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "truss-4",
+      "low": [
+        28.85,
+        0.2,
+        8.6
+      ],
+      "high": [
+        29.15,
+        25.8,
+        9.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-4-0-cord",
+      "low": [
+        28.99,
+        6.49,
+        7.85
+      ],
+      "high": [
+        29.01,
+        6.51,
+        8.6
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-4-0-shade",
+      "low": [
+        28.75,
+        6.25,
+        7.6
+      ],
+      "high": [
+        29.25,
+        6.75,
+        7.85
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "high-bay-4-1-cord",
+      "low": [
+        28.99,
+        19.49,
+        7.85
+      ],
+      "high": [
+        29.01,
+        19.51,
+        8.6
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-4-1-shade",
+      "low": [
+        28.75,
+        19.25,
+        7.6
+      ],
+      "high": [
+        29.25,
+        19.75,
+        7.85
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "truss-5",
+      "low": [
+        34.85,
+        0.2,
+        8.6
+      ],
+      "high": [
+        35.15,
+        25.8,
+        9.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-5-0-cord",
+      "low": [
+        34.99,
+        6.49,
+        7.85
+      ],
+      "high": [
+        35.01,
+        6.51,
+        8.6
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-5-0-shade",
+      "low": [
+        34.75,
+        6.25,
+        7.6
+      ],
+      "high": [
+        35.25,
+        6.75,
+        7.85
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "high-bay-5-1-cord",
+      "low": [
+        34.99,
+        19.49,
+        7.85
+      ],
+      "high": [
+        35.01,
+        19.51,
+        8.6
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "high-bay-5-1-shade",
+      "low": [
+        34.75,
+        19.25,
+        7.6
+      ],
+      "high": [
+        35.25,
+        19.75,
+        7.85
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "purlin",
+      "low": [
+        0.2,
+        12.9,
+        9.0
+      ],
+      "high": [
+        39.8,
+        13.1,
+        9.2
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "rack-0-upright-0-s",
+      "low": [
+        3.0,
+        3.0,
+        0.0
+      ],
+      "high": [
+        3.1,
+        3.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-0-n",
+      "low": [
+        3.0,
+        4.0,
+        0.0
+      ],
+      "high": [
+        3.1,
+        4.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-1-s",
+      "low": [
+        6.0,
+        3.0,
+        0.0
+      ],
+      "high": [
+        6.1,
+        3.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-1-n",
+      "low": [
+        6.0,
+        4.0,
+        0.0
+      ],
+      "high": [
+        6.1,
+        4.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-2-s",
+      "low": [
+        9.0,
+        3.0,
+        0.0
+      ],
+      "high": [
+        9.1,
+        3.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-2-n",
+      "low": [
+        9.0,
+        4.0,
+        0.0
+      ],
+      "high": [
+        9.1,
+        4.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-3-s",
+      "low": [
+        12.0,
+        3.0,
+        0.0
+      ],
+      "high": [
+        12.1,
+        3.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-3-n",
+      "low": [
+        12.0,
+        4.0,
+        0.0
+      ],
+      "high": [
+        12.1,
+        4.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-4-s",
+      "low": [
+        15.0,
+        3.0,
+        0.0
+      ],
+      "high": [
+        15.1,
+        3.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-4-n",
+      "low": [
+        15.0,
+        4.0,
+        0.0
+      ],
+      "high": [
+        15.1,
+        4.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-5-s",
+      "low": [
+        18.0,
+        3.0,
+        0.0
+      ],
+      "high": [
+        18.1,
+        3.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-5-n",
+      "low": [
+        18.0,
+        4.0,
+        0.0
+      ],
+      "high": [
+        18.1,
+        4.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-6-s",
+      "low": [
+        21.0,
+        3.0,
+        0.0
+      ],
+      "high": [
+        21.1,
+        3.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-6-n",
+      "low": [
+        21.0,
+        4.0,
+        0.0
+      ],
+      "high": [
+        21.1,
+        4.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-7-s",
+      "low": [
+        24.0,
+        3.0,
+        0.0
+      ],
+      "high": [
+        24.1,
+        3.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-7-n",
+      "low": [
+        24.0,
+        4.0,
+        0.0
+      ],
+      "high": [
+        24.1,
+        4.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-8-s",
+      "low": [
+        27.0,
+        3.0,
+        0.0
+      ],
+      "high": [
+        27.1,
+        3.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-upright-8-n",
+      "low": [
+        27.0,
+        4.0,
+        0.0
+      ],
+      "high": [
+        27.1,
+        4.1,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-beam-0-s",
+      "low": [
+        3.0,
+        3.0,
+        1.5
+      ],
+      "high": [
+        27.1,
+        3.1,
+        1.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-beam-0-n",
+      "low": [
+        3.0,
+        4.0,
+        1.5
+      ],
+      "high": [
+        27.1,
+        4.1,
+        1.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-beam-1-s",
+      "low": [
+        3.0,
+        3.0,
+        3.0
+      ],
+      "high": [
+        27.1,
+        3.1,
+        3.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-beam-1-n",
+      "low": [
+        3.0,
+        4.0,
+        3.0
+      ],
+      "high": [
+        27.1,
+        4.1,
+        3.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-beam-2-s",
+      "low": [
+        3.0,
+        3.0,
+        4.5
+      ],
+      "high": [
+        27.1,
+        3.1,
+        4.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-beam-2-n",
+      "low": [
+        3.0,
+        4.0,
+        4.5
+      ],
+      "high": [
+        27.1,
+        4.1,
+        4.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-beam-3-s",
+      "low": [
+        3.0,
+        3.0,
+        6.0
+      ],
+      "high": [
+        27.1,
+        3.1,
+        6.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-beam-3-n",
+      "low": [
+        3.0,
+        4.0,
+        6.0
+      ],
+      "high": [
+        27.1,
+        4.1,
+        6.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-0-pallet-0-1",
+      "low": [
+        3.25,
+        3.05,
+        1.62
+      ],
+      "high": [
+        5.85,
+        4.05,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-0-2",
+      "low": [
+        3.25,
+        3.05,
+        3.12
+      ],
+      "high": [
+        5.85,
+        4.05,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-0-3",
+      "low": [
+        3.25,
+        3.05,
+        4.62
+      ],
+      "high": [
+        5.85,
+        4.05,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-1-0",
+      "low": [
+        6.25,
+        3.05,
+        0.0
+      ],
+      "high": [
+        8.85,
+        4.05,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-1-2",
+      "low": [
+        6.25,
+        3.05,
+        3.12
+      ],
+      "high": [
+        8.85,
+        4.05,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-1-3",
+      "low": [
+        6.25,
+        3.05,
+        4.62
+      ],
+      "high": [
+        8.85,
+        4.05,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-1-4",
+      "low": [
+        6.25,
+        3.05,
+        6.12
+      ],
+      "high": [
+        8.85,
+        4.05,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-2-0",
+      "low": [
+        9.25,
+        3.05,
+        0.0
+      ],
+      "high": [
+        11.85,
+        4.05,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-2-1",
+      "low": [
+        9.25,
+        3.05,
+        1.62
+      ],
+      "high": [
+        11.85,
+        4.05,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-2-3",
+      "low": [
+        9.25,
+        3.05,
+        4.62
+      ],
+      "high": [
+        11.85,
+        4.05,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-2-4",
+      "low": [
+        9.25,
+        3.05,
+        6.12
+      ],
+      "high": [
+        11.85,
+        4.05,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-3-0",
+      "low": [
+        12.25,
+        3.05,
+        0.0
+      ],
+      "high": [
+        14.85,
+        4.05,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-3-1",
+      "low": [
+        12.25,
+        3.05,
+        1.62
+      ],
+      "high": [
+        14.85,
+        4.05,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-3-2",
+      "low": [
+        12.25,
+        3.05,
+        3.12
+      ],
+      "high": [
+        14.85,
+        4.05,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-3-4",
+      "low": [
+        12.25,
+        3.05,
+        6.12
+      ],
+      "high": [
+        14.85,
+        4.05,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-4-1",
+      "low": [
+        15.25,
+        3.05,
+        1.62
+      ],
+      "high": [
+        17.85,
+        4.05,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-4-2",
+      "low": [
+        15.25,
+        3.05,
+        3.12
+      ],
+      "high": [
+        17.85,
+        4.05,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-4-3",
+      "low": [
+        15.25,
+        3.05,
+        4.62
+      ],
+      "high": [
+        17.85,
+        4.05,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-5-0",
+      "low": [
+        18.25,
+        3.05,
+        0.0
+      ],
+      "high": [
+        20.85,
+        4.05,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-5-2",
+      "low": [
+        18.25,
+        3.05,
+        3.12
+      ],
+      "high": [
+        20.85,
+        4.05,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-5-3",
+      "low": [
+        18.25,
+        3.05,
+        4.62
+      ],
+      "high": [
+        20.85,
+        4.05,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-5-4",
+      "low": [
+        18.25,
+        3.05,
+        6.12
+      ],
+      "high": [
+        20.85,
+        4.05,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-6-0",
+      "low": [
+        21.25,
+        3.05,
+        0.0
+      ],
+      "high": [
+        23.85,
+        4.05,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-6-1",
+      "low": [
+        21.25,
+        3.05,
+        1.62
+      ],
+      "high": [
+        23.85,
+        4.05,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-6-3",
+      "low": [
+        21.25,
+        3.05,
+        4.62
+      ],
+      "high": [
+        23.85,
+        4.05,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-6-4",
+      "low": [
+        21.25,
+        3.05,
+        6.12
+      ],
+      "high": [
+        23.85,
+        4.05,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-7-0",
+      "low": [
+        24.25,
+        3.05,
+        0.0
+      ],
+      "high": [
+        26.85,
+        4.05,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-7-1",
+      "low": [
+        24.25,
+        3.05,
+        1.62
+      ],
+      "high": [
+        26.85,
+        4.05,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-7-2",
+      "low": [
+        24.25,
+        3.05,
+        3.12
+      ],
+      "high": [
+        26.85,
+        4.05,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-0-pallet-7-4",
+      "low": [
+        24.25,
+        3.05,
+        6.12
+      ],
+      "high": [
+        26.85,
+        4.05,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-upright-0-s",
+      "low": [
+        3.0,
+        7.2,
+        0.0
+      ],
+      "high": [
+        3.1,
+        7.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-0-n",
+      "low": [
+        3.0,
+        8.2,
+        0.0
+      ],
+      "high": [
+        3.1,
+        8.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-1-s",
+      "low": [
+        6.0,
+        7.2,
+        0.0
+      ],
+      "high": [
+        6.1,
+        7.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-1-n",
+      "low": [
+        6.0,
+        8.2,
+        0.0
+      ],
+      "high": [
+        6.1,
+        8.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-2-s",
+      "low": [
+        9.0,
+        7.2,
+        0.0
+      ],
+      "high": [
+        9.1,
+        7.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-2-n",
+      "low": [
+        9.0,
+        8.2,
+        0.0
+      ],
+      "high": [
+        9.1,
+        8.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-3-s",
+      "low": [
+        12.0,
+        7.2,
+        0.0
+      ],
+      "high": [
+        12.1,
+        7.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-3-n",
+      "low": [
+        12.0,
+        8.2,
+        0.0
+      ],
+      "high": [
+        12.1,
+        8.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-4-s",
+      "low": [
+        15.0,
+        7.2,
+        0.0
+      ],
+      "high": [
+        15.1,
+        7.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-4-n",
+      "low": [
+        15.0,
+        8.2,
+        0.0
+      ],
+      "high": [
+        15.1,
+        8.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-5-s",
+      "low": [
+        18.0,
+        7.2,
+        0.0
+      ],
+      "high": [
+        18.1,
+        7.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-5-n",
+      "low": [
+        18.0,
+        8.2,
+        0.0
+      ],
+      "high": [
+        18.1,
+        8.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-6-s",
+      "low": [
+        21.0,
+        7.2,
+        0.0
+      ],
+      "high": [
+        21.1,
+        7.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-6-n",
+      "low": [
+        21.0,
+        8.2,
+        0.0
+      ],
+      "high": [
+        21.1,
+        8.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-7-s",
+      "low": [
+        24.0,
+        7.2,
+        0.0
+      ],
+      "high": [
+        24.1,
+        7.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-7-n",
+      "low": [
+        24.0,
+        8.2,
+        0.0
+      ],
+      "high": [
+        24.1,
+        8.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-8-s",
+      "low": [
+        27.0,
+        7.2,
+        0.0
+      ],
+      "high": [
+        27.1,
+        7.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-upright-8-n",
+      "low": [
+        27.0,
+        8.2,
+        0.0
+      ],
+      "high": [
+        27.1,
+        8.3,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-beam-0-s",
+      "low": [
+        3.0,
+        7.2,
+        1.5
+      ],
+      "high": [
+        27.1,
+        7.3,
+        1.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-beam-0-n",
+      "low": [
+        3.0,
+        8.2,
+        1.5
+      ],
+      "high": [
+        27.1,
+        8.3,
+        1.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-beam-1-s",
+      "low": [
+        3.0,
+        7.2,
+        3.0
+      ],
+      "high": [
+        27.1,
+        7.3,
+        3.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-beam-1-n",
+      "low": [
+        3.0,
+        8.2,
+        3.0
+      ],
+      "high": [
+        27.1,
+        8.3,
+        3.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-beam-2-s",
+      "low": [
+        3.0,
+        7.2,
+        4.5
+      ],
+      "high": [
+        27.1,
+        7.3,
+        4.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-beam-2-n",
+      "low": [
+        3.0,
+        8.2,
+        4.5
+      ],
+      "high": [
+        27.1,
+        8.3,
+        4.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-beam-3-s",
+      "low": [
+        3.0,
+        7.2,
+        6.0
+      ],
+      "high": [
+        27.1,
+        7.3,
+        6.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-beam-3-n",
+      "low": [
+        3.0,
+        8.2,
+        6.0
+      ],
+      "high": [
+        27.1,
+        8.3,
+        6.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-1-pallet-0-0",
+      "low": [
+        3.25,
+        7.25,
+        0.0
+      ],
+      "high": [
+        5.85,
+        8.25,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-0-2",
+      "low": [
+        3.25,
+        7.25,
+        3.12
+      ],
+      "high": [
+        5.85,
+        8.25,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-0-3",
+      "low": [
+        3.25,
+        7.25,
+        4.62
+      ],
+      "high": [
+        5.85,
+        8.25,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-0-4",
+      "low": [
+        3.25,
+        7.25,
+        6.12
+      ],
+      "high": [
+        5.85,
+        8.25,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-1-0",
+      "low": [
+        6.25,
+        7.25,
+        0.0
+      ],
+      "high": [
+        8.85,
+        8.25,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-1-1",
+      "low": [
+        6.25,
+        7.25,
+        1.62
+      ],
+      "high": [
+        8.85,
+        8.25,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-1-3",
+      "low": [
+        6.25,
+        7.25,
+        4.62
+      ],
+      "high": [
+        8.85,
+        8.25,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-1-4",
+      "low": [
+        6.25,
+        7.25,
+        6.12
+      ],
+      "high": [
+        8.85,
+        8.25,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-2-0",
+      "low": [
+        9.25,
+        7.25,
+        0.0
+      ],
+      "high": [
+        11.85,
+        8.25,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-2-1",
+      "low": [
+        9.25,
+        7.25,
+        1.62
+      ],
+      "high": [
+        11.85,
+        8.25,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-2-2",
+      "low": [
+        9.25,
+        7.25,
+        3.12
+      ],
+      "high": [
+        11.85,
+        8.25,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-2-4",
+      "low": [
+        9.25,
+        7.25,
+        6.12
+      ],
+      "high": [
+        11.85,
+        8.25,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-3-1",
+      "low": [
+        12.25,
+        7.25,
+        1.62
+      ],
+      "high": [
+        14.85,
+        8.25,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-3-2",
+      "low": [
+        12.25,
+        7.25,
+        3.12
+      ],
+      "high": [
+        14.85,
+        8.25,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-3-3",
+      "low": [
+        12.25,
+        7.25,
+        4.62
+      ],
+      "high": [
+        14.85,
+        8.25,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-4-0",
+      "low": [
+        15.25,
+        7.25,
+        0.0
+      ],
+      "high": [
+        17.85,
+        8.25,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-4-2",
+      "low": [
+        15.25,
+        7.25,
+        3.12
+      ],
+      "high": [
+        17.85,
+        8.25,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-4-3",
+      "low": [
+        15.25,
+        7.25,
+        4.62
+      ],
+      "high": [
+        17.85,
+        8.25,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-4-4",
+      "low": [
+        15.25,
+        7.25,
+        6.12
+      ],
+      "high": [
+        17.85,
+        8.25,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-5-0",
+      "low": [
+        18.25,
+        7.25,
+        0.0
+      ],
+      "high": [
+        20.85,
+        8.25,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-5-1",
+      "low": [
+        18.25,
+        7.25,
+        1.62
+      ],
+      "high": [
+        20.85,
+        8.25,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-5-3",
+      "low": [
+        18.25,
+        7.25,
+        4.62
+      ],
+      "high": [
+        20.85,
+        8.25,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-5-4",
+      "low": [
+        18.25,
+        7.25,
+        6.12
+      ],
+      "high": [
+        20.85,
+        8.25,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-6-0",
+      "low": [
+        21.25,
+        7.25,
+        0.0
+      ],
+      "high": [
+        23.85,
+        8.25,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-6-1",
+      "low": [
+        21.25,
+        7.25,
+        1.62
+      ],
+      "high": [
+        23.85,
+        8.25,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-6-2",
+      "low": [
+        21.25,
+        7.25,
+        3.12
+      ],
+      "high": [
+        23.85,
+        8.25,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-6-4",
+      "low": [
+        21.25,
+        7.25,
+        6.12
+      ],
+      "high": [
+        23.85,
+        8.25,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-7-1",
+      "low": [
+        24.25,
+        7.25,
+        1.62
+      ],
+      "high": [
+        26.85,
+        8.25,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-7-2",
+      "low": [
+        24.25,
+        7.25,
+        3.12
+      ],
+      "high": [
+        26.85,
+        8.25,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-1-pallet-7-3",
+      "low": [
+        24.25,
+        7.25,
+        4.62
+      ],
+      "high": [
+        26.85,
+        8.25,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-upright-0-s",
+      "low": [
+        3.0,
+        11.4,
+        0.0
+      ],
+      "high": [
+        3.1,
+        11.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-0-n",
+      "low": [
+        3.0,
+        12.4,
+        0.0
+      ],
+      "high": [
+        3.1,
+        12.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-1-s",
+      "low": [
+        6.0,
+        11.4,
+        0.0
+      ],
+      "high": [
+        6.1,
+        11.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-1-n",
+      "low": [
+        6.0,
+        12.4,
+        0.0
+      ],
+      "high": [
+        6.1,
+        12.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-2-s",
+      "low": [
+        9.0,
+        11.4,
+        0.0
+      ],
+      "high": [
+        9.1,
+        11.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-2-n",
+      "low": [
+        9.0,
+        12.4,
+        0.0
+      ],
+      "high": [
+        9.1,
+        12.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-3-s",
+      "low": [
+        12.0,
+        11.4,
+        0.0
+      ],
+      "high": [
+        12.1,
+        11.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-3-n",
+      "low": [
+        12.0,
+        12.4,
+        0.0
+      ],
+      "high": [
+        12.1,
+        12.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-4-s",
+      "low": [
+        15.0,
+        11.4,
+        0.0
+      ],
+      "high": [
+        15.1,
+        11.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-4-n",
+      "low": [
+        15.0,
+        12.4,
+        0.0
+      ],
+      "high": [
+        15.1,
+        12.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-5-s",
+      "low": [
+        18.0,
+        11.4,
+        0.0
+      ],
+      "high": [
+        18.1,
+        11.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-5-n",
+      "low": [
+        18.0,
+        12.4,
+        0.0
+      ],
+      "high": [
+        18.1,
+        12.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-6-s",
+      "low": [
+        21.0,
+        11.4,
+        0.0
+      ],
+      "high": [
+        21.1,
+        11.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-6-n",
+      "low": [
+        21.0,
+        12.4,
+        0.0
+      ],
+      "high": [
+        21.1,
+        12.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-7-s",
+      "low": [
+        24.0,
+        11.4,
+        0.0
+      ],
+      "high": [
+        24.1,
+        11.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-7-n",
+      "low": [
+        24.0,
+        12.4,
+        0.0
+      ],
+      "high": [
+        24.1,
+        12.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-8-s",
+      "low": [
+        27.0,
+        11.4,
+        0.0
+      ],
+      "high": [
+        27.1,
+        11.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-upright-8-n",
+      "low": [
+        27.0,
+        12.4,
+        0.0
+      ],
+      "high": [
+        27.1,
+        12.5,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-beam-0-s",
+      "low": [
+        3.0,
+        11.4,
+        1.5
+      ],
+      "high": [
+        27.1,
+        11.5,
+        1.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-beam-0-n",
+      "low": [
+        3.0,
+        12.4,
+        1.5
+      ],
+      "high": [
+        27.1,
+        12.5,
+        1.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-beam-1-s",
+      "low": [
+        3.0,
+        11.4,
+        3.0
+      ],
+      "high": [
+        27.1,
+        11.5,
+        3.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-beam-1-n",
+      "low": [
+        3.0,
+        12.4,
+        3.0
+      ],
+      "high": [
+        27.1,
+        12.5,
+        3.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-beam-2-s",
+      "low": [
+        3.0,
+        11.4,
+        4.5
+      ],
+      "high": [
+        27.1,
+        11.5,
+        4.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-beam-2-n",
+      "low": [
+        3.0,
+        12.4,
+        4.5
+      ],
+      "high": [
+        27.1,
+        12.5,
+        4.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-beam-3-s",
+      "low": [
+        3.0,
+        11.4,
+        6.0
+      ],
+      "high": [
+        27.1,
+        11.5,
+        6.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-beam-3-n",
+      "low": [
+        3.0,
+        12.4,
+        6.0
+      ],
+      "high": [
+        27.1,
+        12.5,
+        6.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-2-pallet-0-0",
+      "low": [
+        3.25,
+        11.45,
+        0.0
+      ],
+      "high": [
+        5.85,
+        12.45,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-0-1",
+      "low": [
+        3.25,
+        11.45,
+        1.62
+      ],
+      "high": [
+        5.85,
+        12.45,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-0-3",
+      "low": [
+        3.25,
+        11.45,
+        4.62
+      ],
+      "high": [
+        5.85,
+        12.45,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-0-4",
+      "low": [
+        3.25,
+        11.45,
+        6.12
+      ],
+      "high": [
+        5.85,
+        12.45,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-1-0",
+      "low": [
+        6.25,
+        11.45,
+        0.0
+      ],
+      "high": [
+        8.85,
+        12.45,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-1-1",
+      "low": [
+        6.25,
+        11.45,
+        1.62
+      ],
+      "high": [
+        8.85,
+        12.45,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-1-2",
+      "low": [
+        6.25,
+        11.45,
+        3.12
+      ],
+      "high": [
+        8.85,
+        12.45,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-1-4",
+      "low": [
+        6.25,
+        11.45,
+        6.12
+      ],
+      "high": [
+        8.85,
+        12.45,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-2-1",
+      "low": [
+        9.25,
+        11.45,
+        1.62
+      ],
+      "high": [
+        11.85,
+        12.45,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-2-2",
+      "low": [
+        9.25,
+        11.45,
+        3.12
+      ],
+      "high": [
+        11.85,
+        12.45,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-2-3",
+      "low": [
+        9.25,
+        11.45,
+        4.62
+      ],
+      "high": [
+        11.85,
+        12.45,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-3-0",
+      "low": [
+        12.25,
+        11.45,
+        0.0
+      ],
+      "high": [
+        14.85,
+        12.45,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-3-2",
+      "low": [
+        12.25,
+        11.45,
+        3.12
+      ],
+      "high": [
+        14.85,
+        12.45,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-3-3",
+      "low": [
+        12.25,
+        11.45,
+        4.62
+      ],
+      "high": [
+        14.85,
+        12.45,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-3-4",
+      "low": [
+        12.25,
+        11.45,
+        6.12
+      ],
+      "high": [
+        14.85,
+        12.45,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-4-0",
+      "low": [
+        15.25,
+        11.45,
+        0.0
+      ],
+      "high": [
+        17.85,
+        12.45,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-4-1",
+      "low": [
+        15.25,
+        11.45,
+        1.62
+      ],
+      "high": [
+        17.85,
+        12.45,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-4-3",
+      "low": [
+        15.25,
+        11.45,
+        4.62
+      ],
+      "high": [
+        17.85,
+        12.45,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-4-4",
+      "low": [
+        15.25,
+        11.45,
+        6.12
+      ],
+      "high": [
+        17.85,
+        12.45,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-5-0",
+      "low": [
+        18.25,
+        11.45,
+        0.0
+      ],
+      "high": [
+        20.85,
+        12.45,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-5-1",
+      "low": [
+        18.25,
+        11.45,
+        1.62
+      ],
+      "high": [
+        20.85,
+        12.45,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-5-2",
+      "low": [
+        18.25,
+        11.45,
+        3.12
+      ],
+      "high": [
+        20.85,
+        12.45,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-5-4",
+      "low": [
+        18.25,
+        11.45,
+        6.12
+      ],
+      "high": [
+        20.85,
+        12.45,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-6-1",
+      "low": [
+        21.25,
+        11.45,
+        1.62
+      ],
+      "high": [
+        23.85,
+        12.45,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-6-2",
+      "low": [
+        21.25,
+        11.45,
+        3.12
+      ],
+      "high": [
+        23.85,
+        12.45,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-6-3",
+      "low": [
+        21.25,
+        11.45,
+        4.62
+      ],
+      "high": [
+        23.85,
+        12.45,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-7-0",
+      "low": [
+        24.25,
+        11.45,
+        0.0
+      ],
+      "high": [
+        26.85,
+        12.45,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-7-2",
+      "low": [
+        24.25,
+        11.45,
+        3.12
+      ],
+      "high": [
+        26.85,
+        12.45,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-7-3",
+      "low": [
+        24.25,
+        11.45,
+        4.62
+      ],
+      "high": [
+        26.85,
+        12.45,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-2-pallet-7-4",
+      "low": [
+        24.25,
+        11.45,
+        6.12
+      ],
+      "high": [
+        26.85,
+        12.45,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-upright-0-s",
+      "low": [
+        3.0,
+        15.6,
+        0.0
+      ],
+      "high": [
+        3.1,
+        15.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-0-n",
+      "low": [
+        3.0,
+        16.6,
+        0.0
+      ],
+      "high": [
+        3.1,
+        16.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-1-s",
+      "low": [
+        6.0,
+        15.6,
+        0.0
+      ],
+      "high": [
+        6.1,
+        15.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-1-n",
+      "low": [
+        6.0,
+        16.6,
+        0.0
+      ],
+      "high": [
+        6.1,
+        16.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-2-s",
+      "low": [
+        9.0,
+        15.6,
+        0.0
+      ],
+      "high": [
+        9.1,
+        15.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-2-n",
+      "low": [
+        9.0,
+        16.6,
+        0.0
+      ],
+      "high": [
+        9.1,
+        16.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-3-s",
+      "low": [
+        12.0,
+        15.6,
+        0.0
+      ],
+      "high": [
+        12.1,
+        15.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-3-n",
+      "low": [
+        12.0,
+        16.6,
+        0.0
+      ],
+      "high": [
+        12.1,
+        16.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-4-s",
+      "low": [
+        15.0,
+        15.6,
+        0.0
+      ],
+      "high": [
+        15.1,
+        15.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-4-n",
+      "low": [
+        15.0,
+        16.6,
+        0.0
+      ],
+      "high": [
+        15.1,
+        16.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-5-s",
+      "low": [
+        18.0,
+        15.6,
+        0.0
+      ],
+      "high": [
+        18.1,
+        15.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-5-n",
+      "low": [
+        18.0,
+        16.6,
+        0.0
+      ],
+      "high": [
+        18.1,
+        16.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-6-s",
+      "low": [
+        21.0,
+        15.6,
+        0.0
+      ],
+      "high": [
+        21.1,
+        15.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-6-n",
+      "low": [
+        21.0,
+        16.6,
+        0.0
+      ],
+      "high": [
+        21.1,
+        16.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-7-s",
+      "low": [
+        24.0,
+        15.6,
+        0.0
+      ],
+      "high": [
+        24.1,
+        15.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-7-n",
+      "low": [
+        24.0,
+        16.6,
+        0.0
+      ],
+      "high": [
+        24.1,
+        16.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-8-s",
+      "low": [
+        27.0,
+        15.6,
+        0.0
+      ],
+      "high": [
+        27.1,
+        15.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-upright-8-n",
+      "low": [
+        27.0,
+        16.6,
+        0.0
+      ],
+      "high": [
+        27.1,
+        16.7,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-beam-0-s",
+      "low": [
+        3.0,
+        15.6,
+        1.5
+      ],
+      "high": [
+        27.1,
+        15.7,
+        1.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-beam-0-n",
+      "low": [
+        3.0,
+        16.6,
+        1.5
+      ],
+      "high": [
+        27.1,
+        16.7,
+        1.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-beam-1-s",
+      "low": [
+        3.0,
+        15.6,
+        3.0
+      ],
+      "high": [
+        27.1,
+        15.7,
+        3.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-beam-1-n",
+      "low": [
+        3.0,
+        16.6,
+        3.0
+      ],
+      "high": [
+        27.1,
+        16.7,
+        3.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-beam-2-s",
+      "low": [
+        3.0,
+        15.6,
+        4.5
+      ],
+      "high": [
+        27.1,
+        15.7,
+        4.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-beam-2-n",
+      "low": [
+        3.0,
+        16.6,
+        4.5
+      ],
+      "high": [
+        27.1,
+        16.7,
+        4.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-beam-3-s",
+      "low": [
+        3.0,
+        15.6,
+        6.0
+      ],
+      "high": [
+        27.1,
+        15.7,
+        6.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-beam-3-n",
+      "low": [
+        3.0,
+        16.6,
+        6.0
+      ],
+      "high": [
+        27.1,
+        16.7,
+        6.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-3-pallet-0-0",
+      "low": [
+        3.25,
+        15.65,
+        0.0
+      ],
+      "high": [
+        5.85,
+        16.65,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-0-1",
+      "low": [
+        3.25,
+        15.65,
+        1.62
+      ],
+      "high": [
+        5.85,
+        16.65,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-0-2",
+      "low": [
+        3.25,
+        15.65,
+        3.12
+      ],
+      "high": [
+        5.85,
+        16.65,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-0-4",
+      "low": [
+        3.25,
+        15.65,
+        6.12
+      ],
+      "high": [
+        5.85,
+        16.65,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-1-1",
+      "low": [
+        6.25,
+        15.65,
+        1.62
+      ],
+      "high": [
+        8.85,
+        16.65,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-1-2",
+      "low": [
+        6.25,
+        15.65,
+        3.12
+      ],
+      "high": [
+        8.85,
+        16.65,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-1-3",
+      "low": [
+        6.25,
+        15.65,
+        4.62
+      ],
+      "high": [
+        8.85,
+        16.65,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-2-0",
+      "low": [
+        9.25,
+        15.65,
+        0.0
+      ],
+      "high": [
+        11.85,
+        16.65,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-2-2",
+      "low": [
+        9.25,
+        15.65,
+        3.12
+      ],
+      "high": [
+        11.85,
+        16.65,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-2-3",
+      "low": [
+        9.25,
+        15.65,
+        4.62
+      ],
+      "high": [
+        11.85,
+        16.65,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-2-4",
+      "low": [
+        9.25,
+        15.65,
+        6.12
+      ],
+      "high": [
+        11.85,
+        16.65,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-3-0",
+      "low": [
+        12.25,
+        15.65,
+        0.0
+      ],
+      "high": [
+        14.85,
+        16.65,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-3-1",
+      "low": [
+        12.25,
+        15.65,
+        1.62
+      ],
+      "high": [
+        14.85,
+        16.65,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-3-3",
+      "low": [
+        12.25,
+        15.65,
+        4.62
+      ],
+      "high": [
+        14.85,
+        16.65,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-3-4",
+      "low": [
+        12.25,
+        15.65,
+        6.12
+      ],
+      "high": [
+        14.85,
+        16.65,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-4-0",
+      "low": [
+        15.25,
+        15.65,
+        0.0
+      ],
+      "high": [
+        17.85,
+        16.65,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-4-1",
+      "low": [
+        15.25,
+        15.65,
+        1.62
+      ],
+      "high": [
+        17.85,
+        16.65,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-4-2",
+      "low": [
+        15.25,
+        15.65,
+        3.12
+      ],
+      "high": [
+        17.85,
+        16.65,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-4-4",
+      "low": [
+        15.25,
+        15.65,
+        6.12
+      ],
+      "high": [
+        17.85,
+        16.65,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-5-1",
+      "low": [
+        18.25,
+        15.65,
+        1.62
+      ],
+      "high": [
+        20.85,
+        16.65,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-5-2",
+      "low": [
+        18.25,
+        15.65,
+        3.12
+      ],
+      "high": [
+        20.85,
+        16.65,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-5-3",
+      "low": [
+        18.25,
+        15.65,
+        4.62
+      ],
+      "high": [
+        20.85,
+        16.65,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-6-0",
+      "low": [
+        21.25,
+        15.65,
+        0.0
+      ],
+      "high": [
+        23.85,
+        16.65,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-6-2",
+      "low": [
+        21.25,
+        15.65,
+        3.12
+      ],
+      "high": [
+        23.85,
+        16.65,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-6-3",
+      "low": [
+        21.25,
+        15.65,
+        4.62
+      ],
+      "high": [
+        23.85,
+        16.65,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-6-4",
+      "low": [
+        21.25,
+        15.65,
+        6.12
+      ],
+      "high": [
+        23.85,
+        16.65,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-7-0",
+      "low": [
+        24.25,
+        15.65,
+        0.0
+      ],
+      "high": [
+        26.85,
+        16.65,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-7-1",
+      "low": [
+        24.25,
+        15.65,
+        1.62
+      ],
+      "high": [
+        26.85,
+        16.65,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-7-3",
+      "low": [
+        24.25,
+        15.65,
+        4.62
+      ],
+      "high": [
+        26.85,
+        16.65,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-3-pallet-7-4",
+      "low": [
+        24.25,
+        15.65,
+        6.12
+      ],
+      "high": [
+        26.85,
+        16.65,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-upright-0-s",
+      "low": [
+        3.0,
+        19.8,
+        0.0
+      ],
+      "high": [
+        3.1,
+        19.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-0-n",
+      "low": [
+        3.0,
+        20.8,
+        0.0
+      ],
+      "high": [
+        3.1,
+        20.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-1-s",
+      "low": [
+        6.0,
+        19.8,
+        0.0
+      ],
+      "high": [
+        6.1,
+        19.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-1-n",
+      "low": [
+        6.0,
+        20.8,
+        0.0
+      ],
+      "high": [
+        6.1,
+        20.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-2-s",
+      "low": [
+        9.0,
+        19.8,
+        0.0
+      ],
+      "high": [
+        9.1,
+        19.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-2-n",
+      "low": [
+        9.0,
+        20.8,
+        0.0
+      ],
+      "high": [
+        9.1,
+        20.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-3-s",
+      "low": [
+        12.0,
+        19.8,
+        0.0
+      ],
+      "high": [
+        12.1,
+        19.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-3-n",
+      "low": [
+        12.0,
+        20.8,
+        0.0
+      ],
+      "high": [
+        12.1,
+        20.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-4-s",
+      "low": [
+        15.0,
+        19.8,
+        0.0
+      ],
+      "high": [
+        15.1,
+        19.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-4-n",
+      "low": [
+        15.0,
+        20.8,
+        0.0
+      ],
+      "high": [
+        15.1,
+        20.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-5-s",
+      "low": [
+        18.0,
+        19.8,
+        0.0
+      ],
+      "high": [
+        18.1,
+        19.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-5-n",
+      "low": [
+        18.0,
+        20.8,
+        0.0
+      ],
+      "high": [
+        18.1,
+        20.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-6-s",
+      "low": [
+        21.0,
+        19.8,
+        0.0
+      ],
+      "high": [
+        21.1,
+        19.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-6-n",
+      "low": [
+        21.0,
+        20.8,
+        0.0
+      ],
+      "high": [
+        21.1,
+        20.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-7-s",
+      "low": [
+        24.0,
+        19.8,
+        0.0
+      ],
+      "high": [
+        24.1,
+        19.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-7-n",
+      "low": [
+        24.0,
+        20.8,
+        0.0
+      ],
+      "high": [
+        24.1,
+        20.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-8-s",
+      "low": [
+        27.0,
+        19.8,
+        0.0
+      ],
+      "high": [
+        27.1,
+        19.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-upright-8-n",
+      "low": [
+        27.0,
+        20.8,
+        0.0
+      ],
+      "high": [
+        27.1,
+        20.9,
+        7.0
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-beam-0-s",
+      "low": [
+        3.0,
+        19.8,
+        1.5
+      ],
+      "high": [
+        27.1,
+        19.9,
+        1.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-beam-0-n",
+      "low": [
+        3.0,
+        20.8,
+        1.5
+      ],
+      "high": [
+        27.1,
+        20.9,
+        1.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-beam-1-s",
+      "low": [
+        3.0,
+        19.8,
+        3.0
+      ],
+      "high": [
+        27.1,
+        19.9,
+        3.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-beam-1-n",
+      "low": [
+        3.0,
+        20.8,
+        3.0
+      ],
+      "high": [
+        27.1,
+        20.9,
+        3.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-beam-2-s",
+      "low": [
+        3.0,
+        19.8,
+        4.5
+      ],
+      "high": [
+        27.1,
+        19.9,
+        4.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-beam-2-n",
+      "low": [
+        3.0,
+        20.8,
+        4.5
+      ],
+      "high": [
+        27.1,
+        20.9,
+        4.62
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-beam-3-s",
+      "low": [
+        3.0,
+        19.8,
+        6.0
+      ],
+      "high": [
+        27.1,
+        19.9,
+        6.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-beam-3-n",
+      "low": [
+        3.0,
+        20.8,
+        6.0
+      ],
+      "high": [
+        27.1,
+        20.9,
+        6.12
+      ],
+      "material": "rack"
+    },
+    {
+      "name": "rack-4-pallet-0-1",
+      "low": [
+        3.25,
+        19.85,
+        1.62
+      ],
+      "high": [
+        5.85,
+        20.85,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-0-2",
+      "low": [
+        3.25,
+        19.85,
+        3.12
+      ],
+      "high": [
+        5.85,
+        20.85,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-0-3",
+      "low": [
+        3.25,
+        19.85,
+        4.62
+      ],
+      "high": [
+        5.85,
+        20.85,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-1-0",
+      "low": [
+        6.25,
+        19.85,
+        0.0
+      ],
+      "high": [
+        8.85,
+        20.85,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-1-2",
+      "low": [
+        6.25,
+        19.85,
+        3.12
+      ],
+      "high": [
+        8.85,
+        20.85,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-1-3",
+      "low": [
+        6.25,
+        19.85,
+        4.62
+      ],
+      "high": [
+        8.85,
+        20.85,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-1-4",
+      "low": [
+        6.25,
+        19.85,
+        6.12
+      ],
+      "high": [
+        8.85,
+        20.85,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-2-0",
+      "low": [
+        9.25,
+        19.85,
+        0.0
+      ],
+      "high": [
+        11.85,
+        20.85,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-2-1",
+      "low": [
+        9.25,
+        19.85,
+        1.62
+      ],
+      "high": [
+        11.85,
+        20.85,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-2-3",
+      "low": [
+        9.25,
+        19.85,
+        4.62
+      ],
+      "high": [
+        11.85,
+        20.85,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-2-4",
+      "low": [
+        9.25,
+        19.85,
+        6.12
+      ],
+      "high": [
+        11.85,
+        20.85,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-3-0",
+      "low": [
+        12.25,
+        19.85,
+        0.0
+      ],
+      "high": [
+        14.85,
+        20.85,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-3-1",
+      "low": [
+        12.25,
+        19.85,
+        1.62
+      ],
+      "high": [
+        14.85,
+        20.85,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-3-2",
+      "low": [
+        12.25,
+        19.85,
+        3.12
+      ],
+      "high": [
+        14.85,
+        20.85,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-3-4",
+      "low": [
+        12.25,
+        19.85,
+        6.12
+      ],
+      "high": [
+        14.85,
+        20.85,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-4-1",
+      "low": [
+        15.25,
+        19.85,
+        1.62
+      ],
+      "high": [
+        17.85,
+        20.85,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-4-2",
+      "low": [
+        15.25,
+        19.85,
+        3.12
+      ],
+      "high": [
+        17.85,
+        20.85,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-4-3",
+      "low": [
+        15.25,
+        19.85,
+        4.62
+      ],
+      "high": [
+        17.85,
+        20.85,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-5-0",
+      "low": [
+        18.25,
+        19.85,
+        0.0
+      ],
+      "high": [
+        20.85,
+        20.85,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-5-2",
+      "low": [
+        18.25,
+        19.85,
+        3.12
+      ],
+      "high": [
+        20.85,
+        20.85,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-5-3",
+      "low": [
+        18.25,
+        19.85,
+        4.62
+      ],
+      "high": [
+        20.85,
+        20.85,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-5-4",
+      "low": [
+        18.25,
+        19.85,
+        6.12
+      ],
+      "high": [
+        20.85,
+        20.85,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-6-0",
+      "low": [
+        21.25,
+        19.85,
+        0.0
+      ],
+      "high": [
+        23.85,
+        20.85,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-6-1",
+      "low": [
+        21.25,
+        19.85,
+        1.62
+      ],
+      "high": [
+        23.85,
+        20.85,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-6-3",
+      "low": [
+        21.25,
+        19.85,
+        4.62
+      ],
+      "high": [
+        23.85,
+        20.85,
+        5.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-6-4",
+      "low": [
+        21.25,
+        19.85,
+        6.12
+      ],
+      "high": [
+        23.85,
+        20.85,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-7-0",
+      "low": [
+        24.25,
+        19.85,
+        0.0
+      ],
+      "high": [
+        26.85,
+        20.85,
+        1.1
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-7-1",
+      "low": [
+        24.25,
+        19.85,
+        1.62
+      ],
+      "high": [
+        26.85,
+        20.85,
+        2.72
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-7-2",
+      "low": [
+        24.25,
+        19.85,
+        3.12
+      ],
+      "high": [
+        26.85,
+        20.85,
+        4.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "rack-4-pallet-7-4",
+      "low": [
+        24.25,
+        19.85,
+        6.12
+      ],
+      "high": [
+        26.85,
+        20.85,
+        7.22
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "mezzanine-deck",
+      "low": [
+        30.0,
+        14.0,
+        3.4
+      ],
+      "high": [
+        39.8,
+        25.8,
+        3.7
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "mezzanine-column-0",
+      "low": [
+        30.25,
+        14.25,
+        0.0
+      ],
+      "high": [
+        30.55,
+        14.55,
+        3.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "mezzanine-column-1",
+      "low": [
+        34.65,
+        14.25,
+        0.0
+      ],
+      "high": [
+        34.95,
+        14.55,
+        3.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "mezzanine-column-2",
+      "low": [
+        30.25,
+        19.85,
+        0.0
+      ],
+      "high": [
+        30.55,
+        20.15,
+        3.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "mezzanine-column-3",
+      "low": [
+        34.65,
+        19.85,
+        0.0
+      ],
+      "high": [
+        34.95,
+        20.15,
+        3.4
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "mezzanine-rail-south",
+      "low": [
+        30.0,
+        13.975,
+        3.7
+      ],
+      "high": [
+        39.8,
+        14.025,
+        4.8
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "mezzanine-rail-west-a",
+      "low": [
+        29.975,
+        14.0,
+        3.7
+      ],
+      "high": [
+        30.025,
+        22.0,
+        4.8
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "mezzanine-rail-west-b",
+      "low": [
+        29.975,
+        23.2,
+        3.7
+      ],
+      "high": [
+        30.025,
+        25.8,
+        4.8
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "mezzanine-stair-step-00",
+      "low": [
+        29.8,
+        22.0,
+        0.0
+      ],
+      "high": [
+        30.0,
+        23.2,
+        0.2056
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-01",
+      "low": [
+        29.6,
+        22.0,
+        0.0
+      ],
+      "high": [
+        29.8,
+        23.2,
+        0.4111
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-02",
+      "low": [
+        29.4,
+        22.0,
+        0.0
+      ],
+      "high": [
+        29.6,
+        23.2,
+        0.6167
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-03",
+      "low": [
+        29.2,
+        22.0,
+        0.0
+      ],
+      "high": [
+        29.4,
+        23.2,
+        0.8222
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-04",
+      "low": [
+        29.0,
+        22.0,
+        0.0
+      ],
+      "high": [
+        29.2,
+        23.2,
+        1.0278
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-05",
+      "low": [
+        28.8,
+        22.0,
+        0.0
+      ],
+      "high": [
+        29.0,
+        23.2,
+        1.2333
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-06",
+      "low": [
+        28.6,
+        22.0,
+        0.0
+      ],
+      "high": [
+        28.8,
+        23.2,
+        1.4389
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-07",
+      "low": [
+        28.4,
+        22.0,
+        0.0
+      ],
+      "high": [
+        28.6,
+        23.2,
+        1.6444
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-08",
+      "low": [
+        28.2,
+        22.0,
+        0.0
+      ],
+      "high": [
+        28.4,
+        23.2,
+        1.85
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-09",
+      "low": [
+        28.0,
+        22.0,
+        0.0
+      ],
+      "high": [
+        28.2,
+        23.2,
+        2.0556
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-10",
+      "low": [
+        27.8,
+        22.0,
+        0.0
+      ],
+      "high": [
+        28.0,
+        23.2,
+        2.2611
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-11",
+      "low": [
+        27.6,
+        22.0,
+        0.0
+      ],
+      "high": [
+        27.8,
+        23.2,
+        2.4667
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-12",
+      "low": [
+        27.4,
+        22.0,
+        0.0
+      ],
+      "high": [
+        27.6,
+        23.2,
+        2.6722
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-13",
+      "low": [
+        27.2,
+        22.0,
+        0.0
+      ],
+      "high": [
+        27.4,
+        23.2,
+        2.8778
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-14",
+      "low": [
+        27.0,
+        22.0,
+        0.0
+      ],
+      "high": [
+        27.2,
+        23.2,
+        3.0833
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-15",
+      "low": [
+        26.8,
+        22.0,
+        0.0
+      ],
+      "high": [
+        27.0,
+        23.2,
+        3.2889
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-16",
+      "low": [
+        26.6,
+        22.0,
+        0.0
+      ],
+      "high": [
+        26.8,
+        23.2,
+        3.4944
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-stair-step-17",
+      "low": [
+        26.4,
+        22.0,
+        0.0
+      ],
+      "high": [
+        26.6,
+        23.2,
+        3.7
+      ],
+      "material": "concrete"
+    },
+    {
+      "name": "mezzanine-office",
+      "low": [
+        34.0,
+        20.0,
+        3.7
+      ],
+      "high": [
+        39.8,
+        25.8,
+        6.5
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "mezzanine-office-window",
+      "low": [
+        33.98,
+        21.0,
+        4.6
+      ],
+      "high": [
+        34.0,
+        25.0,
+        5.8
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "forklift-body",
+      "low": [
+        31.0,
+        6.0,
+        0.0
+      ],
+      "high": [
+        33.4,
+        7.2,
+        1.4
+      ],
+      "material": "vehicle"
+    },
+    {
+      "name": "forklift-mast",
+      "low": [
+        30.7,
+        6.1,
+        0.0
+      ],
+      "high": [
+        31.0,
+        7.1,
+        3.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "forklift-guard",
+      "low": [
+        31.3,
+        6.0,
+        2.0
+      ],
+      "high": [
+        32.6,
+        7.2,
+        2.1
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "forklift-post",
+      "low": [
+        32.5,
+        6.0,
+        1.4
+      ],
+      "high": [
+        32.6,
+        7.2,
+        2.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "staging-pallet-0",
+      "low": [
+        12.0,
+        0.6,
+        0.0
+      ],
+      "high": [
+        13.2,
+        1.6,
+        1.0
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "staging-pallet-1",
+      "low": [
+        20.0,
+        0.6,
+        0.0
+      ],
+      "high": [
+        21.2,
+        1.6,
+        1.0
+      ],
+      "material": "cargo"
+    },
+    {
+      "name": "conveyor",
+      "low": [
+        4.0,
+        23.0,
+        0.0
+      ],
+      "high": [
+        26.0,
+        23.8,
+        0.9
+      ],
+      "material": "metal"
+    }
+  ],
+  "situations": [
+    {
+      "name": "aisle-run",
+      "route": [
+        [
+          1.5,
+          9.85,
+          2.0
+        ],
+        [
+          29.0,
+          9.85,
+          2.0
+        ]
+      ],
+      "description": "Fly the full length of a 3.1 m aisle between 7 m pallet racks.",
+      "tags": [
+        "narrow-aisle",
+        "long-range"
+      ]
+    },
+    {
+      "name": "aisle-switch",
+      "route": [
+        [
+          1.5,
+          5.65,
+          1.5
+        ],
+        [
+          28.4,
+          5.65,
+          1.5
+        ],
+        [
+          28.4,
+          18.25,
+          1.5
+        ],
+        [
+          3.0,
+          18.25,
+          1.5
+        ]
+      ],
+      "description": "Leave one aisle at the rack ends and return down another.",
+      "tags": [
+        "narrow-aisle",
+        "turn"
+      ]
+    },
+    {
+      "name": "over-the-racks",
+      "route": [
+        [
+          14.0,
+          1.5,
+          1.5
+        ],
+        [
+          14.0,
+          1.5,
+          7.8
+        ],
+        [
+          14.0,
+          24.5,
+          7.8
+        ],
+        [
+          14.0,
+          24.5,
+          1.5
+        ]
+      ],
+      "description": "Climb above the racks, fly between roof trusses and hanging lights, then descend.",
+      "tags": [
+        "altitude-change",
+        "overhang"
+      ]
+    },
+    {
+      "name": "under-mezzanine-and-up",
+      "route": [
+        [
+          33.0,
+          8.0,
+          1.5
+        ],
+        [
+          33.0,
+          18.0,
+          1.5
+        ],
+        [
+          28.6,
+          18.0,
+          1.5
+        ],
+        [
+          28.6,
+          18.0,
+          5.3
+        ],
+        [
+          32.5,
+          18.0,
+          5.3
+        ]
+      ],
+      "description": "Fly beneath the mezzanine deck between its columns, then climb over the railing onto it.",
+      "tags": [
+        "multi-level",
+        "overhang",
+        "columns"
+      ]
+    }
+  ],
+  "description": "High-bay warehouse with pallet racks, roof trusses, loading docks, a forklift and an office mezzanine.",
+  "validation": {
+    "passed": true,
+    "name": "warehouse",
+    "kind": "interior",
+    "geometry_sha256": "4e19bdd0ee3e935df9a65af796d08459bd08eb41420e0398f2a71e973459a898",
+    "collision_boxes": 395,
+    "materials": {
+      "cargo": 152,
+      "concrete": 18,
+      "glass": 10,
+      "lamp": 12,
+      "metal": 34,
+      "rack": 130,
+      "vehicle": 1,
+      "wall": 38
+    },
+    "body_radius_m": 0.16,
+    "extra_clearance_m": 0.2,
+    "situations": [
+      {
+        "name": "aisle-run",
+        "tags": [
+          "narrow-aisle",
+          "long-range"
+        ],
+        "route_length_m": 27.5,
+        "climb_m": 0.0,
+        "min_sampled_clearance_m": 1.3
+      },
+      {
+        "name": "aisle-switch",
+        "tags": [
+          "narrow-aisle",
+          "turn"
+        ],
+        "route_length_m": 64.9,
+        "climb_m": 0.0,
+        "min_sampled_clearance_m": 1.3
+      },
+      {
+        "name": "over-the-racks",
+        "tags": [
+          "altitude-change",
+          "overhang"
+        ],
+        "route_length_m": 35.6,
+        "climb_m": 6.3,
+        "min_sampled_clearance_m": 0.58
+      },
+      {
+        "name": "under-mezzanine-and-up",
+        "tags": [
+          "multi-level",
+          "overhang",
+          "columns"
+        ],
+        "route_length_m": 22.1,
+        "climb_m": 3.8,
+        "min_sampled_clearance_m": 0.5
+      }
+    ],
+    "claim": "Static geometric feasibility only; not a dynamically executable flight certificate"
+  }
+}

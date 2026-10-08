@@ -4,12 +4,17 @@ Start with the root [README](../README.md) for installation, demos and controls.
 
 | Topic | Guide |
 | --- | --- |
+| Plan and checklist toward unseen-map navigation | [Zero-shot plan](ZERO_SHOT_PLAN.md) |
+| Recovered historical learned reference | [Historical reference](HISTORICAL_REFERENCE.md) |
+| Transfer experiments 1 to 8 | [Transfer summary](TRANSFER_SUMMARY.md) |
+| Cleanup of the local runs directory | [Runs cleanup](RUNS_CLEANUP.md) |
 | Source data, graph coverage and engineered assumptions | [Data and model](DATA_AND_MODEL.md) |
 | Original creators, license and scientific references | [Credits and references](REFERENCES.md) |
 | Data flow and code responsibilities | [Architecture](ARCHITECTURE.md) |
 | Recurrent activity, flight, rewards and optimization formulas | [Mathematics](MATHEMATICS.md) |
 | Launchers and CLI commands | [Commands](COMMANDS.md) |
 | Cameras, neural colors and activity traces | [Flight and neuron inspection](FLIGHT_AND_NEURONS.md) |
+| Original building and street drafts, mesh export and future real-place integration | [Architectural scenes](ARCHITECTURAL_SCENES.md) |
 | Progressive map generation and geometry curriculum | [Progressive maps](GEOMETRY_CURRICULUM.md) |
 | Independent suites, selection and route measurements | [Generalization and routes](GENERALIZATION_AND_ROUTES.md) |
 | Controller revision numbers, descriptions, and historical aliases | [Controller versions](CONTROLLER_VERSIONS.md) |
@@ -40,3 +45,7 @@ Public result summaries distinguish validation selection from final assessment a
 Use the [contribution workflow](../CONTRIBUTING.md) for changes and the [roadmap](../ROADMAP.md) for proposed work. Public guides retain useful formulas, protocols and measured limits without including the detailed journal.
 
 [Guided navigation](GUIDED_NAVIGATION.md) explains privileged training supervision, teacher-free inference and the bounded correction protocol.
+
+[Large-room corrections and maze navigation](MAZE_NAVIGATION.md) records the room-contract correction, opening-search attempts, retained outcomes, and remaining verification.
+
+[Autonomous learning](AUTONOMOUS_LEARNING.md) records the return to planner-free learned actions, closure of planner development and the bounded PPO smoke.
