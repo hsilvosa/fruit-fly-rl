@@ -16,3 +16,13 @@ LICENSE text eol=lf
 *.jpg binary
 *.jpeg binary
 *.pdf binary
+
+# Published architectural asset hashes must survive Windows checkout.
+assets/architecture/**/*.obj text eol=lf
+assets/architecture/**/*.mtl text eol=lf
+assets/architecture/**/*.html text eol=lf
+
+# Frozen controller archives use exact-byte source hashes.
+fly_rl/navigation/*.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+fly_rl/connectome/*.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol
+scripts/check_planner_failures.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol

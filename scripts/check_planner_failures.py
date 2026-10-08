@@ -28,7 +28,7 @@ def validate_request(seeds, cap, kind):
         raise ValueError('Room seeds must be nonnegative integers')
     if seeds != list(range(seeds[0], seeds[0]+len(seeds))):
         raise ValueError('Room seeds must be contiguous, ordered, and distinct')
-    if kind not in ['reused-failure-diagnostic', 'frozen-prospective-development']:
+    if kind not in ['reused-failure-diagnostic', 'retained-development-diagnostic', 'frozen-prospective-development']:
         raise ValueError('Unsupported verification kind')
     limit = 12000 if kind == 'reused-failure-diagnostic' else 81920
     if type(cap) is not int or not len(seeds) <= cap <= limit or cap % len(seeds):
@@ -36,8 +36,10 @@ def validate_request(seeds, cap, kind):
 
 
 def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
-          deadline=None, frozen_sources=None, protocol_sha256=None):
+          deadline=None, frozen_sources=None, protocol_sha256=None, map_profile='large'):
     version = legacy_version(version)
+    from fly_rl.navigation.registry import VersionedPlannerPolicy
+    selection = VersionedPlannerPolicy(version, map_profile)
     seeds = [8500011, 8500012, 8500013] if seeds is None else seeds
     validate_request(seeds, cap, kind)
     batch = len(seeds)
@@ -82,17 +84,20 @@ def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
     elif version == 'v56':
         from fly_rl.navigation.goal_margin import GoalMarginController
         controller_type = GoalMarginController
-    else:
+    elif version == 'v55':
         controller_type = ObservedMapController
+    else:
+        controller_type = type(selection.controller)
+        readout_version = selection.specification['readout']
     output = Path(output)
     output.mkdir(parents=True, exist_ok=False)
     protected = {str(p): digest(p) for p in Path('runs').glob('*policy.*')}
-    for name in ['observed_map', 'goal_margin', 'cruise', 'free_margin', 'speed_margin', 'adaptive_margin', 'distance_stable', 'persistent_route', 'ray_consistent', 'momentum_guard']:
+    for name in ['observed_map', 'goal_margin', 'cruise', 'free_margin', 'speed_margin', 'adaptive_margin', 'distance_stable', 'persistent_route', 'ray_consistent', 'momentum_guard', 'dual_safety']:
         path = f'fly_rl/navigation/{name}.py'
         protected[path] = digest(path)
     state = dict(status='running', controller=version, controller_version=public_version(version), kind=kind,
                  seeds=seeds, physical_cap=cap, protocol_sha256=protocol_sha256, readout_version=readout_version,
-                 physical_transitions=0, added_training_transitions=0, optimizer_updates=0,
+                 map_profile=map_profile, physical_transitions=0, added_training_transitions=0, optimizer_updates=0,
                  reserved_test_evaluated=False, started_utc=datetime.now(timezone.utc).isoformat(),
                  protected_before=protected, episodes=[])
     import inspect
@@ -106,7 +111,7 @@ def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
     try:
         torch.set_num_threads(4)
         env = BrainEnv('data', batch, 'cuda', seed=seeds[0], mode='dense', dynamics='coordinated',
-                       sensor_version=SENSOR_V6, map_profile='large', history_frames=8,
+                       sensor_version=SENSOR_V6, map_profile=map_profile, history_frames=8,
                        history_stride=8, readout_version=readout_version, sensor_backend='torch-cuda')
         for brain_type in type(env.brain).__mro__:
             if brain_type is not object:
@@ -114,7 +119,7 @@ def check(output, version, cap, seeds=None, kind='reused-failure-diagnostic',
                 state['source_hashes'][str(path)] = digest(path)
         env.seed(seeds[0])
         features = env.reset()
-        controllers = [controller_type() for _ in seeds]
+        controllers = [VersionedPlannerPolicy(version, map_profile).controller for _ in seeds]
         active = np.ones(batch, bool)
         initial = [(w.position.copy(), w.yaw) for w in env.worlds]
         previous = [w.position.copy() for w in env.worlds]

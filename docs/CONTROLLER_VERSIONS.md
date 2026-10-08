@@ -55,3 +55,62 @@ Project package/release versions remain separate. Experiment directories should 
 ## Migration verification
 
 The migration passed 389 regression tests and the 54-test focused compatibility subset. A short full-graph rendered launch displayed planner-1.2 and recorded twenty finite steps; its archive integrity passed, with no completed episode or optimization. Existing frozen results were also reported offline using the public version arguments, reproducing the 15/16 tie. Original protected files retained their hashes. [Verification details](VERIFICATION.md#numbered-controller-naming-migration).
+
+
+## Room-aware experimental branch
+
+Planner-1.3-exp.1 corrects room decoding and commits local references; exp.2 increases unknown-cell costs and regressed retained large cases; exp.3 adds observed opening references; exp.4 adds sample-aware clustering and completed-plane memory, reaching both retained large failures. Exp.5 considers multiple partially visible wall candidates. Exp.5 subsequently regressed both maze flights and has a recorded diagonal-fit geometry failure. Exp.6 adds a beacon-aligned surface constraint but also regressed both retained flights. Exp.7 returns to strongest-surface selection with a distance-aware vertical span. Exp.7 also timed out in both maze rooms. Exp.8 tests clean-range occupancy with unchanged dual readout and safety. Exp.8 reached one retained maze goal, while the other timed out. Exp.9 raises requested cruise speed within the unchanged physical cap and braking guards and reaches all six retained large rooms plus all eight fresh development rooms, but fails both retained maze flights. Exp.10 adds stalled-reference vetoes, reaching one maze goal. Exp.11 reaches both retained maze goals after refining stronger same-opening center support; its fresh check reached only 5/8 and failed the development rule. Exp.12 reached only 6/8 retained goals and is not selected. Exp.13 reached zero of eight retained goals with a finer 0.4-unit map and its one-voxel buffer. Exp.14 surface fallback reached zero goals and one collision. Exp.15 confined cruising and exp.16 visit pressure each reached four goals without collisions. All four were rejected. Exp.17 clean initial-beacon alignment and exp.18 observed-clearance references each reached five goals with regressions. Exp.19 visible-goal handover reached six goals without collisions and failed its selection rule. Exp.20 stable handover and exp.21 committed handover each reached six goals without collisions. Both failed the selection rule. Exp.22 tests repeatable full-graph execution with a distinct readout fingerprint. All twenty-two support `large` and `maze`; frozen earlier revisions remain large-only. Reliable maze navigation is not yet established; actual retained arrivals and the five-of-eight fresh result are recorded. None changes the default or trains movement weights. [Development evidence](MAZE_NAVIGATION.md) records outcomes and limits.
+
+
+| New candidate | Artifact alias | Tested change | Current status |
+| --- | --- | --- | --- |
+| `planner-1.3-exp.14` | `portal-reference-exp12` | Strongly supported alternate surfaces and close goal handover | Rejected: 0/8 goals, 1 collision |
+| `planner-1.3-exp.15` | `portal-reference-exp13` | Confined request 1.0 to 1.3, unchanged braking | Rejected: 4/8 goals, 0 collisions |
+| `planner-1.3-exp.16` | `portal-reference-exp14` | Bounded visit cost after weak progress | Rejected: 4/8 goals, 0 collisions |
+| `planner-1.3-exp.17` | `portal-reference-exp15` | Clean map with initial-beacon surface alignment | Rejected: 5/8 goals, 0 collisions; corridor assumption |
+| `planner-1.3-exp.18` | `portal-reference-exp16` | Observed opening clearance reference | Rejected: 5/8 goals, 0 collisions |
+| `planner-1.3-exp.19` | `portal-reference-exp17` | Neural-ray visible-goal handover | Rejected: 6/8 goals, 0 collisions |
+| `planner-1.3-exp.20` | `portal-reference-exp18` | Sustained distant goal visibility | Rejected: 6/8 goals, 0 collisions |
+| `planner-1.3-exp.21` | `portal-reference-exp19` | Committed visible-goal handover | Rejected: 6/8 goals, 0 collisions |
+| `planner-1.3-exp.22` | `repeatable-goal-exp1` | Repeatable full-graph visible-goal execution | Replay verified; incomplete at wall limit (five goals, three unfinished) |
+| `planner-1.3-exp.23` | `segmented-goal-exp1` | Repeatable segmented full-graph visible-goal execution | Replay verified; 6/8 retained goals, zero collisions; not selected |
+
+Exp.23 completed at 6/8 retained goals, zero collisions and two timeouts and was not selected.
+
+| Candidate | Artifact alias | Change | Status |
+| --- | --- | --- | --- |
+| planner-1.3-exp.24 | wall-survey-exp1 | Observed blocking-wall opening survey | 6/8 retained goals with two regressions; not selected |
+
+Exp.24 completed at 6/8 retained goals, zero collisions and two regressed timeouts; it was not selected.
+
+| Candidate | Artifact alias | Change | Status |
+| --- | --- | --- | --- |
+| planner-1.3-exp.25 | clearance-goal-exp1 | Clearance- and crossing-aware goal handover on exp.23 | 7/8 retained, then 5/8 fresh goals; fresh gate failed |
+
+Exp.25 completed at 7/8 retained goals with zero collisions and one timeout, preserving all six exp.23 successes. It passed the retained gate; the same source hashes are frozen for a fresh eight-map check. It is not promoted yet.
+
+Exp.25 completed its fresh suite at 5/8 goals, zero collisions and three timeouts. It failed the 7/8 criterion and is not promoted; work is paused. Its 7/8 retained correction outcome remains separate. No controller or checkpoint alias was replaced.
+
+
+planner-1.3-exp.26 (`distant-opening-exp1`) follows exp.25. It preserves nearby opening choices and tests a 12-unit fallback detection window when the 6-unit detector finds none. A retained full-connectome check is running; it is not promoted.
+
+
+Exp.26 completed at 6/8 retained goals with zero collisions and two timeouts; no promotion. Planner-1.3-exp.27 (`progress-wall-scan-exp1`) tests bounded observed-wall recovery after longitudinal nonprogress, preserving the exp.26 range correction. It remains experimental.
+
+
+Exp.27 completed at 4/8 retained goals, zero collisions and four timeouts; it was rejected after three prior-success regressions. Planner-1.3-exp.28 (`revisit-wall-scan-exp1`) gates the same bounded recovery on sustained revisits rather than longitudinal progress alone; its retained check is running and it is not promoted.
+
+
+Exp.28 completed at 6/8 retained goals with zero collisions, preserving all six exp.26 arrivals but not fixing the remaining two timeouts. Exp.29 (`coverage-wall-scan-exp1`) tests visit-coverage direction selection within the unchanged bounded recovery; its retained check is running. Neither has been promoted.
+
+Planner-1.3-exp.30 adds bounded release of unreachable crossing references to exp.29. Exp.29 completed at 6/8 retained goals without collisions and was not promoted. A higher experimental number does not imply better results.
+
+Planner-1.3-exp.31 tests completed-surface normal consensus on top of exp.29. It excludes the rejected exp.30 crossing release. It is experimental and has no promotion evidence yet.
+
+Planner-1.3-exp.32 adds terminal-distance gating to exp.31, whose retained check reached 6/8 with a regression and was not promoted. The new candidate has no completed flight evidence yet.
+
+## Architectural controller family
+
+Planner-1.4-exp.1 is the separate architectural adapter, receiving the selected scene dimensions and nine-frame segmented dual neural features. It is available through ArchitecturalPlannerPolicy and the demo architecture-scene selector, separately from the procedural version registry. Its finer grid does not change frozen maze/large contracts. Short CUDA integration and viewer controls are verified; the initial full-route development check reached 18/21 goals with zero collisions and three timeouts. It is not promoted as an independently verified real-world navigator.
+
+Architectural exp.2 adds broad observed-clear escape recovery; its 18/21 check traded an apartment success for a warehouse fix and it was not promoted. Exp.3 restricts escape to planned portal crossings; it reached 19/21 original goals without collisions and preserved all exp.1 successes. Both are explicit verification-runner candidates, not procedural registry entries or new demo defaults. Further candidate verification is deferred at the requested pause.

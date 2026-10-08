@@ -1,0 +1,2080 @@
+{
+  "schema": "architecture-0.2",
+  "units": "meters",
+  "origin": "southwest ground corner",
+  "axes": "x east, y north, z up",
+  "license": "MIT",
+  "provenance": "Original project design; not a reconstruction of a real location",
+  "name": "apartment",
+  "kind": "interior",
+  "size": [
+    16.0,
+    12.0,
+    2.8
+  ],
+  "solids": [
+    {
+      "name": "shell-south-pier-0",
+      "low": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "high": [
+        0.7,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-sill-0",
+      "low": [
+        0.7,
+        0.0,
+        0.0
+      ],
+      "high": [
+        2.3,
+        0.2,
+        0.9
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-lintel-0",
+      "low": [
+        0.7,
+        0.0,
+        2.3
+      ],
+      "high": [
+        2.3,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-pane-0",
+      "low": [
+        0.7,
+        0.08,
+        0.9
+      ],
+      "high": [
+        2.3,
+        0.12,
+        2.3
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shell-south-pier-1",
+      "low": [
+        2.3,
+        0.0,
+        0.0
+      ],
+      "high": [
+        3.3,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-sill-1",
+      "low": [
+        3.3,
+        0.0,
+        0.0
+      ],
+      "high": [
+        4.9,
+        0.2,
+        0.9
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-lintel-1",
+      "low": [
+        3.3,
+        0.0,
+        2.3
+      ],
+      "high": [
+        4.9,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-pane-1",
+      "low": [
+        3.3,
+        0.08,
+        0.9
+      ],
+      "high": [
+        4.9,
+        0.12,
+        2.3
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shell-south-pier-2",
+      "low": [
+        4.9,
+        0.0,
+        0.0
+      ],
+      "high": [
+        5.9,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-sill-2",
+      "low": [
+        5.9,
+        0.0,
+        0.0
+      ],
+      "high": [
+        7.5,
+        0.2,
+        0.9
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-lintel-2",
+      "low": [
+        5.9,
+        0.0,
+        2.3
+      ],
+      "high": [
+        7.5,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-pane-2",
+      "low": [
+        5.9,
+        0.08,
+        0.9
+      ],
+      "high": [
+        7.5,
+        0.12,
+        2.3
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shell-south-pier-3",
+      "low": [
+        7.5,
+        0.0,
+        0.0
+      ],
+      "high": [
+        8.5,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-sill-3",
+      "low": [
+        8.5,
+        0.0,
+        0.0
+      ],
+      "high": [
+        10.1,
+        0.2,
+        0.9
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-lintel-3",
+      "low": [
+        8.5,
+        0.0,
+        2.3
+      ],
+      "high": [
+        10.1,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-pane-3",
+      "low": [
+        8.5,
+        0.08,
+        0.9
+      ],
+      "high": [
+        10.1,
+        0.12,
+        2.3
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shell-south-pier-4",
+      "low": [
+        10.1,
+        0.0,
+        0.0
+      ],
+      "high": [
+        11.1,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-sill-4",
+      "low": [
+        11.1,
+        0.0,
+        0.0
+      ],
+      "high": [
+        12.7,
+        0.2,
+        0.9
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-lintel-4",
+      "low": [
+        11.1,
+        0.0,
+        2.3
+      ],
+      "high": [
+        12.7,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-pane-4",
+      "low": [
+        11.1,
+        0.08,
+        0.9
+      ],
+      "high": [
+        12.7,
+        0.12,
+        2.3
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shell-south-pier-5",
+      "low": [
+        12.7,
+        0.0,
+        0.0
+      ],
+      "high": [
+        13.7,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-sill-5",
+      "low": [
+        13.7,
+        0.0,
+        0.0
+      ],
+      "high": [
+        15.3,
+        0.2,
+        0.9
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-lintel-5",
+      "low": [
+        13.7,
+        0.0,
+        2.3
+      ],
+      "high": [
+        15.3,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-south-pane-5",
+      "low": [
+        13.7,
+        0.08,
+        0.9
+      ],
+      "high": [
+        15.3,
+        0.12,
+        2.3
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shell-south-end",
+      "low": [
+        15.3,
+        0.0,
+        0.0
+      ],
+      "high": [
+        16.0,
+        0.2,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-pier-0",
+      "low": [
+        0.0,
+        11.8,
+        0.0
+      ],
+      "high": [
+        2.6,
+        12.0,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-sill-0",
+      "low": [
+        2.6,
+        11.8,
+        0.0
+      ],
+      "high": [
+        3.8,
+        12.0,
+        1.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-lintel-0",
+      "low": [
+        2.6,
+        11.8,
+        2.2
+      ],
+      "high": [
+        3.8,
+        12.0,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-pane-0",
+      "low": [
+        2.6,
+        11.88,
+        1.0
+      ],
+      "high": [
+        3.8,
+        11.92,
+        2.2
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shell-north-pier-1",
+      "low": [
+        3.8,
+        11.8,
+        0.0
+      ],
+      "high": [
+        5.8,
+        12.0,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-sill-1",
+      "low": [
+        5.8,
+        11.8,
+        0.0
+      ],
+      "high": [
+        7.0,
+        12.0,
+        1.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-lintel-1",
+      "low": [
+        5.8,
+        11.8,
+        2.2
+      ],
+      "high": [
+        7.0,
+        12.0,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-pane-1",
+      "low": [
+        5.8,
+        11.88,
+        1.0
+      ],
+      "high": [
+        7.0,
+        11.92,
+        2.2
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shell-north-pier-2",
+      "low": [
+        7.0,
+        11.8,
+        0.0
+      ],
+      "high": [
+        9.0,
+        12.0,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-sill-2",
+      "low": [
+        9.0,
+        11.8,
+        0.0
+      ],
+      "high": [
+        10.2,
+        12.0,
+        1.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-lintel-2",
+      "low": [
+        9.0,
+        11.8,
+        2.2
+      ],
+      "high": [
+        10.2,
+        12.0,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-pane-2",
+      "low": [
+        9.0,
+        11.88,
+        1.0
+      ],
+      "high": [
+        10.2,
+        11.92,
+        2.2
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shell-north-pier-3",
+      "low": [
+        10.2,
+        11.8,
+        0.0
+      ],
+      "high": [
+        12.2,
+        12.0,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-sill-3",
+      "low": [
+        12.2,
+        11.8,
+        0.0
+      ],
+      "high": [
+        13.4,
+        12.0,
+        1.0
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-lintel-3",
+      "low": [
+        12.2,
+        11.8,
+        2.2
+      ],
+      "high": [
+        13.4,
+        12.0,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-north-pane-3",
+      "low": [
+        12.2,
+        11.88,
+        1.0
+      ],
+      "high": [
+        13.4,
+        11.92,
+        2.2
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "shell-north-end",
+      "low": [
+        13.4,
+        11.8,
+        0.0
+      ],
+      "high": [
+        16.0,
+        12.0,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-west-end",
+      "low": [
+        0.0,
+        0.2,
+        0.0
+      ],
+      "high": [
+        0.2,
+        11.8,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "shell-east-end",
+      "low": [
+        15.8,
+        0.2,
+        0.0
+      ],
+      "high": [
+        16.0,
+        11.8,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "hall-south-pier-0",
+      "low": [
+        0.2,
+        7.0,
+        0.0
+      ],
+      "high": [
+        3.7,
+        7.15,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "hall-south-lintel-0",
+      "low": [
+        3.7,
+        7.0,
+        2.2
+      ],
+      "high": [
+        5.3,
+        7.15,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "hall-south-pier-1",
+      "low": [
+        5.3,
+        7.0,
+        0.0
+      ],
+      "high": [
+        12.05,
+        7.15,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "hall-south-lintel-1",
+      "low": [
+        12.05,
+        7.0,
+        2.1
+      ],
+      "high": [
+        12.95,
+        7.15,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "hall-south-end",
+      "low": [
+        12.95,
+        7.0,
+        0.0
+      ],
+      "high": [
+        15.8,
+        7.15,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "living-study-end",
+      "low": [
+        9.0,
+        0.2,
+        0.0
+      ],
+      "high": [
+        9.15,
+        7.0,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "hall-north-pier-0",
+      "low": [
+        0.2,
+        8.4,
+        0.0
+      ],
+      "high": [
+        2.55,
+        8.55,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "hall-north-lintel-0",
+      "low": [
+        2.55,
+        8.4,
+        2.1
+      ],
+      "high": [
+        3.45,
+        8.55,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "hall-north-pier-1",
+      "low": [
+        3.45,
+        8.4,
+        0.0
+      ],
+      "high": [
+        6.55,
+        8.55,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "hall-north-lintel-1",
+      "low": [
+        6.55,
+        8.4,
+        2.1
+      ],
+      "high": [
+        7.45,
+        8.55,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "hall-north-pier-2",
+      "low": [
+        7.45,
+        8.4,
+        0.0
+      ],
+      "high": [
+        10.55,
+        8.55,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "hall-north-lintel-2",
+      "low": [
+        10.55,
+        8.4,
+        2.1
+      ],
+      "high": [
+        11.45,
+        8.55,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "hall-north-end",
+      "low": [
+        11.45,
+        8.4,
+        0.0
+      ],
+      "high": [
+        15.8,
+        8.55,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "bedroom-bath-end",
+      "low": [
+        5.5,
+        8.55,
+        0.0
+      ],
+      "high": [
+        5.65,
+        11.8,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "bath-bedroom-end",
+      "low": [
+        8.6,
+        8.55,
+        0.0
+      ],
+      "high": [
+        8.75,
+        11.8,
+        2.8
+      ],
+      "material": "wall"
+    },
+    {
+      "name": "counter",
+      "low": [
+        0.2,
+        2.8,
+        0.0
+      ],
+      "high": [
+        0.85,
+        6.0,
+        0.9
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "upper-cabinets",
+      "low": [
+        0.2,
+        2.8,
+        1.5
+      ],
+      "high": [
+        0.55,
+        6.0,
+        2.2
+      ],
+      "material": "furniture"
+    },
+    {
+      "name": "fridge",
+      "low": [
+        0.2,
+        6.05,
+        0.0
+      ],
+      "high": [
+        0.9,
+        6.85,
+        2.0
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "island",
+      "low": [
+        2.4,
+        4.2,
+        0.0
+      ],
+      "high": [
+        4.2,
+        5.1,
+        0.95
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "island-lamp-0-cord",
+      "low": [
+        2.89,
+        4.64,
+        2.25
+      ],
+      "high": [
+        2.91,
+        4.66,
+        2.8
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "island-lamp-0-shade",
+      "low": [
+        2.725,
+        4.475,
+        2.0
+      ],
+      "high": [
+        3.075,
+        4.825,
+        2.25
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "island-lamp-1-cord",
+      "low": [
+        3.69,
+        4.64,
+        2.25
+      ],
+      "high": [
+        3.71,
+        4.66,
+        2.8
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "island-lamp-1-shade",
+      "low": [
+        3.525,
+        4.475,
+        2.0
+      ],
+      "high": [
+        3.875,
+        4.825,
+        2.25
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "dining-table-top",
+      "low": [
+        5.6,
+        4.4,
+        0.71
+      ],
+      "high": [
+        7.4,
+        5.3,
+        0.75
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "dining-table-leg-0",
+      "low": [
+        5.6,
+        4.4,
+        0.0
+      ],
+      "high": [
+        5.66,
+        4.46,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "dining-table-leg-1",
+      "low": [
+        7.34,
+        4.4,
+        0.0
+      ],
+      "high": [
+        7.4,
+        4.46,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "dining-table-leg-2",
+      "low": [
+        5.6,
+        5.24,
+        0.0
+      ],
+      "high": [
+        5.66,
+        5.3,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "dining-table-leg-3",
+      "low": [
+        7.34,
+        5.24,
+        0.0
+      ],
+      "high": [
+        7.4,
+        5.3,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "dining-chair-0-seat",
+      "low": [
+        5.825,
+        3.85,
+        0.0
+      ],
+      "high": [
+        6.275,
+        4.3,
+        0.46
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "dining-chair-0-back",
+      "low": [
+        5.825,
+        3.85,
+        0.46
+      ],
+      "high": [
+        6.275,
+        3.92,
+        0.9
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "dining-chair-1-seat",
+      "low": [
+        5.825,
+        5.4,
+        0.0
+      ],
+      "high": [
+        6.275,
+        5.85,
+        0.46
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "dining-chair-1-back",
+      "low": [
+        5.825,
+        5.78,
+        0.46
+      ],
+      "high": [
+        6.275,
+        5.85,
+        0.9
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "dining-chair-2-seat",
+      "low": [
+        6.725,
+        3.85,
+        0.0
+      ],
+      "high": [
+        7.175,
+        4.3,
+        0.46
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "dining-chair-2-back",
+      "low": [
+        6.725,
+        3.85,
+        0.46
+      ],
+      "high": [
+        7.175,
+        3.92,
+        0.9
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "dining-chair-3-seat",
+      "low": [
+        6.725,
+        5.4,
+        0.0
+      ],
+      "high": [
+        7.175,
+        5.85,
+        0.46
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "dining-chair-3-back",
+      "low": [
+        6.725,
+        5.78,
+        0.46
+      ],
+      "high": [
+        7.175,
+        5.85,
+        0.9
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "dining-lamp-cord",
+      "low": [
+        6.49,
+        4.84,
+        2.15
+      ],
+      "high": [
+        6.51,
+        4.86,
+        2.8
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "dining-lamp-shade",
+      "low": [
+        6.25,
+        4.6,
+        1.9
+      ],
+      "high": [
+        6.75,
+        5.1,
+        2.15
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "sofa-seat",
+      "low": [
+        5.4,
+        0.9,
+        0.0
+      ],
+      "high": [
+        6.3,
+        3.1,
+        0.42
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "sofa-back",
+      "low": [
+        5.4,
+        0.9,
+        0.42
+      ],
+      "high": [
+        5.62,
+        3.1,
+        0.85
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "sofa-arm-0",
+      "low": [
+        5.4,
+        0.9,
+        0.42
+      ],
+      "high": [
+        6.3,
+        1.12,
+        0.62
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "sofa-arm-1",
+      "low": [
+        5.4,
+        2.88,
+        0.42
+      ],
+      "high": [
+        6.3,
+        3.1,
+        0.62
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "coffee-table-top",
+      "low": [
+        6.7,
+        1.4,
+        0.38
+      ],
+      "high": [
+        7.5,
+        2.6,
+        0.42
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "coffee-table-leg-0",
+      "low": [
+        6.7,
+        1.4,
+        0.0
+      ],
+      "high": [
+        6.76,
+        1.46,
+        0.38
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "coffee-table-leg-1",
+      "low": [
+        7.44,
+        1.4,
+        0.0
+      ],
+      "high": [
+        7.5,
+        1.46,
+        0.38
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "coffee-table-leg-2",
+      "low": [
+        6.7,
+        2.54,
+        0.0
+      ],
+      "high": [
+        6.76,
+        2.6,
+        0.38
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "coffee-table-leg-3",
+      "low": [
+        7.44,
+        2.54,
+        0.0
+      ],
+      "high": [
+        7.5,
+        2.6,
+        0.38
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "tv-unit",
+      "low": [
+        8.45,
+        1.0,
+        0.0
+      ],
+      "high": [
+        8.95,
+        3.0,
+        0.5
+      ],
+      "material": "furniture"
+    },
+    {
+      "name": "tv",
+      "low": [
+        8.88,
+        1.2,
+        0.9
+      ],
+      "high": [
+        8.95,
+        2.8,
+        1.7
+      ],
+      "material": "screen"
+    },
+    {
+      "name": "floor-lamp-pole",
+      "low": [
+        5.05,
+        0.45,
+        0.0
+      ],
+      "high": [
+        5.1,
+        0.5,
+        1.5
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "floor-lamp-shade",
+      "low": [
+        4.9,
+        0.3,
+        1.5
+      ],
+      "high": [
+        5.25,
+        0.65,
+        1.75
+      ],
+      "material": "lamp"
+    },
+    {
+      "name": "living-plant-pot",
+      "low": [
+        0.4,
+        0.4,
+        0.0
+      ],
+      "high": [
+        0.85,
+        0.85,
+        0.45
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "living-plant-leaves",
+      "low": [
+        0.2875,
+        0.2875,
+        0.45
+      ],
+      "high": [
+        0.9625,
+        0.9625,
+        1.5
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "study-desk-top",
+      "low": [
+        13.8,
+        1.0,
+        0.71
+      ],
+      "high": [
+        15.6,
+        1.8,
+        0.75
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "study-desk-leg-0",
+      "low": [
+        13.8,
+        1.0,
+        0.0
+      ],
+      "high": [
+        13.86,
+        1.06,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "study-desk-leg-1",
+      "low": [
+        15.54,
+        1.0,
+        0.0
+      ],
+      "high": [
+        15.6,
+        1.06,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "study-desk-leg-2",
+      "low": [
+        13.8,
+        1.74,
+        0.0
+      ],
+      "high": [
+        13.86,
+        1.8,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "study-desk-leg-3",
+      "low": [
+        15.54,
+        1.74,
+        0.0
+      ],
+      "high": [
+        15.6,
+        1.8,
+        0.71
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "study-chair-seat",
+      "low": [
+        14.5,
+        1.9,
+        0.0
+      ],
+      "high": [
+        14.95,
+        2.35,
+        0.46
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "study-chair-back",
+      "low": [
+        14.5,
+        2.28,
+        0.46
+      ],
+      "high": [
+        14.95,
+        2.35,
+        0.9
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "study-books-side-0",
+      "low": [
+        9.15,
+        1.0,
+        0.0
+      ],
+      "high": [
+        9.5,
+        1.03,
+        2.2
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "study-books-side-1",
+      "low": [
+        9.15,
+        4.97,
+        0.0
+      ],
+      "high": [
+        9.5,
+        5.0,
+        2.2
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "study-books-board-0",
+      "low": [
+        9.15,
+        1.0,
+        0.0
+      ],
+      "high": [
+        9.5,
+        5.0,
+        0.03
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "study-books-board-1",
+      "low": [
+        9.15,
+        1.0,
+        0.44
+      ],
+      "high": [
+        9.5,
+        5.0,
+        0.47
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "study-books-board-2",
+      "low": [
+        9.15,
+        1.0,
+        0.88
+      ],
+      "high": [
+        9.5,
+        5.0,
+        0.91
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "study-books-board-3",
+      "low": [
+        9.15,
+        1.0,
+        1.32
+      ],
+      "high": [
+        9.5,
+        5.0,
+        1.35
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "study-books-board-4",
+      "low": [
+        9.15,
+        1.0,
+        1.76
+      ],
+      "high": [
+        9.5,
+        5.0,
+        1.79
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "study-books-board-5",
+      "low": [
+        9.15,
+        1.0,
+        2.17
+      ],
+      "high": [
+        9.5,
+        5.0,
+        2.2
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "reading-chair-seat",
+      "low": [
+        10.2,
+        4.6,
+        0.0
+      ],
+      "high": [
+        11.2,
+        5.6,
+        0.42
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "reading-chair-back",
+      "low": [
+        10.2,
+        4.6,
+        0.42
+      ],
+      "high": [
+        10.42,
+        5.6,
+        0.85
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "reading-chair-arm-0",
+      "low": [
+        10.2,
+        4.6,
+        0.42
+      ],
+      "high": [
+        11.2,
+        4.82,
+        0.62
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "reading-chair-arm-1",
+      "low": [
+        10.2,
+        5.38,
+        0.42
+      ],
+      "high": [
+        11.2,
+        5.6,
+        0.62
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "study-plant-pot",
+      "low": [
+        15.2,
+        6.2,
+        0.0
+      ],
+      "high": [
+        15.65,
+        6.65,
+        0.45
+      ],
+      "material": "stone"
+    },
+    {
+      "name": "study-plant-leaves",
+      "low": [
+        15.0875,
+        6.0875,
+        0.45
+      ],
+      "high": [
+        15.7625,
+        6.7625,
+        1.5
+      ],
+      "material": "vegetation"
+    },
+    {
+      "name": "bed-1-base",
+      "low": [
+        1.2,
+        9.7,
+        0.0
+      ],
+      "high": [
+        2.8,
+        11.8,
+        0.3
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "bed-1-mattress",
+      "low": [
+        1.23,
+        9.73,
+        0.3
+      ],
+      "high": [
+        2.77,
+        11.77,
+        0.55
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "bed-1-headboard",
+      "low": [
+        1.2,
+        11.72,
+        0.0
+      ],
+      "high": [
+        2.8,
+        11.8,
+        1.1
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "nightstand-1",
+      "low": [
+        0.6,
+        11.3,
+        0.0
+      ],
+      "high": [
+        1.1,
+        11.8,
+        0.55
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "wardrobe-1",
+      "low": [
+        4.85,
+        9.6,
+        0.0
+      ],
+      "high": [
+        5.45,
+        11.8,
+        2.2
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "bathtub",
+      "low": [
+        5.65,
+        11.05,
+        0.0
+      ],
+      "high": [
+        7.35,
+        11.8,
+        0.55
+      ],
+      "material": "ceramic"
+    },
+    {
+      "name": "shower-screen",
+      "low": [
+        6.8,
+        11.05,
+        0.55
+      ],
+      "high": [
+        6.84,
+        11.8,
+        1.9
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "toilet-bowl",
+      "low": [
+        5.7,
+        8.85,
+        0.0
+      ],
+      "high": [
+        6.1,
+        9.45,
+        0.42
+      ],
+      "material": "ceramic"
+    },
+    {
+      "name": "toilet-tank",
+      "low": [
+        5.65,
+        8.55,
+        0.0
+      ],
+      "high": [
+        6.15,
+        8.8,
+        0.8
+      ],
+      "material": "ceramic"
+    },
+    {
+      "name": "vanity",
+      "low": [
+        8.05,
+        9.2,
+        0.0
+      ],
+      "high": [
+        8.6,
+        10.2,
+        0.85
+      ],
+      "material": "furniture"
+    },
+    {
+      "name": "mirror",
+      "low": [
+        8.56,
+        9.25,
+        1.1
+      ],
+      "high": [
+        8.6,
+        10.15,
+        1.9
+      ],
+      "material": "glass"
+    },
+    {
+      "name": "bed-2-base",
+      "low": [
+        11.5,
+        9.7,
+        0.0
+      ],
+      "high": [
+        13.3,
+        11.8,
+        0.3
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "bed-2-mattress",
+      "low": [
+        11.53,
+        9.73,
+        0.3
+      ],
+      "high": [
+        13.27,
+        11.77,
+        0.55
+      ],
+      "material": "fabric"
+    },
+    {
+      "name": "bed-2-headboard",
+      "low": [
+        11.5,
+        11.72,
+        0.0
+      ],
+      "high": [
+        13.3,
+        11.8,
+        1.1
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "nightstand-2",
+      "low": [
+        13.4,
+        11.3,
+        0.0
+      ],
+      "high": [
+        13.9,
+        11.8,
+        0.55
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "wardrobe-2",
+      "low": [
+        8.75,
+        11.2,
+        0.0
+      ],
+      "high": [
+        10.6,
+        11.8,
+        2.2
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "fan-rod",
+      "low": [
+        12.35,
+        10.7,
+        2.35
+      ],
+      "high": [
+        12.45,
+        10.8,
+        2.8
+      ],
+      "material": "metal"
+    },
+    {
+      "name": "fan-blades-x",
+      "low": [
+        11.8,
+        10.69,
+        2.3
+      ],
+      "high": [
+        13.0,
+        10.81,
+        2.35
+      ],
+      "material": "wood"
+    },
+    {
+      "name": "fan-blades-y",
+      "low": [
+        12.34,
+        10.15,
+        2.3
+      ],
+      "high": [
+        12.46,
+        11.35,
+        2.35
+      ],
+      "material": "wood"
+    }
+  ],
+  "situations": [
+    {
+      "name": "sofa-to-bedroom",
+      "route": [
+        [
+          4.65,
+          2.2,
+          1.4
+        ],
+        [
+          4.65,
+          7.78,
+          1.4
+        ],
+        [
+          11.0,
+          7.78,
+          1.4
+        ],
+        [
+          11.0,
+          10.0,
+          1.4
+        ]
+      ],
+      "description": "Pass between kitchen island and dining table, through the living-room arch, along a 1.25 m hall and into a bedroom.",
+      "tags": [
+        "doorway",
+        "narrow-hall",
+        "clutter"
+      ]
+    },
+    {
+      "name": "study-to-bathroom",
+      "route": [
+        [
+          12.5,
+          3.0,
+          1.3
+        ],
+        [
+          12.5,
+          7.78,
+          1.3
+        ],
+        [
+          7.0,
+          7.78,
+          1.3
+        ],
+        [
+          7.0,
+          9.6,
+          1.3
+        ]
+      ],
+      "description": "Leave the study through a 0.9 m door and enter the bathroom through another.",
+      "tags": [
+        "doorway",
+        "narrow-hall"
+      ]
+    },
+    {
+      "name": "kitchen-low-to-high",
+      "route": [
+        [
+          1.6,
+          3.4,
+          0.6
+        ],
+        [
+          3.3,
+          3.4,
+          1.5
+        ],
+        [
+          3.3,
+          6.2,
+          1.5
+        ]
+      ],
+      "description": "Start low beside the counter, climb and cross the island beneath two hanging lamps.",
+      "tags": [
+        "altitude-change",
+        "overhang"
+      ]
+    }
+  ],
+  "description": "Two-bedroom apartment: open kitchen and living room, study, bathroom and a 1.25 m hallway.",
+  "validation": {
+    "passed": true,
+    "name": "apartment",
+    "kind": "interior",
+    "geometry_sha256": "6baa57ca54820064433114a1987ca56e3ebbccf1ff0e1ac904380eca664edaa9",
+    "collision_boxes": 137,
+    "materials": {
+      "ceramic": 3,
+      "fabric": 20,
+      "furniture": 3,
+      "glass": 12,
+      "lamp": 4,
+      "metal": 18,
+      "screen": 1,
+      "stone": 4,
+      "vegetation": 2,
+      "wall": 49,
+      "wood": 21
+    },
+    "body_radius_m": 0.16,
+    "extra_clearance_m": 0.2,
+    "situations": [
+      {
+        "name": "sofa-to-bedroom",
+        "tags": [
+          "doorway",
+          "narrow-hall",
+          "clutter"
+        ],
+        "route_length_m": 14.15,
+        "climb_m": 0.0,
+        "min_sampled_clearance_m": 0.45
+      },
+      {
+        "name": "study-to-bathroom",
+        "tags": [
+          "doorway",
+          "narrow-hall"
+        ],
+        "route_length_m": 12.1,
+        "climb_m": 0.0,
+        "min_sampled_clearance_m": 0.45
+      },
+      {
+        "name": "kitchen-low-to-high",
+        "tags": [
+          "altitude-change",
+          "overhang"
+        ],
+        "route_length_m": 4.7235,
+        "climb_m": 0.9,
+        "min_sampled_clearance_m": 0.548
+      }
+    ],
+    "claim": "Static geometric feasibility only; not a dynamically executable flight certificate"
+  }
+}

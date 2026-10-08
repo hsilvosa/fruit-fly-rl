@@ -1,0 +1,42 @@
+newmtl bark
+Kd 0.42 0.31 0.22
+
+newmtl building
+Kd 0.74 0.71 0.66
+
+newmtl canvas
+Kd 0.86 0.4 0.3
+
+newmtl concrete
+Kd 0.66 0.66 0.64
+
+newmtl fabric
+Kd 0.42 0.47 0.62
+
+newmtl glass
+Kd 0.55 0.76 0.84
+d 0.35
+
+newmtl ground
+Kd 0.86 0.86 0.83
+
+newmtl lamp
+Kd 0.98 0.86 0.52
+
+newmtl metal
+Kd 0.38 0.41 0.45
+
+newmtl stone
+Kd 0.7 0.66 0.6
+
+newmtl vegetation
+Kd 0.33 0.55 0.3
+
+newmtl wall
+Kd 0.8 0.8 0.77
+
+newmtl water
+Kd 0.36 0.62 0.8
+
+newmtl wood
+Kd 0.64 0.45 0.28

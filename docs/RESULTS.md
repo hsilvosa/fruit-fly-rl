@@ -217,3 +217,181 @@ The two arms used 105,488 physical transitions in total, zero training transitio
 The momentum-only planner-1.2-exp.4 candidate corrected two known collisions but regressed its subsequent development suite: 12/16 goals versus planner-1.1’s 15/16, with no collisions in either arm. planner-1.2 then retained the original contextual mapping features and appended clean neural ranges for braking. On the next frozen suite, both arms reached the same fifteen goals and timed out in room 13000013. There were no lost or added paired successes. The 111,968 physical transitions added no optimization or reserved-test access.
 
 Separate known planner-1.2 checks reached four collision/control goals and resolved the previously stationary room at 1,782; the retained detour room still timed out. Two new-reader optimizer smokes each used 128 transitions and one update, with temporary weights deleted. Those pipeline checks do not train or establish a navigation policy. Original aliases and frozen references were preserved. [Contracts, hashes, limitations, and viewing](evidence/planner-dual-v65-results.md).
+
+
+## Room-aware large and maze development, October 6
+
+Planner-1.3-exp.4 reached both retained large failures (9500014 at step 3,343; 13000013 at step 2,056), without collisions and within the original deadlines. This is 2/2 reused-case correction, not an independent success-rate estimate. Both maze retries still timed out without collisions. Planner-1.3-exp.5 regressed both retained maze failures; exp.6 also regressed those flights. Exp.7 also timed out. Exp.8 is checking clean-range occupancy; the exp.4 large controller is undergoing retained collision-control checks. The full graph, geometry, deadlines, checkpoint aliases, and reserved-test separation are preserved. See [the detailed development record](MAZE_NAVIGATION.md).
+
+Planner-1.3-exp.8 reached the first retained maze goal: 14000000 at 5,441 steps, no collision. Room 14000001 timed out at 6,352 steps, 11.54 units from the goal. Exp.4 retained large collision controls yielded 3/4 goals and no collisions, so the earlier 2/2 correction alone is insufficient for promotion. The faster clean-map candidate exp.9 is under bounded verification on both profiles.
+
+
+The frozen exp.9 large-room candidate completed 6/6 retained cases and 8/8 predeclared fresh development cases with zero collisions and timeouts. Its fresh Wilson 95% interval is 67.6–100%; all protected hashes match, with 25, 160 physical transitions and zero optimization. It fails both retained maze cases. Exp.10 recovers the stationary maze case (goal 5,215) but the second times out; exp.11 is under retained verification.
+
+Exp.11 reached both retained maze goals (6,630/6,736 and 6,028/6,352 decisions), without collisions; an eight-layout fresh development check is now frozen and running. Full regression 420 passed, one expected false-fit failure.
+
+The exp.11 fresh maze suite completed at 5/8 goals, zero collisions and three timeouts, failing its 7/8 threshold. Failures: 16000001, 16000004, 16000006. Exp.12 checks goal-relative portal priority on all eight now-retained cases; no successor may reuse them as fresh evidence.
+
+Exp.12 completed at 6/8 retained goals, zero collisions, two timeouts; the 7/8 gate failed. Exp.13 tests a 0.4-unit occupancy grid and associated one-voxel planning buffer on all retained layouts. No fresh successor result is claimed.
+
+
+### Maze follow-up: rejected fine grid and surface fallback
+
+The retained check for `planner-1.3-exp.12` reached six of eight goals with no collisions. It corrected one previous failure but regressed another layout, so it was not selected. `planner-1.3-exp.13` then returned to the opening-refinement controller and changed the grid from 0.6 to 0.4 units. All eight retained flights timed out without collisions. The change also reduced the physical thickness of the one-cell planning buffer; it is not an isolated resolution ablation. This candidate was rejected.
+
+`planner-1.3-exp.14` keeps the 0.6 unit grid and the existing flight guards. It checks other strongly supported surfaces when the highest-scoring surface has no observed through-rays, and hands over to global goal planning only within three units of the beacon. Its eight-layout retained check is running. It has no verified outcome yet. No optimizer update or reserved final evaluation was performed. Large-room development verification remains eight of eight fresh goals with `planner-1.3-exp.9`.
+
+
+### Rejected surface fallback and confined-speed check
+
+Exp.14 completed with zero of eight goals, one collision and seven timeouts. Its source and protected-checkpoint hashes remained unchanged. Broadening surface selection did not solve wall search and introduced a collision. It is rejected. Exp.15 returns to the exp.11 surface detector and0.6unit grid, increases the requested confined speed from 1.0 to 1.3 under unchanged range/momentum limits, and restricts goal handover to beacon distances below 3 units. Its retained eight-room check is running; no success claim is made. Four candidate contract tests pass. The previous full focused suite passed 145 tests with one expected failure.
+
+
+### Confined-speed outcome and search-memory correction
+
+Exp.15 reached four of eight retained maze goals, with zero collisions and four timeouts. It corrected 16000006 but lost prior successes in 16000000 and 16000007. Sources and protected checkpoints were unchanged. It is not selected. Raising a requested speed did not preserve reliable passage search.
+
+Exp.16 retains exp.11 cruise and surface selection. Every tenth decision records a visit to the estimated current cell. After 600 decisions with less than 2 units of reduction in estimated beacon distance, it enables a bounded additive visit cost, `min(0.15 * visits, 4)`, while no portal is active. It never writes this preference into occupancy evidence, never makes blocked cells finite, and disables it during a committed opening approach/crossing. It retains close beacon handover below 3 units. Two tests verify evidence preservation, blocked-cell preservation, inactive portal behavior, and independent memory. Its eight-layout retained flight check is running; no outcome is claimed yet.
+
+
+### Search-memory outcome and clean alignment check
+
+Exp.16 completed at four of eight goals, zero collisions, four timeouts. It regressed 16000007 and failed all three earlier timeout cases. Visit pressure changed routes but did not establish reliable progress. All source and protected-checkpoint hashes remained unchanged. It is not selected.
+
+Exp.17 combines exp.11 clean occupancy and center refinement with surface normals aligned to the initial observed beacon direction (`normal dot initial_direction >= 0.9`). It retains the original exp.11 cruise, grid, guards and portal planning. The earlier alignment-only candidate used context mapping and did not solve its two cases; this combination must be measured rather than assumed successful. It adds a declared straight-corridor structural assumption appropriate to the present procedural maze and is not a solver for arbitrary wall orientations. The controller receives no hidden heading, partition list, true pose or certified route. Two observed-gap/solid-wall tests pass. The full eight-layout retained check is running.
+
+
+### Observed-clearance opening reference
+
+Exp.17 reached five of eight retained goals without collisions. It corrected 16000006 but regressed 16000007, and 16000001/16000004 still timed out. It failed the 7/8 rule. Frozen-source and protected-checkpoint hashes matched before/after.
+
+Exp.18 returns to exp.11 surface selection, grid, speed, guards and stronger-support refinement. Let `C` be through-ray intersections belonging to an observed opening cluster, and `W` be observed endpoints on its fitted surface. Both are represented in the wall tangent/height plane. The new reference is `argmax(p in C) min(w in W) ||p - w||`, followed by the existing projection onto the fitted plane. This replaces the median of visible through-rays, which can be biased toward the visible edge of a partially observed opening. It uses no known aperture size or hidden mesh.
+
+The distance to sparse wall endpoints is a reference-selection heuristic, not a guaranteed continuous clearance radius. The actual fly body, collision model, range braking, momentum braking and episode deadlines remain unchanged. Three reference tests pass, including a fixture with the actual maze opening width 2.4 and height 2.8. The selected point lies inside that fixture with body clearance; this does not prove arbitrary sampled surfaces safe. The eight-layout retained full-connectome check is running. No optimizer or reserved final evaluation is involved.
+
+
+### Neural-ray visible-goal handover
+
+Exp.18 completed at five of eight retained goals, zero collisions and three timeouts. It corrected 16000006 and preserved 16000007, but regressed 16000000; 16000001 and 16000004 still timed out. Sources and protected hashes matched. It failed the 7/8 rule and is not selected.
+
+Exp.19 returns to exp.11 opening inference, grid and cruise. It uses the current decoded local beacon vector and clean neural panorama ranges to recognize a direct goal corridor. For distance `d` below 23, choose the four panorama directions with greatest alignment to the beacon unit vector. Each must have dot product above 0.98 and projected range `r * alignment > d + 0.3`. If these observations pass, the controller relinquishes the opening reference and steers toward the beacon using the existing range/momentum flight guards. Otherwise normal opening planning continues.
+
+This is sampled visibility, not a continuous swept-body clearance proof. No hidden geometry, true pose, certified route or seed enters the action controller. Two tests reject blocked and out-of-range handovers. The full retained eight-layout check is running with unchanged original deadlines and no optimizer or final reserved evaluation.
+
+
+### Stable distant goal visibility
+
+Exp.19 completed at six of eight retained goals, zero collisions and two timeouts. It corrected 16000006 and kept the other successes, but 16000001 and 16000004 still timed out. Source and protected hashes matched. It still fails the 7/8 rule, so no fresh suite or promotion followed.
+
+Exp.20 retains exp.19 rays, ranges and flight law. A visible beacon below 8 units can hand over immediately. Between 8 and 23 units, all four nearest rays must pass the same visibility check for 20 consecutive decisions (one simulated second). A blocked observation immediately resets that counter and cancels handover. This tests whether brief distant visibility causes premature opening-reference changes. It is not a claim that flicker was proven to be the cause of every failure. Two continuity, cancellation and reset-memory tests pass; the full retained check is running with original deadlines.
+
+
+## Completed handover checks and numerical repeatability
+
+Planner-1.3-exp.20 and exp.21 each completed at six of eight retained maze goals, zero collisions and two timeouts. Seeds 16000001 and 16000004 remained failures. Both runs preserved their frozen source hashes and protected checkpoint hashes. Neither meets the predeclared seven-of-eight development rule, so no fresh maze suite or promotion followed. The original episode deadlines and physical geometry were preserved.
+
+A separate numerical probe reset the full graph and replayed identical synthetic inputs twice, using eight slots and sixteen steps per replay. It advanced all 167,184 neurons and 25,583,622 directed edges. It performed zero environment transitions and zero optimizer updates. All outputs were finite, but feature values differed by up to 4.76837158203125e-7 and final neuron states by 1.1920928955078125e-7. A second probe with deterministic PyTorch algorithms and `CUBLAS_WORKSPACE_CONFIG=:4096:8` still differed, with maximum feature difference 5.364418029785156e-7. The installed runtime was PyTorch 2.7.1+cu128.
+
+These probes establish small numerical variation for this execution path, not that it causes every navigation failure. Earlier recorded trajectories also diverged before goal handover was possible. The next prepared diagnostic converts the same full matrices to COO storage and checks repeatability; it has not run and has no result. Automatic approval review could not execute it because the account usage limit was reached. This was an unavailable approval review, not a judgment that the operation was unsafe.
+
+Large navigation remains verified on six retained and eight fresh development rooms with planner-1.3-exp.9. Maze reliability remains unresolved. The demo continues to select exp.11, which reached both original retained maze cases and five of eight fresh development layouts. Later six-of-eight outcomes are on reused layouts and must not be presented as independent generalization. No training was initiated during these checks.
+
+
+## Repeatable full-connectome execution
+
+Execution became available again. The full COO probe still had numerical variation, so storage conversion alone was rejected as a repeatability solution. Ordered CSR accumulation using deterministic `index_add_` produced bit-identical features and final neuron states across both sixteen-step, eight-slot replays. The actual implemented `RepeatableDualActivityBrain` repeated that result on all 167,184 neurons and 25,583,622 edges: zero differing feature values, zero maximum feature/state difference, finite outputs, 32 full-graph steps, and zero environment transitions or optimizer updates. Its probe elapsed 6.477 seconds including initialization.
+
+Planner-1.3-exp.22 keeps exp.19 visible-goal control and selects this explicit experimental readout. Sparse multiplication retains every signed matrix value and edge; it forms weighted presynaptic contributions and accumulates them in deterministic row order. The sensory projection, centering, recurrence, leak, nonlinearity and dual reconstruction formulas remain the same. The discarded pooled output is not computed by the new step method; it never feeds recurrent state or dual reconstruction. Floating-point accumulation order changes and therefore receives a separate readout/fingerprint: `neural-projection-dual-repeatable-index-add-v1`. Historical readouts and checkpoints remain unchanged.
+
+Repeatability here is measured on this installed runtime and device, not guaranteed across hardware or library versions. It is also not a navigation-performance or biological-benefit claim. The eight retained maze layouts are under verification with the same 81,920 physical cap and original episode deadlines. A predeclared 30-minute wall-clock safety bound accommodates slower full-graph execution. All application source files and the runner are frozen by hash for this check. The development rule remains at least 7/8 goals with zero collisions before any new fresh suite. No training or reserved final evaluation is running.
+
+### Segmented execution and incomplete exp.22 flight check
+
+Exp.22 ended at its declared 30-minute wall limit: five goals, zero collisions and three unfinished flights after 47,528 physical transitions. Its source and protected checkpoint hashes matched. The unfinished episodes are not classified as physical timeouts or counted as completed failures; the run cannot support a completed eight-map success rate.
+
+Exp.23 keeps the visible-goal controller and introduces full-graph segmented CSR sums with a separate readout fingerprint. A batch-eight, 32-call probe repeated exactly, with finite features and neuron states, using all 167,184 neurons and 25,583,622 directed edges. Its total elapsed time was 3.51 seconds including initialization, not a warmed throughput measurement. The retained eight-map check is running under the original episode deadlines and 81,920 physical-transition cap, with a predeclared 45-minute wall limit. It performs no optimization or reserved-test evaluation. Both new dual readouts are recognized by the brain inspector; its three-contract regression passes.
+
+An offline trace diagnosis of retained seed 16000001 shows roughly 3,600 decisions spent near the first partition before an opening was found. Several further inferred surface crossings then occurred before timeout. Systematic search along an observed blocking surface is the next correction if the complete flight evidence still misses the selection gate. The proposed geometry checks pass, but the proposal has no measured navigation result yet.
+
+## Completed segmented run and observed-wall correction
+
+Planner-1.3-exp.23 completed all eight retained maze flights: six goals, zero collisions and two physical episode timeouts. Successful decision counts were 4,608 (16000003), 5,053 (16000005), 5,200 (16000000), 5,448 (16000007), 5,496 (16000002) and 6,194 (16000006). Seed 16000001 timed out at 6,562 decisions, 8.75 units from its goal; seed 16000004 timed out at 7,006 decisions, 24.24 units away. The run used 56,048 physical transitions, took 1,268.79 seconds and allocated a peak 1.952 GiB of VRAM. All source and protected checkpoint hashes matched. There were no optimizer updates or reserved-test evaluations. It failed the existing seven-of-eight criterion and was not selected.
+
+Planner-1.3-exp.24 addresses the observed first-partition search delay. If no opening is acquired for 80 decisions, it fits a nearby broad blocking surface from clean neuronal range endpoints, chooses a near-side sweep reference two units from that surface and moves along its tangent in four-unit increments. After 160 decisions without improving distance to the survey target, it reverses direction. Opening acquisition or a ray-supported visible goal cancels the survey. Original route occupancy, body geometry, braking, speed limits and physical deadlines are unchanged. The survey is enabled for the maze contract; it receives no hidden obstacle list, true pose or certified route.
+
+Twelve focused tests passed, covering surface fitting, rejection of distant surfaces, near-side reference geometry, sweep continuation, reversal, independent episode search state and versioned policy selection. All eight retained maze flights are now under a separately frozen diagnostic, with the same 81,920-transition cap, original episode deadlines and a predeclared 45-minute wall limit. The entire 117-file runtime source set is archived byte-for-byte. No navigation improvement is claimed until the flights complete. No fresh maze suite or promotion has occurred.
+
+## Wall survey result and isolated handover correction
+
+Planner-1.3-exp.24 completed at six retained goals, zero collisions and two timeouts. It reached seeds 16000007/06/02/05/01/04 in 4,452/4,492/4,580/4,855/5,588/5,652 decisions. Both previous failures were fixed, but 16000003 and 16000000 regressed to timeouts at 6,535 and 6,885 decisions, ending 24.49 and 36.79 units from the goal. It used 55,080 physical transitions, took 1,321.94 seconds, and peaked at 1.952 GiB allocated VRAM. All source and protected checkpoint hashes matched; no optimization or reserved evaluation occurred. It failed the existing gate and was not selected. Surveying was helpful on several layouts but did not preserve prior successful behavior.
+
+Planner-1.3-exp.25 isolates the visibility/braking correction on exp.23, without the rejected wall survey. It requires no nonsaturated short or panoramic endpoint inside the same 0.25-unit corridor used by braking before direct goal handover. Saturated maximum-range values are not treated as wall hits. An active opening approach/crossing must complete before goal handover. Sensor, connectome, geometry, speed, collision and episode-deadline contracts remain unchanged. Thirteen focused geometry/visibility/version tests passed. The eight retained maps are running with original episode deadlines, the 81,920-transition cap and a separately declared 45-minute wall limit. All 118 runtime source files are frozen and archived. No flight improvement is claimed until the check completes, and no fresh suite or promotion has occurred.
+
+## Clearance-aware handover: retained gate passed
+
+Planner-1.3-exp.25 completed the eight retained maze flights at seven goals, zero collisions and one timeout. Arrival decisions were 4,710 (16000003), 5,051 (16000005), 5,200 (16000000), 5,544 (16000002), 5,614 (16000007), 5,909 (16000001) and 6,357 (16000006). The remaining seed 16000004 timed out at its original 7,006-decision limit, 24.24 units from its goal. The visibility/braking deadlock in 16000001 was corrected, and all six exp.23 successes were preserved.
+
+The check used 56,048 physical transitions and zero optimizer updates, took 1,273.43 seconds, and peaked at 1.952 GiB allocated VRAM. The full 167,184-neuron, 25,583,622-edge graph was retained. All frozen source and protected checkpoint hashes matched. This passes the predeclared seven-of-eight retained gate. It is tuned development evidence, not an independent success-rate estimate or a biological advantage claim.
+
+A separate frozen prospective development suite is now running on seeds 17000000–17000007. An integer-bounded audit of 1,769 archived JSON/Markdown records found no previous occurrences before its seed declaration; undocumented use cannot be ruled out by that audit. No candidate-room geometry was generated or inspected before launch. The fresh run uses exactly the same 118 runtime source hashes as the completed retained run, with an 81,920-transition cap, original physical episode deadlines and a predeclared 45-minute wall limit. At least seven fresh goals and zero collisions are required. The source bytes are archived separately. There is no tuning, optimization, reserved-test access, checkpoint modification or demo promotion during this check. Its outcomes are pending.
+
+## Completed fresh maze check and requested pause
+
+Planner-1.3-exp.25 finished its frozen prospective maze check at **5/8 goals (62.5%)**, zero collisions and three timeouts. The Wilson 95% interval is **30.6–86.3%**. This is a small development sample, not the reserved final test and not an independent paired comparison with exp.11. Its earlier 7/8 retained outcome is tuned correction evidence and must remain separate.
+
+| Fresh seed | Outcome | Decisions | Final goal distance |
+| --- | --- | ---: | ---: |
+| 17000000 | Goal | 5,916 | 0.439 |
+| 17000001 | Goal | 4,090 | 0.443 |
+| 17000002 | Timeout | 6,752 | 22.160 |
+| 17000003 | Goal | 4,905 | 0.405 |
+| 17000004 | Goal | 5,434 | 0.422 |
+| 17000005 | Timeout | 6,534 | 20.371 |
+| 17000006 | Goal | 5,473 | 0.417 |
+| 17000007 | Timeout | 6,666 | 13.211 |
+
+The run completed all eight original episode deadlines with no incomplete flights. It used 54,016 physical transitions, took 1,234.24 seconds and peaked at 1.952 GiB allocated VRAM. Every transition used the full 167,184-neuron, 25,583,622-edge graph. All 118 frozen runtime sources and every protected checkpoint alias matched their before/after hashes. There were zero optimizer updates and no reserved-test access. The process exited normally.
+
+The fresh seven-of-eight criterion was not met, so exp.25 is not promoted. The large launcher remains exp.9, with its six retained and eight fresh goals. The maze launcher remains exp.11. Large-room development criteria are met; reliable maze navigation remains unresolved. The three new timeouts require search/reference diagnosis when work resumes. These newly inspected maps are now correction data for future changes, not reusable fresh evidence.
+
+Navigation, connectome and visualization integration checks passed: 212 passed and one expected failure for a rejected historical candidate. Repository checks passed for 79 documents, 378 links, module imports and CLI help; the public-file audit had no errors. No additional training or navigation experiments followed this check. At the user's request, work pauses after saving and pushing these results; a selected-candidate rendered demo check is deferred until the navigation criterion is met.
+
+## Completed architectural development check
+
+The initial original-objective check completed at **18/21 goals, zero collisions and three timeouts**, with all cases measured. It used 11,829 full-connectome physical transitions, no training and no reserved test. Protected aliases and frozen sources matched. These inspected synthetic scenes are development evidence, not independent real-world generalization. [Detailed results](evidence/architectural-initial-navigation-results.md).
+
+Next: diagnose the three retained timeouts, preserve successful flights, and declare a bounded correction check. Maze experiments remain closed for this iteration.
+
+Architectural exp.2 also reached 18/21 goals without collisions: it fixes the warehouse aisle route but regresses an apartment success, so it is not promoted. The original objectives and deadlines were unchanged. [Candidate results](evidence/architectural-escape-candidate-results.md). Next: constrain recovery using the regression trace before another correction check.
+
+## October 7 closing checkpoint
+
+Architectural planner-1.4-exp.3 reached **19/21 original goals, zero collisions and two timeouts**, preserving every exp.1 success and fixing the warehouse aisle route. Bathroom and atrium climb remain unresolved. These are inspected development scenes, not independent real-world evidence. The demo stays on exp.1 pending further verification. Work pauses at the user's request; no experiment remains running. [Closing results and resume requirements](evidence/architectural-closing-results.md).
+
+## Autonomous learning restart
+
+The planner iteration is closed with defaults retained and unresolved failures recorded. The first planner-free architectural PPO policy passed a 128-transition, one-update CUDA smoke with the complete connectome, finite losses, changed parameters and checkpoint reload. This verifies the learning pipeline, not navigation performance. Substantial training awaits an agreed budget. [Implementation, limits and next experiment](AUTONOMOUS_LEARNING.md).
+
+## First autonomous PPO pilot completed
+
+The 131,072-transition pilot reached 0 goals in 457 training episodes and 0/6 validation goals both before and after; final validation had five collisions and one timeout. The learning pipeline and checkpoint reload passed, but navigation did not. No model was promoted. A structured neural panorama/goal-state encoder is implemented as the next representation candidate; its focused gradient test passes, while full-connectome learning verification and training remain pending. [Results and diagnosis](evidence/autonomous-architecture-pilot-1-results.md).
+
+## Structured autonomous pilot and curriculum verification (October 7, 2026)
+
+The second autonomous PPO pilot completed 131,072 transitions. Deterministic validation improved from 0/6 to 1/6 goals: the office succeeded, the courtyard collided, and apartment, street, atrium and warehouse timed out. This is incomplete navigation, not a successful general solution. Validation shares scene geometry with training; no independent reserved test was used. Losses were finite, reload matched, and protected aliases were unchanged. See docs/evidence/autonomous-architecture-pilot-2-results.md for the recorded outcomes.
+
+The training-only goal curriculum passed a full-connectome verification: one reset probe transition plus 128 PPO learning transitions and one optimizer update. Seeded reset observations matched after intervening activity, the original target was restored at the final stage, learned parameters changed, losses were finite and checkpoint reload matched. The smoke is separate from the pilot budget and makes no navigation-performance claim. The next step is a bounded curriculum experiment with declared stage advancement, task coverage and unchanged original-goal validation.
+
+
+## Autonomous curriculum closing result (October 7, 2026)
+
+The 131,072-transition curriculum pilot completed but remained at 1 metre: one mastery round failed, one passed, and the required second consecutive passing round was incomplete. Lesson training recorded 2,429 goals in 2,776 episodes. Original-goal validation achieved 1/6 goals (apartment), five collisions and no timeouts. This did not improve the previous structured pilot's 1/6 goal count and did not preserve its office success. Lesson successes are adaptive training evidence; the reused six-situation validation is not independent generalization. Finite losses, reload, source hashes and protected aliases passed; no promotion or reserved test occurred.
+
+Work is paused at the user's request. Next: review task scheduling and original-goal exposure before agreeing any new bounded training comparison. See [the curriculum closing evidence](evidence/autonomous-architecture-curriculum-1-results.md).
+
+
+## Balanced autonomous curriculum result (October 7, 2026)
+
+The second architectural curriculum completed 131,072 fresh PPO transitions. It reached 2 metre lessons after two complete passing 1 metre rounds, but achieved 0/6 original-goal validation successes, with six collisions and no timeouts. The previous curriculum achieved 1/6 on the same development situations. Lesson progress therefore does not resolve complete-route navigation. No planner actions, reserved test access or checkpoint promotion occurred; protected aliases and sources retained their hashes. See [the detailed result](evidence/autonomous-architecture-curriculum-2-results.md).
+
+Next: preserve original-goal training exposure alongside lessons, support reproducible continuation with curriculum state, and verify route transfer before any independent final test. Compare matched learned controllers with and without connectome activity after a working autonomous baseline exists.

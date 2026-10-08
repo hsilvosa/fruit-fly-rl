@@ -2,7 +2,8 @@
 
 This history retains original experiment IDs and measured source snapshots. Current public names are listed in [Controller versions](CONTROLLER_VERSIONS.md): planner-1.0 is historical v55, planner-1.1 is v60, and planner-1.2 is v65. The naming migration does not change their recorded results. [Latest paired experiments](RESULTS.md#latest-planner-experiments).
 
-Date: October 5, 2026. Operational version: `observed-neuronal-map-v55`, integrated in commit `972ceb4`.
+October 6 follow-up: the large-room opening controller reached six retained goals and eight fresh development goals without collisions. The maze extension required room-size normalization, larger map bounds, clean range occupancy, opening approach/crossing references and a correction for goal visibility that disagreed with near-body braking. The latest candidate, planner-1.3-exp.25, reached seven of eight retained correction maps, then five of eight fresh development maps with no collisions and three timeouts. Full-graph numerical execution is repeatable on the tested runtime; no optimizer updates or biological-performance claims accompany these planner checks. [The complete maze history, failed corrections, recorded flight figures and latest outcome](MAZE_NAVIGATION.md) continue this resolution record. The fresh 7/8 criterion failed, so the maze demo is not promoted. Work is paused at the user's request.
+Historical resolution snapshot: October 5, 2026. Operational version: `observed-neuronal-map-v55`, integrated in commit `972ceb4`.
 
 This document reconstructs the problem, the hypotheses tested, the failed attempts, and the available solution. The working result is an explicit planner that consumes activity from the full connectome. The learned policy still does not reproduce that performance. The [v55 report](evidence/observed-map-v55-results.md) contains the figures, prospective protocol, and preservation hashes; the [attempt protocol](evidence/portal-feedback-protocol.md) records the experimental development.
 
@@ -656,3 +657,8 @@ V65 also reached the formerly stationary known room at step 1,782, while retaine
 ### Remaining timeout diagnosis after the v65 freeze
 
 Offline inspection of existing second-half traces found continuing motion, zero sampled momentum-guard activations, and estimated pose errors below 0.0011 room units. Routes were reported found in 86/87 and 87/88 sampled frames. This narrows the next investigation to route/search progress and physical execution, rather than treating every failure as a false sensor stop. It does not prove the causal explanation. [Sampled counts and limitations](evidence/planner-dual-v65-results.md#offline-inspection-of-the-remaining-timeouts).
+
+
+## October 6 follow-up: room-aware openings and maze navigation
+
+The [maze navigation report](MAZE_NAVIGATION.md) continues this investigation with room-size decoding, grid coverage, observed openings, clean occupancy channels, and execution deadlocks. It records each failed candidate, the two retained large corrections, six retained large goals with the faster candidate, and the first actual maze arrival with the clean-map candidate. Broad maze reliability remains unresolved. These outcomes are planning development; no new learning experiment or final reserved assessment was run.

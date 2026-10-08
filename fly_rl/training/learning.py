@@ -27,8 +27,10 @@ class BrainEnv(VecEnv):
         from fly_rl.connectome.innovation import WhitenedActivityBrain,WHITENED_READOUT,ContrastActivityBrain,CONTRAST_READOUT,MotionStableActivityBrain,MOTION_STABLE_READOUT
         from fly_rl.connectome.distance_readout import DistanceStableActivityBrain,DISTANCE_STABLE_READOUT
         from fly_rl.connectome.dual_readout import DualActivityBrain,DUAL_READOUT
-        if readout_version not in (GROUP_READOUT,LEGACY_READOUT,WHITENED_READOUT,CONTRAST_READOUT,MOTION_STABLE_READOUT,DISTANCE_STABLE_READOUT,DUAL_READOUT):raise ValueError('Unknown brain readout')
-        brain_type=DualActivityBrain if readout_version==DUAL_READOUT else DistanceStableActivityBrain if readout_version==DISTANCE_STABLE_READOUT else MotionStableActivityBrain if readout_version==MOTION_STABLE_READOUT else ContrastActivityBrain if readout_version==CONTRAST_READOUT else WhitenedActivityBrain if readout_version==WHITENED_READOUT else InputGroupedBrain if readout_version==GROUP_READOUT else Brain
+        from fly_rl.connectome.repeatable_readout import RepeatableDualActivityBrain,REPEATABLE_DUAL_READOUT
+        from fly_rl.connectome.segmented_readout import SegmentedDualActivityBrain,SEGMENTED_DUAL_READOUT
+        if readout_version not in (GROUP_READOUT,LEGACY_READOUT,WHITENED_READOUT,CONTRAST_READOUT,MOTION_STABLE_READOUT,DISTANCE_STABLE_READOUT,DUAL_READOUT,REPEATABLE_DUAL_READOUT,SEGMENTED_DUAL_READOUT):raise ValueError('Unknown brain readout')
+        brain_type=SegmentedDualActivityBrain if readout_version==SEGMENTED_DUAL_READOUT else RepeatableDualActivityBrain if readout_version==REPEATABLE_DUAL_READOUT else DualActivityBrain if readout_version==DUAL_READOUT else DistanceStableActivityBrain if readout_version==DISTANCE_STABLE_READOUT else MotionStableActivityBrain if readout_version==MOTION_STABLE_READOUT else ContrastActivityBrain if readout_version==CONTRAST_READOUT else WhitenedActivityBrain if readout_version==WHITENED_READOUT else InputGroupedBrain if readout_version==GROUP_READOUT else Brain
         self.brain=brain or brain_type(data,batch,device,sensor_version=sensor_version)
         if sensor_backend=="torch-cuda" and self.brain.device.type!="cuda":raise ValueError("CUDA sensor backend requires a CUDA brain")
         self.feature_count=getattr(self.brain,'feature_count',FEATURES)
@@ -334,7 +336,9 @@ def checkpoint_sensor_version(path):
     from fly_rl.connectome.innovation import WHITENED_READOUT,CONTRAST_READOUT,MOTION_STABLE_READOUT
     from fly_rl.connectome.distance_readout import DISTANCE_STABLE_READOUT
     from fly_rl.connectome.dual_readout import DUAL_READOUT
-    if readout in ('input-associated-neural-mean-v1',WHITENED_READOUT,CONTRAST_READOUT,MOTION_STABLE_READOUT,DISTANCE_STABLE_READOUT,DUAL_READOUT):expected+=':'+readout
+    from fly_rl.connectome.repeatable_readout import REPEATABLE_DUAL_READOUT
+    from fly_rl.connectome.segmented_readout import SEGMENTED_DUAL_READOUT
+    if readout in ('input-associated-neural-mean-v1',WHITENED_READOUT,CONTRAST_READOUT,MOTION_STABLE_READOUT,DISTANCE_STABLE_READOUT,DUAL_READOUT,REPEATABLE_DUAL_READOUT,SEGMENTED_DUAL_READOUT):expected+=':'+readout
     elif readout!='random-pool-256-v1':raise ValueError('Unknown checkpoint readout')
     if not metadata.get('fingerprint','').endswith(expected):
         raise ValueError('Checkpoint sensor metadata/fingerprint mismatch')
