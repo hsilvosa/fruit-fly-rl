@@ -61,3 +61,5 @@ Recover the historical successful learned checkpoints and create the reference m
 ## Status update, October 7, 2026
 
 Step 1 is complete for evaluation. The historical winners are recovered, hash-verified and replayed with exact per-episode agreement on their recorded validation pools. See [HISTORICAL_REFERENCE.md](HISTORICAL_REFERENCE.md). Frozen historical policies succeed on medium dense rooms and fail on partitioned `passages` and `large` rooms in a 16-episode development ladder. Step 2 (failure classification from trajectories, regression suite, transfer adaptation) is open. No training has been launched.
+
+Reference-preserving transfer experiment 1 (65,536 added transitions per arm) accepted no candidate: the retained policy stayed at 24/32 on the medium regression pool and scored 0/32 on `passages`, and the fresh control reached 11/32 and 0/32. See [REFERENCE_TRANSFER_RESULTS.md](REFERENCE_TRANSFER_RESULTS.md). The next step is to record and classify `passages` failures before choosing a larger budget, an intermediate map or a planner-imitation stage.
