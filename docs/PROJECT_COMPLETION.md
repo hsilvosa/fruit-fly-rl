@@ -65,3 +65,5 @@ Step 1 is complete for evaluation. The historical winners are recovered, hash-ve
 Reference-preserving transfer experiment 1 (65,536 added transitions per arm) accepted no candidate: the retained policy stayed at 24/32 on the medium regression pool and scored 0/32 on `passages`, and the fresh control reached 11/32 and 0/32. See [REFERENCE_TRANSFER_RESULTS.md](REFERENCE_TRANSFER_RESULTS.md). The next step is to record and classify `passages` failures before choosing a larger budget, an intermediate map or a planner-imitation stage.
 
 Transfer experiments 1 to 8 are summarized in [TRANSFER_SUMMARY.md](TRANSFER_SUMMARY.md). Graded maps with medium-room retention gave the first partitioned-map signal, and plain PPO at a constant learning rate then oscillated and lost it. No candidate meets the release gate. The next experiment needs an agreed budget: planner imitation for opening crossings, or a trainer change that reduces oscillation.
+
+The phase plan and checklist toward unseen-map navigation are in [ZERO_SHOT_PLAN.md](ZERO_SHOT_PLAN.md). The release gates in this document still apply. The `runs/` cleanup is recorded in [RUNS_CLEANUP.md](RUNS_CLEANUP.md).

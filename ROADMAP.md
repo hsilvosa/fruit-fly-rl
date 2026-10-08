@@ -4,6 +4,8 @@ Current as of October 7, 2026. This is proposed work, not an active training sch
 
 ## Current route to completion
 
+Updated October 8, 2026. The [plan to unseen-map navigation](docs/ZERO_SHOT_PLAN.md) defines the phases and holds the checklist: stable trainer, randomized map distribution, memory, target families, frozen assessment, release. The historical reference is recovered ([details](docs/HISTORICAL_REFERENCE.md)) and eight transfer experiments are summarized in [TRANSFER_SUMMARY.md](docs/TRANSFER_SUMMARY.md). No phase is running.
+
 The [project completion plan](docs/PROJECT_COMPLETION.md) is the authoritative next-step sequence. Recover the successful learned reference first; then audit transfer, learn complete routes, run a frozen independent assessment and prepare the release. The mixed curriculum is implemented but awaits review against that reference and an agreed training budget. No training is currently launched by this plan.
 
 1. Recover and trace the learned checkpoints behind the historical 70–80% medium-room results.

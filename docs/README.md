@@ -4,6 +4,10 @@ Start with the root [README](../README.md) for installation, demos and controls.
 
 | Topic | Guide |
 | --- | --- |
+| Plan and checklist toward unseen-map navigation | [Zero-shot plan](ZERO_SHOT_PLAN.md) |
+| Recovered historical learned reference | [Historical reference](HISTORICAL_REFERENCE.md) |
+| Transfer experiments 1 to 8 | [Transfer summary](TRANSFER_SUMMARY.md) |
+| Cleanup of the local runs directory | [Runs cleanup](RUNS_CLEANUP.md) |
 | Source data, graph coverage and engineered assumptions | [Data and model](DATA_AND_MODEL.md) |
 | Original creators, license and scientific references | [Credits and references](REFERENCES.md) |
 | Data flow and code responsibilities | [Architecture](ARCHITECTURE.md) |
