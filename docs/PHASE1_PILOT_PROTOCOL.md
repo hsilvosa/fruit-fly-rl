@@ -30,3 +30,14 @@ Experiment 8 lost its gains with plain PPO at constant learning rate and 8 corre
 ## Limits
 
 Two seeds from one start, three evaluations each, 32 episodes per cell. A pilot cannot meet the Phase 1 exit criterion (four evaluations). No reserved or report pool is used.
+
+## Amendment after a resource incident (October 9, 2026, about 20:35)
+
+The first launch started 28 evaluation processes at once (14 cells for each of two seeds). Each process loads the connectome, so memory and CPU reached 100 percent and the user's machine restarted. No result from that launch is used, and no training output of it is kept. This was an error in how the run was launched.
+
+Changes declared before the rerun:
+
+- Every evaluation fan-out goes through `scripts/resource_guard.py`: at most 3 processes at once, a free-memory floor of 8 GB and staggered starts.
+- The pilot is reduced to seed 442 only. Seed 443 is not run.
+- Only the final stage (98,304 added transitions) is evaluated, and only on the new selection pools. The old pools and the stability measure across evaluations are not collected.
+- The acceptance rule, the selection pools and the stabilization bundle are unchanged. With one checkpoint, the selection rule reduces to the acceptance test. The positive pilot result of the stability condition cannot be assessed and is left open.
