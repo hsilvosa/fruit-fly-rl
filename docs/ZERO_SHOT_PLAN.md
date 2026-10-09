@@ -102,13 +102,14 @@ Phase 0. Baseline and housekeeping
 - [x] Summarize experiments ([TRANSFER_SUMMARY.md](TRANSFER_SUMMARY.md))
 - [x] Remove regenerable raw datasets from `runs/` ([RUNS_CLEANUP.md](RUNS_CLEANUP.md))
 - [x] Write this plan and update README, roadmap and completion plan
+- [x] Add a resource guard: CPU and memory below 80 percent, no GPU limit (scripts/resource_guard.py)
 - [ ] Freeze a medium-room regression suite as a documented, reusable test
 
 Phase 1. Stable trainer
-- [ ] Implement opt-in settings: 32 simulators, KL guard, clip range, epochs, learning-rate decay
-- [ ] Add training, selection and report pool separation to the experiment scripts
+- [x] Implement opt-in settings: 32 simulators, target KL, clip range, epochs, learning-rate decay (in the pilot script, without changing learning.py)
+- [x] Add selection pools separate from the old pools (report pools still reserved and unopened)
 - [ ] Measure evaluation repeatability on a fixed checkpoint
-- [ ] Protocol committed, then two-seed run from the experiment 7 checkpoint
+- [ ] Two-seed run with four evaluations from the experiment 7 checkpoint (pilot: one seed, one evaluation, see PHASE1_PILOT_RESULTS.md)
 - [ ] Stability criterion met, or the result is recorded as negative
 
 Phase 2. Randomized map distribution
