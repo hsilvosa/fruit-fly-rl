@@ -67,3 +67,5 @@ Reference-preserving transfer experiment 1 (65,536 added transitions per arm) ac
 Transfer experiments 1 to 8 are summarized in [TRANSFER_SUMMARY.md](TRANSFER_SUMMARY.md). Graded maps with medium-room retention gave the first partitioned-map signal, and plain PPO at a constant learning rate then oscillated and lost it. No candidate meets the release gate. The next experiment needs an agreed budget: planner imitation for opening crossings, or a trainer change that reduces oscillation.
 
 The phase plan and checklist toward unseen-map navigation are in [ZERO_SHOT_PLAN.md](ZERO_SHOT_PLAN.md). The release gates in this document still apply. The `runs/` cleanup is recorded in [RUNS_CLEANUP.md](RUNS_CLEANUP.md).
+
+The live status board, checklist and actions ready to start are in [ROADMAP.md](../ROADMAP.md). The earlier roadmap is archived in [ROADMAP_HISTORY.md](../ROADMAP_HISTORY.md).

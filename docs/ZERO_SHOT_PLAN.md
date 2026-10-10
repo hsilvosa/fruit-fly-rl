@@ -1,6 +1,6 @@
 # Plan to unseen-map navigation
 
-Written October 8, 2026. This plan replaces the open decision in [TRANSFER_SUMMARY.md](TRANSFER_SUMMARY.md). It does not authorize a run. Each phase starts only when the user says so, with its protocol committed before training.
+Written October 8, 2026. This document holds the phase design. The live status is in [ROADMAP.md](../ROADMAP.md). It replaces the open decision in [TRANSFER_SUMMARY.md](TRANSFER_SUMMARY.md) and does not authorize a run. Each phase starts only when the user says so, with its protocol committed before training.
 
 ## Final objective
 
@@ -92,56 +92,6 @@ For Phases 2 to 4: at least 26/32 successes and at most 3 collisions on each dev
 - Report failures and negative results with the same detail as positive ones.
 - Keep the first user-visible output a table with counts and denominators, not only percentages.
 
-## Checklist
+## Checklist and status
 
-Phase 0. Baseline and housekeeping
-- [x] Recover and hash-verify the historical medium-room winners
-- [x] Replay the winners on their recorded pools (32/32 per episode)
-- [x] Classify `passages` failures
-- [x] Run and document transfer experiments 1 to 8
-- [x] Summarize experiments ([TRANSFER_SUMMARY.md](TRANSFER_SUMMARY.md))
-- [x] Remove regenerable raw datasets from `runs/` ([RUNS_CLEANUP.md](RUNS_CLEANUP.md))
-- [x] Write this plan and update README, roadmap and completion plan
-- [ ] Freeze a medium-room regression suite as a documented, reusable test
-
-Phase 1. Stable trainer
-- [ ] Implement opt-in settings: 32 simulators, KL guard, clip range, epochs, learning-rate decay
-- [ ] Add training, selection and report pool separation to the experiment scripts
-- [ ] Measure evaluation repeatability on a fixed checkpoint
-- [ ] Protocol committed, then two-seed run from the experiment 7 checkpoint
-- [ ] Stability criterion met, or the result is recorded as negative
-
-Phase 2. Randomized map distribution
-- [ ] Parameter ranges and adaptive-difficulty rule written and committed
-- [ ] Map sampler implemented with tests and a gallery of samples
-- [ ] Level B held-out parameter region and level C held-out family chosen and sealed
-- [ ] Training run with two seeds
-- [ ] Level A development gate met on both seeds
-
-Phase 3. Memory
-- [ ] No-memory control recorded on the Phase 2 setup
-- [ ] History-frame or recurrent policy trained, two seeds
-- [ ] Memory gain on level B or C development cells decided and recorded
-
-Phase 4. Target families
-- [ ] Large rooms, mazes and architectural scenes added to the sampler
-- [ ] Sensor decision made (current rays or v6 panorama), with versioned transfer if v6
-- [ ] Optional planner imitation stage decided
-- [ ] Development gate met in every training family
-- [ ] Held-out family result recorded
-
-Phase 5. Freeze and assessment
-- [ ] Inventory of inspected pools
-- [ ] Reserved pools and final protocol sealed
-- [ ] Candidate, sources and hashes frozen
-- [ ] Single final run on reserved pools
-- [ ] Release gate evaluated per family with intervals
-- [ ] No-connectome learned control and planner reference reported
-
-Phase 6. Release
-- [ ] Installation and data distribution verified on a clean machine
-- [ ] Learned demo for each supported map family
-- [ ] Logging, replay and brain visualization verified with the release checkpoint
-- [ ] Formulas, attribution, limitations and results tables published
-- [ ] Repository and link audit passed
-- [ ] Numbered release tagged
+The checklist, the current status and the actions ready to start live in [ROADMAP.md](../ROADMAP.md), so that there is one status board. This document keeps the phase design, the rules and the definitions.

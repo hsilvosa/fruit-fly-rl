@@ -77,7 +77,7 @@ Next prepare a licensed source collection for real building interiors and street
 
 Remaining design gaps are streets with bends or non-orthogonal blocks (all solids are axis-aligned boxes), sloped ramps, curved surfaces and enterable street-level interiors on the street block. Keep decorative geometry separate from physics, and retain inspectable collision proxies. Dynamic scenarios need time-dependent collision and sensor semantics, rather than labels attached to stationary boxes.
 
-Once maze verification is complete, declare experiments for geometry transfer with the current range/beacon interface first. Camera perception and replacement of the goal beacon are separate tasks. Split by entire building or neighborhood, not only by route. These public, inspected draft assets are development material and can never be an untouched test set. See the [roadmap](../ROADMAP.md#future-stage-navigate-simulations-of-real-places) for the experimental sequence.
+Once maze verification is complete, declare experiments for geometry transfer with the current range/beacon interface first. Camera perception and replacement of the goal beacon are separate tasks. Split by entire building or neighborhood, not only by route. These public, inspected draft assets are development material and can never be an untouched test set. See the [roadmap](../ROADMAP_HISTORY.md#future-stage-navigate-simulations-of-real-places) for the experimental sequence.
 
 ## Runtime adapter preparation
 

@@ -4,7 +4,9 @@ Start with the root [README](../README.md) for installation, demos and controls.
 
 | Topic | Guide |
 | --- | --- |
-| Plan and checklist toward unseen-map navigation | [Zero-shot plan](ZERO_SHOT_PLAN.md) |
+| Live status, checklist and next actions | [Roadmap](../ROADMAP.md) |
+| Index of every experiment since the reference recovery | [Experiment log](EXPERIMENT_LOG.md) |
+| Phase design toward unseen-map navigation | [Zero-shot plan](ZERO_SHOT_PLAN.md) |
 | Recovered historical learned reference | [Historical reference](HISTORICAL_REFERENCE.md) |
 | Transfer experiments 1 to 8 | [Transfer summary](TRANSFER_SUMMARY.md) |
 | Cleanup of the local runs directory | [Runs cleanup](RUNS_CLEANUP.md) |
