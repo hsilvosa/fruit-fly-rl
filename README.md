@@ -1,6 +1,6 @@
 # Fly RL
 
-The final objective is a learned fly that reaches goals in maps it has never trained on. The [plan and checklist](docs/ZERO_SHOT_PLAN.md) set out the phases, and the [completion plan](docs/PROJECT_COMPLETION.md) keeps the release gates. The historical learned reference is recovered and reproduces exactly. Eight bounded transfer experiments gave a signal on partitioned maps that were in the training mix, and plain PPO then lost it ([summary](docs/TRANSFER_SUMMARY.md)). No result yet supports navigation on unseen maps. A prepared runner or a successful nearby lesson is not evidence of success.
+The final objective is a learned fly that reaches goals in maps it has never trained on. The [roadmap](ROADMAP.md) is the live status board with the checklist and the actions ready to start, and the [plan](docs/ZERO_SHOT_PLAN.md) holds the phase design, and the [completion plan](docs/PROJECT_COMPLETION.md) keeps the release gates. The historical learned reference is recovered and reproduces exactly. Eight bounded transfer experiments gave a signal on partitioned maps that were in the training mix, and plain PPO then lost it ([summary](docs/TRANSFER_SUMMARY.md)). No result yet supports navigation on unseen maps. A prepared runner or a successful nearby lesson is not evidence of success.
 
 Fly RL is a **connectome-based 3D navigation project exploring reinforcement learning, imitation learning, and explicit planning**. It places a virtual fruit fly in procedural rooms and uses the full annotated **MaleCNS v1.0 fruit-fly connectome** as a fixed recurrent model that transforms simulated sensor readings into neural activity. Controllers use that activity to choose flight actions, learning from rewards, imitating guided trajectories, or building an observed map and planning a route. The goal is to navigate around obstacles, cross openings, and reach a target in rooms the controller has not seen before.
 
@@ -177,7 +177,7 @@ Each demo retains a unique archive in `runs/demo/`, with metadata, states, actio
 
 ## Next steps
 
-The current sequence is the [plan to unseen-map navigation](docs/ZERO_SHOT_PLAN.md): a stable trainer, a randomized map distribution with held-out parameters and a held-out family, memory, the target map families, a frozen independent assessment and the release. Each phase starts on request, with its protocol committed first. The older lists below are historical.
+The current sequence and status are in the [roadmap](ROADMAP.md), which follows the [plan to unseen-map navigation](docs/ZERO_SHOT_PLAN.md): a stable trainer, a randomized map distribution with held-out parameters and a held-out family, memory, the target map families, a frozen independent assessment and the release. Each phase starts on request, with its protocol committed first. The older lists below are historical.
 
 The agreed sequence is to close the current planner experiments, then study autonomous learning. Work remains paused; documenting this sequence does not start training.
 
