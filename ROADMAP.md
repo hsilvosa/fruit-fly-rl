@@ -86,7 +86,7 @@ Phase 0 is complete.
 
 - [x] Parameter ranges and adaptive-difficulty rule written and committed ([MAP_SAMPLER.md](docs/MAP_SAMPLER.md))
 - [x] Map sampler implemented with tests and a sample gallery (action R3, done October 10)
-- [~] Level B held-out region defined and excluded from the training sampler (opening below 3.8 m with at least four partitions). Level C family not chosen yet (action R4, needs a user decision)
+- [x] Level B region and level C family (synthetic architectural scenes, chosen by the user) defined and sealed in [HELD_OUT_SPEC.md](docs/HELD_OUT_SPEC.md) (action R4, done October 10)
 - [ ] Training run with at least two seeds (action R5)
 - [ ] Level A development gate met on both seeds
 
@@ -132,11 +132,11 @@ Each action lists what it needs, an estimate with its basis, and what it unlocks
 | R1 | Variance study: 5 trainings of the pilot recipe (98,304 transitions, new seeds), final checkpoint on the seven selection cells | Nothing | About 60 min (5 x (6 min training + 6 min evaluation)) | CPU about 55% in training | A measured spread, a best-of-N candidate, and the minimum effect size any later comparison must exceed |
 | R2 | Done October 10 (under 25 min by the clock; estimate was 30 min). Frozen medium-room regression suite, `scripts/regression_medium.py` | Not applicable | Measured: 4 min per checkpoint, 5 checkpoints | Light | Closes Phase 0. Every Phase 2 candidate runs it before promotion |
 | R3 | Done October 10. Measured by the machine clock: about 5 minutes between the end of the previous step and the commit, against a 1.5 to 2 h estimate. Sampler, adaptive controller, 14 tests, gallery | Not applicable | Measured | Almost none | R4, R5 |
-| R4 | Choose the level C family and seal it. The level B region is already defined | A user decision on which family to hold out (suggestion: the synthetic architectural scenes) | About 10 min after the decision | None | R5, Phase 5 |
+| R4 | Done October 10. Level C = synthetic architectural scenes, sealed with reserved seeds. Evaluation tool and tests written | Not applicable | Measured: under 15 min | None | R5, Phase 5 |
 | R5 | Train on the random distribution, two seeds, with selection pools. Needs a training script that uses `RandomProfileWorld` (about 30 min to write and test) | R4. R1 result advised | About 90 min (2 x 7 min training + evaluation) | CPU about 55% | Level A development result, and a first look at levels B and C |
 | R6 | Memory retest: 3 seeds x 2 conditions, 64 episodes per cell, final checkpoint only | R3 advised | About 2 h (no measured basis for 64 episodes) | CPU about 55% | A decision on memory |
 
-Recommended order: R2 is done. R1 is running and R3 is done. Next: R4 (needs your choice of the level C family), then R5.
+Recommended order: R2 is done. R1 is running, R3 and R4 are done. Next: R5 after R1 finishes.
 
 R1 and R3 can overlap. Two training or evaluation jobs must not run at once, because one training job uses about half of the CPU.
 
@@ -173,7 +173,11 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | `passages` | 810000 to 810031 | Development and failure classification | Inspected |
 | Selection pools | 860000 to 865000 (one range per cell) | Choosing checkpoints (Phases 1 and 3) | Used for selection only |
 | Report pools | Not yet drawn | Final Phase 1 style reports | Reserved, unopened |
-| Level B region, level C family | Not yet defined | Zero-shot evidence | Reserved, to be sealed in R4 |
+| Level A report | 940000 to 949999 | Report pool | Reserved, unopened |
+| Level B region, development | Held-out sampler, 950000 to 959999 | Look at progress, not for selection | Not yet drawn |
+| Level B region, final | Held-out sampler, 960000 to 969999 | Final assessment | Reserved, unopened |
+| Level C scenes, development headings | 900000 and above | Baseline measurements only before Phase 5 | Not yet used |
+| Level C scenes, final headings | 970000 to 979999 | Final assessment | Reserved, unopened |
 
 ## 9. Artifact index
 

@@ -25,4 +25,6 @@ One row per iteration, in order. Protocols were committed before the runs. Resul
 
 | R3 | Oct 10 | Can maps be drawn at random with a held-out region? | Sampler, difficulty controller, level B region | 14 tests pass. No generation failure in 600 resets. Reset takes at most 0.05 s | [MAP_SAMPLER.md](MAP_SAMPLER.md) |
 
-Planned next: R1 (running), R4 to R6 in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).
+| R4 | Oct 10 | Which family is never trained on? | Sealed level B region and level C scenes; architectural world for older sensor contracts | 5 tests pass. Geometry equals the protected world | [HELD_OUT_SPEC.md](HELD_OUT_SPEC.md) |
+
+Planned next: R1 (running), R5, R6 in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).

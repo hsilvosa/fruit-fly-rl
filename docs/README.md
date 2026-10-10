@@ -7,6 +7,7 @@ Start with the root [README](../README.md) for installation, demos and controls.
 | Live status, checklist and next actions | [Roadmap](../ROADMAP.md) |
 | Index of every experiment since the reference recovery | [Experiment log](EXPERIMENT_LOG.md) |
 | Randomized map sampler and the level B held-out region | [Map sampler](MAP_SAMPLER.md) |
+| Sealed held-out definitions and reserved seeds | [Held-out specification](HELD_OUT_SPEC.md) |
 | Phase design toward unseen-map navigation | [Zero-shot plan](ZERO_SHOT_PLAN.md) |
 | Recovered historical learned reference | [Historical reference](HISTORICAL_REFERENCE.md) |
 | Transfer experiments 1 to 8 | [Transfer summary](TRANSFER_SUMMARY.md) |
