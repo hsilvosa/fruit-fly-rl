@@ -19,7 +19,7 @@ from fly_rl.simulation.map_profiles import resolve_profile
 from fly_rl.simulation.random_profiles import RandomProfileWorld, ProfileSampler, DifficultyController
 
 SOURCE, SEED, OUT, STAGES = sys.argv[1], int(sys.argv[2]), sys.argv[3], int(sys.argv[4])
-STAGE = 32768
+STAGE = int(os.environ.get("STAGE_OVERRIDE", 32768))
 BUDGET = STAGE * STAGES
 LR0, LR1 = 3e-4, 3e-5
 N_MEDIUM, N_GATE, N_RANDOM = 8, 4, 20
