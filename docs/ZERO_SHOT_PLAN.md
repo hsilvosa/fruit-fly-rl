@@ -121,8 +121,8 @@ Phase 2. Randomized map distribution
 
 Phase 3. Memory
 - [x] No-memory control recorded (Phase 1 run, on the Phase 1 mix; the Phase 2 setup does not exist yet)
-- [ ] History-frame or recurrent policy trained, two seeds (screening done on seed 442: long window promising, see PHASE3_SCREENING_RESULTS.md; seed 443 pending)
-- [ ] Memory gain on level B or C development cells decided and recorded
+- [x] History-frame policy trained, two seeds ([screening](PHASE3_SCREENING_RESULTS.md), [replication](PHASE3_REPLICATION_RESULTS.md))
+- [x] Memory gain decided and recorded: not replicated on two seeds (seed 442 +6/+9/+4, seed 443 +5/-9/0); memory stays a candidate, to retest with more seeds and episodes inside Phase 2
 
 Phase 4. Target families
 - [ ] Large rooms, mazes and architectural scenes added to the sampler
