@@ -23,4 +23,6 @@ One row per iteration, in order. Protocols were committed before the runs. Resul
 
 | R2 | Oct 10 | Does a candidate keep the medium-room skill? | Frozen four-pool regression suite, five baselines | Historical winners 90 to 98 of 128, experiment 7 start 111, pilot candidate 104. The first per-pool rule failed two winners and was relaxed, openly | [MEDIUM_REGRESSION_SUITE.md](MEDIUM_REGRESSION_SUITE.md) |
 
-Planned next: R1 and R3 to R6 in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).
+| R3 | Oct 10 | Can maps be drawn at random with a held-out region? | Sampler, difficulty controller, level B region | 14 tests pass. No generation failure in 600 resets. Reset takes at most 0.05 s | [MAP_SAMPLER.md](MAP_SAMPLER.md) |
+
+Planned next: R1 (running), R4 to R6 in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).

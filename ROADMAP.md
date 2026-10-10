@@ -84,9 +84,9 @@ Phase 0 is complete.
 
 ### Phase 2. Randomized map distribution: not started
 
-- [ ] Parameter ranges and adaptive-difficulty rule written and committed
-- [ ] Map sampler implemented with tests and a sample gallery (action R3)
-- [ ] Level B held-out parameter region and level C held-out family chosen and sealed (action R4, needs a user decision)
+- [x] Parameter ranges and adaptive-difficulty rule written and committed ([MAP_SAMPLER.md](docs/MAP_SAMPLER.md))
+- [x] Map sampler implemented with tests and a sample gallery (action R3, done October 10)
+- [~] Level B held-out region defined and excluded from the training sampler (opening below 3.8 m with at least four partitions). Level C family not chosen yet (action R4, needs a user decision)
 - [ ] Training run with at least two seeds (action R5)
 - [ ] Level A development gate met on both seeds
 
@@ -131,12 +131,12 @@ Each action lists what it needs, an estimate with its basis, and what it unlocks
 | --- | --- | --- | --- | --- | --- |
 | R1 | Variance study: 5 trainings of the pilot recipe (98,304 transitions, new seeds), final checkpoint on the seven selection cells | Nothing | About 60 min (5 x (6 min training + 6 min evaluation)) | CPU about 55% in training | A measured spread, a best-of-N candidate, and the minimum effect size any later comparison must exceed |
 | R2 | Done October 10 (took about 25 min). Frozen medium-room regression suite, `scripts/regression_medium.py` | Not applicable | Measured: 4 min per checkpoint, 5 checkpoints | Light | Closes Phase 0. Every Phase 2 candidate runs it before promotion |
-| R3 | Implement the Phase 2 map sampler with adaptive difficulty, tests and a sample gallery | Nothing | 1.5 to 2 h (no measured basis) | Almost none | R4, R5 |
-| R4 | Define and seal the level B region and the level C family | R3 and a user decision on which family to hold out | About 20 min after the decision | None | R5, Phase 5 |
-| R5 | Train on the random distribution, two seeds, with selection pools | R3, R4. R1 optional but advised | About 90 min (2 x 7 min training + evaluation) | CPU about 55% | Level A development result, and a first look at levels B and C |
+| R3 | Done October 10 (took about 25 min of work, against a 1.5 to 2 h estimate). Sampler, adaptive controller, 14 tests, gallery | Not applicable | Measured | Almost none | R4, R5 |
+| R4 | Choose the level C family and seal it. The level B region is already defined | A user decision on which family to hold out (suggestion: the synthetic architectural scenes) | About 10 min after the decision | None | R5, Phase 5 |
+| R5 | Train on the random distribution, two seeds, with selection pools. Needs a training script that uses `RandomProfileWorld` (about 30 min to write and test) | R4. R1 result advised | About 90 min (2 x 7 min training + evaluation) | CPU about 55% | Level A development result, and a first look at levels B and C |
 | R6 | Memory retest: 3 seeds x 2 conditions, 64 episodes per cell, final checkpoint only | R3 advised | About 2 h (no measured basis for 64 episodes) | CPU about 55% | A decision on memory |
 
-Recommended order: R2 is done. Run R1 while writing R3, since R3 is mostly editing. Then R4, then R5.
+Recommended order: R2 is done. R1 is running and R3 is done. Next: R4 (needs your choice of the level C family), then R5.
 
 R1 and R3 can overlap. Two training or evaluation jobs must not run at once, because one training job uses about half of the CPU.
 
