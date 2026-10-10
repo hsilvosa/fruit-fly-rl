@@ -27,3 +27,7 @@ Selection pools (new seeds, 32 episodes per cell):
 ## Next
 
 Phase 1 stays open. Needed: the second seed, evaluations after each stage (four in the full criterion) under the resource guard, and an ablation of the bundle if it holds. The checklist in [ZERO_SHOT_PLAN.md](ZERO_SHOT_PLAN.md) is updated. No run is active.
+
+## Addendum, October 10: repeat of the pilot checkpoint
+
+The pilot checkpoint (runs/training/phase1-pilot/seed442/stage-3.zip, SHA-256 starting 71889c4d752ab6bb) was evaluated again on the same selection pools. Result: medium 25, medium-b 27, gate-two 32, gate-long 32, passages-wide 11, passages-mid 21, passages 5. The first evaluation gave 25, 27, 32, 32, 12, 21, 5. Evaluation is repeatable to within one episode, and the checkpoint is a real policy with passages-mid 21/32 and passages 5/32. What did not repeat is the training. The Phase 1 run with the same seed, start and recipe, but a learning-rate decay over 131,072 transitions instead of 98,304, reached passages-wide 24 and passages-mid 6 at 98,304 transitions. Training variance, not evaluation noise, explains the difference. This checkpoint is kept as the best development candidate so far.

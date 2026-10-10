@@ -108,7 +108,7 @@ Phase 0. Baseline and housekeeping
 Phase 1. Stable trainer
 - [x] Implement opt-in settings: 32 simulators, target KL, clip range, epochs, learning-rate decay (in the pilot script, without changing learning.py)
 - [x] Add selection pools separate from the old pools (report pools still reserved and unopened)
-- [ ] Measure evaluation repeatability on a fixed checkpoint
+- [x] Measure evaluation repeatability on a fixed checkpoint (within one episode, see the addendum in PHASE1_PILOT_RESULTS.md)
 - [x] Two-seed run with four evaluations from the experiment 7 checkpoint ([PHASE1_RUN_RESULTS.md](PHASE1_RUN_RESULTS.md))
 - [x] Stability criterion met, or the result is recorded as negative (negative: seed 442 stable, seed 443 not; neither raised the hardest profile)
 
