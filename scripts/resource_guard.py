@@ -1,6 +1,6 @@
 """Resource guard for evaluation fan-out.
 
-Limits set by the user: CPU and memory must stay below 80 percent. The GPU has no limit.
+Limits set by the user: the PC must stay usable. Short CPU peaks are accepted, sustained 100 percent is not. The GPU has no limit.
 A new process starts only when memory use and CPU load are both below the start threshold, which sits under
 the limit to leave room for the process that is about to load the connectome. A hard process cap remains.
 
@@ -9,9 +9,9 @@ machine restarted. Use run_limited for every fan-out.
 """
 import ctypes, os, subprocess, time
 
-LIMIT_PERCENT = 80          # user limit for CPU and memory
-START_BELOW_PERCENT = 65    # start a new process only below this, because a loading process adds load
-MAX_PARALLEL = 8
+LIMIT_PERCENT = 90          # soft limit: the PC must stay usable; short peaks are accepted
+START_BELOW_PERCENT = 75  # start a new process only below this; short peaks are fine, sustained 100 percent is not
+MAX_PARALLEL = 6
 STAGGER_SECONDS = 20        # the connectome load is the memory and CPU peak
 THREADS = "2"                # per process; unrestricted numerical libraries use every core and exceeded the CPU limit
 ENV = {**os.environ, "OMP_NUM_THREADS": THREADS, "MKL_NUM_THREADS": THREADS, "OPENBLAS_NUM_THREADS": THREADS, "NUMEXPR_NUM_THREADS": THREADS}
