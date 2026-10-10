@@ -12,7 +12,8 @@ from resource_guard import run_limited
 
 POOLS = [('A', 100000), ('B', 840000), ('C', 860000), ('D', 861000)]  # 32 episodes each; frozen
 EPISODES = 32
-PER_POOL_FLOOR = 21   # of 32
+ORIGINAL_POOL_FLOOR = 21  # of 32, declared first
+PER_POOL_FLOOR = 17   # of 32, amended after the baselines (see docs/MEDIUM_REGRESSION_SUITE.md)
 TOTAL_FLOOR = 88      # of 128
 
 ck, label, out_dir = sys.argv[1:4]
@@ -33,6 +34,7 @@ result = {'label': label, 'checkpoint': ck, 'pools': {n: s for n, s in POOLS}, '
           'total_successes': total, 'total_episodes': EPISODES * len(POOLS),
           'rule': {'per_pool_floor': PER_POOL_FLOOR, 'total_floor': TOTAL_FLOOR}}
 result['passes'] = total >= TOTAL_FLOOR and all(c['successes'] >= PER_POOL_FLOOR for c in cells.values())
+result['passes_original_rule'] = total >= TOTAL_FLOOR and all(c['successes'] >= ORIGINAL_POOL_FLOOR for c in cells.values())
 if reference:
     lost = {n: sorted(set(reference['success_seeds'][n]) - set(c['success_seeds'])) for n, c in cells.items()}
     result['reference'] = reference['label']

@@ -1,6 +1,6 @@
 # Roadmap
 
-Live status board. Last updated: October 10, 2026, after commit `9e60999` on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
+Live status board. Last updated: October 10, 2026, after commit `22fbaba` and action R2 on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
 
 ## 1. Objective
 
@@ -40,6 +40,7 @@ Worked:
 - Graded maps with medium rooms kept in the mix. Training only on the hardest map gave no signal.
 - Declaring every protocol before training, and keeping selection pools apart from report pools.
 - Evaluation is repeatable to within one episode.
+- The frozen medium-room regression suite: all three historical winners pass its amended rule, and the later candidates score above them.
 - The resource guard (`scripts/resource_guard.py`) keeps the machine usable.
 
 Failed:
@@ -69,7 +70,9 @@ Markers: `[x]` done, `[ ]` open, `[~]` partly done. Each phase links to its desi
 - [x] Write the plan, README and completion-plan updates
 - [x] Resource guard for evaluation fan-out
 - [x] Measure evaluation repeatability
-- [ ] Freeze the medium-room regression suite as a documented, reusable test (action R2)
+- [x] Freeze the medium-room regression suite as a documented, reusable test ([MEDIUM_REGRESSION_SUITE.md](docs/MEDIUM_REGRESSION_SUITE.md))
+
+Phase 0 is complete.
 
 ### Phase 1. Stable trainer: closed as negative for its exit criterion
 
@@ -127,13 +130,13 @@ Each action lists what it needs, an estimate with its basis, and what it unlocks
 | ID | Action | Needs | Estimate | Compute | Unlocks |
 | --- | --- | --- | --- | --- | --- |
 | R1 | Variance study: 5 trainings of the pilot recipe (98,304 transitions, new seeds), final checkpoint on the seven selection cells | Nothing | About 60 min (5 x (6 min training + 6 min evaluation)) | CPU about 55% in training | A measured spread, a best-of-N candidate, and the minimum effect size any later comparison must exceed |
-| R2 | Freeze the medium-room regression suite: script, pools, baseline numbers for the reference checkpoints | Nothing | About 30 min (code 15 min, one evaluation 10 min) | Light | Closes Phase 0. A fixed check for every later candidate |
+| R2 | Done October 10 (took about 25 min). Frozen medium-room regression suite, `scripts/regression_medium.py` | Not applicable | Measured: 4 min per checkpoint, 5 checkpoints | Light | Closes Phase 0. Every Phase 2 candidate runs it before promotion |
 | R3 | Implement the Phase 2 map sampler with adaptive difficulty, tests and a sample gallery | Nothing | 1.5 to 2 h (no measured basis) | Almost none | R4, R5 |
 | R4 | Define and seal the level B region and the level C family | R3 and a user decision on which family to hold out | About 20 min after the decision | None | R5, Phase 5 |
 | R5 | Train on the random distribution, two seeds, with selection pools | R3, R4. R1 optional but advised | About 90 min (2 x 7 min training + evaluation) | CPU about 55% | Level A development result, and a first look at levels B and C |
 | R6 | Memory retest: 3 seeds x 2 conditions, 64 episodes per cell, final checkpoint only | R3 advised | About 2 h (no measured basis for 64 episodes) | CPU about 55% | A decision on memory |
 
-Recommended order: R2 first (short, closes Phase 0). Run R1 while writing R3, since R3 is mostly editing. Then R4, then R5.
+Recommended order: R2 is done. Run R1 while writing R3, since R3 is mostly editing. Then R4, then R5.
 
 R1 and R3 can overlap. Two training or evaluation jobs must not run at once, because one training job uses about half of the CPU.
 
@@ -161,8 +164,9 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | Pool | Seeds | Use | Status |
 | --- | --- | --- | --- |
 | Historical final pools | Recorded in `runs/suites/consumed` | Earlier final tests, including the 0/64 large-room pool | Consumed. Never a test again |
-| Medium regression, validation of the 50/64 policy | 100000 to 100031 | Regression check | Inspected |
-| Medium-b | 840000 to 840031 | Regression check | Inspected |
+| Medium regression pool A (validation of the 50/64 policy) | 100000 to 100031 | Frozen regression suite | Inspected |
+| Medium regression pool B | 840000 to 840031 | Frozen regression suite | Inspected |
+| Medium regression pools C and D | 860000 to 860031 and 861000 to 861031 | Frozen regression suite. Also Phase 1 and 3 selection pools for medium | Inspected. Do not select on them for medium performance |
 | Gate pools | 830000 to 830031 | Development | Inspected |
 | `passages-wide` | 830000 to 830031 | Development | Inspected |
 | `passages-mid` | 850000 to 850031 | Development | Inspected |

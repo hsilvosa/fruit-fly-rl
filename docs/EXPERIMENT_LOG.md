@@ -21,4 +21,6 @@ One row per iteration, in order. Protocols were committed before the runs. Resul
 | M12 | Oct 10 | Does the long window replicate? | Seed 443 | No: +5, -9, 0 against the control | [protocol](PHASE3_REPLICATION_PROTOCOL.md), [results](PHASE3_REPLICATION_RESULTS.md) |
 | V1 | Oct 10 | Is evaluation or training the noisy part? | Re-evaluate the pilot checkpoint | Evaluation repeats within one episode. Training varies | [addendum](PHASE1_PILOT_RESULTS.md) |
 
-Planned next: R1 to R6 in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).
+| R2 | Oct 10 | Does a candidate keep the medium-room skill? | Frozen four-pool regression suite, five baselines | Historical winners 90 to 98 of 128, experiment 7 start 111, pilot candidate 104. The first per-pool rule failed two winners and was relaxed, openly | [MEDIUM_REGRESSION_SUITE.md](MEDIUM_REGRESSION_SUITE.md) |
+
+Planned next: R1 and R3 to R6 in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).
