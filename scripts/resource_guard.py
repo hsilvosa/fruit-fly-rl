@@ -11,7 +11,7 @@ import ctypes, os, subprocess, time
 
 LIMIT_PERCENT = 90          # soft limit: the PC must stay usable; short peaks are accepted
 START_BELOW_PERCENT = 75  # start a new process only below this; short peaks are fine, sustained 100 percent is not
-MAX_PARALLEL = 6
+MAX_PARALLEL = 4
 STAGGER_SECONDS = 20        # the connectome load is the memory and CPU peak
 THREADS = "2"                # per process; unrestricted numerical libraries use every core and exceeded the CPU limit
 ENV = {**os.environ, "OMP_NUM_THREADS": THREADS, "MKL_NUM_THREADS": THREADS, "OPENBLAS_NUM_THREADS": THREADS, "NUMEXPR_NUM_THREADS": THREADS}

@@ -27,4 +27,6 @@ One row per iteration, in order. Protocols were committed before the runs. Resul
 
 | R4 | Oct 10 | Which family is never trained on? | Sealed level B region and level C scenes; architectural world for older sensor contracts | 5 tests pass. Geometry equals the protected world | [HELD_OUT_SPEC.md](HELD_OUT_SPEC.md) |
 
-Planned next: R1 (running), R5, R6 in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).
+| R1 | Oct 10 | How much does one recipe vary between training runs? | Five seeds of the pilot recipe, plus a 64-episode confirmation | Passages-wide range 11 of 32. Pilot checkpoint confirmed as a real outlier: 58% passages-mid and 27% passages on a fresh pool | [protocol](VARIANCE_STUDY_PROTOCOL.md), [results](VARIANCE_STUDY_RESULTS.md) |
+
+Planned next: R5, R6 in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).

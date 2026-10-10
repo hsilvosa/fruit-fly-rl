@@ -22,8 +22,11 @@ def run_guarded(cmd, env=None, name=''):
 
 for seed in (501, 502, 503, 504, 505):
     arm = f'seed{seed}'
-    run_guarded([PY, '-s', 'scripts/train_variance.py', arm, f'{RUN}/{arm}'], {**os.environ, 'NOEVAL': '1'}, f'train-{arm}')
-    print('trained', arm, time.strftime('%H:%M'), flush=True)
+    if not os.path.exists(f'{RUN}/{arm}/stage-3.zip'):
+      run_guarded([PY, '-s', 'scripts/train_variance.py', arm, f'{RUN}/{arm}'], {**os.environ, 'NOEVAL': '1'}, f'train-{arm}')
+      print('trained', arm, time.strftime('%H:%M'), flush=True)
+    if os.path.exists(f'{RUN}/{arm}/eval-final.json'):
+        continue
     run_guarded([PY, '-s', 'scripts/eval_checkpoint.py', f'{RUN}/{arm}/stage-3.zip', 'final', f'{RUN}/{arm}', 'select,regab'],
                 None, f'eval-{arm}')
     print('evaluated', arm, time.strftime('%H:%M'), flush=True)

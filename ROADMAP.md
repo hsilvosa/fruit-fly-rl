@@ -1,6 +1,6 @@
 # Roadmap
 
-Live status board. Last updated: October 10, 2026, after commit `22fbaba` and action R2 on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
+Live status board. Last updated: October 10, 2026, after actions R1 to R4 on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
 
 ## 1. Objective
 
@@ -30,7 +30,7 @@ Proposed release gate: at least 52 of 64 successes and at most 3 collisions in e
 | Unseen-map navigation (levels A, B, C) | No evidence. No held-out set exists yet | This file |
 | Release gate | Not met | This file |
 
-Best development candidate so far: `runs/training/phase1-pilot/seed442/stage-3.zip` (medium 25, medium-b 27, gate-two 32, gate-long 32, passages-wide 11, passages-mid 21, passages 5 of 32 on the selection pools). It is a development result from one training run that the recipe did not reproduce.
+Best development candidate so far: `runs/training/phase1-pilot/seed442/stage-3.zip`. On a fresh pool with 64 episodes per cell: medium 57, passages-wide 14, passages-mid 37 and passages 17 (89%, 22%, 58% and 27%). It is a real policy and an outlier: five repeats of its recipe reached 7 to 13 of 32 on passages-mid. It gives up passages-wide to get the harder profiles.
 
 ## 3. What worked, what failed, what we learned
 
@@ -54,6 +54,7 @@ Learned:
 
 - The training run is the high-variance part: seeds from the same start differ by up to 18 episodes on one profile, and the same seed with a different decay schedule reversed the outcome.
 - The policy often keeps one hard profile at the expense of another. This trade-off appears in all three phases.
+- Training spread was measured (R1): five runs of one recipe differ by up to 11 episodes of 32 on passages-wide and 6 on passages-mid. A minority of runs land much higher: the pilot checkpoint scores 58% on passages-mid and 27% on passages on a fresh 64-episode pool, and no repeat came close.
 - Open hypotheses, not measured: the policy network and short-range sensors limit capacity; the Euclidean-progress reward creates local minima at partitions.
 
 ## 4. Progress board
@@ -80,7 +81,7 @@ Phase 0 is complete.
 - [x] Separate selection pools introduced (report pools still unopened)
 - [x] Two-seed run with four evaluations ([PHASE1_RUN_RESULTS.md](docs/PHASE1_RUN_RESULTS.md))
 - [x] Result recorded: seed 442 stable, seed 443 not, hardest profile not raised
-- [ ] Measure training variance directly: several runs of one recipe (action R1)
+- [x] Measure training variance directly: five runs of one recipe ([VARIANCE_STUDY_RESULTS.md](docs/VARIANCE_STUDY_RESULTS.md), action R1, done October 10)
 
 ### Phase 2. Randomized map distribution: not started
 
@@ -129,7 +130,7 @@ Each action lists what it needs, an estimate with its basis, and what it unlocks
 
 | ID | Action | Needs | Estimate | Compute | Unlocks |
 | --- | --- | --- | --- | --- | --- |
-| R1 | Variance study: 5 trainings of the pilot recipe (98,304 transitions, new seeds), final checkpoint on the seven selection cells | Nothing | About 60 min (5 x (6 min training + 6 min evaluation)) | CPU about 55% in training | A measured spread, a best-of-N candidate, and the minimum effect size any later comparison must exceed |
+| R1 | Done October 10 (53 min against 60 estimated). Passages-wide ranged over 11 episodes, so the strict rule applies | Not applicable | Measured | Not applicable | Decision D1: at least 3 seeds and 64 episodes per comparison, best-of-N with a report pool |
 | R2 | Done October 10 (under 25 min by the clock; estimate was 30 min). Frozen medium-room regression suite, `scripts/regression_medium.py` | Not applicable | Measured: 4 min per checkpoint, 5 checkpoints | Light | Closes Phase 0. Every Phase 2 candidate runs it before promotion |
 | R3 | Done October 10. Measured by the machine clock: about 5 minutes between the end of the previous step and the commit, against a 1.5 to 2 h estimate. Sampler, adaptive controller, 14 tests, gallery | Not applicable | Measured | Almost none | R4, R5 |
 | R4 | Done October 10. Level C = synthetic architectural scenes, sealed with reserved seeds. Evaluation tool and tests written | Not applicable | Measured: under 15 min | None | R5, Phase 5 |
@@ -144,7 +145,7 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 
 | After | Question | If yes | If no |
 | --- | --- | --- | --- |
-| R1 | Is the range of passages-mid or passages-wide across runs at least 10 episodes of 32? | Every later comparison needs at least 3 seeds and 64 episodes per cell. Use best-of-N with a separate report pool | Single-run comparisons with a 6-episode threshold are acceptable |
+| R1 (decided October 10) | Is the range of passages-mid or passages-wide across runs at least 10 episodes of 32? | Yes (passages-wide 11). Every later comparison needs at least 3 seeds and 64 episodes per cell. Use best-of-N with a separate report pool | Not applicable |
 | R5 | On two seeds, does each development cell reach 26 of 32 with at most 3 collisions, and medium stay at 21 or more? | Move to Phase 4 (target families) | Change the representation before more training: decide among a longer-range sensor, a memory retest (R6), or planner imitation. The user decides, because imitation shifts weight from RL |
 | R5 | Does any result appear on level B or C? | Report it with intervals. It is the first evidence for the objective | Report that no unseen-map evidence exists yet |
 | Phase 4 | Is a held-out family result at or above half the development rate? | Proceed to Phase 5 | Keep training and revisit the representation |
