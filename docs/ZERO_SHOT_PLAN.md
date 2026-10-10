@@ -120,8 +120,8 @@ Phase 2. Randomized map distribution
 - [ ] Level A development gate met on both seeds
 
 Phase 3. Memory
-- [ ] No-memory control recorded on the Phase 2 setup
-- [ ] History-frame or recurrent policy trained, two seeds
+- [x] No-memory control recorded (Phase 1 run, on the Phase 1 mix; the Phase 2 setup does not exist yet)
+- [ ] History-frame or recurrent policy trained, two seeds (screening done on seed 442: long window promising, see PHASE3_SCREENING_RESULTS.md; seed 443 pending)
 - [ ] Memory gain on level B or C development cells decided and recorded
 
 Phase 4. Target families
