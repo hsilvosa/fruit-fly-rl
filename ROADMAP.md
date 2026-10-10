@@ -125,13 +125,13 @@ Phase 0 is complete.
 
 ## 5. Actions ready to start
 
-Each action lists what it needs, an estimate with its basis, and what it unlocks. Estimates come from measured timings: one training stage of 32,768 transitions takes 65 to 95 s; one seven-cell evaluation of a checkpoint on one pool set takes 5 to 7 min under the resource guard; a fourteen-cell evaluation takes 8 to 10 min. Code-writing estimates have no measured basis and carry more uncertainty.
+Each action lists what it needs, an estimate with its basis, and what it unlocks. Estimates come from measured timings: one training stage of 32,768 transitions takes 65 to 95 s; one seven-cell evaluation of a checkpoint on one pool set takes 5 to 7 min under the resource guard; a fourteen-cell evaluation takes 8 to 10 min. Code-writing estimates have no measured basis and carry more uncertainty. The two code actions done so far (R2, R3) took far less than estimated, so code estimates are pessimistic, while training and evaluation estimates have held within 10 to 20 percent.
 
 | ID | Action | Needs | Estimate | Compute | Unlocks |
 | --- | --- | --- | --- | --- | --- |
 | R1 | Variance study: 5 trainings of the pilot recipe (98,304 transitions, new seeds), final checkpoint on the seven selection cells | Nothing | About 60 min (5 x (6 min training + 6 min evaluation)) | CPU about 55% in training | A measured spread, a best-of-N candidate, and the minimum effect size any later comparison must exceed |
-| R2 | Done October 10 (took about 25 min). Frozen medium-room regression suite, `scripts/regression_medium.py` | Not applicable | Measured: 4 min per checkpoint, 5 checkpoints | Light | Closes Phase 0. Every Phase 2 candidate runs it before promotion |
-| R3 | Done October 10 (took about 25 min of work, against a 1.5 to 2 h estimate). Sampler, adaptive controller, 14 tests, gallery | Not applicable | Measured | Almost none | R4, R5 |
+| R2 | Done October 10 (under 25 min by the clock; estimate was 30 min). Frozen medium-room regression suite, `scripts/regression_medium.py` | Not applicable | Measured: 4 min per checkpoint, 5 checkpoints | Light | Closes Phase 0. Every Phase 2 candidate runs it before promotion |
+| R3 | Done October 10. Measured by the machine clock: about 5 minutes between the end of the previous step and the commit, against a 1.5 to 2 h estimate. Sampler, adaptive controller, 14 tests, gallery | Not applicable | Measured | Almost none | R4, R5 |
 | R4 | Choose the level C family and seal it. The level B region is already defined | A user decision on which family to hold out (suggestion: the synthetic architectural scenes) | About 10 min after the decision | None | R5, Phase 5 |
 | R5 | Train on the random distribution, two seeds, with selection pools. Needs a training script that uses `RandomProfileWorld` (about 30 min to write and test) | R4. R1 result advised | About 90 min (2 x 7 min training + evaluation) | CPU about 55% | Level A development result, and a first look at levels B and C |
 | R6 | Memory retest: 3 seeds x 2 conditions, 64 episodes per cell, final checkpoint only | R3 advised | About 2 h (no measured basis for 64 episodes) | CPU about 55% | A decision on memory |
