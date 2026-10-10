@@ -13,7 +13,8 @@ OLD = [("medium", None, 100000), ("medium-b", None, 840000), ("gate-two", "gate-
 SEL = [('medium', None, 860000), ('medium-b', None, 861000), ('gate-two', 'gate-two', 862000),
        ('gate-long', 'gate-long', 862000), ('passages-wide', 'passages-wide', 863000),
        ('passages-mid', MID, 864000), ('passages', 'passages', 865000)]
-POOLS = [('select', SEL), ('old', OLD)] if len(sys.argv) < 5 else [(p, {'select': SEL, 'old': OLD}[p]) for p in sys.argv[4].split(',')]
+REGAB = [('medium', None, 100000), ('medium-b', None, 840000)]
+POOLS = [('select', SEL), ('old', OLD)] if len(sys.argv) < 5 else [(p, {'select': SEL, 'old': OLD, 'regab': REGAB}[p]) for p in sys.argv[4].split(',')]
 commands, outputs = [], []
 for pool, cells in POOLS:
     for name, prof, seed in cells:
