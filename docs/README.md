@@ -14,6 +14,7 @@ Start with the root [README](../README.md) for installation, demos and controls.
 | Anatomy of passages collisions | [Collision anatomy](COLLISION_ANATOMY.md) |
 | Probe of the policy features | [Feature probe](FEATURE_PROBE.md) |
 | Privileged-waypoint diagnostic | [Waypoint diagnostic](WAYPOINT_DIAGNOSTIC_RESULTS.md) |
+| History, range and synthetic probes | [Sensing probes](SENSING_PROBES.md) |
 | Phase design toward unseen-map navigation | [Zero-shot plan](ZERO_SHOT_PLAN.md) |
 | Recovered historical learned reference | [Historical reference](HISTORICAL_REFERENCE.md) |
 | Transfer experiments 1 to 8 | [Transfer summary](TRANSFER_SUMMARY.md) |
