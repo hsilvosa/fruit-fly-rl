@@ -29,4 +29,6 @@ One row per iteration, in order. Protocols were committed before the runs. Resul
 
 | R1 | Oct 10 | How much does one recipe vary between training runs? | Five seeds of the pilot recipe, plus a 64-episode confirmation | Passages-wide range 11 of 32. Pilot checkpoint confirmed as a real outlier: 58% passages-mid and 27% passages on a fresh pool | [protocol](VARIANCE_STUDY_PROTOCOL.md), [results](VARIANCE_STUDY_RESULTS.md) |
 
-Planned next: R5, R6 in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).
+| R5 | Oct 11 | Does training on random maps help? | Random-map mix, three seeds, against five control runs | Negative by the rule (+1.1 and +0.6 of 64). The difficulty controller stayed at 0.2 to 0.25. Run 601 is an outlier (passages-wide 32/32) | [protocol](RANDOM_DISTRIBUTION_PROTOCOL.md), [results](RANDOM_DISTRIBUTION_RESULTS.md) |
+
+Planned next: R6 in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).

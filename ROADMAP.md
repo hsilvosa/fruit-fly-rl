@@ -1,6 +1,6 @@
 # Roadmap
 
-Live status board. Last updated: October 10, 2026, after actions R1 to R4 on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
+Live status board. Last updated: October 11, 2026, after actions R1 to R5 on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
 
 ## 1. Objective
 
