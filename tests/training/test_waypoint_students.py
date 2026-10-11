@@ -88,3 +88,27 @@ def test_auxiliary_head_learns_the_route_direction():
     student.learn(2048)
     after = student.policy.aux_loss(obs).item()
     assert after < before - 0.05
+
+
+def test_pretrained_trunk_loads_into_a_blind_actor_and_reproduces_the_source(tmp_path):
+    source = source_policy()
+    net = source.policy.mlp_extractor.policy_net
+    head = torch.nn.Sequential(torch.nn.Linear(128, 64), torch.nn.Tanh(), torch.nn.Linear(64, EXTRA))
+    trunk = torch.nn.Sequential(torch.nn.Linear(WIDTH, 128), torch.nn.Tanh(), torch.nn.Linear(128, 128), torch.nn.Tanh())
+    with torch.no_grad():
+        for i in (0, 2):
+            trunk[i].weight.copy_(net[i].weight); trunk[i].bias.copy_(net[i].bias)
+    path = str(tmp_path / 'trunk.pt')
+    torch.save({'trunk': trunk.state_dict(), 'act': source.policy.action_net.state_dict(), 'head': head.state_dict()}, path)
+    student = build_student(source, Fake(), 6, 'pre', pretrained=path)
+    x = torch.randn(7, WIDTH)
+    with torch.no_grad():
+        a = source.policy.get_distribution(x).distribution.loc
+        b = student.policy.get_distribution(torch.cat([x, torch.randn(7, EXTRA)], 1)).distribution.loc
+    assert torch.allclose(a, b, atol=1e-6)
+    student.learn(512)
+    assert student.policy.mlp_extractor.policy_net[0].weight[:, WIDTH:].abs().max().item() == 0.0
+    with pytest.raises(ValueError):
+        build_student(source, Fake(), 6, 'pre')
+    with pytest.raises(ValueError):
+        build_student(source, Fake(), 6, 'aux', pretrained=path)

@@ -21,7 +21,7 @@ env = WaypointBrainEnv('data', n, 'cuda', seed=seed, mode='dense', dynamics='coo
 if prof == 'heldout_b':
     fixed = DifficultyController(initial=0.8, window=10 ** 9); sampler = ProfileSampler('heldout_b')
     env.worlds = [RandomProfileWorld(seed + i, 'dense', None, 'coordinated', sv, sampler=sampler, controller=fixed) for i in range(n)]
-model = (AuxPPO if arm in ('aux', 'critic') else PPO).load(ck, env=env, device='cpu')
+model = (AuxPPO if arm in ('aux', 'critic', 'pre') else PPO).load(ck, env=env, device='cpu')
 env.seed(seed); features = env.reset()
 active = np.ones(n, bool); rows = {}
 for _ in range(max(w.episode_limit for w in env.worlds)):

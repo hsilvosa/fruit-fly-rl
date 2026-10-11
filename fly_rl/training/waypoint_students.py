@@ -122,15 +122,32 @@ class AuxPPO(PPO):
         self.logger.record('train/n_updates', self._n_updates, exclude='tensorboard')
 
 
-def build_student(source, env, seed, arm, learning_rate=3e-4):
+def load_pretrained_trunk(model, path):
+    """Copy a supervised-pretrained actor trunk, action layer and auxiliary head (scripts/pretrain_trunk.py) into an `aux` student.
+    The route columns of the first layer stay at zero, so the actor remains blind to them."""
+    state = torch.load(path, map_location='cpu')
+    net = model.policy.mlp_extractor.policy_net
+    width = model.observation_space.shape[0] - EXTRA
+    with torch.no_grad():
+        for i in (0, 2):
+            net[i].weight[:, :width if i == 0 else None].copy_(state['trunk'][f'{i}.weight'])
+            net[i].bias.copy_(state['trunk'][f'{i}.bias'])
+        model.policy.action_net.weight.copy_(state['act']['weight']); model.policy.action_net.bias.copy_(state['act']['bias'])
+        model.policy.aux_head.load_state_dict(state['head'])
+    return model
+
+
+def build_student(source, env, seed, arm, learning_rate=3e-4, pretrained=None):
     """Student over `features + 3` inputs from a 256-input source policy. All shared weights are copied and the new columns start at
     zero, so before training the student computes exactly what the source computed."""
-    if arm not in ('aux', 'critic'):
-        raise ValueError('arm must be aux or critic')
+    if arm not in ('aux', 'critic', 'pre'):
+        raise ValueError('arm must be aux, critic or pre')
+    if (arm == 'pre') != (pretrained is not None):
+        raise ValueError('the pre arm needs a pretrained trunk, and only that arm takes one')
     new = AuxPPO(BlindWaypointPolicy, env, device='cpu', seed=seed, verbose=0, learning_rate=learning_rate, n_steps=128,
                  batch_size=256, n_epochs=3, gamma=.995, gae_lambda=.95, clip_range=.1, target_kl=0.02, aux_coef=1.0,
-                 policy_kwargs={'net_arch': {'pi': [128, 128], 'vf': [128, 128]}, 'aux_head': arm == 'aux',
-                                'actor_blind': True, 'critic_blind': arm == 'aux'})
+                 policy_kwargs={'net_arch': {'pi': [128, 128], 'vf': [128, 128]}, 'aux_head': arm in ('aux', 'pre'),
+                                'actor_blind': True, 'critic_blind': arm in ('aux', 'pre')})
     old = dict(source.policy.named_parameters()); fresh = dict(new.policy.named_parameters())
     width = source.observation_space.shape[0]
     with torch.no_grad():
@@ -145,4 +162,6 @@ def build_student(source, env, seed, arm, learning_rate=3e-4):
             else:
                 raise ValueError(f'Cannot expand {name}')
     new.num_timesteps = source.num_timesteps
+    if pretrained is not None:
+        load_pretrained_trunk(new, pretrained)
     return new

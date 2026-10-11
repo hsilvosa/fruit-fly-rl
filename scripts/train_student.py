@@ -1,6 +1,6 @@
 """Autonomous-student training with a training-only route signal. See docs/AUXILIARY_STUDENT_PROTOCOL.md.
 Phase 1 recipe and mix from the experiment 7 start. ARM 'aux': auxiliary waypoint-prediction head, actor and critic blind to the waypoint.
-ARM 'critic': privileged critic, blind actor. Usage: train_student.py <aux|critic> <seed> <output-dir> <stages>"""
+ARM 'critic': privileged critic, blind actor. ARM 'pre': aux arm whose actor trunk starts from the supervised pretraining. Usage: train_student.py <aux|critic|pre> <seed> <output-dir> <stages>"""
 import hashlib, json, os, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, '.')
@@ -14,7 +14,7 @@ from fly_rl.simulation.world import FlightWorld
 from fly_rl.simulation.map_profiles import resolve_profile
 
 ARM, SEED, OUT, STAGES = sys.argv[1], int(sys.argv[2]), sys.argv[3], int(sys.argv[4])
-assert ARM in ('aux', 'critic')
+assert ARM in ('aux', 'critic', 'pre')
 SOURCE = 'runs/training/reference-transfer-7/mix3e4/stage-2'
 MID = 'scripts/profiles/passages-mid.json'
 ASSIGN = [None] * 8 + [MID] * 12 + ['passages'] * 4 + ['passages-wide'] * 4 + ['gate-two'] * 4
@@ -35,7 +35,7 @@ env = WaypointBrainEnv('data', len(ASSIGN), 'cuda', seed=SEED, mode='dense', dyn
                        map_profile=None, readout_version=checkpoint_readout(src), privileged=True, **checkpoint_history(src))
 env.worlds = [FlightWorld(SEED + i, 'dense', None, 'coordinated', sv, resolve_profile(p)) for i, p in enumerate(ASSIGN)]
 source = load_model(src, env.brain, None, True)
-model = build_student(source, env, SEED, ARM)
+model = build_student(source, env, SEED, ARM, pretrained='runs/training/pretrain/trunk.pt' if ARM == 'pre' else None)
 model.set_random_seed(SEED)
 model.rollout_buffer = RolloutBuffer(128, model.observation_space, model.action_space, device=model.device,
                                      gamma=0.995, gae_lambda=model.gae_lambda, n_envs=len(ASSIGN))
