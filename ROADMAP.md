@@ -27,10 +27,15 @@ Proposed release gate: at least 52 of 64 successes and at most 3 collisions in e
 | `passages-mid`, `passages` | Mostly 6 to 12 and 0 to 6 of 32. Best single checkpoint: 21 and 5 of 32 | [PHASE1_PILOT_RESULTS.md](docs/PHASE1_PILOT_RESULTS.md) |
 | `large`, `maze`, architectural scenes | Not trained in this line. Reference scored 0/16 on `large` | [HISTORICAL_REFERENCE.md](docs/HISTORICAL_REFERENCE.md) |
 | Memory (history window) | Not replicated: seed 442 gained, seed 443 lost on one profile | [PHASE3_REPLICATION_RESULTS.md](docs/PHASE3_REPLICATION_RESULTS.md) |
-| Unseen-map navigation (levels A, B, C) | No evidence. No held-out set exists yet | This file |
+| Run 601 (R5 seed) on a fresh 64-episode pool | Medium 92%, passages-wide 86%, passages-mid 55%, passages 14%. First checkpoint that keeps medium, wide and mid together | [COMMITTEE_EVAL_RESULTS.md](docs/COMMITTEE_EVAL_RESULTS.md) |
+| Why `passages` stays low | Collisions end 1.5 to 3.5 m off the certified route around mid-route. The policy input carries the route direction only to 42 to 53 degrees. Giving the actor the route direction as input lifts `passages` from 17% to 59% (diagnostic, not a student) | [COLLISION_ANATOMY.md](docs/COLLISION_ANATOMY.md), [FEATURE_PROBE.md](docs/FEATURE_PROBE.md), [WAYPOINT_DIAGNOSTIC_RESULTS.md](docs/WAYPOINT_DIAGNOSTIC_RESULTS.md) |
+| Route signal used only in training (auxiliary head, privileged critic, supervised pretraining) | Negative: `passages` 13 to 15 of 64 against 12 for the control | [AUXILIARY_STUDENT_RESULTS.md](docs/AUXILIARY_STUDENT_RESULTS.md), [PRETRAIN_RESULTS.md](docs/PRETRAIN_RESULTS.md) |
+| Unseen-map navigation (levels A, B, C) | Level B development maps: 1 to 6 of 64 for every run. Level C baseline of the start checkpoint: 71 of 168 (42%), mostly open routes. No gate evidence | [HELD_OUT_SPEC.md](docs/HELD_OUT_SPEC.md), [RANDOM_DISTRIBUTION_RESULTS.md](docs/RANDOM_DISTRIBUTION_RESULTS.md) |
 | Release gate | Not met | This file |
 
 Best development candidate so far: `runs/training/phase1-pilot/seed442/stage-3.zip`. On a fresh pool with 64 episodes per cell: medium 57, passages-wide 14, passages-mid 37 and passages 17 (89%, 22%, 58% and 27%). It is a real policy and an outlier: five repeats of its recipe reached 7 to 13 of 32 on passages-mid. It gives up passages-wide to get the harder profiles.
+
+**Defensible claim today:** a learned policy with the full connectome in the loop reaches goals in new medium rooms (86 to 92 percent on fresh 64-episode pools), partly in partitioned rooms (about 20 percent on `passages`, 50 to 90 percent on easier profiles), and has no evidence on `large`, mazes or unseen families. The four-family gate is not met and no tested change moves it.
 
 ## 3. What worked, what failed, what we learned
 
@@ -55,7 +60,10 @@ Learned:
 - The training run is the high-variance part: seeds from the same start differ by up to 18 episodes on one profile, and the same seed with a different decay schedule reversed the outcome.
 - The policy often keeps one hard profile at the expense of another. This trade-off appears in all three phases.
 - Training spread was measured (R1): five runs of one recipe differ by up to 11 episodes of 32 on passages-wide and 6 on passages-mid. A minority of runs land much higher: the pilot checkpoint scores 58% on passages-mid and 27% on passages on a fresh 64-episode pool, and no repeat came close.
-- Open hypotheses, not measured: the policy network and short-range sensors limit capacity; the Euclidean-progress reward creates local minima at partitions.
+- Measured since (October 11, three committee reviews and eight analyses): the reward is not the cause (an ideal route follower beats hovering at every route point); hard-map exposure in the R5 run was almost nil (64 to 127 episodes, controller stayed at 0.2); the 256 pooled features lose nothing compared with raw sensors; the 8 m rays contain the route direction (34 degrees on hard samples with 500 maps; 24 m rays reach 28); a supervised trunk encodes it to 42 degrees on new maps and still does not change flight under PPO.
+- Evaluation mode matters: the pilot checkpoint scores 14 of 64 on passages-wide with deterministic actions (50 timeouts, no collisions) and 55 with sampled actions. Future protocols must declare the mode and report both.
+- The route direction as an actor input is what works (36 and 39 of 64 on passages against 8 and 14 without it). It is a diagnostic: a student cannot read the certified route.
+- Open hypotheses, not measured: a much larger budget (1M transitions or more) with a learning curve; behavior distillation from the route-aware policy (earlier imitation failed on `large`); memory and long-range sensing for `large` and mazes; the 52 of 64 gate looks unreachable on large and maze with 8 m rays and a memoryless policy (opinion of the committee, not a measurement).
 
 ## 4. Progress board
 
@@ -135,9 +143,15 @@ Each action lists what it needs, an estimate with its basis, and what it unlocks
 | R3 | Done October 10. Measured by the machine clock: about 5 minutes between the end of the previous step and the commit, against a 1.5 to 2 h estimate. Sampler, adaptive controller, 14 tests, gallery | Not applicable | Measured | Almost none | R4, R5 |
 | R4 | Done October 10. Level C = synthetic architectural scenes, sealed with reserved seeds. Evaluation tool and tests written | Not applicable | Measured: under 15 min | None | R5, Phase 5 |
 | R5 | Done October 11. Negative by the frozen rule; the difficulty controller stayed at 0.2 to 0.25, so training saw mostly easy maps ([results](docs/RANDOM_DISTRIBUTION_RESULTS.md)) | Not applicable | Measured: 3 h 10 min against about 2 h estimated | Not applicable | R5b: a version with real difficulty |
+| D1 | Done October 11. Committee reviews (three rounds), light audit, 601 confirmation, collision anatomy, feature and synthetic probes. See [EXPERIMENT_LOG.md](docs/EXPERIMENT_LOG.md) | Not applicable | Measured | Not applicable | Diagnosis: information at decision time, not reward or readout |
+| D2 | Done October 11. Privileged-waypoint diagnostic, two seeds per arm: partial by the rule (37.5 against 11 of 64) | Not applicable | Measured: 56 min | Not applicable | Information matters; not a student |
+| D3 | Done October 11. Auxiliary head and privileged critic, three seeds: negative (+2.3 and +0.7 of 64) | Not applicable | Measured: 2 h 43 | Not applicable | Closes training-only route signals at 262k |
+| D4 | Done October 11. Supervised pretraining of the actor trunk then PPO, three seeds: gate passed, PPO negative (+2.0 of 64) | Not applicable | Measured: 1 h 16 | Not applicable | Representation is not the bottleneck |
+| B1 | Large budget: the pilot recipe at 1,000,000 added transitions, one seed, curve at 100k, 300k, 600k and 1M on `passages` and medium (new pool). Needs a committed protocol first | Protocol, new pool | About 1 h 30 (training 40 min from 3.7 min per 98k, evaluation 25 min) | CPU about 55% in training, 50 to 80% in evaluation | Decides whether budget is the lever |
+| C1 | No-connectome learned control and planner reference on the same cells | Phase 5 definition | Not estimated: no measured basis | Not known | The claim that the connectome contributes |
 | R6 | Memory retest: 3 seeds x 2 conditions, 64 episodes per cell, final checkpoint only | R3 advised | About 2 h (no measured basis for 64 episodes) | CPU about 55% | A decision on memory |
 
-Recommended order: R1 to R5 are done. Next: R5b, the same run with a higher initial difficulty (one change, needs a protocol first), or the confirmation of run 601 on a fresh pool.
+Recommended order: R1 to R5 and D1 to D4 are done. Next: B1 (large budget, one seed, with a committed protocol). If `passages` rises to 24 of 64 or more with medium at 48 or more, repeat with three seeds and measure level B and C once. If it stays at 16 or less, close the scope with the bounded claim and run C1 (no-connectome control and planner reference).
 
 R1 and R3 can overlap. Two training or evaluation jobs must not run at once, because one training job uses about half of the CPU.
 
@@ -148,6 +162,7 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | R1 (decided October 10) | Is the range of passages-mid or passages-wide across runs at least 10 episodes of 32? | Yes (passages-wide 11). Every later comparison needs at least 3 seeds and 64 episodes per cell. Use best-of-N with a separate report pool | Not applicable |
 | R5 | On two seeds, does each development cell reach 26 of 32 with at most 3 collisions, and medium stay at 21 or more? | Move to Phase 4 (target families) | Change the representation before more training: decide among a longer-range sensor, a memory retest (R6), or planner imitation. The user decides, because imitation shifts weight from RL |
 | R5 | Does any result appear on level B or C? | Report it with intervals. It is the first evidence for the objective | Report that no unseen-map evidence exists yet |
+| B1 | Does `passages` reach 24 of 64 (twice the 262k control) with medium at 48 or more after 1M transitions? | Repeat with three seeds, then level B and C once | At 16 or less: close the scope. Bounded claim: zero-shot in medium rooms, partial in partitioned rooms. Run C1 and prepare the release with limitations |
 | Phase 4 | Is a held-out family result at or above half the development rate? | Proceed to Phase 5 | Keep training and revisit the representation |
 
 ## 7. Rules for every iteration
@@ -175,9 +190,11 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | Selection pools | 860000 to 865000 (one range per cell) | Choosing checkpoints (Phases 1 and 3) | Used for selection only |
 | Report pools | Not yet drawn | Final Phase 1 style reports | Reserved, unopened |
 | Level A report | 940000 to 949999 | Report pool | Reserved, unopened |
-| Level B region, development | Held-out sampler, 950000 to 959999 | Look at progress, not for selection | Not yet drawn |
+| Confirmation and comparison pools | 880000 to 880063; 882000 to 882063 | Fresh-pool confirmations, student comparisons (882000 reused for the pretraining comparison). Selected nothing | Inspected. 880000 also drove the committee analyses: not a selection set from now on |
+| Probe pools | 881000 to 881063 (rollouts), 895000 to 895699 (synthetic poses), 896000 to 896799 (pretraining data) | Offline probes and supervised pretraining | Used. Never evaluation pools |
+| Level B region, development | Held-out sampler, 950000 to 959999 | Look at progress, not for selection | Drawn: 950000 to 950063 inspected for every R5 and student run |
 | Level B region, final | Held-out sampler, 960000 to 969999 | Final assessment | Reserved, unopened |
-| Level C scenes, development headings | 900000 and above | Baseline measurements only before Phase 5 | Not yet used |
+| Level C scenes, development headings | 900000 and above | Baseline measurements only before Phase 5 | Used once: baseline of the start checkpoint (71 of 168) |
 | Level C scenes, final headings | 970000 to 979999 | Final assessment | Reserved, unopened |
 
 ## 9. Artifact index
