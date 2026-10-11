@@ -16,6 +16,7 @@ Start with the root [README](../README.md) for installation, demos and controls.
 | Privileged-waypoint diagnostic | [Waypoint diagnostic](WAYPOINT_DIAGNOSTIC_RESULTS.md) |
 | History, range and synthetic probes | [Sensing probes](SENSING_PROBES.md) |
 | Auxiliary-head and privileged-critic students, negative | [Student results](AUXILIARY_STUDENT_RESULTS.md) |
+| Supervised pretraining then PPO, negative | [Pretrain results](PRETRAIN_RESULTS.md) |
 | Phase design toward unseen-map navigation | [Zero-shot plan](ZERO_SHOT_PLAN.md) |
 | Recovered historical learned reference | [Historical reference](HISTORICAL_REFERENCE.md) |
 | Transfer experiments 1 to 8 | [Transfer summary](TRANSFER_SUMMARY.md) |
