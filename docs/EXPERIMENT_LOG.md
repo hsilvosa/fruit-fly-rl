@@ -31,5 +31,6 @@ One row per iteration, in order. Protocols were committed before the runs. Resul
 
 | R5 | Oct 11 | Does training on random maps help? | Random-map mix, three seeds, against five control runs | Negative by the rule (+1.1 and +0.6 of 64). The difficulty controller stayed at 0.2 to 0.25. Run 601 is an outlier (passages-wide 32/32) | [protocol](RANDOM_DISTRIBUTION_PROTOCOL.md), [results](RANDOM_DISTRIBUTION_RESULTS.md) |
 | Audit | Oct 11 | Is hard-map exposure the gap? Does the reward favor hovering? | Controller windows from R5; discounted returns on certified routes | R5 randomized simulators finished 64 to 127 episodes in a whole run. An ideal route follower beats hovering at every point (refutes the reward-hover idea) | [LIGHT_AUDIT_RESULTS.md](LIGHT_AUDIT_RESULTS.md) |
+| Eval | Oct 11 | Is 601 a real candidate? Is the pilot hover a fixed point? | Fresh-pool evaluation of 601 and stochastic sampling | 601 holds medium 92, wide 86, mid 55, passages 14 percent. Pilot wide 14 to 55 of 64 when sampled; not general | [COMMITTEE_EVAL_RESULTS.md](COMMITTEE_EVAL_RESULTS.md) |
 
 Planned next: R6 in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).

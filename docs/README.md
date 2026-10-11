@@ -10,6 +10,7 @@ Start with the root [README](../README.md) for installation, demos and controls.
 | Sealed held-out definitions and reserved seeds | [Held-out specification](HELD_OUT_SPEC.md) |
 | Randomized distribution run, negative result | [R5 results](RANDOM_DISTRIBUTION_RESULTS.md) |
 | Exposure and reward-horizon audit | [Light audit](LIGHT_AUDIT_RESULTS.md) |
+| Run 601 confirmation and stochastic evaluation | [Committee evaluation](COMMITTEE_EVAL_RESULTS.md) |
 | Phase design toward unseen-map navigation | [Zero-shot plan](ZERO_SHOT_PLAN.md) |
 | Recovered historical learned reference | [Historical reference](HISTORICAL_REFERENCE.md) |
 | Transfer experiments 1 to 8 | [Transfer summary](TRANSFER_SUMMARY.md) |
