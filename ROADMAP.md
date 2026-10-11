@@ -88,7 +88,7 @@ Phase 0 is complete.
 - [x] Parameter ranges and adaptive-difficulty rule written and committed ([MAP_SAMPLER.md](docs/MAP_SAMPLER.md))
 - [x] Map sampler implemented with tests and a sample gallery (action R3, done October 10)
 - [x] Level B region and level C family (synthetic architectural scenes, chosen by the user) defined and sealed in [HELD_OUT_SPEC.md](docs/HELD_OUT_SPEC.md) (action R4, done October 10)
-- [ ] Training run with at least two seeds (action R5)
+- [x] Training run with three seeds (action R5, done October 11, negative: [results](docs/RANDOM_DISTRIBUTION_RESULTS.md))
 - [ ] Level A development gate met on both seeds
 
 ### Phase 3. Memory: tested, not established
@@ -134,10 +134,10 @@ Each action lists what it needs, an estimate with its basis, and what it unlocks
 | R2 | Done October 10 (under 25 min by the clock; estimate was 30 min). Frozen medium-room regression suite, `scripts/regression_medium.py` | Not applicable | Measured: 4 min per checkpoint, 5 checkpoints | Light | Closes Phase 0. Every Phase 2 candidate runs it before promotion |
 | R3 | Done October 10. Measured by the machine clock: about 5 minutes between the end of the previous step and the commit, against a 1.5 to 2 h estimate. Sampler, adaptive controller, 14 tests, gallery | Not applicable | Measured | Almost none | R4, R5 |
 | R4 | Done October 10. Level C = synthetic architectural scenes, sealed with reserved seeds. Evaluation tool and tests written | Not applicable | Measured: under 15 min | None | R5, Phase 5 |
-| R5 | Train on the random distribution, two seeds, with selection pools. The training script `scripts/train_random.py` is written and not yet smoke-tested. The protocol is written after R1, because R1 sets the number of seeds and episodes | R1 result | About 90 min (2 x 7 min training + evaluation) | CPU about 55% | Level A development result, and a first look at levels B and C |
+| R5 | Done October 11. Negative by the frozen rule; the difficulty controller stayed at 0.2 to 0.25, so training saw mostly easy maps ([results](docs/RANDOM_DISTRIBUTION_RESULTS.md)) | Not applicable | Measured: 3 h 10 min against about 2 h estimated | Not applicable | R5b: a version with real difficulty |
 | R6 | Memory retest: 3 seeds x 2 conditions, 64 episodes per cell, final checkpoint only | R3 advised | About 2 h (no measured basis for 64 episodes) | CPU about 55% | A decision on memory |
 
-Recommended order: R2 is done. R1 is running, R3 and R4 are done. Next: R5 after R1 finishes.
+Recommended order: R1 to R5 are done. Next: R5b, the same run with a higher initial difficulty (one change, needs a protocol first), or the confirmation of run 601 on a fresh pool.
 
 R1 and R3 can overlap. Two training or evaluation jobs must not run at once, because one training job uses about half of the CPU.
 
