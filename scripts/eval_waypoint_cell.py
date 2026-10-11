@@ -1,9 +1,13 @@
-"""Evaluate a waypoint-diagnostic checkpoint on one cell (evaluation only). Privileged: never a student result.
-Usage: eval_waypoint_cell.py <checkpoint.zip> <profile|none> <seed> <episodes> <out.json> <waypoint|control> [stochastic]"""
+"""Evaluate a waypoint-diagnostic or student checkpoint on one cell (evaluation only).
+Arms: waypoint (privileged input, diagnostic only), control, aux, critic (students: the actor is blind to the route input, which is zeros here).
+Profile heldout_b draws level B development maps (held-out sampler, difficulty 0.8).
+Usage: eval_waypoint_cell.py <checkpoint.zip> <profile|none|heldout_b> <seed> <episodes> <out.json> <arm> [stochastic]"""
 import json, os, sys
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl'); sys.path.insert(0, '.')
 import numpy as np
 from stable_baselines3 import PPO
+from fly_rl.training.waypoint_students import AuxPPO
+from fly_rl.simulation.random_profiles import RandomProfileWorld, ProfileSampler, DifficultyController
 from fly_rl.training.learning import checkpoint_sensor_version, checkpoint_readout, checkpoint_history
 from fly_rl.training.waypoint_diagnostic import WaypointBrainEnv
 
@@ -12,9 +16,12 @@ det = not (len(sys.argv) > 7 and sys.argv[7] == 'stochastic')
 SOURCE = 'runs/training/reference-transfer-7/mix3e4/stage-2.zip'
 sv = checkpoint_sensor_version(SOURCE)
 env = WaypointBrainEnv('data', n, 'cuda', seed=seed, mode='dense', dynamics='coordinated', sensor_version=sv,
-                       map_profile=None if prof == 'none' else prof, readout_version=checkpoint_readout(SOURCE),
+                       map_profile=None if prof in ('none', 'heldout_b') else prof, readout_version=checkpoint_readout(SOURCE),
                        privileged=(arm == 'waypoint'), **checkpoint_history(SOURCE))
-model = PPO.load(ck, env=env, device='cpu')
+if prof == 'heldout_b':
+    fixed = DifficultyController(initial=0.8, window=10 ** 9); sampler = ProfileSampler('heldout_b')
+    env.worlds = [RandomProfileWorld(seed + i, 'dense', None, 'coordinated', sv, sampler=sampler, controller=fixed) for i in range(n)]
+model = (AuxPPO if arm in ('aux', 'critic') else PPO).load(ck, env=env, device='cpu')
 env.seed(seed); features = env.reset()
 active = np.ones(n, bool); rows = {}
 for _ in range(max(w.episode_limit for w in env.worlds)):
