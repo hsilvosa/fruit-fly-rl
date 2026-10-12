@@ -1,6 +1,6 @@
 # Roadmap
 
-Live status board. Last updated: October 11, 2026, after actions R1 to R5 and the diagnostics that followed (see docs/EXPERIMENT_LOG.md) on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
+Live status board. Last updated: October 11, 2026, after actions R1 to R5 and the diagnostics that followed (see docs/EXPERIMENT_LOG.md) on `navigation-development`. Active runs: none (B1 protocol committed, training pending). This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
 
 ## 1. Objective
 
@@ -192,6 +192,7 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | Level A report | 940000 to 949999 | Report pool | Reserved, unopened |
 | Confirmation and comparison pools | 880000 to 880063; 882000 to 882063 | Fresh-pool confirmations, student comparisons (882000 reused for the pretraining comparison). Selected nothing | Inspected. 880000 also drove the committee analyses: not a selection set from now on |
 | Probe pools | 881000 to 881063 (rollouts), 895000 to 895699 (synthetic poses), 896000 to 896799 (pretraining data) | Offline probes and supervised pretraining | Used. Never evaluation pools |
+| Large-budget test pool (B1) | 884000 to 884063 | Curve evaluation of the 1M run, `passages` and medium, both modes ([protocol](docs/LARGE_BUDGET_PROTOCOL.md)) | Declared October 12, unopened until training ends. Selects nothing |
 | Level B region, development | Held-out sampler, 950000 to 959999 | Look at progress, not for selection | Drawn: 950000 to 950063 inspected for every R5 and student run |
 | Level B region, final | Held-out sampler, 960000 to 969999 | Final assessment | Reserved, unopened |
 | Level C scenes, development headings | 900000 and above | Baseline measurements only before Phase 5 | Used once: baseline of the start checkpoint (71 of 168) |
