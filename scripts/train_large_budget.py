@@ -1,5 +1,5 @@
 """B1 large-budget run: the Phase 1 pilot recipe at 31 stages (1,015,808 added transitions), one seed, checkpoints every stage.
-See docs/LARGE_BUDGET_PROTOCOL.md. Usage: train_large_budget.py <seed> <output-dir>"""
+See docs/LARGE_BUDGET_PROTOCOL.md. Usage: train_large_budget.py <seed> <output-dir> [stages, default 31]"""
 import hashlib, json, os, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, '.')
@@ -16,7 +16,7 @@ ARM = f'seed{SEED}'
 SOURCE = 'runs/training/reference-transfer-7/mix3e4/stage-2'
 MID = 'scripts/profiles/passages-mid.json'
 ASSIGN = [None] * 8 + [MID] * 12 + ['passages'] * 4 + ['passages-wide'] * 4 + ['gate-two'] * 4
-STAGE, STAGES = 32768, 31
+STAGE, STAGES = 32768, int(sys.argv[3]) if len(sys.argv) > 3 else 31
 BUDGET = STAGE * STAGES
 LR0, LR1 = 3e-4, 3e-5
 def sha(p):
