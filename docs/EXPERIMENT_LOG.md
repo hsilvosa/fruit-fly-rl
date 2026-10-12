@@ -1,6 +1,6 @@
 # Experiment log
 
-One row per iteration, in order. Protocols were committed before the runs. Results documents hold the tables. Last updated October 10, 2026. The live status is in [ROADMAP.md](../ROADMAP.md).
+One row per iteration, in order. Protocols were committed before the runs. Results documents hold the tables. Last updated October 12, 2026. The live status is in [ROADMAP.md](../ROADMAP.md).
 
 | ID | Date | Question | Change | Result | Documents |
 | --- | --- | --- | --- | --- | --- |
@@ -38,5 +38,6 @@ One row per iteration, in order. Protocols were committed before the runs. Resul
 | Sensing | Oct 11 | Do history or longer rays carry the route direction? | Probes on rollouts and on 700 synthetic maps | With enough maps the 8 m rays already decode the direction to 34 degrees (hard subset); 24 m rays reach 28. Rollout probes were too small. Points to a learning problem, not a sensor limit, for passages | [SENSING_PROBES.md](SENSING_PROBES.md) |
 | Students | Oct 11 | Can a training-only route signal help an autonomous actor? | Auxiliary waypoint head and privileged critic vs control, 3 seeds each, 262k | Negative by the rule: passages +2.3 (aux) and +0.7 (critic) of 64. Aux with sampled actions +6.3, only signal | [protocol](AUXILIARY_STUDENT_PROTOCOL.md), [results](AUXILIARY_STUDENT_RESULTS.md) |
 | Pretrain | Oct 11 | Does supervised pretraining of the actor trunk help PPO? | 512-map supervised pretraining (gate 45 degrees), then PPO, 3 seeds | Gate passed (41.6 degrees, behavior kept). PPO negative: passages +2.0 of 64. Representation is not the bottleneck; using it in steering is | [protocol](PRETRAIN_PROTOCOL.md), [results](PRETRAIN_RESULTS.md) |
+| B1 | Oct 12 | Is the training budget the lever for passages? | Pilot recipe at 1,015,808 added transitions, one seed (801), curve at 98k, 295k, 590k and 1M, new pool 884000 | Inconclusive by the rule (23/64 against 24 needed; negative was 16 or fewer). Deterministic passages 11, 12, 17, 23; medium 55 to 60; passages-mid 48; collisions on passages 18 to 30 | [protocol](LARGE_BUDGET_PROTOCOL.md), [results](LARGE_BUDGET_RESULTS.md) |
 
-Planned next: R6 in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).
+Next: decision D5 in [ROADMAP.md](../ROADMAP.md#6-decision-points) (three-seed repeat of B1, or close the scope and run C1).
