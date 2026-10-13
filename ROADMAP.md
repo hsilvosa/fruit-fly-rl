@@ -1,6 +1,6 @@
 # Roadmap
 
-Live status board. Last updated: October 13, 2026, after actions R1 to R5, the diagnostics that followed, B1, B2 and B3 (see docs/EXPERIMENT_LOG.md) on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
+Live status board. Last updated: October 13, 2026, after actions R1 to R5, the diagnostics that followed, B1 to B4 (see docs/EXPERIMENT_LOG.md) on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
 
 ## 1. Objective
 
@@ -34,6 +34,7 @@ Proposed release gate: at least 52 of 64 successes and at most 3 collisions in e
 | Large budget (1,015,808 added transitions, one seed) | Inconclusive by the frozen rule: `passages` 11, 12, 17, 23 of 64 along the curve (positive needed 24), medium 55 to 60, `passages-mid` 48, `passages-wide` and `gate-two` 64. Collisions on `passages` stay at 18 to 30 | [LARGE_BUDGET_RESULTS.md](docs/LARGE_BUDGET_RESULTS.md) |
 | Large budget, 1,998,848 added transitions (one seed) | Positive by the frozen rule on pool 885000: `passages` 38 of 64 with 6 collisions (the 1M checkpoint scores 27 with 20), `passages-mid` 56, medium 54, `passages-wide` 64. Deterministic curve 16, 26, 48, 38; the drop from 48 to 38 is timeouts. One seed | [LARGE_BUDGET_2M_RESULTS.md](docs/LARGE_BUDGET_2M_RESULTS.md) |
 | Three-seed replication of the 2M recipe | Positive by the frozen rule on pool 886000: stage 61 `passages` 42, 36, 39 of 64 (mean 39, start checkpoint 5), `passages-mid` 54 to 57, medium 49, 54, 55, `passages-wide` and `gate-two` 64. Collisions on `passages` 8, 16, 8 against the gate's 3 | [REPLICATION_2M_RESULTS.md](docs/REPLICATION_2M_RESULTS.md) |
+| Level B and level C for the 2M checkpoints (stage 61, three seeds) | Level B inconclusive: 26, 17, 12 of 64 (mean 18.3, positive needed 20; earlier runs 1 to 6; start 1). Level C positive by the rule: 95, 108, 108 of 168 deterministic (start 71), but `courtyard` fell from 24/24 to 7 to 23 and `apartment`, `atrium` did not move. Against the sampled start (93) the gain is 12 to 20 episodes | [LEVEL_BC_RESULTS.md](docs/LEVEL_BC_RESULTS.md) |
 | Release gate | Not met | This file |
 
 Best development candidate so far: `runs/training/phase1-pilot/seed442/stage-3.zip`. On a fresh pool with 64 episodes per cell: medium 57, passages-wide 14, passages-mid 37 and passages 17 (89%, 22%, 58% and 27%). It is a real policy and an outlier: five repeats of its recipe reached 7 to 13 of 32 on passages-mid. It gives up passages-wide to get the harder profiles.
@@ -155,11 +156,11 @@ Each action lists what it needs, an estimate with its basis, and what it unlocks
 | B1 | Done October 12. Inconclusive by the frozen rule: `passages` 23 of 64 (positive needed 24, negative 16 or fewer), medium 59, curve 11, 12, 17, 23 ([results](docs/LARGE_BUDGET_RESULTS.md)) | Not applicable | Measured: 41 min training (79 s per stage, not 65) and 24 min evaluation, 65 min in all | Not applicable | Decision D5: three seeds, or close the scope |
 | B2 | Done October 12. Positive by the frozen rule: `passages` 38 of 64 (threshold 28, 11 above the 1M checkpoint on the same pool), medium 54 ([results](docs/LARGE_BUDGET_2M_RESULTS.md)) | Not applicable | Measured: 77 min training (65 to 81 s per stage), 29.5 min evaluation | Not applicable | B3: replicate with three seeds |
 | B3 | Done October 13. Positive by the frozen rule: `passages` 42, 36, 39 of 64 on seeds 801, 851, 901 (mean 39, threshold 28; start 5), medium 49, 54, 55 ([results](docs/REPLICATION_2M_RESULTS.md)) | Not applicable | Measured: 3 h 33 against 3 h 25 estimated (82 min per training, 50 min evaluation) | Not applicable | B4: level B and C once |
-| B4 | Level B (development maps, seeds 950000 to 950063) and level C (21 situations x 8 headings, seed 900000) for stage 61 of seeds 801, 851, 901 and the start checkpoint, both action modes. Protocol committed ([LEVEL_BC_PROTOCOL.md](docs/LEVEL_BC_PROTOCOL.md)); it records the exception to the level C rule (three trained checkpoints on the development headings, no selection) | Go from the user | About 1 h 30, plausibly up to 2 h 30: level C 22 min per 168-episode run (7 runs), level B 8 cells with no recorded timing, and R5 evaluation ran 2 h 50 against 85 min estimated | CPU 50 to 80%, 4 processes | First evidence on levels B and C. Positive: level B mean 20 of 64 or more, level C 88 of 168 or more |
+| B4 | Done October 13. Level B inconclusive (mean 18.3 of 64, one episode under the threshold), level C positive (mean 103.7 of 168, start 71), with a `courtyard` regression ([results](docs/LEVEL_BC_RESULTS.md)) | Not applicable | Measured: 53 min against 1 h 30 estimated (level C runs 12 to 17 min each) | Not applicable | Decision D6: next lever |
 | C1 | No-connectome learned control and planner reference on the same cells | Phase 5 definition | Not estimated: no measured basis | Not known | The claim that the connectome contributes |
 | R6 | Memory retest: 3 seeds x 2 conditions, 64 episodes per cell, final checkpoint only | R3 advised | About 2 h (no measured basis for 64 episodes) | CPU about 55% | A decision on memory |
 
-Recommended order: R1 to R5, D1 to D4 and B1 to B3 are done. B3 replicated the 2M effect on `passages`. Next: B4, level B and C once with a committed protocol. After that, the open question is the remaining families (`large`, `maze`) and the collision gap (8 to 16 against 3), then C1 and the release with limitations.
+Recommended order: R1 to R5, D1 to D4 and B1 to B4 are done. The 2M recipe moves `passages`, level B (partly) and level C (unevenly). The gate is still far: collisions, `large`, `maze`, `apartment`, `atrium`. The user decides the next lever (D6 in section 6): more seeds and budget (3M or 4M), a scene-balanced mix that includes architectural scenes, C1 and the release with limitations, or memory and long-range sensing for large and maze.
 
 R1 and R3 can overlap. Two training or evaluation jobs must not run at once, because one training job uses about half of the CPU.
 
@@ -174,6 +175,7 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | B1 (October 12), D5 | Did the 1M run reach the rule? | Not applicable: `passages` 23 of 64 against 24, medium 59. Inconclusive. Rising curve, collisions unchanged (22). Open decision D5: repeat with three seeds before closing the scope, or close it now | Not applicable |
 | B2 (October 12) | Did the 2M run reach the rule? | Yes: `passages` 38 of 64, medium 54, 11 above the 1M checkpoint on the same pool. Open: collisions 6 against the 3 allowed; one seed. Next: B3, three-seed replication | Not applicable |
 | B3 (October 13) | Does the 2M effect replicate on other seeds? | Yes: mean `passages` 39 of 64, every seed 36 or more, medium 49 or more. Next: B4, level B and C once | Not applicable |
+| B4 (October 13), D6 | Does the 2M effect reach level B and C? | Level B inconclusive (18.3 of 64 against 20), level C positive (103.7 of 168 against 88) with uneven scenes. Open decision D6: the next lever | Not applicable |
 | Phase 4 | Is a held-out family result at or above half the development rate? | Proceed to Phase 5 | Keep training and revisit the representation |
 
 ## 7. Rules for every iteration
@@ -208,7 +210,7 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | 2M replication pool (B3) | 886000 to 886063 | Stages 46 and 61 of seeds 801, 851, 901 and the start checkpoint, `passages` and medium (final stage also mid, wide, gates) | Inspected October 13 (B3 results). Selects nothing |
 | Level B region, development | Held-out sampler, 950000 to 959999 | Look at progress, not for selection | Drawn: 950000 to 950063 inspected for every R5 and student run |
 | Level B region, final | Held-out sampler, 960000 to 969999 | Final assessment | Reserved, unopened |
-| Level C scenes, development headings | 900000 and above | Baseline measurements only before Phase 5, with one declared exception (B4) | Used once: baseline of the start checkpoint (71 of 168). B4 adds the three 2M checkpoints, declared in LEVEL_BC_PROTOCOL.md |
+| Level C scenes, development headings | 900000 and above | Baseline measurements only before Phase 5, with one declared exception (B4) | Used twice: baseline of the start checkpoint (71 of 168) and the three 2M checkpoints in B4 (LEVEL_BC_PROTOCOL.md, results in LEVEL_BC_RESULTS.md) |
 | Level C scenes, final headings | 970000 to 979999 | Final assessment | Reserved, unopened |
 
 ## 9. Artifact index
