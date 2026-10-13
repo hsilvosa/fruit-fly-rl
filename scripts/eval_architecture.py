@@ -1,7 +1,7 @@
 """Evaluate a frozen policy on the synthetic architectural scenes (level C). Evaluation only, no training.
 
 Every one of the 21 situations runs with K initial headings (the only randomness). Output: per-situation outcomes.
-Usage: eval_architecture.py <checkpoint.zip> <headings per situation> <output.json> [seed]
+Usage: eval_architecture.py <checkpoint.zip> <headings per situation> <output.json> [seed] [sampled]
 """
 import json, os, sys, time
 import numpy as np
@@ -12,6 +12,7 @@ from fly_rl.simulation.architectural_transfer import ArchitecturalSceneWorld, al
 
 ck, k, out = sys.argv[1], int(sys.argv[2]), sys.argv[3]
 seed = int(sys.argv[4]) if len(sys.argv) > 4 else 900000
+SAMPLED = len(sys.argv) > 5 and sys.argv[5] == 'sampled'  # optional action mode; default deterministic
 sv = checkpoint_sensor_version(ck)
 env = BrainEnv('data', k, 'cuda', seed=seed, mode='empty', dynamics='coordinated', sensor_version=sv,
                readout_version=checkpoint_readout(ck), **checkpoint_history(ck))
@@ -25,7 +26,7 @@ for scene, index, name in all_situations():
     active = np.ones(k, dtype=bool)
     result = {}
     for _ in range(max(w.episode_limit for w in env.worlds)):
-        actions = model.predict(features, deterministic=True)[0]
+        actions = model.predict(features, deterministic=not SAMPLED)[0]
         features, rewards, dones, infos = env.step(actions)
         for i in np.flatnonzero(active):
             if dones[i]:
@@ -45,6 +46,6 @@ per_scene = {}
 for r in rows:
     d = per_scene.setdefault(r['scene'], {'successes': 0, 'episodes': 0})
     d['successes'] += r['successes']; d['episodes'] += r['headings']
-json.dump({'checkpoint': ck, 'seed': seed, 'headings': k, 'total': total, 'per_scene': per_scene, 'situations': rows,
+json.dump({'checkpoint': ck, 'actions': 'sampled' if SAMPLED else 'deterministic', 'seed': seed, 'headings': k, 'total': total, 'per_scene': per_scene, 'situations': rows,
            'seconds': round(time.time() - started)}, open(out, 'w'), indent=1)
 print('TOTAL', total, per_scene, flush=True)
