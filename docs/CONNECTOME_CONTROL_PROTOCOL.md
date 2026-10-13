@@ -15,7 +15,7 @@ The retained start (experiment 7, 884,736 transitions) came from a historical ch
 
 ## Stage C1.0: feasibility of phase 1 (this protocol)
 
-- Arms: `real` (full connectome) and `shuffled`, same seed (1001), same code (`scripts/train_fresh_chain.py`), serial, one at a time. Random initial weights.
+- Arms: `real` (full connectome) and `shuffled`, same seed (1001), same code (`scripts/train_fresh_chain.py`). Random initial weights. **Amendment, October 13 (before launch):** the user raised the resource ceiling to 95 percent of CPU and RAM, so the two trainings run in parallel (5 threads each) instead of one after the other. They are independent processes with their own seeds and data, so the science is unchanged. If the mean CPU over the first two minutes of overlap is above 93 percent, the shuffled training is stopped and run after the real one. The driver logs CPU and memory every 10 s and stops the trainings if memory exceeds 95 percent.
 - Recipe: 32 simulators, all medium dense rooms (profile none, coordinated dynamics, sensor version of the retained start), 128 steps, clip 0.1, 3 epochs, minibatch 256, `target_kl` 0.02, gamma 0.995, learning rate 3e-4 falling linearly to 3e-5 over the phase. This is the B2 recipe with the mix replaced by medium rooms. It is untested from random weights, which is what the stage checks.
 - Budget: 27 stages of 32,768 = 884,736 transitions. Checkpoints at every stage; curve at stages 9, 18 and 27 (294,912, 589,824 and 884,736).
 - Evaluation: new pool 887000 to 887063 (64 episodes), medium rooms, both modes (decision mode deterministic), for both arms at the three points, and for the retained start checkpoint as reference. Driver `scripts/connectome_control_c10_driver.py`; shuffled checkpoints are evaluated through `scripts/eval_cell_brain.py`, which injects the shuffled brain without touching frozen sources.
@@ -42,4 +42,4 @@ On the final checkpoint (stage 27), deterministic, medium, pool 887000:
 
 ## Estimate
 
-Training 2 x 27 stages at about 82 s (B2: 79 s; smoke runs this session: 81 s shuffled, 90 s real with startup) is about 74 min. Evaluation 14 medium cells at about 1 min each under the guard, about 15 min. Total about 1 h 30. CPU about 55 percent in training, 50 to 80 percent in evaluation, GPU 30 to 60 percent, one process during training.
+Serial training 2 x 27 stages at about 82 s (B2: 79 s; smoke runs this session: 81 s shuffled, 90 s real with startup) is about 74 min. Evaluation 14 medium cells at about 1 min each under the guard raised to 95 percent (up to 6 processes, 2 threads each), about 8 min. Training in parallel about 45 to 50 min if both arms fit under the ceiling (the 74 min serial figure is the fallback). Total about 1 h to 1 h 30. CPU about 55 percent in training, 50 to 80 percent in evaluation, GPU 30 to 60 percent, one process during training.

@@ -184,7 +184,7 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 - Change one factor, or run a declared control arm. Use at least two seeds for any claim, and expect between-seed spread of 10 to 18 episodes until R1 says otherwise.
 - Choose checkpoints on a selection pool that the report never uses. The report and reserved pools stay unopened until Phase 5.
 - Never overwrite aliases, completed runs or controller sources. Record source and checkpoint hashes.
-- Resources: the PC must stay usable. Brief CPU peaks are accepted, sustained 100% is not. The GPU has no limit. Evaluation fan-out goes through `scripts/resource_guard.py`. Run one training job at a time.
+- Resources: the PC must stay usable. Brief CPU peaks are accepted, sustained 100% is not. The GPU has no limit. Evaluation fan-out goes through `scripts/resource_guard.py`. Run one training job at a time. **Since October 13 the user allows up to 95 percent of CPU and RAM** (never above), so trainings may run in parallel and evaluation may use up to 6 processes; the guard defaults stay at the old limits and are raised per run with the `RG_*` environment variables (`scripts/resource_guard.py`).
 - Give a time estimate with its basis before each iteration. Update the estimate when a measurement disagrees.
 - No planner action in any evaluated policy. Full connectome in every policy.
 
