@@ -1,7 +1,7 @@
 """Evaluate a frozen policy on the synthetic architectural scenes (level C). Evaluation only, no training.
 
 Every one of the 21 situations runs with K initial headings (the only randomness). Output: per-situation outcomes.
-Usage: eval_architecture.py <checkpoint.zip> <headings per situation> <output.json> [seed] [sampled]
+Usage: eval_architecture.py <checkpoint.zip> <headings per situation> <output.json> [seed] [sampled] [shuffled]
 """
 import json, os, sys, time
 import numpy as np
@@ -12,9 +12,12 @@ from fly_rl.simulation.architectural_transfer import ArchitecturalSceneWorld, al
 
 ck, k, out = sys.argv[1], int(sys.argv[2]), sys.argv[3]
 seed = int(sys.argv[4]) if len(sys.argv) > 4 else 900000
-SAMPLED = len(sys.argv) > 5 and sys.argv[5] == 'sampled'  # optional action mode; default deterministic
+SAMPLED = 'sampled' in sys.argv[5:]  # optional action mode; default deterministic
+SHUFFLED = 'shuffled' in sys.argv[5:]  # evaluate a checkpoint trained with the edge-shuffled reservoir
 sv = checkpoint_sensor_version(ck)
-env = BrainEnv('data', k, 'cuda', seed=seed, mode='empty', dynamics='coordinated', sensor_version=sv,
+if SHUFFLED:
+    from fly_rl.connectome.shuffled import ShuffledBrain
+env = BrainEnv('data', k, 'cuda', seed=seed, brain=ShuffledBrain(1, 'data', k, 'cuda', sensor_version=sv) if SHUFFLED else None, mode='empty', dynamics='coordinated', sensor_version=sv,
                readout_version=checkpoint_readout(ck), **checkpoint_history(ck))
 model = load_model(ck, env.brain, env, True)
 rows = []

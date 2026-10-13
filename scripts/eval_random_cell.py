@@ -1,5 +1,5 @@
 """Evaluate a frozen policy on randomized maps at a fixed difficulty (levels A and B). Evaluation only.
-Usage: eval_random_cell.py <checkpoint.zip> <train|heldout_b> <difficulty> <seed> <episodes> <output.json> [sampled]"""
+Usage: eval_random_cell.py <checkpoint.zip> <train|heldout_b> <difficulty> <seed> <episodes> <output.json> [sampled] [shuffled]"""
 import json, os, sys
 import numpy as np
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
@@ -8,9 +8,12 @@ from fly_rl.training.learning import BrainEnv, load_model, checkpoint_sensor_ver
 from fly_rl.simulation.random_profiles import RandomProfileWorld, ProfileSampler, DifficultyController
 
 ck, mode, difficulty, seed, n, out = sys.argv[1], sys.argv[2], float(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]), sys.argv[6]
-SAMPLED = len(sys.argv) > 7 and sys.argv[7] == 'sampled'  # optional action mode; default deterministic
+SAMPLED = 'sampled' in sys.argv[7:]  # optional action mode; default deterministic
+SHUFFLED = 'shuffled' in sys.argv[7:]  # evaluate a checkpoint trained with the edge-shuffled reservoir
 sv = checkpoint_sensor_version(ck)
-env = BrainEnv('data', n, 'cuda', seed=seed, mode='dense', dynamics='coordinated', sensor_version=sv,
+if SHUFFLED:
+    from fly_rl.connectome.shuffled import ShuffledBrain
+env = BrainEnv('data', n, 'cuda', seed=seed, brain=ShuffledBrain(1, 'data', n, 'cuda', sensor_version=sv) if SHUFFLED else None, mode='dense', dynamics='coordinated', sensor_version=sv,
                readout_version=checkpoint_readout(ck), **checkpoint_history(ck))
 model = load_model(ck, env.brain, env, True)
 fixed = DifficultyController(initial=difficulty, window=10 ** 9)  # never updates: the difficulty stays fixed
