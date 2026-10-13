@@ -1,6 +1,6 @@
 # Roadmap
 
-Live status board. Last updated: October 13, 2026, after actions R1 to R5, the diagnostics that followed, B1 to B4 (see docs/EXPERIMENT_LOG.md) on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
+Live status board. Last updated: October 13, 2026, after actions R1 to R5, the diagnostics that followed, B1 to B4 and C1.0 (see docs/EXPERIMENT_LOG.md) on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
 
 ## 1. Objective
 
@@ -157,7 +157,8 @@ Each action lists what it needs, an estimate with its basis, and what it unlocks
 | B2 | Done October 12. Positive by the frozen rule: `passages` 38 of 64 (threshold 28, 11 above the 1M checkpoint on the same pool), medium 54 ([results](docs/LARGE_BUDGET_2M_RESULTS.md)) | Not applicable | Measured: 77 min training (65 to 81 s per stage), 29.5 min evaluation | Not applicable | B3: replicate with three seeds |
 | B3 | Done October 13. Positive by the frozen rule: `passages` 42, 36, 39 of 64 on seeds 801, 851, 901 (mean 39, threshold 28; start 5), medium 49, 54, 55 ([results](docs/REPLICATION_2M_RESULTS.md)) | Not applicable | Measured: 3 h 33 against 3 h 25 estimated (82 min per training, 50 min evaluation) | Not applicable | B4: level B and C once |
 | B4 | Done October 13. Level B inconclusive (mean 18.3 of 64, one episode under the threshold), level C positive (mean 103.7 of 168, start 71), with a `courtyard` regression ([results](docs/LEVEL_BC_RESULTS.md)) | Not applicable | Measured: 53 min against 1 h 30 estimated (level C runs 12 to 17 min each) | Not applicable | Decision D6: next lever |
-| C1 | No-connectome learned control (edge-shuffled reservoir, matched fresh two-phase chain, real and shuffled arms) and planner reference (level C, `large`, `maze` only: the planner cannot run on medium, `passages` or level B). Design and stage C1.0 (phase 1 feasibility, seed 1001, 27 stages of medium rooms, pool 887000) committed ([CONNECTOME_CONTROL_PROTOCOL.md](docs/CONNECTOME_CONTROL_PROTOCOL.md)) | Go from the user for C1.0 | C1.0: about 1 h 30 (74 min training from 81 to 90 s per stage, 15 min evaluation). C1.1: about 6 h 55 (4 x 81 min training, about 1 h 30 evaluation). C1.P: level C about 55 min, the rest after a probe | CPU about 55% in training, 50 to 80% in evaluation | The claim that the connectome contributes (or the bound on it) |
+| C1.0 | Done October 13. Gate passed: fresh real-connectome arm 61 of 64 on medium after 885k transitions (gate 40); edge-shuffled arm 54, sampled 60 against 59 ([results](docs/CONNECTOME_CONTROL_RESULTS_C10.md)) | Not applicable | Measured: about 38 min training with both arms in parallel (CPU mean 66%, peak 90%) and 12 min evaluation | Not applicable | C1.1 protocol |
+| C1 | Remaining: C1.1 (phase 2 of the fresh chain for both arms, seeds 1001 and 1051, evaluated on `passages`, `passages-mid`, medium, level B and level C) and C1.P (planner on level C, `large`, `maze` only). Needs its own protocol and the user's go | Protocol | C1.1 about 4 h 40: phase 1 of seed 1051 about 38 min with both arms in parallel, phase 2 of four runs in two parallel pairs about 3 h (61 stages x about 87 s each pair), evaluation about 1 h. C1.P: level C about 55 min | CPU about 66% with two trainings in parallel | The claim that the connectome contributes (or the bound on it) |
 | R6 | Memory retest: 3 seeds x 2 conditions, 64 episodes per cell, final checkpoint only | R3 advised | About 2 h (no measured basis for 64 episodes) | CPU about 55% | A decision on memory |
 
 Recommended order: R1 to R5, D1 to D4 and B1 to B4 are done. The 2M recipe moves `passages`, level B (partly) and level C (unevenly). The gate is still far: collisions, `large`, `maze`, `apartment`, `atrium`. The user decides the next lever (D6 in section 6): more seeds and budget (3M or 4M), a scene-balanced mix that includes architectural scenes, C1 and the release with limitations, or memory and long-range sensing for large and maze.
@@ -208,7 +209,7 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | Large-budget test pool (B1) | 884000 to 884063 | Curve evaluation of the 1M run, `passages` and medium, both modes ([protocol](docs/LARGE_BUDGET_PROTOCOL.md)) | Inspected October 12 (B1 results). Selects nothing |
 | 2M test pool (B2) | 885000 to 885063 | Curve evaluation of the 2M run and of the B1 final checkpoint, `passages` and medium ([protocol](docs/LARGE_BUDGET_2M_PROTOCOL.md)) | Inspected October 12 (B2 results). Selects nothing |
 | 2M replication pool (B3) | 886000 to 886063 | Stages 46 and 61 of seeds 801, 851, 901 and the start checkpoint, `passages` and medium (final stage also mid, wide, gates) | Inspected October 13 (B3 results). Selects nothing |
-| C1.0 pool | 887000 to 887063 | Medium rooms: retained start and the two fresh phase 1 arms | Declared October 13, unopened. Selects nothing |
+| C1.0 pool | 887000 to 887063 | Medium rooms: retained start and the two fresh phase 1 arms | Inspected October 13 (C1.0 results). Selects nothing |
 | Level B region, development | Held-out sampler, 950000 to 959999 | Look at progress, not for selection | Drawn: 950000 to 950063 inspected for every R5 and student run |
 | Level B region, final | Held-out sampler, 960000 to 969999 | Final assessment | Reserved, unopened |
 | Level C scenes, development headings | 900000 and above | Baseline measurements only before Phase 5, with one declared exception (B4) | Used twice: baseline of the start checkpoint (71 of 168) and the three 2M checkpoints in B4 (LEVEL_BC_PROTOCOL.md, results in LEVEL_BC_RESULTS.md) |
@@ -232,6 +233,8 @@ All run artifacts are local and ignored by git (`runs/`, `private/`). Hashes are
 | B2 final checkpoint (2M added transitions, seed 801) | `runs/training/large-budget-2m/seed801/stage-61.zip` | `3a4150b59b5fc894` |
 | B3 final checkpoint, seed 851 | `runs/training/large-budget-2m/seed851/stage-61.zip` | `fc1b2c69068ac72e` |
 | B3 final checkpoint, seed 901 | `runs/training/large-budget-2m/seed901/stage-61.zip` | `29ac1bcf11652646` |
+| C1.0 fresh phase 1, real connectome, seed 1001 | `runs/training/connectome-control/phase1-real1001/stage-27.zip` | `05be0cc88b1b7ae3` |
+| C1.0 fresh phase 1, edge-shuffled, seed 1001 | `runs/training/connectome-control/phase1-shuffled1001/stage-27.zip` | `994d24760718d037` |
 
 Detailed evidence copies live in `private/reference-recovery-1-evidence/`. The experiment index is [docs/EXPERIMENT_LOG.md](docs/EXPERIMENT_LOG.md).
 
