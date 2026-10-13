@@ -1,6 +1,6 @@
 # Experiment log
 
-One row per iteration, in order. Protocols were committed before the runs. Results documents hold the tables. Last updated October 12, 2026. The live status is in [ROADMAP.md](../ROADMAP.md).
+One row per iteration, in order. Protocols were committed before the runs. Results documents hold the tables. Last updated October 13, 2026. The live status is in [ROADMAP.md](../ROADMAP.md).
 
 | ID | Date | Question | Change | Result | Documents |
 | --- | --- | --- | --- | --- | --- |
@@ -40,5 +40,6 @@ One row per iteration, in order. Protocols were committed before the runs. Resul
 | Pretrain | Oct 11 | Does supervised pretraining of the actor trunk help PPO? | 512-map supervised pretraining (gate 45 degrees), then PPO, 3 seeds | Gate passed (41.6 degrees, behavior kept). PPO negative: passages +2.0 of 64. Representation is not the bottleneck; using it in steering is | [protocol](PRETRAIN_PROTOCOL.md), [results](PRETRAIN_RESULTS.md) |
 | B1 | Oct 12 | Is the training budget the lever for passages? | Pilot recipe at 1,015,808 added transitions, one seed (801), curve at 98k, 295k, 590k and 1M, new pool 884000 | Inconclusive by the rule (23/64 against 24 needed; negative was 16 or fewer). Deterministic passages 11, 12, 17, 23; medium 55 to 60; passages-mid 48; collisions on passages 18 to 30 | [protocol](LARGE_BUDGET_PROTOCOL.md), [results](LARGE_BUDGET_RESULTS.md) |
 | B2 | Oct 12 | Does a 2M budget keep raising passages? | B1 recipe at 1,998,848 added transitions, seed 801, new pool 885000, B1 checkpoint re-evaluated there | Positive by the rule: passages 38/64 with 6 collisions (1M checkpoint: 27 with 20), medium 54, passages-mid 56. Deterministic curve 16, 26, 48, 38. One seed | [protocol](LARGE_BUDGET_2M_PROTOCOL.md), [results](LARGE_BUDGET_2M_RESULTS.md) |
+| B3 | Oct 13 | Does the 2M effect replicate on other seeds? | The B2 recipe on seeds 851 and 901 (801 re-evaluated), stages 46 and 61, fresh pool 886000, start checkpoint as baseline | Positive by the rule: stage 61 passages 42, 36, 39 of 64 (mean 39, start 5), passages-mid 54 to 57, medium 49, 54, 55. Collisions 8, 16, 8 | [protocol](REPLICATION_2M_PROTOCOL.md), [results](REPLICATION_2M_RESULTS.md) |
 
-Next: B3, a three-seed replication of the 2M recipe, in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).
+Next: B4, level B and C once, in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).

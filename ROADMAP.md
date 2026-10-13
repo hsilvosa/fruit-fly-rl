@@ -1,6 +1,6 @@
 # Roadmap
 
-Live status board. Last updated: October 12, 2026, after actions R1 to R5, the diagnostics that followed, B1 and B2 (see docs/EXPERIMENT_LOG.md) on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
+Live status board. Last updated: October 13, 2026, after actions R1 to R5, the diagnostics that followed, B1, B2 and B3 (see docs/EXPERIMENT_LOG.md) on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
 
 ## 1. Objective
 
@@ -33,9 +33,12 @@ Proposed release gate: at least 52 of 64 successes and at most 3 collisions in e
 | Unseen-map navigation (levels A, B, C) | Level B development maps: 1 to 6 of 64 for every run. Level C baseline of the start checkpoint: 71 of 168 (42%), mostly open routes. No gate evidence | [HELD_OUT_SPEC.md](docs/HELD_OUT_SPEC.md), [RANDOM_DISTRIBUTION_RESULTS.md](docs/RANDOM_DISTRIBUTION_RESULTS.md) |
 | Large budget (1,015,808 added transitions, one seed) | Inconclusive by the frozen rule: `passages` 11, 12, 17, 23 of 64 along the curve (positive needed 24), medium 55 to 60, `passages-mid` 48, `passages-wide` and `gate-two` 64. Collisions on `passages` stay at 18 to 30 | [LARGE_BUDGET_RESULTS.md](docs/LARGE_BUDGET_RESULTS.md) |
 | Large budget, 1,998,848 added transitions (one seed) | Positive by the frozen rule on pool 885000: `passages` 38 of 64 with 6 collisions (the 1M checkpoint scores 27 with 20), `passages-mid` 56, medium 54, `passages-wide` 64. Deterministic curve 16, 26, 48, 38; the drop from 48 to 38 is timeouts. One seed | [LARGE_BUDGET_2M_RESULTS.md](docs/LARGE_BUDGET_2M_RESULTS.md) |
+| Three-seed replication of the 2M recipe | Positive by the frozen rule on pool 886000: stage 61 `passages` 42, 36, 39 of 64 (mean 39, start checkpoint 5), `passages-mid` 54 to 57, medium 49, 54, 55, `passages-wide` and `gate-two` 64. Collisions on `passages` 8, 16, 8 against the gate's 3 | [REPLICATION_2M_RESULTS.md](docs/REPLICATION_2M_RESULTS.md) |
 | Release gate | Not met | This file |
 
 Best development candidate so far: `runs/training/phase1-pilot/seed442/stage-3.zip`. On a fresh pool with 64 episodes per cell: medium 57, passages-wide 14, passages-mid 37 and passages 17 (89%, 22%, 58% and 27%). It is a real policy and an outlier: five repeats of its recipe reached 7 to 13 of 32 on passages-mid. It gives up passages-wide to get the harder profiles.
+
+**Update October 13:** after the three-seed replication, `passages` is 36 to 42 of 64 (about 60 percent) at 2M added transitions, with 8 to 16 collisions; the claim below should be read with this in mind and is revised once levels B and C are measured.
 
 **Defensible claim today:** a learned policy with the full connectome in the loop reaches goals in new medium rooms (86 to 92 percent on fresh 64-episode pools), partly in partitioned rooms (about 20 percent on `passages`, 50 to 90 percent on easier profiles), and has no evidence on `large`, mazes or unseen families. The four-family gate is not met and no tested change moves it.
 
@@ -151,11 +154,12 @@ Each action lists what it needs, an estimate with its basis, and what it unlocks
 | D4 | Done October 11. Supervised pretraining of the actor trunk then PPO, three seeds: gate passed, PPO negative (+2.0 of 64) | Not applicable | Measured: 1 h 16 | Not applicable | Representation is not the bottleneck |
 | B1 | Done October 12. Inconclusive by the frozen rule: `passages` 23 of 64 (positive needed 24, negative 16 or fewer), medium 59, curve 11, 12, 17, 23 ([results](docs/LARGE_BUDGET_RESULTS.md)) | Not applicable | Measured: 41 min training (79 s per stage, not 65) and 24 min evaluation, 65 min in all | Not applicable | Decision D5: three seeds, or close the scope |
 | B2 | Done October 12. Positive by the frozen rule: `passages` 38 of 64 (threshold 28, 11 above the 1M checkpoint on the same pool), medium 54 ([results](docs/LARGE_BUDGET_2M_RESULTS.md)) | Not applicable | Measured: 77 min training (65 to 81 s per stage), 29.5 min evaluation | Not applicable | B3: replicate with three seeds |
-| B3 | Replication of B2: the 2M recipe with new seeds 851 and 901 plus seed 801, stages 46 and 61, fresh pool 886000, start checkpoint as baseline. Protocol committed ([REPLICATION_2M_PROTOCOL.md](docs/REPLICATION_2M_PROTOCOL.md)). Level B and C are a separate step (B4) | Go from the user | About 3 h 25 (2 trainings of 77 min from B2, evaluation of 46 cells about 52 min from 1.1 min per cell) | CPU about 55% in training, 50 to 80% in evaluation | Decides whether the effect is the budget and not the seed. Positive: mean `passages` 28 of 64 or more, each seed 20 or more |
+| B3 | Done October 13. Positive by the frozen rule: `passages` 42, 36, 39 of 64 on seeds 801, 851, 901 (mean 39, threshold 28; start 5), medium 49, 54, 55 ([results](docs/REPLICATION_2M_RESULTS.md)) | Not applicable | Measured: 3 h 33 against 3 h 25 estimated (82 min per training, 50 min evaluation) | Not applicable | B4: level B and C once |
+| B4 | Level B (development maps, 64 episodes) and level C (21 architectural situations x 8 headings, 168 episodes) for stage 61 of the three seeds and the start checkpoint, in a new protocol that says which pools are opened. Needs a committed protocol and the user's go | Protocol, decision on pools | About 1 h 10 to 1 h 40: level C took 22 min for 168 episodes in R5 (single process, so about 22 min per checkpoint at most and less with the guard); level B has no measured timing for 64 episodes of hard maps | CPU 50 to 80% | First evidence on levels B and C for the best policy |
 | C1 | No-connectome learned control and planner reference on the same cells | Phase 5 definition | Not estimated: no measured basis | Not known | The claim that the connectome contributes |
 | R6 | Memory retest: 3 seeds x 2 conditions, 64 episodes per cell, final checkpoint only | R3 advised | About 2 h (no measured basis for 64 episodes) | CPU about 55% | A decision on memory |
 
-Recommended order: R1 to R5, D1 to D4, B1 and B2 are done. B2 is positive on one seed. Next: B3, two more seeds of the 2M recipe with a committed protocol, then level B and C once. If the effect does not replicate, close the scope and run C1.
+Recommended order: R1 to R5, D1 to D4 and B1 to B3 are done. B3 replicated the 2M effect on `passages`. Next: B4, level B and C once with a committed protocol. After that, the open question is the remaining families (`large`, `maze`) and the collision gap (8 to 16 against 3), then C1 and the release with limitations.
 
 R1 and R3 can overlap. Two training or evaluation jobs must not run at once, because one training job uses about half of the CPU.
 
@@ -169,6 +173,7 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | B1 | Does `passages` reach 24 of 64 (twice the 262k control) with medium at 48 or more after 1M transitions? | Repeat with three seeds, then level B and C once | At 16 or less: close the scope. Bounded claim: zero-shot in medium rooms, partial in partitioned rooms. Run C1 and prepare the release with limitations |
 | B1 (October 12), D5 | Did the 1M run reach the rule? | Not applicable: `passages` 23 of 64 against 24, medium 59. Inconclusive. Rising curve, collisions unchanged (22). Open decision D5: repeat with three seeds before closing the scope, or close it now | Not applicable |
 | B2 (October 12) | Did the 2M run reach the rule? | Yes: `passages` 38 of 64, medium 54, 11 above the 1M checkpoint on the same pool. Open: collisions 6 against the 3 allowed; one seed. Next: B3, three-seed replication | Not applicable |
+| B3 (October 13) | Does the 2M effect replicate on other seeds? | Yes: mean `passages` 39 of 64, every seed 36 or more, medium 49 or more. Next: B4, level B and C once | Not applicable |
 | Phase 4 | Is a held-out family result at or above half the development rate? | Proceed to Phase 5 | Keep training and revisit the representation |
 
 ## 7. Rules for every iteration
@@ -200,7 +205,7 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | Probe pools | 881000 to 881063 (rollouts), 895000 to 895699 (synthetic poses), 896000 to 896799 (pretraining data) | Offline probes and supervised pretraining | Used. Never evaluation pools |
 | Large-budget test pool (B1) | 884000 to 884063 | Curve evaluation of the 1M run, `passages` and medium, both modes ([protocol](docs/LARGE_BUDGET_PROTOCOL.md)) | Inspected October 12 (B1 results). Selects nothing |
 | 2M test pool (B2) | 885000 to 885063 | Curve evaluation of the 2M run and of the B1 final checkpoint, `passages` and medium ([protocol](docs/LARGE_BUDGET_2M_PROTOCOL.md)) | Inspected October 12 (B2 results). Selects nothing |
-| 2M replication pool (B3) | 886000 to 886063 | Stages 46 and 61 of seeds 801, 851, 901 and the start checkpoint, `passages` and medium (final stage also mid, wide, gates) | Declared October 12, unopened until training ends. Selects nothing |
+| 2M replication pool (B3) | 886000 to 886063 | Stages 46 and 61 of seeds 801, 851, 901 and the start checkpoint, `passages` and medium (final stage also mid, wide, gates) | Inspected October 13 (B3 results). Selects nothing |
 | Level B region, development | Held-out sampler, 950000 to 959999 | Look at progress, not for selection | Drawn: 950000 to 950063 inspected for every R5 and student run |
 | Level B region, final | Held-out sampler, 960000 to 969999 | Final assessment | Reserved, unopened |
 | Level C scenes, development headings | 900000 and above | Baseline measurements only before Phase 5 | Used once: baseline of the start checkpoint (71 of 168) |
@@ -222,6 +227,8 @@ All run artifacts are local and ignored by git (`runs/`, `private/`). Hashes are
 | Phase 3, long window, seed 443, stage 4 | `runs/training/phase3-screen/long443/stage-4.zip` | `536622b163bc79cd` |
 | B1 final checkpoint (1M added transitions, seed 801) | `runs/training/large-budget/seed801/stage-31.zip` | `0896b5fbe22f9c10` |
 | B2 final checkpoint (2M added transitions, seed 801) | `runs/training/large-budget-2m/seed801/stage-61.zip` | `3a4150b59b5fc894` |
+| B3 final checkpoint, seed 851 | `runs/training/large-budget-2m/seed851/stage-61.zip` | `fc1b2c69068ac72e` |
+| B3 final checkpoint, seed 901 | `runs/training/large-budget-2m/seed901/stage-61.zip` | `29ac1bcf11652646` |
 
 Detailed evidence copies live in `private/reference-recovery-1-evidence/`. The experiment index is [docs/EXPERIMENT_LOG.md](docs/EXPERIMENT_LOG.md).
 
