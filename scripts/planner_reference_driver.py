@@ -1,6 +1,6 @@
 """Driver for C1.P: planner reference on level C (168 episodes, four processes of two headings each) and the retained learned
 candidate (stage 61 of seeds 801, 851, 901) on the `large` and `maze` profiles (fresh pools 892000 and 893000, 32 episodes per cell, both
-modes). Evaluation only. See docs/PLANNER_REFERENCE_PROTOCOL.md. Resumable by cell. Raised ceiling (95 percent), up to 5 processes."""
+modes). Evaluation only. See docs/experiments/connectome-control/PLANNER_REFERENCE_PROTOCOL.md. Resumable by cell. Raised ceiling (95 percent), up to 5 processes."""
 import json, os, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, 'scripts')

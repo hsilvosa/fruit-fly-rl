@@ -1,5 +1,5 @@
 """Driver for R5: train three seeds on the randomized distribution, then evaluate R5 and control checkpoints.
-Resumable. See docs/RANDOM_DISTRIBUTION_PROTOCOL.md."""
+Resumable. See docs/experiments/random-distribution/RANDOM_DISTRIBUTION_PROTOCOL.md."""
 import json, os, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, 'scripts')

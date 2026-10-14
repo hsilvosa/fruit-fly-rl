@@ -1,5 +1,5 @@
 """Driver for the autonomous-student experiment (aux head, privileged critic, controls). Resumable.
-See docs/AUXILIARY_STUDENT_PROTOCOL.md."""
+See docs/experiments/students/AUXILIARY_STUDENT_PROTOCOL.md."""
 import json, os, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, 'scripts')

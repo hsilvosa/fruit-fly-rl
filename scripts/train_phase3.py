@@ -1,5 +1,5 @@
 """Phase 3 screening (experiment 11): history transfer (GRU memory) with the Phase 1 stabilization bundle.
-See docs/PHASE3_SCREENING_PROTOCOL.md. Usage: train_phase3.py <short442|long442> <output-dir> Usage: train_phase1_pilot.py <seed442|seed443> <output-dir>"""
+See docs/experiments/variance-and-stability/PHASE3_SCREENING_PROTOCOL.md. Usage: train_phase3.py <short442|long442> <output-dir> Usage: train_phase1_pilot.py <seed442|seed443> <output-dir>"""
 import hashlib, json, os, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, '.')
@@ -21,7 +21,7 @@ SOURCE = 'runs/training/reference-transfer-7/mix3e4/stage-2'
 MID = 'scripts/profiles/passages-mid.json'
 ASSIGN = [None] * 8 + [MID] * 12 + ['passages'] * 4 + ['passages-wide'] * 4 + ['gate-two'] * 4
 STAGE, STAGES = 32768, 4
-EVAL_STAGES = {3}  # reduced after the resource incident; see docs/PHASE1_PILOT_PROTOCOL.md
+EVAL_STAGES = {3}  # reduced after the resource incident; see docs/experiments/variance-and-stability/PHASE1_PILOT_PROTOCOL.md
 BUDGET = STAGE * STAGES
 LR0, LR1 = 3e-4, 3e-5
 OLD = [('medium', None, 100000), ('medium-b', None, 840000), ('gate-two', 'gate-two', 830000),

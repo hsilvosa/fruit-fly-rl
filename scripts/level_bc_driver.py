@@ -1,6 +1,6 @@
 """Driver for B4: level B (held-out parameter region, development maps) and level C (architectural scenes, development headings)
 for stage 61 of seeds 801, 851 and 901 and for the experiment 7 start checkpoint. Resumable: finished cells are skipped.
-Evaluation only. See docs/LEVEL_BC_PROTOCOL.md."""
+Evaluation only. See docs/experiments/large-budget/LEVEL_BC_PROTOCOL.md."""
 import json, os, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, 'scripts')

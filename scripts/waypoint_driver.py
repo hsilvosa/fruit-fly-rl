@@ -1,5 +1,5 @@
 """Driver for the privileged-waypoint diagnostic: four trainings in series, then the evaluation cells. Resumable.
-See docs/WAYPOINT_DIAGNOSTIC_PROTOCOL.md."""
+See docs/experiments/diagnostics/WAYPOINT_DIAGNOSTIC_PROTOCOL.md."""
 import json, os, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, 'scripts')

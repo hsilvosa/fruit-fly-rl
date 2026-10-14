@@ -1,5 +1,5 @@
 """B1 large-budget run: the Phase 1 pilot recipe at 31 stages (1,015,808 added transitions), one seed, checkpoints every stage.
-See docs/LARGE_BUDGET_PROTOCOL.md. Usage: train_large_budget.py <seed> <output-dir> [stages, default 31]"""
+See docs/experiments/large-budget/LARGE_BUDGET_PROTOCOL.md. Usage: train_large_budget.py <seed> <output-dir> [stages, default 31]"""
 import hashlib, json, os, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, '.')

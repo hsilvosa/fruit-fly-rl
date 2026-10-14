@@ -1,4 +1,4 @@
-"""Driver for C1.1 (phase 2 of the fresh two-arm chain, seeds 1001 and 1051, then evaluation). See docs/CONNECTOME_CONTROL_PROTOCOL_C11.md.
+"""Driver for C1.1 (phase 2 of the fresh two-arm chain, seeds 1001 and 1051, then evaluation). See docs/experiments/connectome-control/CONNECTOME_CONTROL_PROTOCOL_C11.md.
 Schedule (two trainings at a time, under the 95 percent ceiling): pair A = phase 2 of seed 1001 (real, shuffled); pair B = phase 1 of
 seed 1051; pair C = phase 2 of seed 1051. If the mean CPU over two minutes of overlap exceeds 93 percent, the second job of the pair is
 stopped and run after the first. Resource log written. Resumable: finished jobs and evaluation cells are skipped; an interrupted

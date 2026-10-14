@@ -3,7 +3,7 @@ plus the unit vector, in the body frame, to the certified-route point `LOOKAHEAD
 With `privileged=False` the three extra inputs are zeros (matched control: same network, same pipeline, no information).
 
 The certified route comes from the map generator (`world.reference_route`). Policies trained or evaluated here have runtime
-route access and must never be reported as autonomous students. See docs/WAYPOINT_DIAGNOSTIC_PROTOCOL.md."""
+route access and must never be reported as autonomous students. See docs/experiments/diagnostics/WAYPOINT_DIAGNOSTIC_PROTOCOL.md."""
 import numpy as np
 import torch
 from gymnasium import spaces

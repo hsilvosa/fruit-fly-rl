@@ -7,7 +7,7 @@ columns. These policies make sure the ACTOR never reads them:
  - 'aux' arm: actor and critic are both blind to the columns, and an auxiliary head on the actor's last hidden layer is trained
    to predict the route direction (cosine loss), which shapes the actor's representation. The columns serve as a label only.
 At test time the three columns can be anything, including zeros: the actor output does not depend on them. See
-docs/AUXILIARY_STUDENT_PROTOCOL.md."""
+docs/experiments/students/AUXILIARY_STUDENT_PROTOCOL.md."""
 import numpy as np
 import torch
 import torch.nn.functional as F

@@ -1,4 +1,4 @@
-"""Privileged-waypoint diagnostic training (not a student). See docs/WAYPOINT_DIAGNOSTIC_PROTOCOL.md.
+"""Privileged-waypoint diagnostic training (not a student). See docs/experiments/diagnostics/WAYPOINT_DIAGNOSTIC_PROTOCOL.md.
 Phase 1 recipe and mix from the experiment 7 start; the policy input gets 3 extra values. ARM is 'waypoint' (route direction) or
 'control' (zeros). Usage: train_waypoint.py <waypoint|control> <seed> <output-dir> <stages>"""
 import hashlib, json, os, sys, time

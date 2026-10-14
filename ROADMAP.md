@@ -6,7 +6,7 @@ Live status board. Last updated: October 14, 2026, after actions R1 to R5, the d
 
 A learned virtual fly that reaches goals in maps it has never trained on. Flight actions come from the learned policy. The full MaleCNS v1.0 connectome (167,184 neurons, 25,583,622 edges) stays in the controller. An explicit planner may be a reference or a teacher. It never chooses the evaluated policy's actions.
 
-"Unseen map" has three levels, reported separately. Details are in [ZERO_SHOT_PLAN.md](docs/ZERO_SHOT_PLAN.md).
+"Unseen map" has three levels, reported separately. Details are in [ZERO_SHOT_PLAN.md](docs/overview/ZERO_SHOT_PLAN.md).
 
 | Level | Meaning |
 | --- | --- |
@@ -20,24 +20,24 @@ Proposed release gate: at least 52 of 64 successes and at most 3 collisions in e
 
 | Capability | Status | Evidence |
 | --- | --- | --- |
-| Historical learned reference (50/64, 48/64, 45/64) | Recovered, hash-verified, replays exactly | [HISTORICAL_REFERENCE.md](docs/HISTORICAL_REFERENCE.md) |
-| Medium dense rooms | Retained in every experiment: 21 to 30 of 32 | [TRANSFER_SUMMARY.md](docs/TRANSFER_SUMMARY.md), Phase 1 and 3 results |
+| Historical learned reference (50/64, 48/64, 45/64) | Recovered, hash-verified, replays exactly | [HISTORICAL_REFERENCE.md](docs/experiments/reference-recovery/HISTORICAL_REFERENCE.md) |
+| Medium dense rooms | Retained in every experiment: 21 to 30 of 32 | [TRANSFER_SUMMARY.md](docs/experiments/reference-recovery/TRANSFER_SUMMARY.md), Phase 1 and 3 results |
 | Single and double gates | Solved: 27 to 32 of 32 | Same |
-| `passages-wide` | Learned. Stable in one seed (22 to 25 of 32), unstable in another (0 to 18) | [PHASE1_RUN_RESULTS.md](docs/PHASE1_RUN_RESULTS.md) |
-| `passages-mid`, `passages` | Mostly 6 to 12 and 0 to 6 of 32. Best single checkpoint: 21 and 5 of 32 | [PHASE1_PILOT_RESULTS.md](docs/PHASE1_PILOT_RESULTS.md) |
-| `large`, `maze`, architectural scenes | Not trained in this line. Reference scored 0/16 on `large` | [HISTORICAL_REFERENCE.md](docs/HISTORICAL_REFERENCE.md) |
-| Memory (history window) | Not replicated: seed 442 gained, seed 443 lost on one profile | [PHASE3_REPLICATION_RESULTS.md](docs/PHASE3_REPLICATION_RESULTS.md) |
-| Run 601 (R5 seed) on a fresh 64-episode pool | Medium 92%, passages-wide 86%, passages-mid 55%, passages 14%. First checkpoint that keeps medium, wide and mid together | [COMMITTEE_EVAL_RESULTS.md](docs/COMMITTEE_EVAL_RESULTS.md) |
-| Why `passages` stays low | Collisions end 1.5 to 3.5 m off the certified route around mid-route. The policy input carries the route direction only to 42 to 53 degrees. Giving the actor the route direction as input lifts `passages` from 17% to 59% (diagnostic, not a student) | [COLLISION_ANATOMY.md](docs/COLLISION_ANATOMY.md), [FEATURE_PROBE.md](docs/FEATURE_PROBE.md), [WAYPOINT_DIAGNOSTIC_RESULTS.md](docs/WAYPOINT_DIAGNOSTIC_RESULTS.md) |
-| Route signal used only in training (auxiliary head, privileged critic, supervised pretraining) | Negative: `passages` 13 to 15 of 64 against 12 for the control | [AUXILIARY_STUDENT_RESULTS.md](docs/AUXILIARY_STUDENT_RESULTS.md), [PRETRAIN_RESULTS.md](docs/PRETRAIN_RESULTS.md) |
-| Unseen-map navigation (levels A, B, C) | Level B development maps: 1 to 6 of 64 for every run. Level C baseline of the start checkpoint: 71 of 168 (42%), mostly open routes. No gate evidence | [HELD_OUT_SPEC.md](docs/HELD_OUT_SPEC.md), [RANDOM_DISTRIBUTION_RESULTS.md](docs/RANDOM_DISTRIBUTION_RESULTS.md) |
-| Large budget (1,015,808 added transitions, one seed) | Inconclusive by the frozen rule: `passages` 11, 12, 17, 23 of 64 along the curve (positive needed 24), medium 55 to 60, `passages-mid` 48, `passages-wide` and `gate-two` 64. Collisions on `passages` stay at 18 to 30 | [LARGE_BUDGET_RESULTS.md](docs/LARGE_BUDGET_RESULTS.md) |
-| Large budget, 1,998,848 added transitions (one seed) | Positive by the frozen rule on pool 885000: `passages` 38 of 64 with 6 collisions (the 1M checkpoint scores 27 with 20), `passages-mid` 56, medium 54, `passages-wide` 64. Deterministic curve 16, 26, 48, 38; the drop from 48 to 38 is timeouts. One seed | [LARGE_BUDGET_2M_RESULTS.md](docs/LARGE_BUDGET_2M_RESULTS.md) |
-| Three-seed replication of the 2M recipe | Positive by the frozen rule on pool 886000: stage 61 `passages` 42, 36, 39 of 64 (mean 39, start checkpoint 5), `passages-mid` 54 to 57, medium 49, 54, 55, `passages-wide` and `gate-two` 64. Collisions on `passages` 8, 16, 8 against the gate's 3 | [REPLICATION_2M_RESULTS.md](docs/REPLICATION_2M_RESULTS.md) |
-| Level B and level C for the 2M checkpoints (stage 61, three seeds) | Level B inconclusive: 26, 17, 12 of 64 (mean 18.3, positive needed 20; earlier runs 1 to 6; start 1). Level C positive by the rule: 95, 108, 108 of 168 deterministic (start 71), but `courtyard` fell from 24/24 to 7 to 23 and `apartment`, `atrium` did not move. Against the sampled start (93) the gain is 12 to 20 episodes | [LEVEL_BC_RESULTS.md](docs/LEVEL_BC_RESULTS.md) |
-| No-connectome control (edge-shuffled reservoir, matched fresh chain, 2 seeds per arm) | Chain check failed (fresh real arm 16.0 of 64 on `passages` against 28 needed; retained 36 to 42), so the comparison is a fresh-chain result only. There the shuffled arm is not worse: `passages` 25.5 against 16.0, `passages-mid` 51.0 against 41.5, level B 6.5 against 5.5, level C 86 against 79 of 168. No evidence that the wiring matters; the connectome contribution cannot be claimed | [CONNECTOME_CONTROL_RESULTS_C11.md](docs/CONNECTOME_CONTROL_RESULTS_C11.md) |
-| Control at 4.88M transitions (C1.2, 2 seeds per arm) | Chain check fails by half an episode (real mean 27.5 of 64 on `passages`, needed 28; shuffled 21.0; retained 38.0). Comparison inconclusive; no cell shows an advantage of the real connectome (mid 51 vs 47, level B 9.5 vs 12, level C 98 vs 105.5). Seed spread (13 to 16 episodes) is as large as any difference | [CONNECTOME_CONTROL_RESULTS_C12.md](docs/CONNECTOME_CONTROL_RESULTS_C12.md) |
-| Planner reference and `large`, `maze` (C1.P) | Planner-1.4-exp.3 on level C: 147 of 168 (87.5%, 4 collisions), 43 above the learned candidate's 103.7. Retained learned candidate on `large`: 2, 0, 0 of 32; on `maze`: 0, 0, 0 of 32 (mostly timeouts). Four-family gate not met in any family | [PLANNER_REFERENCE_RESULTS.md](docs/PLANNER_REFERENCE_RESULTS.md) |
+| `passages-wide` | Learned. Stable in one seed (22 to 25 of 32), unstable in another (0 to 18) | [PHASE1_RUN_RESULTS.md](docs/experiments/variance-and-stability/PHASE1_RUN_RESULTS.md) |
+| `passages-mid`, `passages` | Mostly 6 to 12 and 0 to 6 of 32. Best single checkpoint: 21 and 5 of 32 | [PHASE1_PILOT_RESULTS.md](docs/experiments/variance-and-stability/PHASE1_PILOT_RESULTS.md) |
+| `large`, `maze`, architectural scenes | Not trained in this line. Reference scored 0/16 on `large` | [HISTORICAL_REFERENCE.md](docs/experiments/reference-recovery/HISTORICAL_REFERENCE.md) |
+| Memory (history window) | Not replicated: seed 442 gained, seed 443 lost on one profile | [PHASE3_REPLICATION_RESULTS.md](docs/experiments/variance-and-stability/PHASE3_REPLICATION_RESULTS.md) |
+| Run 601 (R5 seed) on a fresh 64-episode pool | Medium 92%, passages-wide 86%, passages-mid 55%, passages 14%. First checkpoint that keeps medium, wide and mid together | [COMMITTEE_EVAL_RESULTS.md](docs/experiments/diagnostics/COMMITTEE_EVAL_RESULTS.md) |
+| Why `passages` stays low | Collisions end 1.5 to 3.5 m off the certified route around mid-route. The policy input carries the route direction only to 42 to 53 degrees. Giving the actor the route direction as input lifts `passages` from 17% to 59% (diagnostic, not a student) | [COLLISION_ANATOMY.md](docs/experiments/diagnostics/COLLISION_ANATOMY.md), [FEATURE_PROBE.md](docs/experiments/diagnostics/FEATURE_PROBE.md), [WAYPOINT_DIAGNOSTIC_RESULTS.md](docs/experiments/diagnostics/WAYPOINT_DIAGNOSTIC_RESULTS.md) |
+| Route signal used only in training (auxiliary head, privileged critic, supervised pretraining) | Negative: `passages` 13 to 15 of 64 against 12 for the control | [AUXILIARY_STUDENT_RESULTS.md](docs/experiments/students/AUXILIARY_STUDENT_RESULTS.md), [PRETRAIN_RESULTS.md](docs/experiments/students/PRETRAIN_RESULTS.md) |
+| Unseen-map navigation (levels A, B, C) | Level B development maps: 1 to 6 of 64 for every run. Level C baseline of the start checkpoint: 71 of 168 (42%), mostly open routes. No gate evidence | [HELD_OUT_SPEC.md](docs/methods/HELD_OUT_SPEC.md), [RANDOM_DISTRIBUTION_RESULTS.md](docs/experiments/random-distribution/RANDOM_DISTRIBUTION_RESULTS.md) |
+| Large budget (1,015,808 added transitions, one seed) | Inconclusive by the frozen rule: `passages` 11, 12, 17, 23 of 64 along the curve (positive needed 24), medium 55 to 60, `passages-mid` 48, `passages-wide` and `gate-two` 64. Collisions on `passages` stay at 18 to 30 | [LARGE_BUDGET_RESULTS.md](docs/experiments/large-budget/LARGE_BUDGET_RESULTS.md) |
+| Large budget, 1,998,848 added transitions (one seed) | Positive by the frozen rule on pool 885000: `passages` 38 of 64 with 6 collisions (the 1M checkpoint scores 27 with 20), `passages-mid` 56, medium 54, `passages-wide` 64. Deterministic curve 16, 26, 48, 38; the drop from 48 to 38 is timeouts. One seed | [LARGE_BUDGET_2M_RESULTS.md](docs/experiments/large-budget/LARGE_BUDGET_2M_RESULTS.md) |
+| Three-seed replication of the 2M recipe | Positive by the frozen rule on pool 886000: stage 61 `passages` 42, 36, 39 of 64 (mean 39, start checkpoint 5), `passages-mid` 54 to 57, medium 49, 54, 55, `passages-wide` and `gate-two` 64. Collisions on `passages` 8, 16, 8 against the gate's 3 | [REPLICATION_2M_RESULTS.md](docs/experiments/large-budget/REPLICATION_2M_RESULTS.md) |
+| Level B and level C for the 2M checkpoints (stage 61, three seeds) | Level B inconclusive: 26, 17, 12 of 64 (mean 18.3, positive needed 20; earlier runs 1 to 6; start 1). Level C positive by the rule: 95, 108, 108 of 168 deterministic (start 71), but `courtyard` fell from 24/24 to 7 to 23 and `apartment`, `atrium` did not move. Against the sampled start (93) the gain is 12 to 20 episodes | [LEVEL_BC_RESULTS.md](docs/experiments/large-budget/LEVEL_BC_RESULTS.md) |
+| No-connectome control (edge-shuffled reservoir, matched fresh chain, 2 seeds per arm) | Chain check failed (fresh real arm 16.0 of 64 on `passages` against 28 needed; retained 36 to 42), so the comparison is a fresh-chain result only. There the shuffled arm is not worse: `passages` 25.5 against 16.0, `passages-mid` 51.0 against 41.5, level B 6.5 against 5.5, level C 86 against 79 of 168. No evidence that the wiring matters; the connectome contribution cannot be claimed | [CONNECTOME_CONTROL_RESULTS_C11.md](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C11.md) |
+| Control at 4.88M transitions (C1.2, 2 seeds per arm) | Chain check fails by half an episode (real mean 27.5 of 64 on `passages`, needed 28; shuffled 21.0; retained 38.0). Comparison inconclusive; no cell shows an advantage of the real connectome (mid 51 vs 47, level B 9.5 vs 12, level C 98 vs 105.5). Seed spread (13 to 16 episodes) is as large as any difference | [CONNECTOME_CONTROL_RESULTS_C12.md](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md) |
+| Planner reference and `large`, `maze` (C1.P) | Planner-1.4-exp.3 on level C: 147 of 168 (87.5%, 4 collisions), 43 above the learned candidate's 103.7. Retained learned candidate on `large`: 2, 0, 0 of 32; on `maze`: 0, 0, 0 of 32 (mostly timeouts). Four-family gate not met in any family | [PLANNER_REFERENCE_RESULTS.md](docs/experiments/connectome-control/PLANNER_REFERENCE_RESULTS.md) |
 | Release gate | Not met | This file |
 
 Best development candidate so far: `runs/training/phase1-pilot/seed442/stage-3.zip`. On a fresh pool with 64 episodes per cell: medium 57, passages-wide 14, passages-mid 37 and passages 17 (89%, 22%, 58% and 27%). It is a real policy and an outlier: five repeats of its recipe reached 7 to 13 of 32 on passages-mid. It gives up passages-wide to get the harder profiles.
@@ -76,19 +76,19 @@ Learned:
 
 ## 4. Progress board
 
-Markers: `[x]` done, `[ ]` open, `[~]` partly done. Each phase links to its design in [ZERO_SHOT_PLAN.md](docs/ZERO_SHOT_PLAN.md).
+Markers: `[x]` done, `[ ]` open, `[~]` partly done. Each phase links to its design in [ZERO_SHOT_PLAN.md](docs/overview/ZERO_SHOT_PLAN.md).
 
 ### Phase 0. Baseline and housekeeping
 
 - [x] Recover and hash-verify the historical medium-room winners
 - [x] Replay the winners on their recorded pools (per-episode agreement)
-- [x] Classify `passages` failures ([PASSAGES_FAILURE_CLASSIFICATION.md](docs/PASSAGES_FAILURE_CLASSIFICATION.md))
-- [x] Run and document transfer experiments 1 to 8 ([TRANSFER_SUMMARY.md](docs/TRANSFER_SUMMARY.md))
-- [x] Remove regenerable raw datasets from `runs/` ([RUNS_CLEANUP.md](docs/RUNS_CLEANUP.md))
+- [x] Classify `passages` failures ([PASSAGES_FAILURE_CLASSIFICATION.md](docs/experiments/reference-recovery/PASSAGES_FAILURE_CLASSIFICATION.md))
+- [x] Run and document transfer experiments 1 to 8 ([TRANSFER_SUMMARY.md](docs/experiments/reference-recovery/TRANSFER_SUMMARY.md))
+- [x] Remove regenerable raw datasets from `runs/` ([RUNS_CLEANUP.md](docs/operations/RUNS_CLEANUP.md))
 - [x] Write the plan, README and completion-plan updates
 - [x] Resource guard for evaluation fan-out
 - [x] Measure evaluation repeatability
-- [x] Freeze the medium-room regression suite as a documented, reusable test ([MEDIUM_REGRESSION_SUITE.md](docs/MEDIUM_REGRESSION_SUITE.md))
+- [x] Freeze the medium-room regression suite as a documented, reusable test ([MEDIUM_REGRESSION_SUITE.md](docs/methods/MEDIUM_REGRESSION_SUITE.md))
 
 Phase 0 is complete.
 
@@ -96,16 +96,16 @@ Phase 0 is complete.
 
 - [x] Stabilization bundle implemented (pilot and run scripts)
 - [x] Separate selection pools introduced (report pools still unopened)
-- [x] Two-seed run with four evaluations ([PHASE1_RUN_RESULTS.md](docs/PHASE1_RUN_RESULTS.md))
+- [x] Two-seed run with four evaluations ([PHASE1_RUN_RESULTS.md](docs/experiments/variance-and-stability/PHASE1_RUN_RESULTS.md))
 - [x] Result recorded: seed 442 stable, seed 443 not, hardest profile not raised
-- [x] Measure training variance directly: five runs of one recipe ([VARIANCE_STUDY_RESULTS.md](docs/VARIANCE_STUDY_RESULTS.md), action R1, done October 10)
+- [x] Measure training variance directly: five runs of one recipe ([VARIANCE_STUDY_RESULTS.md](docs/experiments/variance-and-stability/VARIANCE_STUDY_RESULTS.md), action R1, done October 10)
 
 ### Phase 2. Randomized map distribution: not started
 
-- [x] Parameter ranges and adaptive-difficulty rule written and committed ([MAP_SAMPLER.md](docs/MAP_SAMPLER.md))
+- [x] Parameter ranges and adaptive-difficulty rule written and committed ([MAP_SAMPLER.md](docs/methods/MAP_SAMPLER.md))
 - [x] Map sampler implemented with tests and a sample gallery (action R3, done October 10)
-- [x] Level B region and level C family (synthetic architectural scenes, chosen by the user) defined and sealed in [HELD_OUT_SPEC.md](docs/HELD_OUT_SPEC.md) (action R4, done October 10)
-- [x] Training run with three seeds (action R5, done October 11, negative: [results](docs/RANDOM_DISTRIBUTION_RESULTS.md))
+- [x] Level B region and level C family (synthetic architectural scenes, chosen by the user) defined and sealed in [HELD_OUT_SPEC.md](docs/methods/HELD_OUT_SPEC.md) (action R4, done October 10)
+- [x] Training run with three seeds (action R5, done October 11, negative: [results](docs/experiments/random-distribution/RANDOM_DISTRIBUTION_RESULTS.md))
 - [ ] Level A development gate met on both seeds
 
 ### Phase 3. Memory: tested, not established
@@ -151,19 +151,19 @@ Each action lists what it needs, an estimate with its basis, and what it unlocks
 | R2 | Done October 10 (under 25 min by the clock; estimate was 30 min). Frozen medium-room regression suite, `scripts/regression_medium.py` | Not applicable | Measured: 4 min per checkpoint, 5 checkpoints | Light | Closes Phase 0. Every Phase 2 candidate runs it before promotion |
 | R3 | Done October 10. Measured by the machine clock: about 5 minutes between the end of the previous step and the commit, against a 1.5 to 2 h estimate. Sampler, adaptive controller, 14 tests, gallery | Not applicable | Measured | Almost none | R4, R5 |
 | R4 | Done October 10. Level C = synthetic architectural scenes, sealed with reserved seeds. Evaluation tool and tests written | Not applicable | Measured: under 15 min | None | R5, Phase 5 |
-| R5 | Done October 11. Negative by the frozen rule; the difficulty controller stayed at 0.2 to 0.25, so training saw mostly easy maps ([results](docs/RANDOM_DISTRIBUTION_RESULTS.md)) | Not applicable | Measured: 3 h 10 min against about 2 h estimated | Not applicable | R5b: a version with real difficulty |
+| R5 | Done October 11. Negative by the frozen rule; the difficulty controller stayed at 0.2 to 0.25, so training saw mostly easy maps ([results](docs/experiments/random-distribution/RANDOM_DISTRIBUTION_RESULTS.md)) | Not applicable | Measured: 3 h 10 min against about 2 h estimated | Not applicable | R5b: a version with real difficulty |
 | D1 | Done October 11. Committee reviews (three rounds), light audit, 601 confirmation, collision anatomy, feature and synthetic probes. See [EXPERIMENT_LOG.md](docs/EXPERIMENT_LOG.md) | Not applicable | Measured | Not applicable | Diagnosis: information at decision time, not reward or readout |
 | D2 | Done October 11. Privileged-waypoint diagnostic, two seeds per arm: partial by the rule (37.5 against 11 of 64) | Not applicable | Measured: 56 min | Not applicable | Information matters; not a student |
 | D3 | Done October 11. Auxiliary head and privileged critic, three seeds: negative (+2.3 and +0.7 of 64) | Not applicable | Measured: 2 h 43 | Not applicable | Closes training-only route signals at 262k |
 | D4 | Done October 11. Supervised pretraining of the actor trunk then PPO, three seeds: gate passed, PPO negative (+2.0 of 64) | Not applicable | Measured: 1 h 16 | Not applicable | Representation is not the bottleneck |
-| B1 | Done October 12. Inconclusive by the frozen rule: `passages` 23 of 64 (positive needed 24, negative 16 or fewer), medium 59, curve 11, 12, 17, 23 ([results](docs/LARGE_BUDGET_RESULTS.md)) | Not applicable | Measured: 41 min training (79 s per stage, not 65) and 24 min evaluation, 65 min in all | Not applicable | Decision D5: three seeds, or close the scope |
-| B2 | Done October 12. Positive by the frozen rule: `passages` 38 of 64 (threshold 28, 11 above the 1M checkpoint on the same pool), medium 54 ([results](docs/LARGE_BUDGET_2M_RESULTS.md)) | Not applicable | Measured: 77 min training (65 to 81 s per stage), 29.5 min evaluation | Not applicable | B3: replicate with three seeds |
-| B3 | Done October 13. Positive by the frozen rule: `passages` 42, 36, 39 of 64 on seeds 801, 851, 901 (mean 39, threshold 28; start 5), medium 49, 54, 55 ([results](docs/REPLICATION_2M_RESULTS.md)) | Not applicable | Measured: 3 h 33 against 3 h 25 estimated (82 min per training, 50 min evaluation) | Not applicable | B4: level B and C once |
-| B4 | Done October 13. Level B inconclusive (mean 18.3 of 64, one episode under the threshold), level C positive (mean 103.7 of 168, start 71), with a `courtyard` regression ([results](docs/LEVEL_BC_RESULTS.md)) | Not applicable | Measured: 53 min against 1 h 30 estimated (level C runs 12 to 17 min each) | Not applicable | Decision D6: next lever |
-| C1.0 | Done October 13. Gate passed: fresh real-connectome arm 61 of 64 on medium after 885k transitions (gate 40); edge-shuffled arm 54, sampled 60 against 59 ([results](docs/CONNECTOME_CONTROL_RESULTS_C10.md)) | Not applicable | Measured: about 38 min training with both arms in parallel (CPU mean 66%, peak 90%) and 12 min evaluation | Not applicable | C1.1 protocol |
-| C1.1 | Done October 14. Chain check failed (real arm 16.0 on `passages`, needed 28); no evidence of a wiring effect, shuffled arm nominally higher (25.5) ([results](docs/CONNECTOME_CONTROL_RESULTS_C11.md)) | Not applicable | Measured: training 3 h 28 as estimated, evaluation 1 h 25 against 45 min estimated (eight level C passes under six processes) | Not applicable | Decision D7 |
-| C1.2 | Done October 14. Chain check failed by 0.5 episode (real mean 27.5, needed 28); comparison inconclusive; no advantage of the real connectome on any cell ([results](docs/CONNECTOME_CONTROL_RESULTS_C12.md)) | Not applicable | Measured: 4 h 06 against 4 h 10 estimated (training 78 and 81 min per pair, evaluation 87 min) | Not applicable | Decision D8 |
-| C1.P | Done October 14. Planner on level C: 147 of 168; learned candidate on `large` and `maze`: 0 to 2 of 32 per cell ([results](docs/PLANNER_REFERENCE_RESULTS.md)) | Not applicable | Measured: 78 min against 70 estimated (planner 28 to 31 min, `maze` cells set the end) | Not applicable | Decision D9: Phase 5 and 6 |
+| B1 | Done October 12. Inconclusive by the frozen rule: `passages` 23 of 64 (positive needed 24, negative 16 or fewer), medium 59, curve 11, 12, 17, 23 ([results](docs/experiments/large-budget/LARGE_BUDGET_RESULTS.md)) | Not applicable | Measured: 41 min training (79 s per stage, not 65) and 24 min evaluation, 65 min in all | Not applicable | Decision D5: three seeds, or close the scope |
+| B2 | Done October 12. Positive by the frozen rule: `passages` 38 of 64 (threshold 28, 11 above the 1M checkpoint on the same pool), medium 54 ([results](docs/experiments/large-budget/LARGE_BUDGET_2M_RESULTS.md)) | Not applicable | Measured: 77 min training (65 to 81 s per stage), 29.5 min evaluation | Not applicable | B3: replicate with three seeds |
+| B3 | Done October 13. Positive by the frozen rule: `passages` 42, 36, 39 of 64 on seeds 801, 851, 901 (mean 39, threshold 28; start 5), medium 49, 54, 55 ([results](docs/experiments/large-budget/REPLICATION_2M_RESULTS.md)) | Not applicable | Measured: 3 h 33 against 3 h 25 estimated (82 min per training, 50 min evaluation) | Not applicable | B4: level B and C once |
+| B4 | Done October 13. Level B inconclusive (mean 18.3 of 64, one episode under the threshold), level C positive (mean 103.7 of 168, start 71), with a `courtyard` regression ([results](docs/experiments/large-budget/LEVEL_BC_RESULTS.md)) | Not applicable | Measured: 53 min against 1 h 30 estimated (level C runs 12 to 17 min each) | Not applicable | Decision D6: next lever |
+| C1.0 | Done October 13. Gate passed: fresh real-connectome arm 61 of 64 on medium after 885k transitions (gate 40); edge-shuffled arm 54, sampled 60 against 59 ([results](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C10.md)) | Not applicable | Measured: about 38 min training with both arms in parallel (CPU mean 66%, peak 90%) and 12 min evaluation | Not applicable | C1.1 protocol |
+| C1.1 | Done October 14. Chain check failed (real arm 16.0 on `passages`, needed 28); no evidence of a wiring effect, shuffled arm nominally higher (25.5) ([results](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C11.md)) | Not applicable | Measured: training 3 h 28 as estimated, evaluation 1 h 25 against 45 min estimated (eight level C passes under six processes) | Not applicable | Decision D7 |
+| C1.2 | Done October 14. Chain check failed by 0.5 episode (real mean 27.5, needed 28); comparison inconclusive; no advantage of the real connectome on any cell ([results](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md)) | Not applicable | Measured: 4 h 06 against 4 h 10 estimated (training 78 and 81 min per pair, evaluation 87 min) | Not applicable | Decision D8 |
+| C1.P | Done October 14. Planner on level C: 147 of 168; learned candidate on `large` and `maze`: 0 to 2 of 32 per cell ([results](docs/experiments/connectome-control/PLANNER_REFERENCE_RESULTS.md)) | Not applicable | Measured: 78 min against 70 estimated (planner 28 to 31 min, `maze` cells set the end) | Not applicable | Decision D9: Phase 5 and 6 |
 | R6 | Memory retest: 3 seeds x 2 conditions, 64 episodes per cell, final checkpoint only | R3 advised | About 2 h (no measured basis for 64 episodes) | CPU about 55% | A decision on memory |
 
 Recommended order: all diagnostic, budget, level B and C, control and reference actions are done (R1 to R5, D1 to D4, B1 to B4, C1.0 to C1.2, C1.P). The release gate is not met in any family. Next (D9, section 6): Phase 6, the release with limitations and the bounded claim (installation, learned demos per family that works, logs and replay, brain visualization, formulas, attribution, results tables, repository audit), or one more training step aimed at collisions or at `large` and `maze` first.
@@ -214,8 +214,8 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | Level A report | 940000 to 949999 | Report pool | Reserved, unopened |
 | Confirmation and comparison pools | 880000 to 880063; 882000 to 882063 | Fresh-pool confirmations, student comparisons (882000 reused for the pretraining comparison). Selected nothing | Inspected. 880000 also drove the committee analyses: not a selection set from now on |
 | Probe pools | 881000 to 881063 (rollouts), 895000 to 895699 (synthetic poses), 896000 to 896799 (pretraining data) | Offline probes and supervised pretraining | Used. Never evaluation pools |
-| Large-budget test pool (B1) | 884000 to 884063 | Curve evaluation of the 1M run, `passages` and medium, both modes ([protocol](docs/LARGE_BUDGET_PROTOCOL.md)) | Inspected October 12 (B1 results). Selects nothing |
-| 2M test pool (B2) | 885000 to 885063 | Curve evaluation of the 2M run and of the B1 final checkpoint, `passages` and medium ([protocol](docs/LARGE_BUDGET_2M_PROTOCOL.md)) | Inspected October 12 (B2 results). Selects nothing |
+| Large-budget test pool (B1) | 884000 to 884063 | Curve evaluation of the 1M run, `passages` and medium, both modes ([protocol](docs/experiments/large-budget/LARGE_BUDGET_PROTOCOL.md)) | Inspected October 12 (B1 results). Selects nothing |
+| 2M test pool (B2) | 885000 to 885063 | Curve evaluation of the 2M run and of the B1 final checkpoint, `passages` and medium ([protocol](docs/experiments/large-budget/LARGE_BUDGET_2M_PROTOCOL.md)) | Inspected October 12 (B2 results). Selects nothing |
 | 2M replication pool (B3) | 886000 to 886063 | Stages 46 and 61 of seeds 801, 851, 901 and the start checkpoint, `passages` and medium (final stage also mid, wide, gates) | Inspected October 13 (B3 results). Selects nothing |
 | C1.2 pool | 888000 to 888063 | `passages`, `passages-mid`, `passages-wide`, medium for the four extended control runs and the three retained seeds | Inspected October 14 (C1.2 results). Selects nothing |
 | C1.P pools | `large` 892000 to 892031, `maze` 893000 to 893031 | Retained candidate on large and maze rooms; level C development headings for the planner | Inspected October 14 (C1.P results). Selects nothing |

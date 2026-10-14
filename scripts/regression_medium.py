@@ -13,7 +13,7 @@ from resource_guard import run_limited
 POOLS = [('A', 100000), ('B', 840000), ('C', 860000), ('D', 861000)]  # 32 episodes each; frozen
 EPISODES = 32
 ORIGINAL_POOL_FLOOR = 21  # of 32, declared first
-PER_POOL_FLOOR = 17   # of 32, amended after the baselines (see docs/MEDIUM_REGRESSION_SUITE.md)
+PER_POOL_FLOOR = 17   # of 32, amended after the baselines (see docs/methods/MEDIUM_REGRESSION_SUITE.md)
 TOTAL_FLOOR = 88      # of 128
 
 ck, label, out_dir = sys.argv[1:4]

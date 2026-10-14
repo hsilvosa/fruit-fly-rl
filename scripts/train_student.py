@@ -1,4 +1,4 @@
-"""Autonomous-student training with a training-only route signal. See docs/AUXILIARY_STUDENT_PROTOCOL.md.
+"""Autonomous-student training with a training-only route signal. See docs/experiments/students/AUXILIARY_STUDENT_PROTOCOL.md.
 Phase 1 recipe and mix from the experiment 7 start. ARM 'aux': auxiliary waypoint-prediction head, actor and critic blind to the waypoint.
 ARM 'critic': privileged critic, blind actor. ARM 'pre': aux arm whose actor trunk starts from the supervised pretraining. Usage: train_student.py <aux|critic|pre> <seed> <output-dir> <stages>"""
 import hashlib, json, os, sys, time

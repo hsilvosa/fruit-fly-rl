@@ -1,4 +1,4 @@
-"""Driver for the supervised-pretraining experiment. Resumable. See docs/PRETRAIN_PROTOCOL.md."""
+"""Driver for the supervised-pretraining experiment. Resumable. See docs/experiments/students/PRETRAIN_PROTOCOL.md."""
 import json, os, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, 'scripts')

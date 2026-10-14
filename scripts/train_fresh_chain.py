@@ -1,5 +1,5 @@
 """C1.0 phase 1: a fresh policy trained only on medium dense rooms, with the real connectome ('real') or the edge-shuffled one ('shuffled').
-See docs/CONNECTOME_CONTROL_PROTOCOL.md. Usage: train_fresh_chain.py <real|shuffled> <seed> <output-dir> [stages, default 27]
+See docs/experiments/connectome-control/CONNECTOME_CONTROL_PROTOCOL.md. Usage: train_fresh_chain.py <real|shuffled> <seed> <output-dir> [stages, default 27]
 The policy starts from random weights (declared control, not the retained lineage)."""
 import hashlib, json, os, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')

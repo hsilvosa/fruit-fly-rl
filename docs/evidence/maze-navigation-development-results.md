@@ -71,7 +71,7 @@ Physical counts include inactive vector slots. Fresh large: 25,160 physical tran
 
 Full regression after center refinement: 420 passed, one strict expected failure for the discarded false-plane detector. Goal-priority navigation checks: 141 passed, one expected failure. Short rendered large and maze checks produced finite full-graph activity; the maze launcher opened the separate anatomical soma window and its 20-step archive passed integrity inspection. These rendering checks contain no completed episodes and are not success measurements.
 
-The [detailed report](../MAZE_NAVIGATION.md) records mechanisms, formulas, failed attempts, and limitations. Detailed evidence remains in local runs/diagnostics and private. Checkpoints, data, generated telemetry, and environments remain excluded from Git.
+The [detailed report](../planner/MAZE_NAVIGATION.md) records mechanisms, formulas, failed attempts, and limitations. Detailed evidence remains in local runs/diagnostics and private. Checkpoints, data, generated telemetry, and environments remain excluded from Git.
 
 
 ### Maze follow-up: rejected fine grid and surface fallback

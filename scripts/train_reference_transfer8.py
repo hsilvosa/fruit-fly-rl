@@ -1,5 +1,5 @@
 """Experiment 8: longer mixed-batch run from the experiment 7 selected checkpoint, two training seeds.
-See docs/REFERENCE_TRANSFER_PROTOCOL_8.md. Usage: train_reference_transfer8.py <seed442|seed443> <output-dir>"""
+See docs/experiments/reference-recovery/REFERENCE_TRANSFER_PROTOCOL_8.md. Usage: train_reference_transfer8.py <seed442|seed443> <output-dir>"""
 import hashlib, json, os, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, '.')

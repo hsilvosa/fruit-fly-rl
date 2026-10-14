@@ -1,4 +1,4 @@
-"""Summarize the variance study (R1) according to docs/VARIANCE_STUDY_PROTOCOL.md."""
+"""Summarize the variance study (R1) according to docs/experiments/variance-and-stability/VARIANCE_STUDY_PROTOCOL.md."""
 import json, os
 import numpy as np
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')

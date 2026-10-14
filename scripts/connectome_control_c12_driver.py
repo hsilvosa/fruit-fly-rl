@@ -1,5 +1,5 @@
 """Driver for C1.2 (extension of the four C1.1 control runs by 61 more stages, then evaluation on a fresh pool).
-See docs/CONNECTOME_CONTROL_PROTOCOL_C12.md. Schedule: pair A = continuation of seed 1001 (real, shuffled in parallel), pair B = seed 1051.
+See docs/experiments/connectome-control/CONNECTOME_CONTROL_PROTOCOL_C12.md. Schedule: pair A = continuation of seed 1001 (real, shuffled in parallel), pair B = seed 1051.
 Raised ceiling (95 percent): if the mean CPU over two minutes of overlap exceeds 93 percent, the second job of the pair runs after the first.
 Resumable by job and cell; an interrupted training restarts from scratch (delete its directory first).
 Optional first argument 'train-only' stops after the trainings."""

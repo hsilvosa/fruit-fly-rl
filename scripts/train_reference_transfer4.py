@@ -1,4 +1,4 @@
-"""Experiment 4: medium-heavy recovery stage from the experiment 3 final checkpoint. See docs/REFERENCE_TRANSFER_PROTOCOL_4.md.
+"""Experiment 4: medium-heavy recovery stage from the experiment 3 final checkpoint. See docs/experiments/reference-recovery/REFERENCE_TRANSFER_PROTOCOL_4.md.
 Usage: train_reference_transfer3.py <output-dir>
 """
 import hashlib, json, os, sys, time

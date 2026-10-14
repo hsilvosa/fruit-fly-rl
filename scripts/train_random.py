@@ -2,7 +2,7 @@
 
 Mix of 32 simulators: 8 original medium rooms (kept to catch forgetting), 4 two-gate rooms, 20 randomized
 partitioned rooms from the training sampler (the level B region excluded) under an adaptive difficulty controller.
-Settings are the Phase 1 stabilization bundle. See docs/RANDOM_DISTRIBUTION_PROTOCOL.md.
+Settings are the Phase 1 stabilization bundle. See docs/experiments/random-distribution/RANDOM_DISTRIBUTION_PROTOCOL.md.
 
 Usage: train_random.py <start checkpoint without .zip> <seed> <output-dir> <stages>
 """

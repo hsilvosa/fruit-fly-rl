@@ -1,6 +1,6 @@
 """Driver for B1 (large budget). Trains one run, then evaluates the curve points. Resumable: finished stages and cells are skipped
 (an interrupted training restarts from the source, because the PPO state is not saved; delete a partial output directory first).
-See docs/LARGE_BUDGET_PROTOCOL.md."""
+See docs/experiments/large-budget/LARGE_BUDGET_PROTOCOL.md."""
 import json, os, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, 'scripts')

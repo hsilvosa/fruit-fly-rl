@@ -2,7 +2,7 @@
 (seed 1001, 27 stages = 884,736 transitions, medium rooms only, random initial weights), then evaluates medium on pool 887000.
 The two trainings run in parallel under the raised ceiling (95 percent, user decision of October 13); if the mean CPU over the first
 two minutes of overlap exceeds 93 percent, the shuffled training is stopped and run after the real one. A resource log is written.
-Resumable by cell; an interrupted training restarts from scratch (delete its directory first). See docs/CONNECTOME_CONTROL_PROTOCOL.md."""
+Resumable by cell; an interrupted training restarts from scratch (delete its directory first). See docs/experiments/connectome-control/CONNECTOME_CONTROL_PROTOCOL.md."""
 import json, os, shutil, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, 'scripts')

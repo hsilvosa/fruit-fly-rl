@@ -1,5 +1,5 @@
 """C1.1 phase 2: the B2 recipe (61 stages, 1,998,848 transitions, mixed partitioned rooms) from a phase 1 checkpoint of the fresh chain,
-with the real connectome ('real') or the edge-shuffled one ('shuffled'). See docs/CONNECTOME_CONTROL_PROTOCOL_C11.md.
+with the real connectome ('real') or the edge-shuffled one ('shuffled'). See docs/experiments/connectome-control/CONNECTOME_CONTROL_PROTOCOL_C11.md.
 Usage: train_fresh_phase2.py <real|shuffled> <seed> <phase1-checkpoint.zip> <output-dir> [stages, default 61] [layout offset, default 0]
 A nonzero offset shifts the simulator layout seeds (SEED + offset + index) so that a continuation does not replay the layouts of the earlier phase."""
 import hashlib, json, os, sys, time

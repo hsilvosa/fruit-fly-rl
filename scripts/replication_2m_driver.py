@@ -1,6 +1,6 @@
 """Driver for B3 (replication of the 2M recipe). Trains seeds 851 and 901 in series (seed 801 already exists from B2), then evaluates
 stages 46 and 61 of all three seeds, plus the experiment 7 start as baseline, on pool 886000. Resumable: finished stages and cells are skipped
-(an interrupted training restarts from the source; delete its partial output directory first). See docs/REPLICATION_2M_PROTOCOL.md."""
+(an interrupted training restarts from the source; delete its partial output directory first). See docs/experiments/large-budget/REPLICATION_2M_PROTOCOL.md."""
 import json, os, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, 'scripts')
