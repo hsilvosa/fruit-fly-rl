@@ -1,6 +1,6 @@
 # Experiment log
 
-One row per iteration, in order. Protocols were committed before the runs. Results documents hold the tables. Last updated October 13, 2026. The live status is in [ROADMAP.md](../ROADMAP.md).
+One row per iteration, in order. Protocols were committed before the runs. Results documents hold the tables. Last updated October 14, 2026. The live status is in [ROADMAP.md](../ROADMAP.md).
 
 | ID | Date | Question | Change | Result | Documents |
 | --- | --- | --- | --- | --- | --- |
@@ -43,5 +43,6 @@ One row per iteration, in order. Protocols were committed before the runs. Resul
 | B3 | Oct 13 | Does the 2M effect replicate on other seeds? | The B2 recipe on seeds 851 and 901 (801 re-evaluated), stages 46 and 61, fresh pool 886000, start checkpoint as baseline | Positive by the rule: stage 61 passages 42, 36, 39 of 64 (mean 39, start 5), passages-mid 54 to 57, medium 49, 54, 55. Collisions 8, 16, 8 | [protocol](REPLICATION_2M_PROTOCOL.md), [results](REPLICATION_2M_RESULTS.md) |
 | B4 | Oct 13 | Does the 2M effect reach level B or C? | Frozen stage 61 of seeds 801, 851, 901 and the start on level B development maps and level C development headings | Level B inconclusive: 26, 17, 12 of 64 (mean 18.3, needed 20; start 1). Level C positive: 95, 108, 108 of 168 (start 71); courtyard regressed, apartment and atrium flat | [protocol](LEVEL_BC_PROTOCOL.md), [results](LEVEL_BC_RESULTS.md) |
 | C1.0 | Oct 13 | Can a fresh policy reach medium-room competence, with the real and with an edge-shuffled connectome? | Phase 1 of the fresh chain, 884,736 transitions of medium rooms, seed 1001, pool 887000 | Gate passed: real 61/64 (gate 40), shuffled 54/64, sampled 59 and 60. Retained start 55. Gap of 7, not separable with one seed | [protocol](CONNECTOME_CONTROL_PROTOCOL.md), [results](CONNECTOME_CONTROL_RESULTS_C10.md) |
+| C1.1 | Oct 14 | Does the real connectome beat an edge-shuffled control on the hard cells? | Fresh two-phase chain (2.88M transitions), both arms, seeds 1001 and 1051, final checkpoints on passages, passages-mid, wide, medium, level B and C | Chain check failed (real arm 16.0 of 64 on passages, needed 28; retained 36 to 42). No evidence of a wiring effect: shuffled 25.5 against real 16.0 on passages, 51.0 against 41.5 on passages-mid, level B 6.5 against 5.5, level C 86 against 79 | [protocol](CONNECTOME_CONTROL_PROTOCOL_C11.md), [results](CONNECTOME_CONTROL_RESULTS_C11.md) |
 
-Next: C1.1 (phase 2 of both arms), in [ROADMAP.md](../ROADMAP.md#5-actions-ready-to-start).
+Next: decision D7 in [ROADMAP.md](../ROADMAP.md#6-decision-points) (planner reference and release, or a stronger control).
