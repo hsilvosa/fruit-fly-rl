@@ -33,8 +33,8 @@ Observations are sampled every five decisions, normally 4 Hz of simulated time, 
 The chart overlays signed activity with forward, bank/lateral, vertical, and yaw commands. It shows association in the modeled controller, not a causal biological mapping. When the brain view is inactive, sampling can stop unless full recording is requested. Inspect phase metadata when combining old and new recordings.
 
 ```powershell
-.\launch-dense.cmd --brain-region T1 --trace-neuron 10069
-.\launch-dense.cmd --brain-region T1 --trace-neuron 10069 --record-brain
+.\launchers\historical\launch-dense.cmd --brain-region T1 --trace-neuron 10069
+.\launchers\historical\launch-dense.cmd --brain-region T1 --trace-neuron 10069 --record-brain
 ```
 
 The second also saves complete neuron vectors every simulated second. Pooled features cannot recover those vectors. Existing archived flight replay has no anatomical snapshot playback; that is a [roadmap](../../ROADMAP.md) item.

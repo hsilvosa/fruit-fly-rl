@@ -15,7 +15,7 @@ The coordinated dense launcher alias has 327,680 lifetime transitions. Its histo
 ## Viewing
 
 ```powershell
-.\launch-dense.cmd
+.\launchers\historical\launch-dense.cmd
 .\.conda\python.exe -s -m fly_rl plot-dense runs/training/dense-flight-v1
 ```
 

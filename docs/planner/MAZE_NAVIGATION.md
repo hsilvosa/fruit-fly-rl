@@ -55,8 +55,8 @@ The maze retry uses retained maps. It cannot establish independent generalizatio
 ## Running experimental controllers
 
 ```powershell
-.\launch-observed-map.cmd --controller-version 1.3-exp.4 --map-profile large --seed 9500014
-.\launch-observed-map.cmd --controller-version 1.3-exp.5 --map-profile maze --seed 14000000
+.\launchers\current\launch-observed-map.cmd --controller-version 1.3-exp.4 --map-profile large --seed 9500014
+.\launchers\current\launch-observed-map.cmd --controller-version 1.3-exp.5 --map-profile maze --seed 14000000
 ```
 
 The second command currently selects a development candidate, not a verified maze solution. Opening a demo does not train or modify weights.
@@ -109,7 +109,7 @@ Planner-1.3-exp.9 reached all six retained large cases and all eight fresh prede
 
 The fresh check used 25,160 physical transitions, including inactive vector slots, in 281.83 seconds: 89.27 transitions/second. Peak allocated CUDA memory was 0.547 GiB. Every decision advanced the full annotated graph. No optimizer ran and no reserved final pool was evaluated. This is a fresh development checkpoint, not a paired improvement claim over earlier controllers.
 
-Use `launch-observed-map.cmd --controller-version 1.3-exp.9 --map-profile large` to select this frozen candidate. The historical default remains planner-1.0; exp.9 is unsuitable for maze navigation because both retained maze flights timed out.
+Use `launchers/current/launch-observed-map.cmd --controller-version 1.3-exp.9 --map-profile large` to select this frozen candidate. The historical default remains planner-1.0; exp.9 is unsuitable for maze navigation because both retained maze flights timed out.
 
 The recovery candidate exp.10 corrected the stationary maze case and reached its goal at 5,215 steps, without collision. The second case still timed out at 6,352 steps, 22.61 units from the goal. Exp.11 tests stronger same-plane opening-center evidence during approach, with the crossing reference frozen. It rejects weaker support, a different surface normal, a plane displacement above 0.4, and a tangent/altitude shift above 3 units. Stronger support blends the center with weight `new_support / (new_support + old_support)`. This is a measured-controller fork; maze results are pending.
 
@@ -120,7 +120,7 @@ Planner-1.3-exp.11 reaches 14000000 at 6,630 decisions and 14000001 at 6,028, wi
 
 The controller is now frozen for eight fresh predeclared maze layouts, 16000000 through 16000007. The physical cap is 81,920 transitions with a 20-minute wall-clock safety bound, while each original episode deadline remains unchanged. The declared development rule is at least 7/8 goals and zero collisions, with every failure and Wilson uncertainty reported. No training or reserved final access is authorized by this check. Results are pending.
 
-Full regression after center refinement: 420 passed, one expected failure retained for the discarded false-plane candidate. The new `launch-maze.cmd` executed a 20-step offscreen check with finite full-graph activity, controls exercised, and the separate anatomical soma window. This short rendering check is not counted as an episode success.
+Full regression after center refinement: 420 passed, one expected failure retained for the discarded false-plane candidate. The new `launchers/current/launch-maze.cmd` executed a 20-step offscreen check with finite full-graph activity, controls exercised, and the separate anatomical soma window. This short rendering check is not counted as an episode success.
 
 
 ## Fresh maze result and next correction

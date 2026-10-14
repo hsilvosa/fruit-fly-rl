@@ -59,7 +59,7 @@ The v65 rendered check recorded 200 physical steps, finite activity, zero collis
 Use the explicit experimental version:
 
 ```powershell
-.\launch-observed-map.cmd --planner-version v65 --seed 10000005
+.\launchers\current\launch-observed-map.cmd --planner-version v65 --seed 10000005
 ```
 
 The standard launcher retains frozen v55 by default. Opening either version never trains or changes weights. Original learned-policy aliases were preserved, and no reserved final test was opened. Peak PyTorch allocated VRAM for these sixteen-instance checks was approximately 0.552 GiB; this excludes driver/renderer allocation and is not total GPU memory. Elapsed times are not a controlled throughput comparison.

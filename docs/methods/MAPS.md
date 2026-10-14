@@ -159,7 +159,7 @@ All commands run from the repository root with the project interpreter.
 
 - `render_map_gallery.py` renders the twelve named presets (compact, medium and large galleries) with preview seed 10 (`--seed`), writes PNGs and `maps-manifest.json` to `docs/images` (`--output`), and runs no brain or policy.
 - `render_random_profile_gallery.py` writes the randomized-sampler gallery to `docs/images/random-profile-gallery.png` (or a path given as the first argument).
-- `build_architectural_scenes.py` regenerates the OBJ/MTL/JSON scene files, the interactive preview (`index.html`), `gallery.png`, `plans.png` and a manifest in `assets/architecture/draft-0.2` (`--output` for another folder). It does not need a GPU. The architectural scene viewer is started with `launch-architecture.cmd` (see [ARCHITECTURAL_SCENES.md](ARCHITECTURAL_SCENES.md)).
+- `build_architectural_scenes.py` regenerates the OBJ/MTL/JSON scene files, the interactive preview (`index.html`), `gallery.png`, `plans.png` and a manifest in `assets/architecture/draft-0.2` (`--output` for another folder). It does not need a GPU. The architectural scene viewer is started with `launchers/current/launch-architecture.cmd` (see [ARCHITECTURAL_SCENES.md](ARCHITECTURAL_SCENES.md)).
 - A profile can be inspected without a brain: `python -s -m fly_rl map-report --output reports/geometry-preview.json --figure reports/geometry-preview.png --count 8`. The figure shows the hidden certificate, which the controller never sees.
 - A profile can be opened in the viewer without training: `python -s -m fly_rl demo --map-profile large --dynamics coordinated --brain-view`. This uses an untrained controller.
 

@@ -34,7 +34,7 @@ The following SHA-256 hashes match before and after. Protected source and experi
 
 ## Demo and limits
 
-`launch-observed-map.cmd` opens this version with a separate brain window. It loads no PPO checkpoint and starts no training. The viewer identifies the planner, resets map and odometry on reset, new room, and episode end, and archives specification and code alongside states, actions, and optional activity. Replay reproduces saved states without running the brain or controller. Gradient sensitivity is marked unavailable for this algorithm; anatomical points show actual modeled activity.
+`launchers/current/launch-observed-map.cmd` opens this version with a separate brain window. It loads no PPO checkpoint and starts no training. The viewer identifies the planner, resets map and odometry on reset, new room, and episode end, and archives specification and code alongside states, actions, and optional activity. Replay reproduces saved states without running the brain or controller. Gradient sensitivity is marked unavailable for this algorithm; anatomical points show actual modeled activity.
 
 Two short 40-step starts verified controls and closing. Room and brain screenshots were inspected, and the flight archive passed its audit without errors or warnings. These 80 steps are verification, not additional navigation or training. The interface retains Shift to accelerate simulated time. Current scope is `large` with coordinated dynamics; it is not extrapolated to `maze` or other sizes.
 

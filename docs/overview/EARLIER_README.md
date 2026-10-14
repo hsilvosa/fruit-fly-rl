@@ -2,6 +2,8 @@
 
 This is the root README as it stood at the end of the planner and autonomous-learning iterations (Iterations 1 to 9 of the [project history](PROJECT_HISTORY.md)), before the zero-shot program. It is kept unchanged except for link paths, so that nothing from that stage is lost. Several statements in it are superseded: the "best development candidate", the results table, the next steps and the dated checkpoints. The current status is in the [root README](../../README.md), the [findings](../results/FINDINGS.md) and the [roadmap](../../ROADMAP.md).
 
+The launchers it mentions (`launch-*.cmd`) were later moved into `launchers/current` and `launchers/historical` (see [launchers/README.md](../../launchers/README.md)); the commands below use their old root paths.
+
 ---
 
 # Fly RL

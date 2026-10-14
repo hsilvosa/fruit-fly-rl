@@ -11,14 +11,14 @@ Placeholders such as `ARCHIVE`, `LEFT`, and `RIGHT` must be replaced with actual
 
 ## Viewing and saved flights
 
-`launch-observed-map.cmd` keeps frozen planner-1.0 as its default. Experimental versions require explicit selection, for example `launch-observed-map.cmd --controller-version 1.2 --seed 10000005`. This runs the dual mapping/safety planner live and records its source dependencies; it never trains. Versions refer to controller changes, not different room generators. See [planner development](../planner/PLANNER_DEVELOPMENT.md) for the candidate's evidence and limits.
+`launchers/current/launch-observed-map.cmd` keeps frozen planner-1.0 as its default. Experimental versions require explicit selection, for example `launchers/current/launch-observed-map.cmd --controller-version 1.2 --seed 10000005`. This runs the dual mapping/safety planner live and records its source dependencies; it never trains. Versions refer to controller changes, not different room generators. See [planner development](../planner/PLANNER_DEVELOPMENT.md) for the candidate's evidence and limits.
 
 ```powershell
-.\launch-dense.cmd
-.\launch-flight.cmd
-.\launch-demo.cmd
-.\launch-dense.cmd --speed 10 --seed 10
-.\launch-dense.cmd --brain-region T1 --trace-neuron 10069
+.\launchers\historical\launch-dense.cmd
+.\launchers\historical\launch-flight.cmd
+.\launchers\historical\launch-demo.cmd
+.\launchers\historical\launch-dense.cmd --speed 10 --seed 10
+.\launchers\historical\launch-dense.cmd --brain-region T1 --trace-neuron 10069
 
 # Explicitly untrained; no checkpoint argument.
 .\.conda\python.exe -s -m fly_rl demo --room-mode dense --dynamics coordinated --brain-view
@@ -151,10 +151,10 @@ The local trace is not shipped in a fresh clone. Supply an existing diagnostic t
 
 ## Room-aware maze development
 
-Only planner-1.3 experimental candidates support the maze contract. For example, `launch-observed-map.cmd --controller-version 1.3-exp.4 --map-profile maze --seed 14000000`. This is a live autonomous development demo; it currently has two recorded maze timeouts and is not a verified maze solution. See [maze navigation](../planner/MAZE_NAVIGATION.md). Older controllers reject this profile before graph initialization.
+Only planner-1.3 experimental candidates support the maze contract. For example, `launchers/current/launch-observed-map.cmd --controller-version 1.3-exp.4 --map-profile maze --seed 14000000`. This is a live autonomous development demo; it currently has two recorded maze timeouts and is not a verified maze solution. See [maze navigation](../planner/MAZE_NAVIGATION.md). Older controllers reject this profile before graph initialization.
 
 
-The latest verified large development candidate is `launch-observed-map.cmd --controller-version 1.3-exp.9 --map-profile large` (6/6 retained and 8/8 fresh goals, zero collisions). It fails both retained maze flights. For the first recorded maze-arrival controller, use `--controller-version 1.3-exp.8 --map-profile maze --seed 14000000`; that is a retained-case demonstration, not reliable maze navigation.
+The latest verified large development candidate is `launchers/current/launch-observed-map.cmd --controller-version 1.3-exp.9 --map-profile large` (6/6 retained and 8/8 fresh goals, zero collisions). It fails both retained maze flights. For the first recorded maze-arrival controller, use `--controller-version 1.3-exp.8 --map-profile maze --seed 14000000`; that is a retained-case demonstration, not reliable maze navigation.
 
 
-`launch-large.cmd` selects the verified large development candidate and a recorded successful development seed. `launch-maze.cmd` selects the opening-refinement candidate and a retained successful maze seed, with fresh verification pending. Both open live flight and the separate brain window, save telemetry, and never start training. Extra arguments are forwarded to the demo CLI.
+`launchers/current/launch-large.cmd` selects the verified large development candidate and a recorded successful development seed. `launchers/current/launch-maze.cmd` selects the opening-refinement candidate and a retained successful maze seed, with fresh verification pending. Both open live flight and the separate brain window, save telemetry, and never start training. Extra arguments are forwarded to the demo CLI.

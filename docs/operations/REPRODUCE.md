@@ -32,7 +32,7 @@ The true install steps come from [setup.ps1](../../setup.ps1), [environment.yml]
 
    `benchmark` writes `reports/benchmark.json` (reservoir update timing at batch sizes 1, 4, 8 and 16; it is not a viewer or learning throughput).
 
-The viewing demo (`launch-observed-map.cmd`) needs only the prepared data and no checkpoint. Trained checkpoints are not shipped. Every experiment below either trains its own checkpoint or needs the checkpoint named in its step **[local artifact]**.
+The viewing demo (`launchers/current/launch-observed-map.cmd`) needs only the prepared data and no checkpoint. Trained checkpoints are not shipped. Every experiment below either trains its own checkpoint or needs the checkpoint named in its step **[local artifact]**.
 
 ## Verification commands
 

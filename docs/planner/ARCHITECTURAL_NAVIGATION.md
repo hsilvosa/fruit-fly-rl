@@ -20,7 +20,7 @@ The bounded runner is scripts/check_architectural_navigation.py. Running it is a
 
 ## Demonstration and remaining work
 
-Use launch-architecture.cmd for live flight and the separate activity window. N changes situation, G changes scene, R resets, C changes camera and Shift boosts simulation speed. [Launcher and controls](../methods/ARCHITECTURAL_SCENES.md#interactive-architectural-demo) document scene selection.
+Use launchers/current/launch-architecture.cmd for live flight and the separate activity window. N changes situation, G changes scene, R resets, C changes camera and Shift boosts simulation speed. [Launcher and controls](../methods/ARCHITECTURAL_SCENES.md#interactive-architectural-demo) document scene selection.
 
 The initial original-objective check completed at **18/21 goals, zero collisions and three timeouts**, with all cases measured. It used 11,829 full-connectome physical transitions, no training and no reserved test. Protected aliases and frozen sources matched. These inspected synthetic scenes are development evidence, not independent real-world generalization. [Per-scene and per-situation results](../evidence/architectural-initial-navigation-results.md). After this initial check, use completed traces to distinguish geometry, sensing, map search and flight-control failures before choosing a correction. Keep objectives and deadlines visible in the evidence. Future independent evaluation needs a separate licensed collection of real-place reconstructions or held-out designs; the current synthetic scenes cannot establish that claim.
 

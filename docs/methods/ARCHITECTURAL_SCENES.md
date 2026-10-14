@@ -93,13 +93,13 @@ Public architectural world, neural environment and known-dimension planner adapt
 Run from the repository directory:
 
 ```powershell
-.\launch-architecture.cmd
+.\launchers\current\launch-architecture.cmd
 ```
 
 It opens the office scene and a separate full-connectome brain window. Choose another scene or situation at launch:
 
 ```powershell
-.\launch-architecture.cmd --architecture-scene street-block --situation 0
+.\launchers\current\launch-architecture.cmd --architecture-scene street-block --situation 0
 ```
 
 Available scenes are office-floor, apartment, street-block, atrium, warehouse and courtyard. Situation indices start at zero; invalid indices are rejected before loading the brain. The architecture adapter uses experimental planner-1.4-exp.1 and its own room contract. Procedural map profiles and movement checkpoints cannot be combined with this selector.

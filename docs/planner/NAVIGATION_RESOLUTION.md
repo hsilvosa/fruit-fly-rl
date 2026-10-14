@@ -130,7 +130,7 @@ Protected checkpoint and alias hashes match before and after. Original models we
 From the project folder:
 
 ```powershell
-.\launch-observed-map.cmd
+.\launchers\current\launch-observed-map.cmd
 ```
 
 The launcher opens the room and a separate brain window. Shift accelerates simulated time tenfold; R resets, N changes rooms, C changes the camera, and F focuses on the fly. Sessions archive states, actions, metadata, and controller code. The demo does not start training.
@@ -525,9 +525,9 @@ Telemetry uses 128-row chunks, checksums, and temporary replacement. Its audit c
 ### 18.2. Commands and execution contracts
 
 ```powershell
-.\launch-observed-map.cmd
-.\launch-observed-map.cmd --speed 4 --seed 370001
-.\launch-observed-map.cmd --record-brain
+.\launchers\current\launch-observed-map.cmd
+.\launchers\current\launch-observed-map.cmd --speed 4 --seed 370001
+.\launchers\current\launch-observed-map.cmd --record-brain
 ```
 
 The `.cmd` wrapper calls PowerShell explicitly to avoid a `.ps1` file association opening an editor. The CLI fixes `large`, coordinated dynamics, sensors-v6, and the stable reader. It rejects combining the planner with a PPO checkpoint, another profile, or an incompatible sensor contract. It does not promise arbitrary sizes.

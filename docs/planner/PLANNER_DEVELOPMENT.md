@@ -49,7 +49,7 @@ Sixteen rooms from one generator leave substantial uncertainty. A development po
 The standard observed-map launcher retains planner-1.0. Select planner-1.1 explicitly to inspect the candidate:
 
 ```powershell
-.\launch-observed-map.cmd --planner-version v60 --seed 8500012
+.\launchers\current\launch-observed-map.cmd --planner-version v60 --seed 8500012
 ```
 
 The viewer labels experimental versions and opens live inference without training. Episode resets clear map, pose, and recovery state. Each experimental flight archive records the controller specification, primary source, viewer adapter, and inherited controller sources with SHA-256 hashes. Archive inspection detects missing or modified controller files. These are provenance copies, not a self-contained executable script; reproduce them in the matching package structure and dependency environment.

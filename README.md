@@ -149,7 +149,7 @@ From the repository root, with Conda installed:
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\setup.ps1
 .\.conda\python.exe -s -m fly_rl --help
-.\launch-observed-map.cmd
+.\launchers\current\launch-observed-map.cmd
 ```
 
 Setup creates the local `.conda`, installs dependencies, and downloads and prepares the pinned connectome. It requires network access and substantial storage. A fresh clone contains source, public evidence and images, but no downloaded data, trained checkpoints or flight archives; the experiments that need them are marked in [REPRODUCE.md](docs/operations/REPRODUCE.md).
@@ -157,9 +157,9 @@ Setup creates the local `.conda`, installs dependencies, and downloads and prepa
 **The observed-map demo requires prepared data but no trained checkpoint.** It computes live sensors, neural activity and planner actions; it is not a recording of a successful flight. The room and brain open in separate windows. Optional arguments:
 
 ```powershell
-.\launch-observed-map.cmd --speed 4 --seed 370001
-.\launch-observed-map.cmd --record-brain
-.\launch-observed-map.cmd --controller-version 1.2 --seed 10000005
+.\launchers\current\launch-observed-map.cmd --speed 4 --seed 370001
+.\launchers\current\launch-observed-map.cmd --record-brain
+.\launchers\current\launch-observed-map.cmd --controller-version 1.2 --seed 10000005
 ```
 
 To see an untrained policy interface instead:
@@ -168,7 +168,7 @@ To see an untrained policy interface instead:
 .\.conda\python.exe -s -m fly_rl demo --map-profile large --dynamics coordinated --brain-view
 ```
 
-Other launchers: `launch-large.cmd` (planner-1.3-exp.9, verified on six retained and eight fresh large rooms), `launch-maze.cmd` (planner-1.3-exp.11, which reaches both retained maze goals; fresh development 5/8), `launch-architecture.cmd` (N changes situation, G changes scene), and the older `launch-dense.cmd`, `launch-flight.cmd` and `launch-demo.cmd` for local historical models, whose trained weights are not shipped. The `.cmd` wrappers explicitly invoke PowerShell to avoid `.ps1` associations opening an editor. [Commands](docs/operations/COMMANDS.md) covers other modes and checkpoint loading.
+Launchers are grouped in [`launchers/`](launchers/README.md), listed in creation order. Other launchers: `launchers/current/launch-large.cmd` (planner-1.3-exp.9, verified on six retained and eight fresh large rooms), `launchers/current/launch-maze.cmd` (planner-1.3-exp.11, which reaches both retained maze goals; fresh development 5/8), `launchers/current/launch-architecture.cmd` (N changes situation, G changes scene), and the older `launchers/historical/launch-dense.cmd`, `launchers/historical/launch-flight.cmd` and `launchers/historical/launch-demo.cmd` for local historical models, whose trained weights are not shipped. The `.cmd` wrappers explicitly invoke PowerShell to avoid `.ps1` associations opening an editor. [Commands](docs/operations/COMMANDS.md) covers other modes and checkpoint loading.
 
 Viewing never starts training or modifies weights. Checkpoint loading runs live inference; replay restores saved states without executing a brain. Sensor, dynamics and readout contracts prevent silent reinterpretation. Explicit transfer does not establish performance in a new task.
 
@@ -228,6 +228,8 @@ fly_rl/visualization/  Live windows, cameras, neural inspection, and plots
 fly_rl/recordings/     Telemetry, integrity checks, recovery, and replay
 tests/                 Checks grouped by responsibility
 scripts/               Trainers, evaluation drivers, probes, rendering, verification (see scripts/README.md)
+launchers/             Viewer launchers, current and historical, in creation order (see launchers/README.md)
+setup.ps1              Environment installer (the other root files are the license, project metadata, README and roadmap)
 docs/overview/         Plans, architecture, data, project history, glossary
 docs/methods/          Formulas, sensors, maps, brain, protocol specifications
 docs/planner/          The explicit planner line: large rooms, maze, architectural scenes

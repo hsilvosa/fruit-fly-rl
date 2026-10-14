@@ -110,7 +110,7 @@ These numbers do not advance together. Updating camera controls does not necessa
 .\.conda\python.exe -s -m fly_rl controller-versions
 
 # Select the latest implemented numbered milestone explicitly.
-.\launch-observed-map.cmd --controller-version 1.2
+.\launchers\current\launch-observed-map.cmd --controller-version 1.2
 ```
 
 The prefixed name `planner-1.2` also works. Old arguments such as `--planner-version v65` remain accepted aliases. Historical run directories, checkpoint fingerprints, evidence filenames, and frozen source snapshots keep their original identifiers; new archives record the public revision alongside them. See [controller compatibility](CONTROLLER_VERSIONS.md#what-remains-unchanged).

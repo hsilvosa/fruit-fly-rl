@@ -179,8 +179,8 @@ Whether a given checkpoint learned navigation is a result, not a property of the
 The brain view is a separate window that shares the simulation and the graph. It starts no training and adds no recurrent model. It is opened by `--brain-view` on `demo` and by `B` in the fly window. The launchers are in [COMMANDS.md](../operations/COMMANDS.md):
 
 ```powershell
-.\launch-dense.cmd --brain-region T1 --trace-neuron 10069
-.\launch-dense.cmd --brain-region T1 --trace-neuron 10069 --record-brain
+.\launchers\historical\launch-dense.cmd --brain-region T1 --trace-neuron 10069
+.\launchers\historical\launch-dense.cmd --brain-region T1 --trace-neuron 10069 --record-brain
 .\.conda\python.exe -s -m fly_rl demo --room-mode dense --dynamics coordinated --brain-view
 ```
 

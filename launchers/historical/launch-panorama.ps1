@@ -1,10 +1,11 @@
 $ErrorActionPreference = 'Stop'
-Set-Location -LiteralPath $PSScriptRoot
-$manifestPath = Join-Path $PSScriptRoot 'runs\latest-large-demo.json'
-$checkpoint = Join-Path $PSScriptRoot 'runs\training\panorama-coverage-v8\policy.zip'
+$Root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+Set-Location -LiteralPath $Root
+$manifestPath = Join-Path $Root 'runs\latest-large-demo.json'
+$checkpoint = Join-Path $Root 'runs\training\panorama-coverage-v8\policy.zip'
 if (Test-Path -LiteralPath $manifestPath) {
     $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
-    $checkpoint = Join-Path $PSScriptRoot $manifest.checkpoint
+    $checkpoint = Join-Path $Root $manifest.checkpoint
     if ((Get-FileHash -LiteralPath $checkpoint -Algorithm SHA256).Hash.ToLowerInvariant() -ne $manifest.sha256) {
         throw 'The experimental checkpoint differs from the recorded demo manifest.'
     }

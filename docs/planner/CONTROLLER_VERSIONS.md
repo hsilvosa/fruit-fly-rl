@@ -23,8 +23,8 @@ These are controller revisions, not certified production releases. Experimental 
 ## Selecting a controller
 
 ```powershell
-.\launch-observed-map.cmd --controller-version 1.2 --seed 10000005
-.\launch-observed-map.cmd --controller-version planner-1.1
+.\launchers\current\launch-observed-map.cmd --controller-version 1.2 --seed 10000005
+.\launchers\current\launch-observed-map.cmd --controller-version planner-1.1
 .\.conda\python.exe -s -m fly_rl controller-versions
 ```
 
@@ -32,7 +32,7 @@ The bare number and `planner-` name are equivalent. Every old `v55` through `v65
 
 ```powershell
 # Historical command remains valid and selects planner-1.2.
-.\launch-observed-map.cmd --planner-version v65 --seed 10000005
+.\launchers\current\launch-observed-map.cmd --planner-version v65 --seed 10000005
 ```
 
 The catalog command lists every mapping without initializing the graph, opening a viewer, or running training. The viewer shows the public revision and description, and new archives record both alongside the original artifact identifier. Diagnostic preparation, execution, and reporting commands also accept the public numbers. Their frozen protocol arm keys retain historical aliases to avoid changing the interpretation of existing records. A newly prepared protocol adds the public-name mapping and freezes the naming module with other sources.
