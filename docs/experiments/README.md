@@ -272,7 +272,7 @@ Screening: [protocol](variance-and-stability/PHASE3_SCREENING_PROTOCOL.md) · [r
 
 ## Connectome control: C1.0, C1.1, C1.2
 
-C1.0: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C10.md). C1.1: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL_C11.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C11.md). C1.2: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL_C12.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md)
+C1.0: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C10.md). C1.1: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL_C11.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C11.md). C1.2: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL_C12.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md). C1.3 (prepared, not launched): [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL_C13.md)
 
 **Question.** Does the real MaleCNS wiring do better than an edge-shuffled reservoir with the same degree structure, when a fresh policy is trained with the same chain?
 
@@ -320,7 +320,7 @@ Reproduced from [ROADMAP.md, section 8](../../ROADMAP.md#8-pools-registry). Seed
 | Large-budget test pool (B1) | 884000 to 884063 | Curve evaluation of the 1M run, `passages` and medium, both modes ([protocol](large-budget/LARGE_BUDGET_PROTOCOL.md)) | Inspected. Selects nothing |
 | 2M test pool (B2) | 885000 to 885063 | Curve evaluation of the 2M run and of the B1 final checkpoint, `passages` and medium ([protocol](large-budget/LARGE_BUDGET_2M_PROTOCOL.md)) | Inspected. Selects nothing |
 | 2M replication pool (B3) | 886000 to 886063 | Stages 46 and 61 of seeds 801, 851 and 901 and the start checkpoint, `passages` and medium (final stage also mid, wide, gates) | Inspected. Selects nothing |
-| C1.2 pool | 888000 to 888063 | `passages`, `passages-mid`, `passages-wide`, medium for the four extended control runs and the three retained seeds | Inspected. Selects nothing |
+| C1.2 pool | 888000 to 888063 | `passages`, `passages-mid`, `passages-wide`, medium for the four extended control runs and the three retained seeds (reused by C1.3) | Inspected. Selects nothing |
 | C1.P pools | `large` 892000 to 892031, `maze` 893000 to 893031 | Retained candidate on large and maze rooms; level C development headings for the planner | Inspected. Selects nothing |
 | C1.0 pool | 887000 to 887063 | Medium rooms: retained start and the two fresh phase 1 arms | Inspected. Selects nothing |
 | Level B region, development | Held-out sampler, 950000 to 959999 | Look at progress, not for selection | Drawn: 950000 to 950063 inspected for every R5 and student run |
