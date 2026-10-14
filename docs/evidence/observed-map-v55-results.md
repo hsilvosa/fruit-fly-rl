@@ -6,7 +6,7 @@ This is explicit geometric planning from full-connectome activity, with flight c
 
 ## Method and protocol
 
-The controller reconstructs distances, the goal, and motion from previous and current neural states, builds occupancy and odometry, and searches for a route. It receives no true poses, boxes, seeds, or certified routes. It knows the 48 x 48 x 16 room contract and has the observed synthetic goal, as earlier policies did. It retains 167,184 neurons and 25,583,622 recurrent connections. The reader cancels recurrence in the 269 base channels and retains 5% in panoramas: an artificial transformation documented in [mathematics](../MATHEMATICS.md).
+The controller reconstructs distances, the goal, and motion from previous and current neural states, builds occupancy and odometry, and searches for a route. It receives no true poses, boxes, seeds, or certified routes. It knows the 48 x 48 x 16 room contract and has the observed synthetic goal, as earlier policies did. It retains 167,184 neurons and 25,583,622 recurrent connections. The reader cancels recurrence in the 269 base channels and retains 5% in panoramas: an artificial transformation documented in [mathematics](../methods/MATHEMATICS.md).
 
 V55 was selected using eight optimization maps. Before development began, code and 16 new seeds, 8500000–8500015, were frozen. The controller was not adjusted between those flights. Failures are timeouts on 8500011, 8500012, and 8500013. The remaining 13 finished within 0.45 meters of the goal, according to the original physical condition. Partial progress is not an arrival.
 
@@ -34,10 +34,10 @@ The following SHA-256 hashes match before and after. Protected source and experi
 
 ## Demo and limits
 
-`launch-observed-map.cmd` opens this version with a separate brain window. It loads no PPO checkpoint and starts no training. The viewer identifies the planner, resets map and odometry on reset, new room, and episode end, and archives specification and code alongside states, actions, and optional activity. Replay reproduces saved states without running the brain or controller. Gradient sensitivity is marked unavailable for this algorithm; anatomical points show actual modeled activity.
+`launchers/current/launch-observed-map.cmd` opens this version with a separate brain window. It loads no PPO checkpoint and starts no training. The viewer identifies the planner, resets map and odometry on reset, new room, and episode end, and archives specification and code alongside states, actions, and optional activity. Replay reproduces saved states without running the brain or controller. Gradient sensitivity is marked unavailable for this algorithm; anatomical points show actual modeled activity.
 
 Two short 40-step starts verified controls and closing. Room and brain screenshots were inspected, and the flight archive passed its audit without errors or warnings. These 80 steps are verification, not additional navigation or training. The interface retains Shift to accelerate simulated time. Current scope is `large` with coordinated dynamics; it is not extrapolated to `maze` or other sizes.
 
 The complete viewer flight reached the goal of optimization map 370000 in 2,857 steps without a collision. It then automatically reset the episode and controller memory. It closed after 3,200 physical verification steps; the full archive passed audit without errors or warnings. This repetition of a known map is not counted as another independent development goal. The complete suite passed 265 tests, and the Windows launcher responded correctly to `--help`.
 
-The [resolution report](../NAVIGATION_RESOLUTION.md) details the problem, failed attempts, retained corrections, and limits of this solution.
+The [resolution report](../planner/NAVIGATION_RESOLUTION.md) details the problem, failed attempts, retained corrections, and limits of this solution.

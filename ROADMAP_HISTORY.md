@@ -10,9 +10,9 @@ Current as of October 7, 2026. This is proposed work, not an active training sch
 
 ## Current route to completion
 
-Updated October 8, 2026. The [plan to unseen-map navigation](docs/ZERO_SHOT_PLAN.md) defines the phases and holds the checklist: stable trainer, randomized map distribution, memory, target families, frozen assessment, release. The historical reference is recovered ([details](docs/HISTORICAL_REFERENCE.md)) and eight transfer experiments are summarized in [TRANSFER_SUMMARY.md](docs/TRANSFER_SUMMARY.md). No phase is running.
+Updated October 8, 2026. The [plan to unseen-map navigation](docs/overview/ZERO_SHOT_PLAN.md) defines the phases and holds the checklist: stable trainer, randomized map distribution, memory, target families, frozen assessment, release. The historical reference is recovered ([details](docs/experiments/reference-recovery/HISTORICAL_REFERENCE.md)) and eight transfer experiments are summarized in [TRANSFER_SUMMARY.md](docs/experiments/reference-recovery/TRANSFER_SUMMARY.md). No phase is running.
 
-The [project completion plan](docs/PROJECT_COMPLETION.md) is the authoritative next-step sequence. Recover the successful learned reference first; then audit transfer, learn complete routes, run a frozen independent assessment and prepare the release. The mixed curriculum is implemented but awaits review against that reference and an agreed training budget. No training is currently launched by this plan.
+The [project completion plan](docs/overview/PROJECT_COMPLETION.md) is the authoritative next-step sequence. Recover the successful learned reference first; then audit transfer, learn complete routes, run a frozen independent assessment and prepare the release. The mixed curriculum is implemented but awaits review against that reference and an agreed training budget. No training is currently launched by this plan.
 
 1. Recover and trace the learned checkpoints behind the historical 70–80% medium-room results.
 2. Preserve that reference, audit interface/dynamics differences and establish a regression suite before adaptation.
@@ -60,7 +60,7 @@ Compare the autonomous learned policy against the explicit planner and a matched
 | Experimental maze planner-1.3-exp.25 | Seven of eight retained goals, then five of eight fresh goals, zero collisions and three fresh timeouts | Fresh criterion failed; not promoted; follow-up corrections active |
 | Noise, wind, moving obstacles | Proposed capabilities without verified navigation results | Future work |
 
-The planner is the operational solution today. It has explicit map memory, bounded search, and proportional flight control, not learned movement weights. Its result does not fulfill the learned-policy objective or prove biological benefit. [Results](docs/RESULTS.md) and [resolution history](docs/NAVIGATION_RESOLUTION.md) retain the full evidence.
+The planner is the operational solution today. It has explicit map memory, bounded search, and proportional flight control, not learned movement weights. Its result does not fulfill the learned-policy objective or prove biological benefit. [Results](docs/results/RESULTS.md) and [resolution history](docs/planner/NAVIGATION_RESOLUTION.md) retain the full evidence.
 
 ## Priority 1: Diagnose and resolve planner timeouts
 
@@ -81,7 +81,7 @@ Latest correction: planner-1.2-exp.4’s actual-motion braking fixed the retaine
 
 ## Priority 2: Measure the corrected planner independently
 
-October 5 progress: the predeclared sixteen-room paired development check completed with frozen planner-1.0 and planner-1.1. Results were 12/16 versus 14/16, no collisions, with two added planner-1.1 successes and no lost baseline successes. Both arms used 55,680 physical transitions; source, layout, graph, and alias checks passed. The [protocol](docs/PLANNER_DEVELOPMENT.md) and [per-room report](docs/evidence/planner-v60-development-results.md) retain the evidence. This is development, not the reserved final suite; the independent-final 80% objective remains open. Once inspected, the two new failures become design cases for subsequent corrections.
+October 5 progress: the predeclared sixteen-room paired development check completed with frozen planner-1.0 and planner-1.1. Results were 12/16 versus 14/16, no collisions, with two added planner-1.1 successes and no lost baseline successes. Both arms used 55,680 physical transitions; source, layout, graph, and alias checks passed. The [protocol](docs/planner/PLANNER_DEVELOPMENT.md) and [per-room report](docs/evidence/planner-v60-development-results.md) retain the evidence. This is development, not the reserved final suite; the independent-final 80% objective remains open. Once inspected, the two new failures become design cases for subsequent corrections.
 
 Predeclare fresh development layouts, selection rules, compute limits, and an untouched final pool. Freeze code and sensor/readout contracts before prospective measurement. Use development only for selecting versions; assess the frozen winner once on its final pool and mark that pool consumed. Do not use earlier final pools again to select changes.
 
@@ -119,7 +119,7 @@ Separate geometry factors before combining them:
 
 The original `dense-v3` task remains a retained reference, not an equivalent stage of the new profiled generator. Define mastery criteria before running each experiment. The existing practice protocol uses two distinct withheld training-practice batches and retains easier reset examples; its success does not establish independent generalization. The previous curriculum did not outperform baseline on single-gate validation, and one seed never advanced, so a curriculum benefit must be measured rather than assumed.
 
-Do not advance solely because a step budget expired. Record stage exposure and both practice batches, preserve easier skills, and measure new layouts separately. Before running the planner on `maze`, verify grid bounds, goal/altitude normalization, range, deadlines, checkpoint/readout contracts, and reset memory. Frozen planner-1.0 through planner-1.2 support `large` only. Experimental planner-1.3 candidates also support the declared `maze` contract. The normalization and grid checks pass. Exp.11 reaches both retained maze goals but only 5/8 fresh development goals; reliability remains unresolved. See [maze development](docs/MAZE_NAVIGATION.md).
+Do not advance solely because a step budget expired. Record stage exposure and both practice batches, preserve easier skills, and measure new layouts separately. Before running the planner on `maze`, verify grid bounds, goal/altitude normalization, range, deadlines, checkpoint/readout contracts, and reset memory. Frozen planner-1.0 through planner-1.2 support `large` only. Experimental planner-1.3 candidates also support the declared `maze` contract. The normalization and grid checks pass. Exp.11 reaches both retained maze goals but only 5/8 fresh development goals; reliability remains unresolved. See [maze development](docs/planner/MAZE_NAVIGATION.md).
 
 Completion requires demonstrated navigation at each declared stage and explicit disclosure of any changed task or interface. Add moving obstacles, wind, sensor noise, and delay only after static navigation is reliable.
 
@@ -135,7 +135,7 @@ More realistic vision, synaptic plasticity, spiking dynamics, and wing aerodynam
 
 After completing the maze experiment and its navigation and rendering checks, extend the task from procedural rooms to 3D reconstructions of real building interiors and streets. This stage is planned; it does not start a new experiment or training budget. A planner and a learned student remain separate experimental tracks.
 
-CPU-only asset preparation is now available: six original architectural drafts (revision 0.2: office, apartment, street, atrium, warehouse, courtyard), 21 geometrically checked situations, OBJ/MTL meshes, collision JSON, hashes, floor plans and inspection previews. This is development preparation, not a completed real-place reconstruction or navigation experiment. No GPU training or maze run was started. [Assets, checks and remaining integration](docs/ARCHITECTURAL_SCENES.md).
+CPU-only asset preparation is now available: six original architectural drafts (revision 0.2: office, apartment, street, atrium, warehouse, courtyard), 21 geometrically checked situations, OBJ/MTL meshes, collision JSON, hashes, floor plans and inspection previews. This is development preparation, not a completed real-place reconstruction or navigation experiment. No GPU training or maze run was started. [Assets, checks and remaining integration](docs/methods/ARCHITECTURAL_SCENES.md).
 
 1. **Static building interiors.** Begin with one floor, corridors, doors and furniture; then add larger interiors, multiple floors and stairs or atria with sufficient flight clearance. Select openly licensed geometry, record source attribution and asset hashes, and verify units, traversable openings, watertight collision surfaces and feasible start/goal pairs. Visual detail alone is not a harder navigation benchmark.
 2. **Static outdoor streets.** Add building facades, street furniture, vegetation and intersections, then connected indoor/outdoor routes. Audit map bounds, sensor range, memory cost and physical episode deadlines for the new scale before comparing results.
@@ -152,7 +152,7 @@ Anatomical replay should read recorded full-neuron snapshots with correct before
 
 Exact resumption should include random streams, recurrent state, partial episodes, curriculum state, and planner memory. Current checkpoint loading starts fresh episodes. Extend snapshot checksums and show achieved simulation speed, not just requested speed. Broader physical keyboard, focus, and multiple-window QA remains useful.
 
-Keep public documentation synchronized with verified results. Maintain the [map gallery](docs/images/README.md), [publication protocol](docs/PUBLICATION.md), source-only archive audit, and clean separation of public evidence from ignored local records. Experimental tools belong in their existing modules; keep root launchers compatible rather than moving them without migration.
+Keep public documentation synchronized with verified results. Maintain the [map gallery](docs/images/README.md), [publication protocol](docs/operations/PUBLICATION.md), source-only archive audit, and clean separation of public evidence from ignored local records. Experimental tools belong in their existing modules; keep root launchers compatible rather than moving them without migration.
 
 ## Rules for the next experiment
 
@@ -170,7 +170,7 @@ Any correction should live in a new version, leaving planner-1.0 and the measure
 
 ## October 6 development checkpoint
 
-The room-size normalization and maze grid correction are implemented. Planner-1.3-exp.4 fixes both original retained large timeouts but reaches only three of four retained collision controls, so promotion is premature. Clean-range occupancy in exp.8 reaches the first actual maze goal; its second retained flight still times out. The faster clean-map candidate exp.9 passed all six retained large cases and all eight fresh large development cases without collisions or timeouts. It regressed both maze flights. Exp.10 recovers a stationary maze flight but still times out in the second; exp.11 reaches both retained maze goals after center refinement. Large development criteria and retained maze correction are met; the fresh maze suite later reached 5/8 and failed its 7/8 rule. The new launchers and separate brain-window rendering are verified. Earlier final pools remain untouched by this follow-up. See [maze development](docs/MAZE_NAVIGATION.md).
+The room-size normalization and maze grid correction are implemented. Planner-1.3-exp.4 fixes both original retained large timeouts but reaches only three of four retained collision controls, so promotion is premature. Clean-range occupancy in exp.8 reaches the first actual maze goal; its second retained flight still times out. The faster clean-map candidate exp.9 passed all six retained large cases and all eight fresh large development cases without collisions or timeouts. It regressed both maze flights. Exp.10 recovers a stationary maze flight but still times out in the second; exp.11 reaches both retained maze goals after center refinement. Large development criteria and retained maze correction are met; the fresh maze suite later reached 5/8 and failed its 7/8 rule. The new launchers and separate brain-window rendering are verified. Earlier final pools remain untouched by this follow-up. See [maze development](docs/planner/MAZE_NAVIGATION.md).
 
 The exp.11 fresh maze check ended at 5/8 goals, zero collisions, three timeouts; its 7/8 development rule was not met. Exp.12 reached 6/8 retained goals; exp.13 reached 0/8. Neither was selected. Supported-surface fallback failed with one collision; bounded confined speed reached 4/8. Visit pressure also reached 4/8. Clean initial-beacon alignment and observed opening clearance each reached 5/8 with regressions. Visible-goal, stable and committed handover checks each reached 6/8 retained goals without collisions. None passed the rule. Investigate full-graph numerical repeatability and remaining wall search before any new fresh suite. Maze reliability remains an active objective.
 
@@ -209,7 +209,7 @@ Architectural planner-1.4-exp.3 reached **19/21 original goals, zero collisions 
 
 ## Autonomous learning restart
 
-The planner iteration is closed with defaults retained and unresolved failures recorded. The first planner-free architectural PPO policy passed a 128-transition, one-update CUDA smoke with the complete connectome, finite losses, changed parameters and checkpoint reload. This verifies the learning pipeline, not navigation performance. Substantial training awaits an agreed budget. [Implementation, limits and next experiment](docs/AUTONOMOUS_LEARNING.md).
+The planner iteration is closed with defaults retained and unresolved failures recorded. The first planner-free architectural PPO policy passed a 128-transition, one-update CUDA smoke with the complete connectome, finite losses, changed parameters and checkpoint reload. This verifies the learning pipeline, not navigation performance. Substantial training awaits an agreed budget. [Implementation, limits and next experiment](docs/learning/AUTONOMOUS_LEARNING.md).
 
 ## First autonomous PPO pilot completed
 
@@ -238,4 +238,4 @@ Next: preserve original-goal training exposure alongside lessons, support reprod
 
 ### Mixed curriculum implementation
 
-The next runner alternates original training goals and nearby lessons, continuing PPO and validated curriculum state from the previous checkpoint. Eight CPU tests and a full-connectome 128-transition smoke passed; no navigation improvement is claimed. Substantial training awaits an agreed additional budget. See [the protocol](docs/MIXED_AUTONOMOUS_CURRICULUM.md).
+The next runner alternates original training goals and nearby lessons, continuing PPO and validated curriculum state from the previous checkpoint. Eight CPU tests and a full-connectome 128-transition smoke passed; no navigation improvement is claimed. Substantial training awaits an agreed additional budget. See [the protocol](docs/learning/MIXED_AUTONOMOUS_CURRICULUM.md).

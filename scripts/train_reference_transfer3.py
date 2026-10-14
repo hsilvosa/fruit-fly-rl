@@ -1,4 +1,4 @@
-"""Experiment 3: graded gate maps with the retained 50/64 (v2) policy. See docs/REFERENCE_TRANSFER_PROTOCOL_3.md.
+"""Experiment 3: graded gate maps with the retained 50/64 (v2) policy. See docs/experiments/reference-recovery/REFERENCE_TRANSFER_PROTOCOL_3.md.
 Usage: train_reference_transfer3.py <output-dir>
 """
 import hashlib, json, os, sys, time

@@ -8,6 +8,6 @@ The check used all 167,184 annotated neurons and 25,583,622 directed edges, with
 
 The examples are the lowest-numbered successful seed and the lowest-numbered timeout seed, selected after the complete result. Positions are sampled every 20 decisions; titles report the final episode distance. Hidden geometry appears only in this post-flight plot and is not a controller input. This is not an interactive demo inspection.
 
-[Complete counts, attempts, limits and next work](../MAZE_NAVIGATION.md#completed-fresh-maze-check-and-requested-pause).
+[Complete counts, attempts, limits and next work](../planner/MAZE_NAVIGATION.md#completed-fresh-maze-check-and-requested-pause).
 
 Work pauses at the user's request. The large demo keeps its verified exp.9 controller; the maze demo keeps exp.11. The next session should diagnose the three new timeouts before another fresh suite, preserve the existing successful cases and inspect the selected demo only after its criterion passes. No process from this verification remains running.

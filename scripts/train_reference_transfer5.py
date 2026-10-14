@@ -1,5 +1,5 @@
 """Experiment 5: full passages in the mix, from the experiment 4 selected checkpoint.
-See docs/REFERENCE_TRANSFER_PROTOCOL_5.md. Usage: train_reference_transfer5.py <output-dir>"""
+See docs/experiments/reference-recovery/REFERENCE_TRANSFER_PROTOCOL_5.md. Usage: train_reference_transfer5.py <output-dir>"""
 import hashlib, json, os, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, '.')

@@ -2,7 +2,7 @@
 import numpy as np
 from fly_rl.training.learning import BrainEnv,load_model,make_policy
 
-def evaluate(data,device,checkpoint,episodes=16,mode='obstacles',seed=10000,goal_probe=False,dynamics='legacy',allow_transfer=False,route_metrics=False,sensor_version=None,map_profile=None):
+def evaluate(data,device,checkpoint,episodes=16,mode='obstacles',seed=10000,goal_probe=False,dynamics='legacy',allow_transfer=False,route_metrics=False,sensor_version=None,map_profile=None,deterministic=True):
     if not 1<=episodes<=64: raise ValueError('Evaluation supports 1 to 64 episodes')
     from fly_rl.training.learning import checkpoint_sensor_version,checkpoint_history
     sensor_version=sensor_version or checkpoint_sensor_version(checkpoint)
@@ -33,7 +33,7 @@ def evaluate(data,device,checkpoint,episodes=16,mode='obstacles',seed=10000,goal
         limits=[w.episode_limit for w in env.worlds]
         for _ in range(max(limits)):
             before=np.array([w.position.copy() for w in env.worlds])
-            actions=model.predict(features,deterministic=True)[0]
+            actions=model.predict(features,deterministic=deterministic)[0]
             features,rewards,dones,infos=env.step(actions)
             for i in np.flatnonzero(active):
                 state=infos[i]['transition_state'];length[i]+=1

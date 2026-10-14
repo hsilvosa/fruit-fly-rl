@@ -59,7 +59,7 @@ The v65 rendered check recorded 200 physical steps, finite activity, zero collis
 Use the explicit experimental version:
 
 ```powershell
-.\launch-observed-map.cmd --planner-version v65 --seed 10000005
+.\launchers\current\launch-observed-map.cmd --planner-version v65 --seed 10000005
 ```
 
 The standard launcher retains frozen v55 by default. Opening either version never trains or changes weights. Original learned-policy aliases were preserved, and no reserved final test was opened. Peak PyTorch allocated VRAM for these sixteen-instance checks was approximately 0.552 GiB; this excludes driver/renderer allocation and is not total GPU memory. Elapsed times are not a controlled throughput comparison.
@@ -98,7 +98,7 @@ Both flights continued moving: sampled second-half speeds ranged from approximat
 The next hypothesis is an interaction between repeated replanning, route-reference selection, and inertial flight through detours. It remains a hypothesis: sampled traces do not isolate causality, and the earlier simple route-persistence variant failed. A successor should log route identity and progress, turn cost, and swept clearance, then check a narrow correction on retained cases before freezing new development rooms. Extending the deadline alone would conceal rather than explain this inefficiency.
 
 
-The offline execution reporter makes these counts reproducible from retained traces. Room 9500014 had 24 reference-direction changes greater than 90 degrees across 173 eligible consecutive sampled pairs, including 13/86 in its second half. Room 13000013 had 15/174 overall and 8/87 in its second half. Each reached the search cap in one recorded frame. A reference can change because the fly moved, reached a waypoint, or changed its observed map; these counts do not identify erroneous replanning by themselves. The report hashes the input and preserves missing-field coverage. Eight synthetic reporter tests passed separately from the preceding 359-test full suite. [Command](../COMMANDS.md#offline-planner-execution-diagnostics).
+The offline execution reporter makes these counts reproducible from retained traces. Room 9500014 had 24 reference-direction changes greater than 90 degrees across 173 eligible consecutive sampled pairs, including 13/86 in its second half. Room 13000013 had 15/174 overall and 8/87 in its second half. Each reached the search cap in one recorded frame. A reference can change because the fly moved, reached a waypoint, or changed its observed map; these counts do not identify erroneous replanning by themselves. The report hashes the input and preserves missing-field coverage. Eight synthetic reporter tests passed separately from the preceding 359-test full suite. [Command](../operations/COMMANDS.md#offline-planner-execution-diagnostics).
 
 
 ![Recorded v65 timeout path, search effort, and requested versus effective speed](../images/planner-v65-timeout.png)

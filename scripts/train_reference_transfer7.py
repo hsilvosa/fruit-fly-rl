@@ -1,5 +1,5 @@
 """Experiment 7: profiles mixed inside every PPO update, from the experiment 6 selected checkpoint.
-See docs/REFERENCE_TRANSFER_PROTOCOL_7.md. Usage: train_reference_transfer7.py <mix3e4|mix1e4> <output-dir>"""
+See docs/experiments/reference-recovery/REFERENCE_TRANSFER_PROTOCOL_7.md. Usage: train_reference_transfer7.py <mix3e4|mix1e4> <output-dir>"""
 import hashlib, json, os, subprocess, sys, time
 os.chdir('C:/Users/Usuario/Desktop/PORTFOLIO/fly-rl')
 sys.path.insert(0, '.')

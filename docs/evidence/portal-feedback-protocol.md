@@ -20,7 +20,7 @@ Plans, losses, hashes, and detailed trajectories are in private artifacts and ea
 
 V14 also finished with zero arrivals and eight collisions, after 6,224 verification transitions. Its 4,096 fitting updates had finite losses and compatible reload. Heading symmetry verified by tests was insufficient for navigation.
 
-A subsequent diagnostic measured substantial precision loss in summaries based on neural means. A least-squares reader was prepared to correct mixing in the artificial sensory projection. The diagnostic variant cancels recurrence and serves only as an information bound; the flight candidate retains the projected recurrent contribution. Code, fingerprints, and documentation distinguish them. Formulas and limitations are in [mathematics](../MATHEMATICS.md).
+A subsequent diagnostic measured substantial precision loss in summaries based on neural means. A least-squares reader was prepared to correct mixing in the artificial sensory projection. The diagnostic variant cancels recurrence and serves only as an information bound; the flight candidate retains the projected recurrent contribution. Code, fingerprints, and documentation distinguish them. Formulas and limitations are in [mathematics](../methods/MATHEMATICS.md).
 
 V15 uses a new controller and a new neural-readout contract. Its budget is 32,768 new guided transitions, 4,096 supervised updates, and up to 32,768 separate autonomous verification transitions on optimization maps. It transfers neither weights nor test observations. Losses, visited maps, valid data, reload, and teacher/student results are recorded separately. Flight checks do not increment the checkpoint's training counter.
 
@@ -110,7 +110,7 @@ At this stage, an explicit-planning alternative was tested that builds occupancy
 
 ## Stable motion readout
 
-Accumulated map drift motivated a variant that cancels projected recurrence in the 269 base channels, including short distances, the goal, and motion, while retaining five percent in the 3,600 panoramic channels. Reconstruction uses only previous and current neural states and the known fixed projection. It has a new fingerprint; earlier checkpoints are not silently reinterpreted. Formulas and numerical diagnostics are in [mathematics](../MATHEMATICS.md). This is neither an established biological mechanism nor evidence of particular usefulness of fly wiring.
+Accumulated map drift motivated a variant that cancels projected recurrence in the 269 base channels, including short distances, the goal, and motion, while retaining five percent in the 3,600 panoramic channels. Reconstruction uses only previous and current neural states and the known fixed projection. It has a new fingerprint; earlier checkpoints are not silently reinterpreted. Formulas and numerical diagnostics are in [mathematics](../methods/MATHEMATICS.md). This is neither an established biological mechanism nor evidence of particular usefulness of fly wiring.
 
 The algebraic test checks each block, nonzero visual recurrence, and independent resets. The full-graph check retained 167,184 neurons and 25,583,622 connections. The PPO pipeline passed an additional temporary check of 128 transitions and one update, with finite losses and compatible reload; the temporary file was deleted. This third PPO check remains separate from substantive training.
 
@@ -128,4 +128,4 @@ V51 geometric fitting mistook groups of boxes for a complete wall. A surface-cov
 
 V54 retains only the observed map and goal, without a learned opening proposal. It uses the stable reader, permits escape from a precautionary occupied margin, searches for the exact final cell, and maintains an open frontier upon reaching the search limit. It reached 3/8 goals without collisions and with five timeouts after 28,480 transitions. V55 checks advancement past reached references and brakes in the requested three-dimensional direction, retaining altitude control during turns. It reached 8/8 in optimization and 13/16 in a frozen prospective check; see the [v55 report](observed-map-v55-results.md). V41–v54 and the first v55 check are diagnostics on reused optimization maps, with zero new physical training and zero weight changes. Protected checkpoint and alias hashes match at the close of completed batches.
 
-The [resolution history](../NAVIGATION_RESOLUTION.md) brings these attempts together and explains the transition to operational planner v55 without attributing its performance to the learned policy.
+The [resolution history](../planner/NAVIGATION_RESOLUTION.md) brings these attempts together and explains the transition to operational planner v55 without attributing its performance to the learned policy.

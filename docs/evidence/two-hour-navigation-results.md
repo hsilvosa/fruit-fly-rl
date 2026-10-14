@@ -19,12 +19,12 @@ Directional attention avoids compressing the entire panoramic image into a singl
 
 Batched CUDA sensor computation and its episode cache were integrated. Checks compare geometry with NumPy and verify independent resets, finite gradients, and checkpoint compatibility. All 167,184 neurons and 25,583,622 connections of the full graph are retained. Brief inspection of the latest demo confirmed a rendered scene and finite activity during 40 steps; it was neither a navigation evaluation nor manual testing of every control.
 
-Hashes of frozen sources, source checkpoints, and the six original alias files were preserved, according to detailed private audits. The latest experimental checkpoint is `runs/training/distance-only-perception-v12/policy.zip`, SHA256 `eaded4b6b600be5bd563a1b23907e727cf21d0e1b6d1def6d1e93dc6a06456ea`. Local manifest `runs/latest-large-demo.json` identifies it; `launch-panorama.ps1` checks its hash before opening it.
+Hashes of frozen sources, source checkpoints, and the six original alias files were preserved, according to detailed private audits. The latest experimental checkpoint is `runs/training/distance-only-perception-v12/policy.zip`, SHA256 `eaded4b6b600be5bd563a1b23907e727cf21d0e1b6d1def6d1e93dc6a06456ea`. Local manifest `runs/latest-large-demo.json` identifies it; `launchers/historical/launch-panorama.ps1` checks its hash before opening it.
 
 From the project folder:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\launch-panorama.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\launchers\historical\launch-panorama.ps1
 ```
 
 This demo uses the autonomous student, without a teacher or training. It remains experimental. Detailed results, trajectories, and losses are retained locally in `private` and `runs/training`. The watchdog enforces the deadline using PID, start time, and executable, without restarting any task. Work pauses at the deadline at the user's request.
