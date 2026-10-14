@@ -1,113 +1,144 @@
 # Fly RL
 
-The final objective is a learned fly that reaches goals in maps it has never trained on. The [roadmap](ROADMAP.md) is the live status board with the checklist and the actions ready to start, and the [plan](docs/ZERO_SHOT_PLAN.md) holds the phase design, and the [completion plan](docs/PROJECT_COMPLETION.md) keeps the release gates. The historical learned reference is recovered and reproduces exactly. Eight bounded transfer experiments gave a signal on partitioned maps that were in the training mix, and plain PPO then lost it ([summary](docs/TRANSFER_SUMMARY.md)). No result yet supports navigation on unseen maps. A prepared runner or a successful nearby lesson is not evidence of success.
+A virtual fruit fly flies in procedurally generated 3D rooms. Its controller is the full annotated MaleCNS v1.0 connectome (167,184 neurons, 25,583,622 directed edges) used as a fixed recurrent reservoir, with a PPO actor and critic reading 256 pooled features on top. The final objective is a **learned fly that reaches goals in maps it has never trained on**. A separate explicit planner, which searches over an observed map, is kept as a reference and never counts as a learned result.
 
-Fly RL is a **connectome-based 3D navigation project exploring reinforcement learning, imitation learning, and explicit planning**. It places a virtual fruit fly in procedural rooms and uses the full annotated **MaleCNS v1.0 fruit-fly connectome** as a fixed recurrent model that transforms simulated sensor readings into neural activity. Controllers use that activity to choose flight actions, learning from rewards, imitating guided trajectories, or building an observed map and planning a route. The goal is to navigate around obstacles, cross openings, and reach a target in rooms the controller has not seen before.
+This repository holds the code, the experiments and the written record of that work. It is an engineered experiment, not a simulation of biological vision, spiking neurons or wing aerodynamics: sensors, neural equations, sensory projection and flight dynamics are project choices, and neural colors show modeled activity, not measured firing.
 
-There are two controller families: learned policies and an explicit observed-map planner. **Learned navigation works well on a single wide opening and moderately well in older dense rooms. The current large-room demo works through explicit planning; a reliable learned policy for those rooms remains unresolved.**
+**Where it stands.** With the full connectome in the loop and no privileged input, the best learned policy reaches goals in new medium rooms (49 to 55 of 64), in about 60 percent of new partitioned rooms of its training family (`passages` 36 to 42 of 64), and partly in a held-out family of six synthetic architectural scenes (95 to 108 of 168, against 71 for the starting policy). It does not navigate large rooms or mazes (0 to 2 of 32 per cell). The release gate, at least 52 of 64 successes and at most 3 collisions in each of four families, is **not met in any family**. A matched control with the connectome's wiring shuffled did as well as the real connectome within the measured spread, so the connectome's own contribution is not shown. Every number is a development-pool result; no reserved final pool has been opened.
 
-This is an engineered experiment. Sensors, neural equations, sensory projection, and flight dynamics are project choices. It is not a simulation of biological vision, spiking neurons, or wing aerodynamics. Navigation success does not establish an advantage from fly wiring.
+[Findings](docs/results/FINDINGS.md) · [Key numbers](docs/results/KEY_NUMBERS.md) · [Project history](docs/overview/PROJECT_HISTORY.md) · [Experiments](docs/experiments/README.md) · [Maps](docs/methods/MAPS.md) · [Brain](docs/methods/BRAIN.md) · [Reproduce](docs/operations/REPRODUCE.md) · [Roadmap](ROADMAP.md) · [All documentation](docs/README.md)
 
-[Results](#what-works-today) · [Map gallery](#map-gallery) · [Large-room progression](#large-room-progression) · [Run it](#install-and-run) · [Next steps](#next-steps) · [Documentation](docs/README.md)
+## Contents
 
-Controller revisions now use numbered names: **planner-1.0** is the frozen default, **planner-1.1** adds adaptive clearance, and **planner-1.2** separates mapping from braking ranges. Later revisions remain experimental. [Complete version mapping and compatibility](docs/CONTROLLER_VERSIONS.md) explains intermediate candidates and preserved historical aliases.
+1. [Results at a glance](#results-at-a-glance)
+2. [What was done](#what-was-done)
+3. [What was tried and what worked best](#what-was-tried-and-what-worked-best)
+4. [The maps](#the-maps)
+5. [The brain](#the-brain)
+6. [Controls and the planner reference](#controls-and-the-planner-reference)
+7. [Install and run](#install-and-run)
+8. [How the experiment is organized](#how-the-experiment-is-organized)
+9. [Repository map](#repository-map)
+10. [Limits and open questions](#limits-and-open-questions)
+11. [Credits and licenses](#credits-and-licenses)
 
-## What works today
+## Results at a glance
 
-Maze experiments are closed for this iteration. The latest candidate reaches **7/8 inspected development goals with zero collisions**, preserving earlier successes. The earlier-map regression also passed at 7/8 without collisions; fresh verification is deferred. The candidate is not promoted. [Closing summary and candidate demo command](docs/evidence/maze-wrap-up.md).
+![Retained candidate against the four-family release gate](docs/images/figures/four-family-gate.png)
 
-These are recorded measurements, current as of October 7, 2026. A **goal** means reaching the target before the deadline without colliding. Collision and timeout are failures.
+All learned numbers below are from the **2M recipe** (the starting policy trained for 1,998,848 more transitions, three seeds), deterministic actions, 64 episodes per cell unless marked. They are development and inspected pools, and a single recipe.
 
-| Task | Controller and outcome | What the result establishes |
+| Cell | Result | Start policy | Gate (successes, collisions) |
+| --- | --- | --- | --- |
+| Medium dense rooms | 49, 54 and 55 of 64 (5 to 11 collisions) | 51 of 64 | 52 of 64, at most 3 |
+| `passages` (three partitions, 4 x 4 m openings, clutter) | 42, 36 and 39 of 64 (8 to 16 collisions) | 5 of 64 | same |
+| `passages-mid` | 56, 57 and 54 of 64 | not run | same |
+| `passages-wide` and `gate-two` | 64 of 64 on every seed | not run | same |
+| Level B: held-out parameter region (narrow openings, at least four partitions) | 26, 17 and 12 of 64 (inconclusive by its frozen rule) | 1 of 64 | same |
+| Level C: held-out family, six architectural scenes (168 episodes) | 95, 108 and 108 of 168 (positive by its rule, uneven by scene) | 71 of 168 | 81 percent, at most 5 percent collisions |
+| Large rooms (32 episodes) | 2, 0 and 0 of 32 | not run | same |
+| Mazes (32 episodes) | 0, 0 and 0 of 32 | not run | same |
+| Explicit planner reference, level C | 147 of 168 (4 collisions) | not applicable | not a learned result |
+
+The tables with denominators, pool status and sources are in [KEY_NUMBERS.md](docs/results/KEY_NUMBERS.md). The claims the evidence supports and does not support are listed in [FINDINGS.md](docs/results/FINDINGS.md#a-summary-and-claims).
+
+## What was done
+
+The work ran in 16 numbered iterations, told in full in the [project history](docs/overview/PROJECT_HISTORY.md). The learned line, the planner line and the zero-shot program are kept apart there.
+
+| Iteration | What happened | Outcome |
 | --- | --- | --- |
-| Original small room, 12 x 12 x 6, three obstacles | Early demonstration task; launch and simulation checks are documented | A working environment. No independent small-room success percentage is claimed here |
-| Single wide opening, `gate-long`, 24 x 12 x 10 | **Learned baseline: 61/64 goals (95.3%)**, zero collisions, three timeouts; Wilson 95% interval **87.1–98.4%** | Strong performance on this simpler distribution. Selected checkpoint: 114,688 lifetime training transitions. [Evidence](docs/evidence/passage-mastery-v2-results.md) |
-| Original medium dense rooms, `dense-v3`, 32 x 32 x 12, 48 obstacles | Separate historical learned-policy experiments: **43/64 (67.2%)**, **50/64 (78.1%)**, **35/64 (54.7%)**, **45/64 (70.3%)**, and **48/64 (75.0%)** | Earlier roughly 70–80% results were real but varied by experiment. Each used its own final pool; these are not a paired ranking. [Counts and uncertainty](docs/RESULTS.md#earlier-dense-room-results) |
-| Structured large rooms, `large`, 48 x 48 x 16, 112 boxes and five narrow passages | Initial geometry comparison: **0/64** on its final pool. Best recent learned student v34: **3/8** on reused optimization maps | Learned large-room navigation remains unreliable. The 3/8 is not an independent test or a replacement for the earlier final result |
-| The same `large` profile, planner-1.0 | **8/8** reused optimization goals; frozen prospective development: **13/16 (81.25%)**, zero collisions, three timeouts; Wilson 95% interval **57.0–93.4%** | A working autonomous planner demo, not a PPO learning result. The small sample does not establish a guaranteed 80% rate. [Evidence](docs/evidence/observed-map-v55-results.md) |
-| The same `large` profile, experimental planner-1.1 | **3/3** corrected known failures; new frozen paired development: **14/16 (87.5%)**, zero collisions, two timeouts; Wilson 95% interval **64.0–96.5%**. planner-1.0 reached 12/16 on these same new rooms | Conditional clearance recovery and higher cruising speed. Two added successes, no lost baseline successes on this suite; not a reserved final result. [Paired evidence](docs/evidence/planner-v60-development-results.md) |
-| Experimental distance-stable reader, planner-1.2-exp.1 | Known stationary room corrected; a separate frozen comparison reached **13/16**, two collisions, one timeout, versus **15/16** and one collision for planner-1.1 | The readout fix regressed this fresh development suite and is not selected as the stronger candidate. [Paired outcomes](docs/evidence/planner-v61-development-results.md) |
-| Latest measured paired planner-1.2 comparison, the same `large` profile | **15/16 (93.75%)**, zero collisions, one timeout; Wilson 95% interval **71.7–98.9%**. Frozen planner-1.1 had the same paired outcomes | Separate neural ranges for braking preserve mapping context and fix retained false stops/contacts. No measured success-rate advantage over planner-1.1 on this suite. [Evidence](docs/evidence/planner-v65-development-results.md) |
-| `large`, experimental planner-1.3-exp.9 | **6/6 retained goals, then 8/8 fresh development goals**, no collisions or timeouts; Wilson 95% interval **67.6–100%** for the fresh eight | Meets its predeclared development rule. Small-sample uncertainty remains; no reserved final assessment or paired superiority claim. [Evidence](docs/MAZE_NAVIGATION.md#verified-large-room-development-checkpoint) |
-| `maze`, experimental planner-1.3-exp.11 | **2/2 retained goals**, then **5/8 fresh development goals**, no collisions, three timeouts | Clean occupancy, stalled-reference recovery, and stronger opening-center support. The fresh result misses the declared 7/8 development threshold. These eight rooms then became retained correction data. Later outcomes are reported separately. [Development record](docs/MAZE_NAVIGATION.md) |
-| `maze`, candidate planner-1.3-exp.25 | **7/8 retained goals**, then **5/8 fresh development goals (62.5%)**, zero collisions, three fresh timeouts; Wilson 95% interval **30.6–86.3%** | Clearance-aware goal handover fixes a recorded braking deadlock while preserving the preceding six successes. Passed the retained gate but failed the fresh 7/8 criterion; not promoted. No new training or reserved test. [Evidence](docs/MAZE_NAVIGATION.md#clearance-aware-handover-retained-gate-passed) |
-| `maze`, October 7 retained corrections | Exp.26: **6/8 goals**; exp.27: **4/8 goals**, both zero collisions | Range extension fixes one failure; progress-only surveying regresses three successes and is rejected. The revisit gate preserves 6/8; coverage-directed exp.29 finished at 6/8; crossing-release exp.30 regressed to 5/8 and was rejected; exp.31 fixed one timeout but regressed another success (6/8); exp.32 passed the retained gate at 7/8 without collisions; earlier-map regressions passed at 7/8 without collisions; further maze experiments are deferred. These are inspected development maps, not new independent results. [Correction history](docs/MAZE_NAVIGATION.md#october-7-opening-range-diagnosis) |
-| Transfer experiments 1 to 8, October 8, from the recovered 48/64 and 50/64 policies | Best development cells (32 episodes, one seed, profiles in the training mix): gate-long 32/32, gate-two 32/32, passages-wide about 25/32, passages-mid about 15/32, `passages` about 4/32, with medium rooms at 23 to 26/32. A two-seed continuation then lost most of the partitioned-map gains | Graded maps with medium-room retention gave the first partitioned-map signal. Plain PPO at a constant learning rate oscillated. Development results only; no unseen-map or reserved-pool claim. The best numbers were chosen on the pools they report, so they are optimistic. [Summary](docs/TRANSFER_SUMMARY.md) |
-| `open`, `passages`, and intermediate diagnostic profiles | Geometry is implemented; no broad reliable-navigation result is claimed | A generated map or passing geometry test does not mean a controller can navigate it |
+| 1 | Full-connectome foundation: reservoir, small room, sensors, cameras, recording | The full graph runs in a 3D room; behavior untrained |
+| 2 | First PPO, rewards and curricula, larger dense rooms, coordinated movement, brain inspection windows | Small-room policy 32/32 on legacy seeds; coordinated dense policy 43/64 on a final pool |
+| 3 | Versioned sensors, approach curriculum, collision-risk objective, fresh-start comparison | Medium dense-room policies 35 to 50 of 64; neither the curriculum nor the risk term beat its control |
+| 4 | Progressive geometry for large rooms, the zero-success outcome, passage mastery | Large rooms 0/64 on the final pool; one wide opening learned (61/64 on `gate-long`) |
+| 5 | Guided navigation, neural waypoint, panoramic sensors, a bounded two-hour window | Every learned large-room correction stayed at 0/8 on development rooms |
+| 6 | Explicit observed-map planner for large rooms | Planner-1.0 13/16 prospective, planner-1.2 15/16; not a learned result |
+| 7 | Maze contract and the room-aware planner series | Maze 7/8 retained and 5/8 fresh; closed without a passing fresh gate |
+| 8 | Architectural scenes and planner-1.4 | Planner 19/21 on the original objectives |
+| 9 | Planner-free autonomous PPO pilots and architectural curricula | 0/6 to 1/6 validation goals; no route navigation learned |
+| 10 | Recovery of the historical medium-room policies; transfer experiments 1 to 8 | 50/64, 48/64 and 45/64 recovered and replayed; partitioned rooms barely learned |
+| 11 | Held-out specification, variance study, stabilization and memory screening | Seed spread up to 11 episodes of 32; stabilization and memory did not meet their criteria |
+| 12 | Randomized map sampler, random-distribution run, diagnostics | Negative; the diagnostics point to route information at decision time |
+| 13 | Auxiliary head, privileged critic, supervised pretraining | All negative: `passages` +2.3, +0.7 and +2.0 of 64 |
+| 14 | Training budget (1M, 2M, three seeds) and level B and C | Budget is the lever: `passages` 5 to 36-42 of 64 |
+| 15 | Connectome control (edge-shuffled reservoir) and planner reference | No connectome contribution shown; planner 147/168 on level C |
+| 16 | Consolidation of the documentation | This reorganization |
 
-**Map structure matters more than size labels.** A long room with one wide gate can be easier than a smaller room with several narrow alternating passages. The gate result does not cover every small map, and the older dense result is not a result for the newer `open` profile.
+## What was tried and what worked best
 
-The early 0/64 final pool has been consumed. Later large-room corrections did not use another reserved final pool. planner-1.0's 16 new development rooms were fixed before its flights, with the controller frozen throughout. Their three failures were inspected afterward and cannot be fresh evidence for a future tuned version. Teacher flights, training practice, optimization maps, prospective development, and final tests remain separate in the [complete results](docs/RESULTS.md).
+The best learned configuration is the plain PPO recipe of the stabilization bundle run for a much larger budget: 32 simulators (8 medium, 12 `passages-mid`, 4 `passages`, 4 `passages-wide`, 4 `gate-two`), clip 0.1, 3 epochs, minibatch 256, `target_kl` 0.02, gamma 0.995, learning rate falling from 3e-4 to 3e-5, started from a retained and hash-verified checkpoint. At 1M transitions `passages` was 23 of 64 on one seed, at 2M 38 and then 36 to 42 on three seeds.
 
-The October 6 follow-up reached all eight fresh large-room development goals with planner-1.3-exp.9. Maze corrections progressed from two retained timeouts to actual arrivals, then five of eight fresh goals. Those maps became retained correction data. The latest clearance-aware candidate reaches seven of those eight goals, then five of eight new maps without collisions. It missed the fresh gate and is not promoted; the maze demo remains exp.11. [Attempts, recorded trajectories and current evidence](docs/MAZE_NAVIGATION.md).
+![Passages successes against training budget](docs/images/figures/budget-curve.png)
 
-## Map gallery
-
-These images come from the actual geometry code with preview seed 10. Blue marks the start, amber the goal, and transparent boxes expose openings. **They are room previews, not flown trajectories or performance measurements.** Controller revisions v34 and planner-1.0 use the same `large` geometry; their version numbers do not identify new map types.
-
-### Compact rooms and gate progression
-
-![Original small room, gate-near, gate-long, and gate-two](docs/images/maps-small.png)
-
-| Configuration | Dimensions | Boxes | Role |
-| --- | --- | ---: | --- |
-| Original small | 12 x 12 x 6 | 3 | Initial movement demonstration |
-| `gate-near` | 12 x 12 x 10 | 4 | One wide opening, nearby goal; curriculum practice |
-| `gate-long` | 24 x 12 x 10 | 4 | Longer travel through the same gate; 61/64 learned final result |
-| `gate-two` | 24 x 12 x 10 | 8 | Two-opening diagnostic progression; no independent success score |
-
-### Medium rooms and passages
-
-![Legacy dense, open, passages-wide, and passages](docs/images/maps-medium.png)
-
-| Configuration | Dimensions | Boxes | Structure |
-| --- | --- | ---: | --- |
-| `dense-v3` | 32 x 32 x 12 | 48 | Older dense generator; scattered boxes, no compulsory partitions |
-| `open` | 32 x 32 x 12 | 24 | New profiled generator with scattered obstacles |
-| `passages-wide` | 32 x 32 x 12 | 12 | Three partitions with wide openings, no extra clutter |
-| `passages` | 32 x 32 x 12 | 64 | Three partitions with 4 x 4 openings and additional obstacles |
-
-### Large rooms and future difficulty
-
-![Large-wide, large-narrow, large, and maze](docs/images/maps-large.png)
-
-| Configuration | Dimensions | Boxes | Structure |
-| --- | --- | ---: | --- |
-| `large-wide` | 48 x 48 x 16 | 20 | Five partitions with wide openings; diagnostic isolation |
-| `large-narrow` | 48 x 48 x 16 | 20 | Five 3.2 x 3.2 openings, without extra clutter |
-| `large` | 48 x 48 x 16 | 112 | Five narrow alternating openings plus clutter; current demo |
-| `maze` | 64 x 64 x 20 | 192 | Eight partitions and four dead-end branches; latest candidate 7/8 retained goals, then 5/8 fresh goals; reliability unresolved |
-
-Profiled maps have a hidden clearance certificate and route-dependent deadline. The controller receives neither the certificate nor the obstacle map. Feasible geometry is not proof of an optimal or dynamically executable flight. See [map generation](docs/GEOMETRY_CURRICULUM.md) and [image provenance](docs/images/README.md).
-
-## Large-room progression
-
-Moving from `dense-v3` to `large` changed the task: five partitions require detours, alternating altitude, and repeated narrow crossings. The fresh comparison restarted learning instead of continuing the earlier successful policy. An unchanged older checkpoint reproduced 3/4 arrivals in retained original rooms but reached 0/4 in large rooms. This shows failed transfer to a harder task, rather than proven loss of the old skill on the same task.
-
-| Stage | Changes and observations | Outcome |
+| Intervention | Question | Result |
 | --- | --- | --- |
-| Initial large comparison | Fresh baseline/curriculum runs; progression could advance without passage mastery, and selection retained untrained initialization | **0/64 final goals**. Consuming the training budget did not produce a usable selected policy |
-| Learning corrections | Practice gates, temporal features, reward/credit checks, guided supervision, critic isolation, PPO guards | Single-gate learning succeeded separately, but multiple large-room corrections remained at **0/8** development goals. Finite losses and teacher arrivals were insufficient |
-| Perception corrections | Full-body panorama, projection readouts, heading equivariance, learned opening references | Better coverage and fitting alone still produced **0/8** in several pilots |
-| Learned approach and crossing, v34 | Learn wall orientation, align before the opening, then aim beyond it | **3/8** reused optimization goals, one collision, four timeouts; best learned student in this batch |
-| Observed map, v43/v44 | Accumulate observed geometry and estimated motion, then search for routes | **5/8** each, no collisions, three timeouts. Stable motion readout alone did not remove every blockage |
-| Current operational solution, planner-1.0 | Escape local safety margins without opening solids; search the exact goal cell; advance past reached route points; brake along the requested 3D direction; retain vertical movement during turns | **8/8 optimization**, then **13/16 frozen prospective development**, no collisions, three timeouts. Explicit planning, not learned movement |
+| More training budget (same recipe) | Does `passages` need more exposure? | Yes: 5 to 36-42 of 64 at 2M |
+| Graded gates and 50 percent medium rooms | Can partitioned rooms be learned without forgetting medium? | Partly; medium kept, `passages` stayed low at 98k to 262k |
+| Route-progress reward, longer horizon | Does a denser reward help? | No; the reward audit shows it does not favor hovering |
+| Stabilization bundle, memory window | Does a stable trainer or history help? | One seed held, the other did not; memory not replicated |
+| Random-map mix with adaptive difficulty | Does randomization help? | No; the difficulty controller stayed at 0.2 to 0.25 |
+| Auxiliary head, privileged critic, supervised pretraining | Can a training-only route signal help? | No (+2.3, +0.7, +2.0 of 64) |
+| Route direction as an actor input (diagnostic, not a student) | Is the missing information the limit? | Yes: `passages` 37.5 against 11 |
+| Guided supervision, panorama sensors, spatial readout (large rooms) | Can learned corrections fix large rooms? | No; 0/8 on development rooms each |
+| Explicit planner | Is there a working reference? | Large 15/16, maze 5/8 fresh, architectural 19/21 on development rooms |
 
-planner-1.0 reconstructs distance, goal, and motion from neural states. It estimates relative pose, builds an occupancy grid, runs bounded weighted search, and converts a nearby route reference into flight commands. It has no learned movement weights and receives no true poses, hidden boxes, seeds, or certified route. It knows the room contract and observes a synthetic goal beacon. All connectome states advance, although the engineered reader cancels recurrence in base channels and retains 5% in panoramic channels.
+The full list, with links to every protocol and result, is in [FINDINGS.md](docs/results/FINDINGS.md#d-what-was-tried) and the [experiment catalog](docs/experiments/README.md). The lessons about method (separate selection and report pools, three seeds and 64 episodes per comparison, declaring deterministic or sampled evaluation, treating model-written diagnoses as hypotheses) are in [FINDINGS.md](docs/results/FINDINGS.md#e-methodological-lessons).
 
-This is the **current operational solution**, not a definitive solution to learned navigation. Frozen planner-1.0 had three prospective timeouts; route optimality is not guaranteed and biological benefit is untested. The [resolution report](docs/NAVIGATION_RESOLUTION.md) retains the detailed attempts, formulas, budgets, per-room outcomes, and limitations.
+## The maps
 
-The planner-1.1 follow-up resolves those three inspected timeouts and reaches 14/16 on a separate frozen development comparison. Raising speed and relaxing margins indiscriminately caused a regression; planner-1.1 enables broader known-free margin traversal only after a search hits its cap. A distance-readout correction resolved the stationary known flight, but regressed a later paired suite: planner-1.2-exp.1 reached 13/16 versus planner-1.1’s 15/16, with more collisions. Two route/mapping alternatives also failed the retained detour room. These are retained failures, not a completed fix. [Readout diagnosis](docs/evidence/planner-readout-v61-v63.md). planner-1.0 stays the standard launcher's default, while planner-1.1 is available explicitly. [Correction history](docs/evidence/planner-followup-v57-v60.md) and [development protocol](docs/PLANNER_DEVELOPMENT.md) explain the tradeoff and uncertainty.
+The maps are generated by the same geometry code that training and evaluation use. Each profile has a certified reference route and a route-dependent deadline that the controller never sees. [Maps](docs/methods/MAPS.md) lists every profile with its parameters.
 
-planner-1.2 now keeps planner-1.1’s contextual mapping input and adds separate clean neural ranges for requested-direction and momentum braking. It resolved the retained stationary flight and four collision/control rooms, then matched planner-1.1 at 15/16 on a fresh paired suite without losing successes. One retained detour room and the new shared timeout remain unresolved. This is a targeted correction with a tied development rate, not proof of a general performance gain or a learned navigation solution. [Complete correction report](docs/evidence/planner-dual-v65-results.md).
+![Compact rooms and the gate progression](docs/images/maps-small.png)
 
-![Experimental planner-1.1 in the original large room](docs/images/planner-v60-scene.png)
+![Partitioned-room profiles used in training and evaluation](docs/images/figures/map-profiles-partitioned.png)
 
-This is an actual 800-step rendered verification of planner-1.1, with finite activity and no collisions. It did not complete an episode and is not performance evidence. [Image provenance](docs/images/README.md).
+![Medium rooms, dense-v3, open, passages-wide and passages](docs/images/maps-medium.png)
+
+![Large rooms and the maze](docs/images/maps-large.png)
+
+The held-out parameter region (level B) and the held-out family (level C) are never drawn in training:
+
+![Level B held-out region](docs/images/figures/level-b-region-gallery.png)
+
+![The six synthetic architectural scenes](docs/images/figures/architectural-scenes-gallery.png)
+
+| Profile family | Dimensions (m) | Role |
+| --- | --- | --- |
+| Original small room, `gate-near`, `gate-long`, `gate-two` | 12 x 12 x 6 to 24 x 12 x 10 | Early demo, gate progression, training mix |
+| `dense-v3` (medium) | 32 x 32 x 12, 48 boxes | Historical medium-room task, regression suite |
+| `passages-wide`, `passages-mid`, `passages` | 32 x 32 x 12, three partitions | The partitioned-room cells of the zero-shot program |
+| `large`, `maze` | 48 x 48 x 16 and 64 x 64 x 20 | Large-room and maze families, planner development |
+| Randomized sampler, level B region | 28 to 48 by 28 to 44 by 10 to 16 | Random-map training and the held-out parameter region |
+| Six architectural scenes, 21 situations | fixed geometry | Level C, the held-out family |
+
+A passing geometry test or a generated map does not mean a controller can navigate it: map structure matters more than size labels. A long room with one wide gate can be easier than a smaller room with several narrow passages.
+
+## The brain
+
+The connectome is a fixed reservoir. A random sensory projection drives its 167,184 neurons, the activity is pooled into 256 features, and the PPO policy reads those features. PPO optimizes the actor and critic, not the synapses. [Brain](docs/methods/BRAIN.md) gives the equations, sensors, readouts and the viewer's brain views.
+
+![One flight with the full connectome in the loop](docs/images/figures/brain-activity-example.png)
+
+The viewer shows the room and the brain in separate windows. The anatomical view uses 140,033 supplied soma positions; the other 27,151 neurons compute without supplied coordinates. Colors show modeled activity, not experimental firing or a causal explanation of movement.
+
+![Live brain window from the architectural demo](docs/images/architecture-live-brain.png)
+
+## Controls and the planner reference
+
+The control keeps everything except who connects to whom: the target of every edge is permuted (same neurons, edges, degrees, weights and signs), so only the specific wiring is removed. It was trained from random weights in a matched chain with the real connectome.
+
+![Edge-shuffled control against the real reservoir](docs/images/figures/shuffled-vs-real-reservoir.png)
+
+![Real connectome against the shuffled control on passages](docs/images/figures/connectome-control.png)
+
+On medium rooms the two arms learn equally well (61 and 54 of 64). On the harder cells the fresh chain did not reach the retained policy's level at either budget (2.88M and 4.88M transitions), and the two seeds of each arm differ by as much as the arms do (13 to 16 episodes). No cell favors the real connectome. The project therefore cannot claim that the biological wiring improves or is necessary for navigation; showing a 10-episode difference would take about eight seeds per arm. Details: [C1.0](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C10.md), [C1.1](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C11.md), [C1.2](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md).
+
+The explicit planner (an observed-map controller that reads the same connectome activity and chooses actions by search) is the other reference. It scores 147 of 168 on the architectural scenes it was developed on, and its results on large rooms and mazes are development figures, not matched pools ([planner reference](docs/experiments/connectome-control/PLANNER_REFERENCE_RESULTS.md), [planner documentation](docs/planner/PLANNER_DEVELOPMENT.md)).
 
 ![Experimental planner-1.2 with separated mapping and safety ranges](docs/images/planner-v65-scene.png)
 
-The planner-1.2 image comes from a separate 200-step rendered verification. Activity, controls, and archive integrity passed; it did not complete a navigation episode. Both images use the same original large geometry, rather than new map versions.
+That image is a rendered verification of the planner on the original large room, not performance evidence.
 
 ## Install and run
 
@@ -118,17 +149,17 @@ From the repository root, with Conda installed:
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\setup.ps1
 .\.conda\python.exe -s -m fly_rl --help
-.\launch-observed-map.cmd
+.\launchers\current\launch-observed-map.cmd
 ```
 
-Setup creates the local `.conda`, installs dependencies, and downloads/prepares the pinned connectome. It requires network access and substantial storage. A fresh clone contains source, public evidence, and images, but no downloaded data, trained checkpoints, or flight archives.
+Setup creates the local `.conda`, installs dependencies, and downloads and prepares the pinned connectome. It requires network access and substantial storage. A fresh clone contains source, public evidence and images, but no downloaded data, trained checkpoints or flight archives; the experiments that need them are marked in [REPRODUCE.md](docs/operations/REPRODUCE.md).
 
-**The observed-map demo requires prepared data but no trained checkpoint.** It computes live sensors, neural activity, and planner actions; it is not a recording of a successful flight. The room and brain open in separate windows. Optional arguments:
+**The observed-map demo requires prepared data but no trained checkpoint.** It computes live sensors, neural activity and planner actions; it is not a recording of a successful flight. The room and brain open in separate windows. Optional arguments:
 
 ```powershell
-.\launch-observed-map.cmd --speed 4 --seed 370001
-.\launch-observed-map.cmd --record-brain
-.\launch-observed-map.cmd --controller-version 1.2 --seed 10000005
+.\launchers\current\launch-observed-map.cmd --speed 4 --seed 370001
+.\launchers\current\launch-observed-map.cmd --record-brain
+.\launchers\current\launch-observed-map.cmd --controller-version 1.2 --seed 10000005
 ```
 
 To see an untrained policy interface instead:
@@ -137,23 +168,34 @@ To see an untrained policy interface instead:
 .\.conda\python.exe -s -m fly_rl demo --map-profile large --dynamics coordinated --brain-view
 ```
 
-Older `launch-dense.cmd`, `launch-flight.cmd`, and `launch-demo.cmd` support local historical models. Those trained weights are not shipped here. The dense launcher reports a missing-model error when no candidate exists. `.cmd` wrappers explicitly invoke PowerShell to avoid `.ps1` associations opening an editor. [Commands](docs/COMMANDS.md) covers other modes and checkpoint loading.
+Launchers are grouped in [`launchers/`](launchers/README.md), listed in creation order. Other launchers: `launchers/current/launch-large.cmd` (planner-1.3-exp.9, verified on six retained and eight fresh large rooms), `launchers/current/launch-maze.cmd` (planner-1.3-exp.11, which reaches both retained maze goals; fresh development 5/8), `launchers/current/launch-architecture.cmd` (N changes situation, G changes scene), and the older `launchers/historical/launch-dense.cmd`, `launchers/historical/launch-flight.cmd` and `launchers/historical/launch-demo.cmd` for local historical models, whose trained weights are not shipped. The `.cmd` wrappers explicitly invoke PowerShell to avoid `.ps1` associations opening an editor. [Commands](docs/operations/COMMANDS.md) covers other modes and checkpoint loading.
 
-Viewing never starts training or modifies weights. Checkpoint loading runs live inference; replay restores saved states without executing a brain. Sensor, dynamics, and readout contracts prevent silent reinterpretation. Explicit transfer does not establish performance in a new task.
+Viewing never starts training or modifies weights. Checkpoint loading runs live inference; replay restores saved states without executing a brain. Sensor, dynamics and readout contracts prevent silent reinterpretation. Explicit transfer does not establish performance in a new task.
 
 | Control | Action |
 | --- | --- |
 | Space | Pause/resume |
 | Shift | Request ten times the simulation rate while held |
 | R / N | Reset this room / generate the next room |
-| C / F | Cycle orbit, chase, and free cameras / focus on the fly |
+| C / F | Cycle orbit, chase and free cameras / focus on the fly |
 | Mouse drag / wheel | Rotate, pan, look, or zoom |
 | WASD and Q/E | Move the free camera, including altitude |
 | V | Toggle sensor rays |
 | B | Open or restore the brain window |
 | Escape | Exit and finalize recording |
 
-Shift changes simulation speed, not physical acceleration or maximum flight speed. Compute and rendering limit achieved acceleration; physics keeps its 0.05-second timestep. Neural colors show modeled activity, not experimental firing or a causal explanation of movement. The planner supplies no PPO action gradient. See [flight and neuron inspection](docs/FLIGHT_AND_NEURONS.md).
+Shift changes simulation speed, not physical acceleration or maximum flight speed. Compute and rendering limit achieved acceleration; physics keeps its 0.05-second timestep. See [flight and neuron inspection](docs/methods/FLIGHT_AND_NEURONS.md).
+
+**Verification** (none of these trains a policy):
+
+```powershell
+.\.conda\python.exe -s -m pytest -q -p no:cacheprovider
+.\.conda\python.exe -s scripts/verify_repository.py
+.\.conda\python.exe -s scripts/verify_publication.py .
+.\.conda\python.exe -s scripts/check_doc_links.py
+```
+
+To rerun an experiment, see [REPRODUCE.md](docs/operations/REPRODUCE.md); to regenerate the report figures, `scripts/make_report_figures.py`.
 
 ## How the experiment is organized
 
@@ -169,125 +211,59 @@ flowchart LR
     G --> A
 ```
 
-The graph contains **167,184 neurons**, **25,583,622 directed edges**, and **124,176,995 represented synapses** after the documented annotation filter. PPO optimizes the actor and critic, not connectome synapses. The anatomical view uses 140,033 supplied soma positions; the remaining 27,151 neurons compute but lack supplied coordinates. [Data and model](docs/DATA_AND_MODEL.md), [architecture](docs/ARCHITECTURE.md), and [mathematics](docs/MATHEMATICS.md) explain assumptions and optimization equations.
+The graph contains 167,184 neurons, 25,583,622 directed edges and 124,176,995 represented synapses after the documented annotation filter. [Data and model](docs/overview/DATA_AND_MODEL.md), [architecture](docs/overview/ARCHITECTURE.md) and [mathematics](docs/methods/MATHEMATICS.md) explain the assumptions and optimization equations.
 
-Training fits parameters. Practice can control curriculum progression. Validation selects candidates. Optimization maps guide design changes. Prospective development measures a frozen version on new maps. A reserved final test follows selection and is then consumed. These are not combined into one success curve. Tests, finite losses, reload compatibility, and teacher arrivals do not substitute for autonomous results.
+Training fits parameters. Practice can control curriculum progression. Validation selects candidates. Optimization maps guide design changes. Prospective development measures a frozen version on new maps. A reserved final test follows selection and is then consumed. These are not combined into one success curve, and tests, finite losses, reload compatibility and teacher arrivals do not substitute for autonomous results. Every protocol is committed before its run, evaluation pools are kept apart from selection pools, and negative results are reported with the same detail as positive ones ([pools registry](ROADMAP.md#8-pools-registry)).
 
-Each demo retains a unique archive in `runs/demo/`, with metadata, states, actions, and integrity checks. Latest previews and `reports/demo.json` may be overwritten; historical session directories are not. `--record-brain` adds full-neuron snapshots, which cannot be reconstructed from pooled features. Planner sessions archive controller code and specification rather than a fictitious PPO checkpoint. [Operations](docs/OPERATIONS.md) explains storage, replay, recovery, and backups.
-
-## Next steps
-
-The current sequence and status are in the [roadmap](ROADMAP.md), which follows the [plan to unseen-map navigation](docs/ZERO_SHOT_PLAN.md): a stable trainer, a randomized map distribution with held-out parameters and a held-out family, memory, the target map families, a frozen independent assessment and the release. Each phase starts on request, with its protocol committed first. The older lists below are historical.
-
-The agreed sequence is to close the current planner experiments, then study autonomous learning. Work remains paused; documenting this sequence does not start training.
-
-1. **Close the current experiments.** Freeze the maze and architectural results, preserve controller sources and checkpoint hashes, record unresolved failures and make an explicit retain/promote decision. Use bounded checks only where needed for closure; do not keep adding planner variants indefinitely. Closure may document remaining failures rather than claim they are solved.
-2. **Learn navigation without the explicit planner at inference.** Train a policy that selects movement actions from the observation history or connectome features. Planner demonstrations can support imitation learning, followed by reinforcement learning. The planner remains a reference controller and possible training teacher, not the mechanism choosing the student's evaluation actions.
-3. **Measure what the learned policy and connectome contribute.** Compare autonomous learned navigation with the explicit planner and a matched learned policy without the connectome. Declare training budgets and held-out maps before running; separate training, validation and final evaluation, and report goals, collisions, timeouts and uncertainty. Current planner results do not establish a biological advantage or learned navigation.
-
-The following earlier items describe the development history and longer-term work; the sequence above takes precedence for the next iteration.
-
-1. **Finish maze verification and inspect the selected demo.** The large-room correction has passed its retained and fresh development checks. The latest maze candidate reaches 7/8 retained goals; its unchanged fresh suite finished at 5/8 and failed the gate. Diagnose the remaining cases before another declared check; inspect rendering and controls before changing the maze launcher's default.
-2. **Diagnose remaining maze search failures.** Use completed trajectories and observed maps to separate opening discovery, reference execution and goal handover. Preserve measured controllers, require retained success before a new suite, and treat inspected fresh failures as future correction data.
-3. **Teach a student complete navigation.** Collect planner demonstrations under an explicit budget and include student-state recovery. Separate teacher arrivals from teacher-free student arrivals; preserve simpler-task references.
-4. **Increase difficulty through verified stages.** Separate extra walls, narrow openings, altitude changes and clutter before combining them. Verify each room/sensor contract and require measured navigation before adding noise, wind or moving obstacles.
-5. **Measure the connectome's contribution.** Compare real wiring, altered/disconnected recurrence and a conventional controller with matched sensors, budgets, seeds and selection. Extend neural replay and exact resumption alongside this work.
-6. **Move to simulations of real places after the maze experiment.** Start with static interiors reconstructed from real buildings, then outdoor streets and connected indoor/outdoor routes. Import licensed 3D geometry, verify scale and collision meshes, and keep complete buildings or neighborhoods separate between development and final evaluation. Begin with the existing sensor interface; introduce cameras, noise, wind and moving people or vehicles in separate experiments. These are simulated flights, not physical deployment.
-
-Maze correction work resumed on October 7. The range-only candidate reached 6/8 goals on the inspected eight-map suite with no collisions; the progress-only wall scan regressed to 4/8 and was rejected; the revisit gate preserved 6/8; coverage-directed recovery finished at 6/8; bounded crossing release regressed to 5/8 and was rejected; observed consensus reached 6/8 with a regression; terminal-distance gating passed the retained gate at 7/8 without collisions; earlier-map regressions passed at 7/8 without collisions; further maze experiments are deferred. No new training or reserved-test evaluation has started. The [roadmap](ROADMAP.md) defines order and acceptance criteria. Reliable learned large-room navigation and the independent 80% target remain open.
-
-### Architectural scene preparation
-
-CPU-only preparation has started for the next environment stage. Revision 0.2 has six scenes: an office floor, an apartment, a street block, a three-storey atrium, a high-bay warehouse and a courtyard with an enterable lobby. Together they contain 21 tagged navigation situations. They include portable 3D meshes, collision boxes (glass, stairs, overhangs and multi-level floors), CPU-checked geometric references, floor plans and an offline interactive preview with a cutaway slider. These are original architectural designs, not scans of real places; no controller has flown them yet. [Inspect the scenes and integration limits](docs/ARCHITECTURAL_SCENES.md).
-
-![Office, apartment, street, atrium, warehouse and courtyard drafts](assets/architecture/draft-0.2/gallery.png)
+Each demo retains a unique archive in `runs/demo/`, with metadata, states, actions and integrity checks. `--record-brain` adds full-neuron snapshots. Planner sessions archive controller code and specification rather than a fictitious PPO checkpoint. [Operations](docs/operations/OPERATIONS.md) explains storage, replay, recovery and backups.
 
 ## Repository map
 
 ```text
-fly_rl/connectome/    Data preparation, audits, fixed brain, anatomy, readouts
-fly_rl/simulation/    Sensors, rooms, collision, and flight dynamics
-fly_rl/navigation/   Observed-map planner and stateful controller
-fly_rl/training/     Policies, PPO, supervision, curriculum, selection, evaluation
-fly_rl/visualization/ Live windows, cameras, neural inspection, and plots
-fly_rl/recordings/    Telemetry, integrity checks, recovery, and replay
-tests/               Checks grouped by responsibility
-scripts/             Repository/publication checks and map-image generation
-docs/                Guides, formulas, protocols, and measured results
-docs/images/         Public geometry previews and provenance
-private/             Detailed local journals and machine evidence; ignored
-data/                Downloaded/prepared data; ignored
-runs/                Checkpoints, experiments, recordings; ignored
-reports/             Generated QA and analysis output; ignored
-.conda/              Local dependencies; ignored
+fly_rl/connectome/     Data preparation, audits, fixed brain, anatomy, readouts, the edge-shuffled control
+fly_rl/simulation/     Sensors, rooms, map profiles, random-map sampler, architectural scenes, flight dynamics
+fly_rl/navigation/     Observed-map planner and its versioned controllers
+fly_rl/training/       Policies, PPO, supervision, curricula, selection, evaluation, diagnostics
+fly_rl/visualization/  Live windows, cameras, neural inspection, and plots
+fly_rl/recordings/     Telemetry, integrity checks, recovery, and replay
+tests/                 Checks grouped by responsibility
+scripts/               Trainers, evaluation drivers, probes, rendering, verification (see scripts/README.md)
+launchers/             Viewer launchers, current and historical, in creation order (see launchers/README.md)
+setup.ps1              Environment installer (the other root files are the license, project metadata, README and roadmap)
+docs/overview/         Plans, architecture, data, project history, glossary
+docs/methods/          Formulas, sensors, maps, brain, protocol specifications
+docs/planner/          The explicit planner line: large rooms, maze, architectural scenes
+docs/learning/         Early learned-policy line and autonomous learning
+docs/experiments/      One folder per experiment family, protocols and results, and the catalog
+docs/results/          Findings, key numbers, earlier aggregate results
+docs/operations/       Commands, reproduction, verification, publication, storage
+docs/reference/        Credits, references, bibliography
+docs/evidence/         Small tracked evidence files (indexed)
+docs/images/           Geometry previews, report figures and provenance
+ROADMAP.md             Live status board, decisions, pools registry, artifact index
+private/               Detailed local journals and machine evidence; ignored
+data/, runs/, reports/ Downloaded data, checkpoints and experiments, generated output; ignored
+.conda/                Local dependencies; ignored
 ```
 
-The public tree contains aggregate evidence rather than machine logs or model binaries. Back up ignored artifacts independently. [Contributing](CONTRIBUTING.md) covers code boundaries and checks; [public release preparation](docs/PUBLICATION.md) covers export, history separation, and licensing.
+The public tree contains aggregate evidence rather than machine logs or model binaries. Back up ignored artifacts independently. [Contributing](CONTRIBUTING.md) covers code boundaries and checks; [public release preparation](docs/operations/PUBLICATION.md) covers export, history separation and licensing. The README that preceded the zero-shot program is archived in [EARLIER_README.md](docs/overview/EARLIER_README.md).
+
+## Limits and open questions
+
+- The four-family release gate is not met in any family, and no reserved final pool (level A report 940000 to 949999, level B final 960000 to 969999, level C final headings 970000 to 979999) has been opened.
+- Large rooms and mazes are open for learned policies. The planner works on its development rooms; maze reliability is 5 of 8 on the fresh suite.
+- Collisions remain above the gate everywhere: 8 to 16 per 64 on `passages`, 5 to 11 on medium, 45 to 54 per 168 on level C.
+- Results rest on one start, one recipe and up to three seeds. Seed spread is large, and single comparisons under about 10 episodes are not results.
+- Level C is 21 fixed situations with eight initial headings each. It is clustered and inspected, so it is descriptive, not a sample of buildings.
+- The connectome's contribution is not shown; settling it would take far more seeds than this project used.
+- The next steps are the write-up (a short paper, a long paper and an extended academic report built from these documents) and, still open, one more training step aimed at collisions and at large rooms and mazes. The live plan is the [roadmap](ROADMAP.md).
 
 ## Credits and licenses
 
 Original project code and documentation use the [MIT license](LICENSE). MaleCNS data retains its separate **CC BY 4.0** license; MIT does not relicense the dataset or dependencies. Preserve original attribution and identify transformations when sharing derived data.
 
-The MaleCNS reconstruction, annotations, and soma coordinates were produced by the FlyEM team at HHMI Janelia Research Campus, the University of Cambridge Department of Zoology, the MRC Laboratory of Molecular Biology, Google Research, and contributors credited in the [official project](https://male-cns.janelia.org/).
+The MaleCNS reconstruction, annotations and soma coordinates were produced by the FlyEM team at HHMI Janelia Research Campus, the University of Cambridge Department of Zoology, the MRC Laboratory of Molecular Biology, Google Research, and contributors credited in the [official project](https://male-cns.janelia.org/).
 
 Cite Berg, S., Beckett, I. R., Costa, M., et al. (2026), *Sexual dimorphism in the complete Drosophila male central nervous system connectome*, Cell, 189(18), 5504–5526.e15. [DOI](https://doi.org/10.1016/j.cell.2026.08.015). The source license is linked on the [official download page](https://male-cns.janelia.org/download/).
 
-Fly RL filters and transforms those tables; the original researchers did not produce this controller or its results. [Credits and references](docs/REFERENCES.md) describes modifications and reusable citations. Use the [documentation index](docs/README.md) for the remaining guides.
-
-
-### Large and maze development demos
-
-```powershell
-.\launch-large.cmd
-.\launch-maze.cmd
-```
-
-The large launcher selects frozen planner-1.3-exp.9, verified on six retained and eight fresh large rooms. The maze launcher selects planner-1.3-exp.11, which reaches both retained maze goals; its completed fresh development check reached 5/8 and missed its threshold; the latest successor reached 7/8 retained goals but 5/8 fresh goals and was not promoted. Both execute autonomous flight live, show neural activity in a separate brain window, and save telemetry. They do not train or replay a saved flight. Use `--speed 4` to speed up simulated time; hold Shift for the existing 10x boost. Seeds can be changed with `--seed`.
-
-### Architectural runtime status
-
-The revised six-scene collection now has public simulation and full-connectome environment adapters. A 48-transition CUDA smoke passed across all six scenes; 49 focused tests passed. These short flights do not establish target arrival. Launch the live viewer with `.\launch-architecture.cmd`; N changes situation and G changes scene. The separate brain window, controls and short flight recording were verified. The initial original-objective check completed at **18/21 goals, zero collisions and three timeouts**, with all cases measured. It used 11,829 full-connectome physical transitions, no training and no reserved test. Protected aliases and frozen sources matched. These inspected synthetic scenes are development evidence, not independent real-world generalization. [Complete results](docs/evidence/architectural-initial-navigation-results.md). [Launcher and controls](docs/ARCHITECTURAL_SCENES.md#interactive-architectural-demo). [Evidence and limitations](docs/evidence/architectural-fullgraph-integration.md).
-
-Architectural exp.2 also reached 18/21 goals without collisions: it fixes the warehouse aisle route but regresses an apartment success, so it is not promoted. The original objectives and deadlines were unchanged. [Candidate results](docs/evidence/architectural-escape-candidate-results.md). Next: constrain recovery using the regression trace before another correction check.
-
-## October 7 closing checkpoint
-
-Architectural planner-1.4-exp.3 reached **19/21 original goals, zero collisions and two timeouts**, preserving every exp.1 success and fixing the warehouse aisle route. Bathroom and atrium climb remain unresolved. These are inspected development scenes, not independent real-world evidence. The demo stays on exp.1 pending further verification. Work pauses at the user's request; no experiment remains running. [Closing results and resume requirements](docs/evidence/architectural-closing-results.md).
-
-## Autonomous learning restart
-
-The planner iteration is closed with defaults retained and unresolved failures recorded. The first planner-free architectural PPO policy passed a 128-transition, one-update CUDA smoke with the complete connectome, finite losses, changed parameters and checkpoint reload. This verifies the learning pipeline, not navigation performance. Substantial training awaits an agreed budget. [Implementation, limits and next experiment](docs/AUTONOMOUS_LEARNING.md).
-
-## First autonomous PPO pilot completed
-
-The 131,072-transition pilot reached 0 goals in 457 training episodes and 0/6 validation goals both before and after; final validation had five collisions and one timeout. The learning pipeline and checkpoint reload passed, but navigation did not. No model was promoted. A structured neural panorama/goal-state encoder is implemented as the next representation candidate; its focused gradient test passes, while full-connectome learning verification and training remain pending. [Results and diagnosis](docs/evidence/autonomous-architecture-pilot-1-results.md).
-
-## Structured autonomous pilot and curriculum verification (October 7, 2026)
-
-The second autonomous PPO pilot completed 131,072 transitions. Deterministic validation improved from 0/6 to 1/6 goals: the office succeeded, the courtyard collided, and apartment, street, atrium and warehouse timed out. This is incomplete navigation, not a successful general solution. Validation shares scene geometry with training; no independent reserved test was used. Losses were finite, reload matched, and protected aliases were unchanged. See docs/evidence/autonomous-architecture-pilot-2-results.md for the recorded outcomes.
-
-The training-only goal curriculum passed a full-connectome verification: one reset probe transition plus 128 PPO learning transitions and one optimizer update. Seeded reset observations matched after intervening activity, the original target was restored at the final stage, learned parameters changed, losses were finite and checkpoint reload matched. The smoke is separate from the pilot budget and makes no navigation-performance claim. The next step is a bounded curriculum experiment with declared stage advancement, task coverage and unchanged original-goal validation.
-
-
-## Autonomous curriculum closing result (October 7, 2026)
-
-The 131,072-transition curriculum pilot completed but remained at 1 metre: one mastery round failed, one passed, and the required second consecutive passing round was incomplete. Lesson training recorded 2,429 goals in 2,776 episodes. Original-goal validation achieved 1/6 goals (apartment), five collisions and no timeouts. This did not improve the previous structured pilot's 1/6 goal count and did not preserve its office success. Lesson successes are adaptive training evidence; the reused six-situation validation is not independent generalization. Finite losses, reload, source hashes and protected aliases passed; no promotion or reserved test occurred.
-
-Work is paused at the user's request. Next: review task scheduling and original-goal exposure before agreeing any new bounded training comparison. See [the curriculum closing evidence](docs/evidence/autonomous-architecture-curriculum-1-results.md).
-
-
-## Balanced autonomous curriculum result (October 7, 2026)
-
-The second architectural curriculum completed 131,072 fresh PPO transitions. It reached 2 metre lessons after two complete passing 1 metre rounds, but achieved 0/6 original-goal validation successes, with six collisions and no timeouts. The previous curriculum achieved 1/6 on the same development situations. Lesson progress therefore does not resolve complete-route navigation. No planner actions, reserved test access or checkpoint promotion occurred; protected aliases and sources retained their hashes. See [the detailed result](docs/evidence/autonomous-architecture-curriculum-2-results.md).
-
-Next: preserve original-goal training exposure alongside lessons, support reproducible continuation with curriculum state, and verify route transfer before any independent final test. Compare matched learned controllers with and without connectome activity after a working autonomous baseline exists.
-
-
-### Mixed curriculum implementation
-
-The next runner alternates original training goals and nearby lessons, continuing PPO and validated curriculum state from the previous checkpoint. Eight CPU tests and a full-connectome 128-transition smoke passed; no navigation improvement is claimed. Substantial training awaits an agreed additional budget. See [the protocol](docs/MIXED_AUTONOMOUS_CURRICULUM.md).
-
-
-![Nearby lesson learning versus complete-route validation](docs/images/autonomous-curriculum-2-transfer.png)
-
-The complete rounds above show short-goal practice, not complete-map navigation. The original-goal validation still had zero successes.
+Fly RL filters and transforms those tables; the original researchers did not produce this controller or its results. [Credits and references](docs/reference/REFERENCES.md) describes modifications and reusable citations. Use the [documentation index](docs/README.md) for the remaining guides.

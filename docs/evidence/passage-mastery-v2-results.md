@@ -55,4 +55,4 @@ All six original launcher files retained their before/after hashes; their actual
 | navigation-policy.json | `aa47f7ef830c491958a16bd121497c703d689b2a9717c566ad9888de5815460f` | `aa47f7ef830c491958a16bd121497c703d689b2a9717c566ad9888de5815460f` |
 | navigation-policy.zip | `2aa3469b6c56fa7f29c56399a7737b29c1870432e005714782d8efe23bf6be01` | `2aa3469b6c56fa7f29c56399a7737b29c1870432e005714782d8efe23bf6be01` |
 
-Full records and the read-only audit are retained locally under ignored `private/passage-mastery-v2-results/`. Source logs and checkpoints remain under `runs/training/passage-mastery-v2/`. See [aggregate results](../RESULTS.md) and [protocol](../GEOMETRY_CURRICULUM.md).
+Full records and the read-only audit are retained locally under ignored `private/passage-mastery-v2-results/`. Source logs and checkpoints remain under `runs/training/passage-mastery-v2/`. See [aggregate results](../results/RESULTS.md) and [protocol](../methods/GEOMETRY_CURRICULUM.md).

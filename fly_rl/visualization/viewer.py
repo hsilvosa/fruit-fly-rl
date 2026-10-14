@@ -12,16 +12,17 @@ from fly_rl.recordings.recording import FlightRecorder
 from fly_rl.simulation.sensors import RAY_COUNT,SENSOR_VERSION,SENSOR_V5,SENSOR_V6,ray_count,FAN_RANGE,fan_directions,panorama_directions
 
 def run(args):
-    from panda3d.core import loadPrcFileData,Geom,GeomNode,GeomVertexData,GeomVertexFormat,GeomVertexWriter,GeomTriangles,LineSegs,AmbientLight,DirectionalLight,TextNode,TransparencyAttrib,ClockObject,Filename
+    from panda3d.core import loadPrcFileData,Geom,GeomNode,GeomVertexData,GeomVertexFormat,GeomVertexWriter,GeomTriangles,LineSegs,AmbientLight,DirectionalLight,TextNode,TransparencyAttrib,ClockObject,Filename,AntialiasAttrib
     from direct.showbase.ShowBase import ShowBase
     from direct.gui.OnscreenText import OnscreenText
     loadPrcFileData('', 'window-title Fly RL | MaleCNS v1.0\nwin-size 1280 800\nsync-video false\nshow-frame-rate-meter false')
     if args.offscreen: loadPrcFileData('', 'window-type offscreen\naudio-library-name null')
+    # Live window: cap the frame rate (an uncapped loop starves the simulation and the PC) and smooth edges.
+    else: loadPrcFileData('', 'clock-mode limited\nclock-frame-rate 60\nframebuffer-multisample 1\nmultisamples 4')
 
-    def ellipsoid(parent,scale,color):
+    def ellipsoid(parent,scale,color,rings=20,segments=32):
         v=GeomVertexData('surface',GeomVertexFormat.getV3n3(),Geom.UHStatic)
         vertex=GeomVertexWriter(v,'vertex');normal=GeomVertexWriter(v,'normal')
-        rings=12;segments=20
         for i in range(rings+1):
             theta=math.pi*i/rings
             for j in range(segments+1):
@@ -57,6 +58,12 @@ def run(args):
         def __init__(self):
             super().__init__();self.disableMouse();self.setBackgroundColor(.025,.04,.065,1)
             self.camLens.setFov(58);self.camLens.setNearFar(.05,200)
+            if not args.offscreen:
+                self.render.setAntialias(AntialiasAttrib.MAuto)
+                clock=ClockObject.getGlobalClock();clock.setMode(ClockObject.MLimited);clock.setFrameRate(60.)
+            # Rendering state: the fly is drawn between the last two physics poses; lines rebuild only after a step.
+            self.pose_prev=None;self.pose_now=None;self.dirty=True;self.hud_clock=0.;self.activity=0.;self.compare_note=''
+            self.rays_node=None;self.trail_node=None
             light=AmbientLight('ambient');light.setColor((.65,.68,.75,1));self.render.setLight(self.render.attachNewNode(light))
             sun=DirectionalLight('sun');sun.setColor((.65,.75,.9,1));node=self.render.attachNewNode(sun);node.setHpr(-35,-55,0);self.render.setLight(node)
             self.is_replay=bool(getattr(args,'archive',None))
@@ -263,7 +270,7 @@ def run(args):
             if self.flight_record: self.flight_record.event('pause',self.steps,{'paused':self.paused})
         def toggle_camera(self):
             w=self.env.worlds[0];self.rig.cycle(w.position,w.rotation())
-        def toggle_sensors(self): self.sensors_visible=not self.sensors_visible
+        def toggle_sensors(self): self.sensors_visible=not self.sensors_visible;self.dirty=True
         def sensor_or_back(self):
             if self.rig.mode=='free': self.keys['s']=True
             else: self.toggle_sensors()
@@ -311,7 +318,7 @@ def run(args):
             self.rig.move(int(self.keys.get('w',False))-int(self.keys.get('s',False)),
                 int(self.keys.get('d',False))-int(self.keys.get('a',False)),
                 int(self.keys.get('e',False))-int(self.keys.get('q',False)),elapsed,fast)
-            w=self.env.worlds[0];position,target=self.rig.pose(w.position,w.rotation())
+            w=self.env.worlds[0];position,target=self.rig.pose(self.render_position,self.render_rotation) if hasattr(self,'render_position') else self.rig.pose(w.position,w.rotation())
             self.camera.setPos(*position);self.camera.lookAt(*target)
 
         def record_room(self,reason):
@@ -380,7 +387,7 @@ def run(args):
             self.trail=[];self.draw_room();self.room_id+=1;self.record_room('next-scene')
 
         def draw_room(self):
-            self.room.removeNode();self.room=self.render.attachNewNode('room')
+            self.room.removeNode();self.room=self.render.attachNewNode('room');self.dirty=True;self.pose_prev=None
             size=self.env.worlds[0].room;sx,sy,sz=size
             box(self.room,np.array([0.,0.,-.12]),np.array([sx,sy,0.]),(.085,.12,.17,1))
             lines=LineSegs();lines.setThickness(1);lines.setColor(.15,.23,.3,1)
@@ -410,9 +417,14 @@ def run(args):
             from fly_rl.visualization.playback import simulation_speed
             self.effective_speed=simulation_speed(args.speed,self.simulation_shift())
             self.phase+=elapsed*self.effective_speed;self.frames+=1
+            stepped=False
             if not self.paused:
                 self.accumulator+=elapsed*self.effective_speed
+                budget_end=time.perf_counter()+.03
                 while self.accumulator>=DT:
+                    # Live window: bound the work per frame so 10x boost never freezes the UI; excess time is dropped.
+                    if not args.offscreen and stepped and time.perf_counter()>budget_end:
+                        self.accumulator=min(self.accumulator,DT);break
                     if self.is_replay and self.env.finished:
                         self.paused=True;self.accumulator=0.;break
                     # Stochastic actions make an untrained policy visibly explore.
@@ -425,14 +437,16 @@ def run(args):
                             if self.flight_record and trace: self.flight_record.event('selected-neuron',self.steps+1,trace)
                     if self.flight_record and args.record_brain and (self.steps+1)%20==0:
                         self.flight_record.brain_snapshot(self.steps+1,self.env.brain.state[:,0].cpu().numpy())
+                    pw=self.env.worlds[0];self.pose_prev=(pw.position.copy(),pw.yaw,pw.bank,pw.pitch)
                     before=self.env.worlds[0].snapshot();sensors=self.env.latest_sensors[0].copy() if not self.is_replay else self.env.worlds[0].observe();features=self.env.latest_features[0].copy() if not self.is_replay else self.features[0].copy()
                     self.features,rewards,dones,infos=self.env.step(action)
-                    self.steps+=1;self.accumulator-=DT
+                    self.steps+=1;self.accumulator-=DT;stepped=True
                     if self.is_replay and self.room_id!=self.env.current_room_id:
                         self.room_id=self.env.current_room_id;self.trail=[];self.draw_room()
                     if self.flight_record:
                         self.flight_record.transition(self.steps,self.room_id,sensors,features,action[0],before,infos[0],rewards[0])
                     if dones[0]:
+                        self.pose_prev=None
                         self.collisions+=int(infos[0]['collision']);self.successes+=int(infos[0]['success'])
                         if self.flight_record: self.flight_record.event('episode-end',self.steps,{
                             'room_id':self.room_id,'collision':infos[0]['collision'],'success':infos[0]['success'],
@@ -443,9 +457,20 @@ def run(args):
                             self.room_id+=1;self.record_room('automatic-reset')
                             self.trail=[];self.draw_room()
                     self.trail.append(self.env.worlds[0].position.copy());self.trail=self.trail[-400:]
-            w=self.env.worlds[0];self.fly.setPos(*w.position);self.fly.setH(math.degrees(w.yaw))
+            w=self.env.worlds[0]
+            if stepped: self.dirty=True
+            # Draw the fly between the last two physics poses so 20 Hz steps look continuous at display rate.
+            pose=(w.position.copy(),w.yaw,w.bank,w.pitch);prev=self.pose_prev
+            if prev is None or self.paused or np.linalg.norm(pose[0]-prev[0])>1.: render_pose=pose
+            else:
+                alpha=float(np.clip(self.accumulator/DT,0.,1.))
+                turn=lambda a,b:a+math.atan2(math.sin(b-a),math.cos(b-a))*alpha
+                render_pose=(prev[0]+(pose[0]-prev[0])*alpha,turn(prev[1],pose[1]),turn(prev[2],pose[2]),turn(prev[3],pose[3]))
+            self.render_position=render_pose[0];c,s=math.cos(render_pose[1]),math.sin(render_pose[1])
+            self.render_rotation=np.array([[c,-s,0],[s,c,0],[0,0,1.]])
+            self.fly.setPos(*render_pose[0]);self.fly.setH(math.degrees(render_pose[1]))
             # The mesh faces +X; Panda pitch rotates around that forward axis.
-            self.fly.setP(math.degrees(w.bank));self.fly.setR(-math.degrees(w.pitch))
+            self.fly.setP(math.degrees(render_pose[2]));self.fly.setR(-math.degrees(render_pose[3]))
             if self.brain_visible:
                 if self.brain_map:
                     self.brain_map.update(self.neural)
@@ -453,12 +478,28 @@ def run(args):
                     'REPLAY\nThis view has saved features only.\nFull neuron snapshots are optional.\nUse the live demo with --brain-view.')
             for wing,side in self.wings: wing.setP(math.sin(self.phase*55)*25*side)
             self.update_camera(elapsed)
+            if self.dirty:
+                self.rebuild_lines(w);self.dirty=False
+            if self.rays_node is not None: self.rays_node.setPos(*(render_pose[0]-pose[0]))
+            clock=time.monotonic()
+            if stepped or clock-self.hud_clock>.1:
+                self.hud_clock=clock;self.update_hud(w)
+            if not self.preview_saved and self.frames>=2:
+                self.capture_preview();self.preview_saved=True
+            stop=(args.seconds>0 and (self.frames*DT if args.offscreen else time.monotonic()-self.started)>=args.seconds)
+            if stop:
+                self.finish();self.userExit()
+            return task.cont
+
+        def rebuild_lines(self,w):
             self.dynamic.removeNode();self.dynamic=self.render.attachNewNode('dynamic')
             self.dynamic.setTransparency(TransparencyAttrib.MAlpha)
+            self.compare_note=''
             lines=LineSegs();lines.setThickness(2);lines.setColor(.2,.85,.9,1)
             if self.trail:
                 lines.moveTo(*self.trail[0])
                 for p in self.trail[1:]: lines.drawTo(*p)
+            self.trail_node=self.dynamic.attachNewNode(lines.create())
             if self.is_replay and getattr(args,'compare',None):
                 from fly_rl.recordings.archive import room_fingerprint
                 from fly_rl.recordings.replay import matching_trajectory
@@ -466,9 +507,12 @@ def run(args):
                 if layout not in self.comparison_cache:
                     self.comparison_cache[layout]=matching_trajectory(args.compare,layout)
                 other=self.comparison_cache[layout]
+                self.compare_note=' / comparison: magenta' if other else ' / no matching comparison room'
                 if other:
-                    lines.setColor(.95,.3,.8,.8);lines.moveTo(*other[0])
-                    for point in other[1:]: lines.drawTo(*point)
+                    cmp=LineSegs();cmp.setThickness(2);cmp.setColor(.95,.3,.8,.8);cmp.moveTo(*other[0])
+                    for point in other[1:]: cmp.drawTo(*point)
+                    self.dynamic.attachNewNode(cmp.create())
+            self.rays_node=None
             if self.sensors_visible:
                 if self.is_replay:
                     directions=np.asarray(self.env.archive.manifest['local_ray_directions'])@w.rotation().T
@@ -487,22 +531,23 @@ def run(args):
                         lengths=self.env.latest_sensors[0,269:269+len(fan)]*FAN_RANGE
                     else:fan,lengths=w.fan_rays()
                     directions=np.vstack([directions,fan]);distances=np.r_[distances,lengths]
-                lines.setThickness(1);lines.setColor(.2,.43,.48,.25)
-                for d,length in zip(directions,distances):
-                    lines.setColor(*((1.,.35,.15,.7) if length<1. else (.2,.43,.48,.25)))
-                    lines.moveTo(*(w.position+d*.4));lines.drawTo(*(w.position+d*max(length,.4)))
-            self.dynamic.attachNewNode(lines.create())
-            activity=float(self.env.brain.state.abs().mean().item())
+                # Rays are built once per physics step in a node that follows the interpolated fly.
+                lines=LineSegs();lines.setThickness(1)
+                near=np.asarray(distances)<1.
+                starts=w.position+directions*.4;ends=w.position+directions*np.maximum(distances,.4)[:,None]
+                for hit in (False,True):
+                    lines.setColor(*((1.,.35,.15,.7) if hit else (.2,.43,.48,.25)))
+                    for i in np.flatnonzero(near==hit):
+                        lines.moveTo(*starts[i]);lines.drawTo(*ends[i])
+                self.rays_node=self.dynamic.attachNewNode(lines.create())
+            self.activity=float(self.env.brain.state.abs().mean().item())
+
+        def update_hud(self,w):
+            activity=self.activity
+            other=self.compare_note
             self.hud.setText(f"MaleCNS v1.0\n{self.env.brain.n:,} neurons | {self.env.brain.audit['edges']:,} directed edges\nDevice: {args.device.upper()} | room {self.seed}\nMap: {w.scene.name+' / '+w.scene.situations[w.situation_index].name if self.is_architecture else w.map_profile.name if w.map_profile else 'dense-v3' if w.mode=='dense' else w.mode} | {len(w.obstacles)} boxes\nSensors: {ray_count(getattr(w,'sensor_version',SENSOR_VERSION))} rays + approach speeds\nSimulation: {self.effective_speed:g}x / hold SHIFT: 10x boost\nCamera: {self.rig.mode.upper()} | recording: {'ON' if self.flight_record else 'OFF'}\n\nSpeed: {np.linalg.norm(w.velocity):.2f} units/s\nTarget: {w.distance:.2f} units\nMean brain activity: {activity:.3f}\nSteps: {self.steps} | collisions: {self.collisions}\nTargets reached: {self.successes}\n"+('PAUSED' if self.paused else 'RUNNING'))
             if self.is_replay:
-                overlay=(' / comparison: magenta' if other else ' / no matching comparison room') if getattr(args,'compare',None) else ''
-                self.hud.setText(f"SAVED FLIGHT / no brain or policy execution\nFrame: {self.env.cursor}/{self.env.total} | room {self.room_id}\nCamera: {self.rig.mode.upper()} | speed {self.effective_speed:g}x{overlay}\n\nSpeed: {np.linalg.norm(w.velocity):.2f} units/s\nTarget: {w.distance:.2f} units\nSaved feature magnitude: {activity:.3f}\nAction: {np.array2string(w.last_action,precision=2)}\nNearest sensed obstacle: {float(np.min(self.env.sensor_state[:128]))*8.:.2f}\n"+('END OF RECORDING' if self.env.finished else ('PAUSED' if self.paused else 'PLAYING')))
-            if not self.preview_saved and self.frames>=2:
-                self.capture_preview();self.preview_saved=True
-            stop=(args.seconds>0 and (self.frames*DT if args.offscreen else time.monotonic()-self.started)>=args.seconds)
-            if stop:
-                self.finish();self.userExit()
-            return task.cont
+                self.hud.setText(f"SAVED FLIGHT / no brain or policy execution\nFrame: {self.env.cursor}/{self.env.total} | room {self.room_id}\nCamera: {self.rig.mode.upper()} | speed {self.effective_speed:g}x{other}\n\nSpeed: {np.linalg.norm(w.velocity):.2f} units/s\nTarget: {w.distance:.2f} units\nSaved feature magnitude: {activity:.3f}\nAction: {np.array2string(w.last_action,precision=2)}\nNearest sensed obstacle: {float(np.min(self.env.sensor_state[:128]))*8.:.2f}\n"+('END OF RECORDING' if self.env.finished else ('PAUSED' if self.paused else 'PLAYING')))
 
         def capture_preview(self):
             if self.win is None or not self.win.isValid(): return False
