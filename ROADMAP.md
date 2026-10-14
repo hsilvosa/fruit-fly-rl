@@ -1,6 +1,6 @@
 # Roadmap
 
-Live status board. Last updated: October 14, 2026, after actions R1 to R5, the diagnostics that followed, B1 to B4, C1.0 and C1.1 (see docs/EXPERIMENT_LOG.md) on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
+Live status board. Last updated: October 14, 2026, after actions R1 to R5, the diagnostics that followed, B1 to B4, C1.0 to C1.2 (see docs/EXPERIMENT_LOG.md) on `navigation-development`. Active runs: none. This file is the single place that says what is done, what is open, and what can start next. The earlier roadmap is kept in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md).
 
 ## 1. Objective
 
@@ -36,6 +36,7 @@ Proposed release gate: at least 52 of 64 successes and at most 3 collisions in e
 | Three-seed replication of the 2M recipe | Positive by the frozen rule on pool 886000: stage 61 `passages` 42, 36, 39 of 64 (mean 39, start checkpoint 5), `passages-mid` 54 to 57, medium 49, 54, 55, `passages-wide` and `gate-two` 64. Collisions on `passages` 8, 16, 8 against the gate's 3 | [REPLICATION_2M_RESULTS.md](docs/REPLICATION_2M_RESULTS.md) |
 | Level B and level C for the 2M checkpoints (stage 61, three seeds) | Level B inconclusive: 26, 17, 12 of 64 (mean 18.3, positive needed 20; earlier runs 1 to 6; start 1). Level C positive by the rule: 95, 108, 108 of 168 deterministic (start 71), but `courtyard` fell from 24/24 to 7 to 23 and `apartment`, `atrium` did not move. Against the sampled start (93) the gain is 12 to 20 episodes | [LEVEL_BC_RESULTS.md](docs/LEVEL_BC_RESULTS.md) |
 | No-connectome control (edge-shuffled reservoir, matched fresh chain, 2 seeds per arm) | Chain check failed (fresh real arm 16.0 of 64 on `passages` against 28 needed; retained 36 to 42), so the comparison is a fresh-chain result only. There the shuffled arm is not worse: `passages` 25.5 against 16.0, `passages-mid` 51.0 against 41.5, level B 6.5 against 5.5, level C 86 against 79 of 168. No evidence that the wiring matters; the connectome contribution cannot be claimed | [CONNECTOME_CONTROL_RESULTS_C11.md](docs/CONNECTOME_CONTROL_RESULTS_C11.md) |
+| Control at 4.88M transitions (C1.2, 2 seeds per arm) | Chain check fails by half an episode (real mean 27.5 of 64 on `passages`, needed 28; shuffled 21.0; retained 38.0). Comparison inconclusive; no cell shows an advantage of the real connectome (mid 51 vs 47, level B 9.5 vs 12, level C 98 vs 105.5). Seed spread (13 to 16 episodes) is as large as any difference | [CONNECTOME_CONTROL_RESULTS_C12.md](docs/CONNECTOME_CONTROL_RESULTS_C12.md) |
 | Release gate | Not met | This file |
 
 Best development candidate so far: `runs/training/phase1-pilot/seed442/stage-3.zip`. On a fresh pool with 64 episodes per cell: medium 57, passages-wide 14, passages-mid 37 and passages 17 (89%, 22%, 58% and 27%). It is a real policy and an outlier: five repeats of its recipe reached 7 to 13 of 32 on passages-mid. It gives up passages-wide to get the harder profiles.
@@ -160,11 +161,11 @@ Each action lists what it needs, an estimate with its basis, and what it unlocks
 | B4 | Done October 13. Level B inconclusive (mean 18.3 of 64, one episode under the threshold), level C positive (mean 103.7 of 168, start 71), with a `courtyard` regression ([results](docs/LEVEL_BC_RESULTS.md)) | Not applicable | Measured: 53 min against 1 h 30 estimated (level C runs 12 to 17 min each) | Not applicable | Decision D6: next lever |
 | C1.0 | Done October 13. Gate passed: fresh real-connectome arm 61 of 64 on medium after 885k transitions (gate 40); edge-shuffled arm 54, sampled 60 against 59 ([results](docs/CONNECTOME_CONTROL_RESULTS_C10.md)) | Not applicable | Measured: about 38 min training with both arms in parallel (CPU mean 66%, peak 90%) and 12 min evaluation | Not applicable | C1.1 protocol |
 | C1.1 | Done October 14. Chain check failed (real arm 16.0 on `passages`, needed 28); no evidence of a wiring effect, shuffled arm nominally higher (25.5) ([results](docs/CONNECTOME_CONTROL_RESULTS_C11.md)) | Not applicable | Measured: training 3 h 28 as estimated, evaluation 1 h 25 against 45 min estimated (eight level C passes under six processes) | Not applicable | Decision D7 |
-| C1.2 | User chose D7 option 2 (strengthen the control). Extend the four C1.1 runs by 61 stages (4.88M transitions each), evaluate on new pool 888000 (the retained seeds on the same pool), level B and level C (deterministic). Chain check: real mean on `passages` at least 28 of 64. Protocol committed ([CONNECTOME_CONTROL_PROTOCOL_C12.md](docs/CONNECTOME_CONTROL_PROTOCOL_C12.md)); **not launched, waiting for the user's go** | Go from the user | About 4 h 10: training 2 h 48 (two pairs of about 84 min), evaluation about 80 min (range 60 to 100; C1.1 took 85 min for 48 runs) | CPU 66 to 76% mean, peak 90%, memory about 70% | Whether a larger budget lets the fresh chain reach the retained level, and then the real-versus-shuffled comparison there |
+| C1.2 | Done October 14. Chain check failed by 0.5 episode (real mean 27.5, needed 28); comparison inconclusive; no advantage of the real connectome on any cell ([results](docs/CONNECTOME_CONTROL_RESULTS_C12.md)) | Not applicable | Measured: 4 h 06 against 4 h 10 estimated (training 78 and 81 min per pair, evaluation 87 min) | Not applicable | Decision D8 |
 | C1.P | Planner reference on level C (168 episodes), `large` and `maze` only; needs its own protocol | Protocol | Level C about 55 min (from 409 s for 21 episodes); `large` and `maze` after an 8-episode cost probe | Not known | Reference for the claim |
 | R6 | Memory retest: 3 seeds x 2 conditions, 64 episodes per cell, final checkpoint only | R3 advised | About 2 h (no measured basis for 64 episodes) | CPU about 55% | A decision on memory |
 
-Recommended order: R1 to R5, D1 to D4, B1 to B4 and C1.0, C1.1 are done. The connectome-contribution claim is not supported (C1.1). Open decision D7 (section 6): the planner reference C1.P (level C, `large`, `maze`) and then the release with limitations (Phase 6), or first a second shuffled graph and a chain that reaches the retained level.
+Recommended order: R1 to R5, D1 to D4, B1 to B4 and C1.0 to C1.2 are done. The connectome-contribution claim is not supported and cannot be settled cheaply (about 8 seeds per arm would be needed to detect a 10-episode difference). Next (D8, section 6): the planner reference C1.P (level C, `large`, `maze` only), then the release with limitations (Phase 6).
 
 R1 and R3 can overlap. Two training or evaluation jobs must not run at once, because one training job uses about half of the CPU.
 
@@ -181,6 +182,7 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | B3 (October 13) | Does the 2M effect replicate on other seeds? | Yes: mean `passages` 39 of 64, every seed 36 or more, medium 49 or more. Next: B4, level B and C once | Not applicable |
 | B4 (October 13), D6 | Does the 2M effect reach level B and C? | Level B inconclusive (18.3 of 64 against 20), level C positive (103.7 of 168 against 88) with uneven scenes. Open decision D6: the next lever | Not applicable |
 | C1.1 (October 14), D7 | Does the real connectome beat the edge-shuffled control? | No evidence: the shuffled arm is at least as good in every cell (differences below 10 episodes, inside seed spread). The fresh chain reaches only 16 to 26 of 64 on `passages` against 36 to 42 retained, so the check on the chain failed. Open: C1.P and the release, or strengthen the control | Not applicable |
+| C1.2 (October 14), D8 | Does a larger budget let the control settle the connectome question? | No: the fresh real arm reaches 27.5 of 64 on `passages` (needed 28), shuffled 21.0; seed spread equals the differences; no cell favors the real connectome. Settling it would take about 8 seeds per arm. Open: C1.P and the release, or stop the control here | Not applicable |
 | Phase 4 | Is a held-out family result at or above half the development rate? | Proceed to Phase 5 | Keep training and revisit the representation |
 
 ## 7. Rules for every iteration
@@ -213,7 +215,7 @@ R1 and R3 can overlap. Two training or evaluation jobs must not run at once, bec
 | Large-budget test pool (B1) | 884000 to 884063 | Curve evaluation of the 1M run, `passages` and medium, both modes ([protocol](docs/LARGE_BUDGET_PROTOCOL.md)) | Inspected October 12 (B1 results). Selects nothing |
 | 2M test pool (B2) | 885000 to 885063 | Curve evaluation of the 2M run and of the B1 final checkpoint, `passages` and medium ([protocol](docs/LARGE_BUDGET_2M_PROTOCOL.md)) | Inspected October 12 (B2 results). Selects nothing |
 | 2M replication pool (B3) | 886000 to 886063 | Stages 46 and 61 of seeds 801, 851, 901 and the start checkpoint, `passages` and medium (final stage also mid, wide, gates) | Inspected October 13 (B3 results). Selects nothing |
-| C1.2 pool | 888000 to 888063 | `passages`, `passages-mid`, `passages-wide`, medium for the four extended control runs and the three retained seeds | Declared October 14, unopened. Selects nothing |
+| C1.2 pool | 888000 to 888063 | `passages`, `passages-mid`, `passages-wide`, medium for the four extended control runs and the three retained seeds | Inspected October 14 (C1.2 results). Selects nothing |
 | C1.0 pool | 887000 to 887063 | Medium rooms: retained start and the two fresh phase 1 arms | Inspected October 13 (C1.0 results). Selects nothing |
 | Level B region, development | Held-out sampler, 950000 to 959999 | Look at progress, not for selection | Drawn: 950000 to 950063 inspected for every R5 and student run |
 | Level B region, final | Held-out sampler, 960000 to 969999 | Final assessment | Reserved, unopened |
@@ -241,6 +243,7 @@ All run artifacts are local and ignored by git (`runs/`, `private/`). Hashes are
 | C1.0 fresh phase 1, real connectome, seed 1001 | `runs/training/connectome-control/phase1-real1001/stage-27.zip` | `05be0cc88b1b7ae3` |
 | C1.0 fresh phase 1, edge-shuffled, seed 1001 | `runs/training/connectome-control/phase1-shuffled1001/stage-27.zip` | `994d24760718d037` |
 | C1.1 phase 2 checkpoints (stage 61): real 1001, real 1051, shuffled 1001, shuffled 1051 | `runs/training/connectome-control/phase2-<arm><seed>/stage-61.zip` | `d1cf2ca4e3c3c535`, `b2e6a0f459ce41b8`, `47ab8dc1c288566f`, `918cbc6fbf0c3464` |
+| C1.2 phase 3 checkpoints (stage 61): real 1001, real 1051, shuffled 1001, shuffled 1051 | `runs/training/connectome-control/phase3-<arm><seed>/stage-61.zip` | `89afcdc35f385c56`, `a7e549d4c9bf8d93`, `b85f2e42c67fea4a`, `9ca7652aa583a5e1` |
 
 Detailed evidence copies live in `private/reference-recovery-1-evidence/`. The experiment index is [docs/EXPERIMENT_LOG.md](docs/EXPERIMENT_LOG.md).
 
