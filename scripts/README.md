@@ -44,6 +44,8 @@ Trainers write checkpoints and logs under `runs/` (see the run directories in [d
 - `connectome_control_c10_driver.py`: C1.0, phase 1 of the fresh two-arm chain, then medium-room evaluation on pool 887000.
 - `connectome_control_c11_driver.py`: C1.1, phase 2 of both arms, seeds 1001 and 1051, then evaluation.
 - `connectome_control_c12_driver.py`: C1.2, extension of the four C1.1 runs by 61 stages, then evaluation on pool 888000. Usage: `connectome_control_c12_driver.py [train-only]`.
+- `connectome_control_c13_driver.py`: C1.3, two more seeds (1101, 1151) of the fresh chain for both arms, then evaluation on pool 888000 and the frozen four-seed analysis. Usage: `connectome_control_c13_driver.py [train-only|dry-run]`.
+- `connectome_control_stats.py`: the frozen statistics of C1.3 (Welch interval of real minus shuffled and the four verdicts). Usage: `connectome_control_stats.py <summary.json>...`.
 - `planner_reference_driver.py`: C1.P, planner on level C (four processes of two headings each) and the retained learned candidate on `large` and `maze`.
 - `pretrain_driver.py`: supervised pretraining experiment (data collection, pretraining, three PPO students, evaluation). Resumable.
 - `student_driver.py`: auxiliary and privileged-critic students, with controls. Resumable.

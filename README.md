@@ -19,7 +19,7 @@ This repository holds the code, the experiments and the written record of that w
 7. [Install and run](#install-and-run)
 8. [How the experiment is organized](#how-the-experiment-is-organized)
 9. [Repository map](#repository-map)
-10. [Limits and open questions](#limits-and-open-questions)
+10. [Limitations](#limitations)
 11. [Credits and licenses](#credits-and-licenses)
 
 ## Results at a glance
@@ -132,7 +132,7 @@ The control keeps everything except who connects to whom: the target of every ed
 
 ![Real connectome against the shuffled control on passages](docs/images/figures/connectome-control.png)
 
-On medium rooms the two arms learn equally well (61 and 54 of 64). On the harder cells the fresh chain did not reach the retained policy's level at either budget (2.88M and 4.88M transitions), and the two seeds of each arm differ by as much as the arms do (13 to 16 episodes). No cell favors the real connectome. The project therefore cannot claim that the biological wiring improves or is necessary for navigation; showing a 10-episode difference would take about eight seeds per arm. Details: [C1.0](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C10.md), [C1.1](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C11.md), [C1.2](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md).
+On medium rooms the two arms learn equally well (61 and 54 of 64). On the harder cells the fresh chain did not reach the retained policy's level at either budget (2.88M and 4.88M transitions), and the seeds of each arm differ by as much as the arms do (13 to 16 episodes with two seeds). With four seeds per arm the `passages` difference (real minus shuffled) is +3.75 episodes with a 95 percent interval of [-7.6, +15.1], and no other cell favors the real connectome. The project therefore cannot claim that the biological wiring improves or is necessary for navigation; an equivalence verdict within 10 episodes would take about seven seeds per arm. Details: [C1.0](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C10.md), [C1.1](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C11.md), [C1.2](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md), [C1.3](docs/experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C13.md).
 
 The explicit planner (an observed-map controller that reads the same connectome activity and chooses actions by search) is the other reference. It scores 147 of 168 on the architectural scenes it was developed on, and its results on large rooms and mazes are development figures, not matched pools ([planner reference](docs/experiments/connectome-control/PLANNER_REFERENCE_RESULTS.md), [planner documentation](docs/planner/PLANNER_DEVELOPMENT.md)).
 
@@ -248,15 +248,38 @@ data/, runs/, reports/ Downloaded data, checkpoints and experiments, generated o
 
 The public tree contains aggregate evidence rather than machine logs or model binaries. Back up ignored artifacts independently. [Contributing](CONTRIBUTING.md) covers code boundaries and checks; [public release preparation](docs/operations/PUBLICATION.md) covers export, history separation and licensing. The README that preceded the zero-shot program is archived in [EARLIER_README.md](docs/overview/EARLIER_README.md).
 
-## Limits and open questions
+## Limitations
 
-- The four-family release gate is not met in any family, and no reserved final pool (level A report 940000 to 949999, level B final 960000 to 969999, level C final headings 970000 to 979999) has been opened.
-- Large rooms and mazes are open for learned policies. The planner works on its development rooms; maze reliability is 5 of 8 on the fresh suite.
-- Collisions remain above the gate everywhere: 8 to 16 per 64 on `passages`, 5 to 11 on medium, 45 to 54 per 168 on level C.
-- Results rest on one start, one recipe and up to three seeds. Seed spread is large, and single comparisons under about 10 episodes are not results.
-- Level C is 21 fixed situations with eight initial headings each. It is clustered and inspected, so it is descriptive, not a sample of buildings.
-- The connectome's contribution is not shown; settling it would take far more seeds than this project used.
-- The next steps are the write-up (a short paper, a long paper and an extended academic report built from these documents) and, still open, one more training step aimed at collisions and at large rooms and mazes. The live plan is the [roadmap](ROADMAP.md).
+**Status.** The project is closed. The release gate was not met, and the items below are what a reader should keep in mind when using any number in this repository.
+
+**What the evidence does not show**
+
+- The four-family release gate (at least 52 of 64 successes and at most 3 collisions in each of medium, large, maze and architectural) is not met in any family. No learned policy navigates large rooms or mazes (0 to 2 of 32 per cell).
+- Collisions stay above the gate everywhere: 8 to 16 per 64 on `passages`, 5 to 11 on medium, 45 to 54 per 168 on level C.
+- The connectome's contribution is not shown. With four seeds per arm the real reservoir and an edge-shuffled one differ on `passages` by +3.75 episodes of 64 (95 percent interval -7.6 to +15.1), which is inconclusive by the frozen rule. This is a bounded null result, not proof that the wiring does not matter.
+- The explicit planner (147 of 168 on level C) is a reference and never a learned result. The learned policy trails it by about 43 episodes there.
+
+**Limits of the measurements**
+
+- Every number is a development-pool result. The reserved final pools (level A report 940000 to 949999, level B final 960000 to 969999, level C final headings 970000 to 979999) were never opened, so nothing here is an estimate of performance on truly unseen maps.
+- Results rest on one start, one recipe and up to four seeds. Seed spread is large (up to 16 episodes of 64 within one configuration), so single comparisons under about 10 episodes are not results.
+- Level C is 21 fixed situations with eight headings each. It is clustered and inspected, so it is descriptive, not a sample of buildings. Level B was inconclusive (mean 18.3 of 64 against a threshold of 20).
+- Deterministic and sampled evaluation can differ a lot on a single run (a deterministic hover fixed point showed 13 against 27 sampled). The decision mode was declared before each run.
+
+**Limits of the model**
+
+- The reservoir is fixed and has no sensory or motor anatomy: each neuron gets two random sensor channels and the readout pools all neurons into 256 random buckets. The control therefore tests the wiring inside the reservoir only. A connectome with anatomically placed inputs and outputs is a different experiment (C2) that was not run and cannot reuse any checkpoint here.
+- Only one shuffled graph was drawn (shuffle seed 1).
+- Sensors, neural equations, sensory projection and flight dynamics are engineering choices. Neural colors show modeled activity, not measured firing.
+- The fresh control chain (4.88M transitions) never reached the retained lineage on `passages` (26.0 and 22.25 against 38.0), so the control says little about the retained policies.
+
+**Not done**
+
+- The short paper, the long paper and the extended report were not written.
+- One more training step aimed at collisions and at large rooms and mazes was not run.
+- Memory (R6) was not retested with three seeds.
+
+The record of what was decided and why is in the [roadmap](ROADMAP.md) and the [findings](docs/results/FINDINGS.md).
 
 ## Credits and licenses
 
