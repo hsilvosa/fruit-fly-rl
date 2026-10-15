@@ -172,7 +172,7 @@ Level B is an opening width below 3.8 m with at least four partitions. Developme
 
 ## 7. Connectome control (edge-shuffled reservoir)
 
-Chain-check rules: the C1.1 and C1.2 chain checks required a real-arm mean of at least 28 of 64 on `passages`. Both failed (16.0 and 27.5). Comparisons below are therefore fresh-chain results only and are not tests of the retained lineage. Two seeds per arm (1001 and 1051), one shuffled graph.
+Chain-check rules: the C1.1 and C1.2 chain checks required a real-arm mean of at least 28 of 64 on `passages`. All three failed (16.0, 27.5 and 26.0). Comparisons below are therefore fresh-chain results only and are not tests of the retained lineage. C1.1 and C1.2 used two seeds per arm (1001 and 1051); C1.3 adds seeds 1101 and 1151 for four per arm. One shuffled graph.
 
 | Cell | Policy or arm | Result | Mode | Pool status | Seeds / notes | Source |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -187,7 +187,16 @@ Chain-check rules: the C1.1 and C1.2 chain checks required a real-arm mean of at
 | `passages-mid`, C1.1 | Real and shuffled | Real 41.5 det; shuffled 51.0 det; retained 55.7 det | det | Development (inspected); pool not stated | Shuffled higher, below 10-episode cut | [CONNECTOME_CONTROL_RESULTS_C11](../experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C11.md) |
 | `passages-wide`, C1.1 | Real and shuffled | Real 59.5 det; shuffled 64.0 det; retained 64.0 det | det | Development (inspected); pool not stated | | same |
 | Connectome, seed spread | C1.2 real and shuffled `passages` | Real seeds differ by 13; shuffled seeds by 16 | det | Development (inspected) pool 888000 | Equal to the arm difference | [CONNECTOME_CONTROL_RESULTS_C12](../experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md) |
-| Connectome, sample size | Seeds needed for 10-episode difference at 80% power | About 8 seeds per arm | n/a | n/a | Source estimate | same |
+| `passages`, C1.3 | Real, four seeds (1001, 1051, 1101, 1151) | 21, 34, 21, 28 of 64 det (mean 26.0); 25, 37, 26, 29 samp (mean 29.25) | det, samp | Development (inspected) pool 888000 | Chain check fails (26.0 < 28) | [CONNECTOME_CONTROL_RESULTS_C13](../experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C13.md) |
+| `passages`, C1.3 | Shuffled, four seeds | 13, 29, 22, 25 of 64 det (mean 22.25); 27, 35, 31, 36 samp (mean 32.25) | det, samp | Development (inspected) pool 888000 | | same |
+| `passages`, C1.3 | Difference real minus shuffled | +3.75 det; 95 percent interval [-7.6, +15.1]; 90 percent interval [-5.2, +12.7] | det | Development (inspected) pool 888000 | Inconclusive by the frozen rule (equivalence margin 10) | same |
+| `passages-mid`, C1.3 | Real and shuffled, four seeds | Real 50.0 det (54.0 samp); shuffled 48.0 det (54.25 samp); D +2.0 | det, samp | Development (inspected) pool 888000 | Equivalent within 10 | same |
+| `passages-wide`, C1.3 | Real and shuffled | Real 63.5 det; shuffled 62.75 det; D +0.75 | det, samp | Development (inspected) pool 888000 | Near ceiling | same |
+| Medium, C1.3 | Real and shuffled | Real 53.5 det (55.5 samp); shuffled 54.5 det (55.25 samp); D -1.0 | det, samp | Development (inspected) pool 888000 | Equivalent within 10 | same |
+| Level B, C1.3 | Real and shuffled | Real 7, 12, 11, 4 (mean 8.5); shuffled 11, 13, 6, 18 (mean 12.0); D -3.5 | det | Development (inspected) pool 950000 range | Equivalent within 10 | same |
+| Level C, C1.3 | Real and shuffled | Real 91, 105, 109, 95 (mean 100.0); shuffled 111, 100, 97, 107 (mean 103.75); D -3.75 of 168 | det | Development (inspected) headings 900000 | Equivalent within 26 | same |
+| Connectome, seed spread, C1.3 | `passages` four seeds per arm | Sample standard deviation 6.3 (real), 6.8 (shuffled) | det | Development (inspected) pool 888000 | Smaller than the two-seed estimate (9 and 11) | same |
+| Connectome, sample size | Seeds needed for 10-episode difference at 80% power | About 8 seeds per arm (C1.2 estimate); about 7 per arm for an equivalence verdict if the true difference is near +3.75 (C1.3, spread 6.5) | n/a | n/a | Estimates | same |
 
 ## 8. Planner (explicit reference, not learned)
 
