@@ -182,6 +182,7 @@ Every protocol was committed before its run; the question, design and outcome of
 - [No-connectome control, stage C1.0: results](experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C10.md)
 - [No-connectome control, stage C1.1: results](experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C11.md)
 - [No-connectome control, stage C1.2: results](experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md)
+- [No-connectome control, stage C1.3: results](experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C13.md)
 - [Planner reference and the four-family picture (C1.P): protocol](experiments/connectome-control/PLANNER_REFERENCE_PROTOCOL.md)
 - [Planner reference and the four-family picture (C1.P): results](experiments/connectome-control/PLANNER_REFERENCE_RESULTS.md)
 

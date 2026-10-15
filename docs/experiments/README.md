@@ -9,7 +9,7 @@ This page lists every experiment series in the repository: the question it asked
 - **Negative results are reported.** Several series are negative or inconclusive by their own rule (for example R5, the students, the connectome control, and the level B part of B4). Those results are kept with the same detail as positive ones.
 - **Denominators.** Outcomes are counts of successes out of the episodes in the cell (usually 64, or 32 for early experiments, 168 for level C). A success is a goal reached before the deadline without a collision; a collision or a timeout is a failure.
 - **Local artifacts.** Checkpoints, logs, and per-episode records live in `runs/` and `private/`, which are not in git. Run directory names are given below as plain text. Checkpoint hashes are the first 16 hex digits of SHA-256 and are listed in [ROADMAP.md, section 9](../../ROADMAP.md#9-artifact-index).
-- **Scope.** Experiments measure the learned controllers and the planner on the stated distributions. None of them establishes navigation on unseen maps in general, and the connectome is never credited by itself (see [Connectome control](#connectome-control-c10-c11-c12)).
+- **Scope.** Experiments measure the learned controllers and the planner on the stated distributions. None of them establishes navigation on unseen maps in general, and the connectome is never credited by itself (see [Connectome control](#connectome-control-c10-c11-c12-c13)).
 
 ## Reference recovery and transfer experiments 1 to 8
 
@@ -270,9 +270,9 @@ Screening: [protocol](variance-and-stability/PHASE3_SCREENING_PROTOCOL.md) · [r
 
 **Run directories.** `runs/training/large-budget-2m/b4-eval/`.
 
-## Connectome control: C1.0, C1.1, C1.2
+## Connectome control: C1.0, C1.1, C1.2, C1.3
 
-C1.0: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C10.md). C1.1: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL_C11.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C11.md). C1.2: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL_C12.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md). C1.3 (prepared, not launched): [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL_C13.md)
+C1.0: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C10.md). C1.1: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL_C11.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C11.md). C1.2: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL_C12.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md). C1.3: [protocol](connectome-control/CONNECTOME_CONTROL_PROTOCOL_C13.md) · [results](connectome-control/CONNECTOME_CONTROL_RESULTS_C13.md)
 
 **Question.** Does the real MaleCNS wiring do better than an edge-shuffled reservoir with the same degree structure, when a fresh policy is trained with the same chain?
 

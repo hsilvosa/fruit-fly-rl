@@ -41,7 +41,7 @@ The development journal that records the project from its first commit is privat
 | 12 | Randomized map sampler, the random-distribution run (R5), committee reviews and diagnostics | Random-map training negative by its rule; diagnostics located the failure in information at decision time, not in the reward | [MAP_SAMPLER.md](../methods/MAP_SAMPLER.md), [RANDOM_DISTRIBUTION_RESULTS.md](../experiments/random-distribution/RANDOM_DISTRIBUTION_RESULTS.md), [LIGHT_AUDIT_RESULTS.md](../experiments/diagnostics/LIGHT_AUDIT_RESULTS.md), [FEATURE_PROBE.md](../experiments/diagnostics/FEATURE_PROBE.md) |
 | 13 | Autonomous students: auxiliary head, privileged critic, supervised pretraining (all negative) | Three training-only route signals each failed their rule on `passages` | [AUXILIARY_STUDENT_RESULTS.md](../experiments/students/AUXILIARY_STUDENT_RESULTS.md), [PRETRAIN_RESULTS.md](../experiments/students/PRETRAIN_RESULTS.md) |
 | 14 | Training budget: 1M, 2M, three-seed replication, level B and level C measurement | 2M budget raised `passages` to 36 to 42 of 64 on three seeds; level B inconclusive, level C positive | [LARGE_BUDGET_RESULTS.md](../experiments/large-budget/LARGE_BUDGET_RESULTS.md), [LARGE_BUDGET_2M_RESULTS.md](../experiments/large-budget/LARGE_BUDGET_2M_RESULTS.md), [REPLICATION_2M_RESULTS.md](../experiments/large-budget/REPLICATION_2M_RESULTS.md), [LEVEL_BC_RESULTS.md](../experiments/large-budget/LEVEL_BC_RESULTS.md) |
-| 15 | Connectome control (C1.0 to C1.2, edge-shuffled reservoir) and the planner reference (C1.P) | No measured advantage of the real wiring over an edge-shuffled reservoir; planner reaches 147 of 168 on level C | [CONNECTOME_CONTROL_RESULTS_C12.md](../experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md), [PLANNER_REFERENCE_RESULTS.md](../experiments/connectome-control/PLANNER_REFERENCE_RESULTS.md) |
+| 15 | Connectome control (C1.0 to C1.3, edge-shuffled reservoir) and the planner reference (C1.P) | No measured advantage of the real wiring over an edge-shuffled reservoir; planner reaches 147 of 168 on level C | [CONNECTOME_CONTROL_RESULTS_C13.md](../experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C13.md), [PLANNER_REFERENCE_RESULTS.md](../experiments/connectome-control/PLANNER_REFERENCE_RESULTS.md) |
 | 16 | Consolidation (this documentation reorganization, brief) | Documents organized into topic folders; the release gate is not met and the release decision is open | [EXPERIMENT_LOG.md](../EXPERIMENT_LOG.md), [ROADMAP.md](../../ROADMAP.md), [PUBLICATION.md](../operations/PUBLICATION.md) |
 
 ---
@@ -664,7 +664,7 @@ Level B (held-out sampler, difficulty 0.8, 64 episodes on pool 950000) gave **26
 
 ---
 
-## Iteration 15. Connectome control (C1.0 to C1.2, edge-shuffled reservoir) and the planner reference (C1.P)
+## Iteration 15. Connectome control (C1.0 to C1.3, edge-shuffled reservoir) and the planner reference (C1.P)
 
 **Goal.** Ask whether the real connectome wiring matters, by comparing it with an edge-shuffled reservoir trained under the same recipe, and then measure the explicit planner on the same level C headings.
 
@@ -682,11 +682,15 @@ Two seeds per arm (1001 and 1051) trained two phases, 2.88M transitions in total
 
 The four C1.1 runs were extended by 61 stages to 4,882,432 transitions each, with the B2 recipe. The chain check **failed by half an episode**: the real mean on `passages` was 27.5 of 64 against the needed 28, the shuffled mean 21.0 and the retained mean 38.0. Other cells were: `passages-mid` real 51.0 against shuffled 47.0; level B 9.5 against 12.0; level C 98.0 against 105.5. Within each arm the two seeds differed by 13 (real) and 16 (shuffled) episodes on `passages`, as much as the difference between arms. No cell showed an advantage of the real connectome. Settling the question at this effect size would take about eight seeds per arm ([CONNECTOME_CONTROL_RESULTS_C12.md](../experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C12.md)).
 
+### C1.3: four seeds per arm
+
+Two more seeds (1101 and 1151) of the fresh chain were trained for both arms to 4,882,432 transitions and evaluated on the same cells and pool as C1.2, then analysed with a frozen Welch interval over four seeds per arm. On `passages` the real arm scored 21, 34, 21, 28 (mean 26.0) and the shuffled arm 13, 29, 22, 25 (mean 22.25): the difference is **+3.75 with a 95 percent interval of [-7.6, +15.1]**, inconclusive by the frozen rule because the 90 percent interval reaches +12.7 and equivalence needed it inside +-10. The chain check failed again (26.0 against 28). `passages-mid`, `passages-wide`, medium, level B and level C read equivalent within their margins and none favored the real connectome. The spread inside an arm (sample standard deviation 6.3 and 6.8) was smaller than the two-seed estimate, which narrowed the interval from about +-45 to +-11 ([CONNECTOME_CONTROL_RESULTS_C13.md](../experiments/connectome-control/CONNECTOME_CONTROL_RESULTS_C13.md)).
+
 ### C1.P: the planner reference on level C
 
 The planner-1.4-exp.3 controller was run on 168 level C headings (the same headings as the learned measurement) and on fresh `large` (pool 892000) and `maze` (pool 893000) pools with 32 episodes per cell. It reached **147 of 168 on level C (87.5%; 4 collisions and 17 timeouts)**, 43 above the learned candidate's mean of 103.7. The retained learned candidate reached 2, 0 and 0 of 32 on `large` and 0, 0 and 0 of 32 on `maze`, mostly timeouts. The four-family gate was not met in any family ([PLANNER_REFERENCE_RESULTS.md](../experiments/connectome-control/PLANNER_REFERENCE_RESULTS.md)). This comparison shows the learned line trails the planner on these families, and it is not a learned result.
 
-**Tried and stopped.** The connectome comparison was run at two budgets (2.88M and 4.88M) and did not settle the question. Further comparison would require about eight seeds per arm, and that comparison was not run.
+**Tried and stopped.** The connectome comparison was run at two budgets (2.88M and 4.88M) and, at the larger one, with four seeds per arm. It did not settle the question. An equivalence verdict within 10 episodes would take about seven seeds per arm if the true difference is near the observed +3.75, and that comparison was not run.
 
 **Learned.** The real connectome and the shuffled reservoir were indistinguishable within measured uncertainty on every cell. The project therefore cannot claim that the real connectome improves or is necessary for navigation. The planner reference is far ahead of the learned candidate on level C, and the learned candidate has no meaningful success on `large` and `maze`.
 
