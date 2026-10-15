@@ -99,24 +99,24 @@ if 'results' in what:
     ax.axhline(5, color='#555', ls=':', lw=1); ax.text(60000, 6.5, 'start checkpoint, 5/64', fontsize=8, color='#555')
     ax.axhline(52, color='#a00', ls=':', lw=1); ax.text(60000, 53.5, 'release gate, 52/64 (and at most 3 collisions)', fontsize=8, color='#a00')
     ax.set_xlabel('added training transitions'); ax.set_ylabel('passages successes out of 64 (deterministic)')
-    ax.set_ylim(0, 60); ax.set_title('Training budget and the partitioned-room cell `passages`'); ax.legend(fontsize=8, loc='upper left', bbox_to_anchor=(0.0, 0.93))
+    ax.set_ylim(0, 60); ax.set_title('Training budget and the partitioned-room cell `passages`'); ax.legend(fontsize=8, loc='lower right')
     fig.tight_layout(); fig.savefig(f'{OUT}/budget-curve.png', dpi=120); plt.close(fig)
 
     # retained lineage against the fresh chain (real and edge-shuffled), passages, deterministic
     c11 = load(f'{RUNS}/connectome-control/c11-eval/summary.json')
-    c12 = load(f'{RUNS}/connectome-control/c12-eval/summary.json')
+    c12 = {**load(f'{RUNS}/connectome-control/c12-eval/summary.json'), **load(f'{RUNS}/connectome-control/c13-eval/summary.json')}  # C1.2 seeds 1001 and 1051, C1.3 seeds 1101 and 1151
     groups = [('retained\n2.88M', [b3[f'seed{s}-s61']['passages']['det']['successes'] for s in (801, 851, 901)], '#17c'),
               ('real, fresh\n2.88M', [c11[f'real{s}']['passages']['det']['successes'] for s in (1001, 1051)], '#d60'),
               ('shuffled, fresh\n2.88M', [c11[f'shuffled{s}']['passages']['det']['successes'] for s in (1001, 1051)], '#777'),
-              ('real, fresh\n4.88M', [c12[f'real{s}']['passages']['det']['successes'] for s in (1001, 1051)], '#d60'),
-              ('shuffled, fresh\n4.88M', [c12[f'shuffled{s}']['passages']['det']['successes'] for s in (1001, 1051)], '#777')]
+              ('real, fresh\n4.88M', [c12[f'real{s}']['passages']['det']['successes'] for s in (1001, 1051, 1101, 1151)], '#d60'),
+              ('shuffled, fresh\n4.88M', [c12[f'shuffled{s}']['passages']['det']['successes'] for s in (1001, 1051, 1101, 1151)], '#777')]
     fig, ax = plt.subplots(figsize=(8.8, 5))
     for i, (label, values, color) in enumerate(groups):
         ax.bar(i, np.mean(values), color=color, alpha=0.45, width=0.6)
         ax.plot([i] * len(values), values, 'o', color='k', ms=5)
     ax.set_xticks(range(len(groups))); ax.set_xticklabels([g[0] for g in groups], fontsize=8)
     ax.set_ylabel('passages successes out of 64 (deterministic)'); ax.set_ylim(0, 50)
-    ax.set_title('Real connectome against the edge-shuffled control (bars: mean, dots: seeds)\nretained and 2.88M rows: pool 886000; 4.88M rows: pool 888000', fontsize=10)
+    ax.set_title('Real connectome against the edge-shuffled control (bars: mean, dots: seeds)\nretained and 2.88M rows: pool 886000, two seeds per fresh arm; 4.88M rows: pool 888000, four seeds per arm', fontsize=10)
     fig.tight_layout(); fig.savefig(f'{OUT}/connectome-control.png', dpi=120); plt.close(fig)
 
     # four families against the gate
